@@ -1,0 +1,485 @@
+	
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class StockAdjObjects {
+
+	@FindBy(xpath ="//*[@id='stockManage']/a")
+	public WebElement stockAdjTab;
+
+	@FindBy(xpath ="//*[@id='stockManage']/ul/li[3]/a")
+	public WebElement stockAdjSubTab;
+
+	@FindBy(xpath ="//*[@id='sohSearchBox']")
+	public WebElement sohSearchBox;
+
+	@FindBy(xpath ="//*[@id='sohArticleSearch']")
+	public WebElement sohArticleSearch;
+
+	@FindBy(xpath ="//*[@id='sohArticleTitle']")
+	public WebElement sohArticleTitle;
+
+	@FindBy(xpath ="//*[@id='secondaryDetails']/label[1]/strong")
+	public WebElement sohApp;
+
+	@FindBy(xpath ="//*[@id='cancelSOH']")
+	public WebElement sohCancel;
+
+	@FindBy(xpath ="//*[@id='label_tr_1_0']")
+	public List<WebElement> selectOneArtDescList;
+
+	@FindBy(xpath ="//*[@id='label_tr_1_0']")
+	public WebElement selectOneArtDesc;
+
+	@FindBy(xpath ="//*[@id='error_title' and text()='Stock Adjustment']/preceding::a[1]")
+	public WebElement warningClose;
+
+	@FindBy(xpath ="//*[@id='error_title' and text()='Stock Adjustment']/following::a")
+	public WebElement whseWarnClose;
+	
+	@FindBy(xpath ="//*[@id='error_title' and text()='Stock Adjustment']/following::a")
+	public List<WebElement> whseWarnCloseList;
+
+	@FindBy(xpath ="//*[@id='information-wrapper']/div/div/div[1]/a")
+	public WebElement enterWeightAlert;
+
+	@FindBy(id="adjustSOHWeight")
+	public WebElement adjSohWt;
+  
+	@FindBy(xpath ="//*[@id='reasonsForSOHAdjust']")
+	public WebElement reasonsForSOH;
+
+	@FindBy(xpath ="//*[@id='reasonsForSOHAdjust']/option")
+	public List<WebElement> reasonCodeOptions;
+		
+	
+	@FindBy(xpath ="//*[@id='reasonsForSOHAdjust']/option")
+	public WebElement reasonCode;
+	
+
+	@FindBy(xpath ="//*[@id='subCatToList']/option[2]")
+	public WebElement IDTdd;	
+
+	@FindBy(xpath ="//*[@id='charityList']")
+	public WebElement selectCharity;
+
+	@FindBy(id="EA")
+	public WebElement EA;
+
+	@FindBy(id="CA1")
+	public WebElement CA1;
+
+	@FindBy(id="CA1")
+	public List<WebElement> CA1List;
+
+	@FindBy(id="MPK")
+	public List<WebElement> MPKList;
+
+	@FindBy(id="CAR")
+	public WebElement CAR;
+
+	@FindBy(id="CAR")
+	public List<WebElement> CARList;
+
+	@FindBy(id="MPK")
+	public WebElement MPK;
+
+	@FindBy(id="KG")
+	public WebElement KG;
+
+	@FindBy(xpath ="//*[@id='KG']")
+	public List<WebElement> KGList;
+
+	@FindBy(id="saveSOH")
+	public WebElement saveSOH;
+	
+	@FindBy(xpath ="//*[contains(text(),'Save & Next')]")
+	public WebElement saveSOH1;
+	
+	@FindBy(xpath ="//*[@id='transToArticleSearch']")
+	public WebElement verify;
+	
+	@FindBy(xpath ="//*[@id='endSOHValue']")
+	public WebElement SOHValue;
+	
+
+	@FindBy(id="no")
+	public List<WebElement> noList;
+
+	@FindBy(id="no")
+	public WebElement no;
+
+	@FindBy(id="endSOHValue")
+	public WebElement endSOHValue;
+	
+	
+	public static final String endSOHValue1 = "(//*[contains(@id,'endSOHValue')])[dynamic]";
+	
+	@FindBy(xpath="(//*[@id='0']/label)[1]")
+	public WebElement cpbdselect;
+	
+	
+	@FindBy(xpath="(//*[@id='ok']/label)[2]")
+	public WebElement cpbdok;
+	
+	
+	@FindBy(xpath ="//*[@id='0']/label")
+	public List<WebElement> cpbdselectoptions;
+	
+	public static final String cpbdselectoptions1 = "(//*[@id='0']/label)[dynamic]";
+
+	@FindBy(xpath="//*[@id='linkFactor']/label[1]/strong")
+	public WebElement endSOHValueKG;
+
+	@FindBy(xpath ="//*[@id='yes-btn-orders']")
+	public WebElement adjContinue;
+
+	@FindBy(xpath="//*[@id='success-wrapper']/div/div/div[1]/a")
+	public WebElement closeSohReport;
+	
+	@FindBy(xpath="//*[@id='errorWrapper']/div/div[1]/a")
+	public WebElement errormessage;
+	
+
+	@FindBy(xpath ="//*[@id='yes']/label")
+	public WebElement warning99;
+
+	@FindBy(xpath ="//*[@id='yes']/label")
+	public List<WebElement> warning99List;
+
+	@FindBy(xpath ="//*[@id='backBtn']")
+	public WebElement backBtn;
+
+	@FindBy(xpath ="//*[@id='no']/label")
+	public static WebElement back;
+
+	@FindBy(xpath ="//*[@id='no']/label")
+	public WebElement noClaim;
+
+	@FindBy(xpath ="//*[@id='no']/label")
+	public List<WebElement> noClaimList;
+
+	@FindBy(xpath ="//*[@id='yes']/label")
+	public WebElement discard;
+
+	@FindBy(xpath ="//*[@class='err_msg']")
+	public static WebElement success_msg;
+
+	@FindBy(xpath ="//*[@id='success_msg']/li")
+	public WebElement successmsg;
+	
+	@FindBy(xpath ="//*[@id='transToArticle']")
+	public WebElement transferToArticle;
+	
+	@FindBy(xpath ="//*[@id='transQty']")
+	public WebElement transferQty;
+	
+	@FindBy(xpath ="//*[@class='err_msg']")
+	public List<WebElement> success_msgList;
+
+	@FindBy(xpath ="//*[@id='success_msg']/li")
+	public WebElement success_msgKG;
+
+//	@FindBy(xpath ="//*[@class='notepad']")
+	@FindBy(xpath ="//*[text()='History']")
+	public WebElement sohHistory;
+	
+	@FindBy(xpath ="(//*[contains(text(),'End SOH :')])[2]")
+	public WebElement adjSOHlabel;
+
+
+	@FindBy(xpath ="//*[@id='historyDiv']")
+	public WebElement sohHistoryTable;
+
+	//@FindBy(xpath ="//*[@id='historyDiv']")
+	//public List<WebElement> sohHistoryTableList;
+
+	@FindBy(xpath ="//*[@id='historyTable']/tr")
+	public List<WebElement> sohHistoryTableList;
+
+
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[1]/a")
+	public WebElement noStockAdj;
+	
+	@FindBy(xpath ="//*[contains(text(),'Stock Adjustment')]/following::h4[contains(text(),'Under received quantity is greater than the received quantity')]")
+	public WebElement newErrormsg;
+	
+	@FindBy(xpath ="//*[contains(text(),'Stock Adjustment')]/following::h4[contains(text(),'Under received quantity is greater than the received quantity')]/following::div/span[3]/label")
+	public WebElement newErrormsgOK;
+	
+	@FindBy(xpath ="//*[contains(text(),'Stock Adjustment')]/following::h4[contains(text(),'Under received quantity is greater than the received quantity')]/following::div/span[2]/label")
+	public WebElement newErrormsgOK1;
+
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[1]/a")
+	public List<WebElement> noStockAdj1;
+
+	@FindBy(xpath= "(//label[text()='Ok'])[6]")
+	public static WebElement warning999;
+
+	@FindBy(xpath= "(//label[text()='Ok'])[6]")
+	public List<WebElement> warning999List;
+
+	@FindBy(xpath ="//*[@id='sohRecentHistory']")
+	public WebElement sohRecentHistory;
+
+	/*@FindBy(xpath ="//*[@id='secondaryDetails']/label[5]/strong")
+	public WebElement lastrcvdqty;
+	 */
+	@FindBy(xpath ="//*[@id='secondaryDetails']/label[7]/strong")
+	public WebElement lastrcvdqty;
+
+	@FindBy(xpath="//td[@class='centerValue lastColumn']")
+	public List<WebElement> centerValueLastColumn_list;
+
+	@FindBy(xpath ="//*[@id='article_search_result_table']/tbody/tr")
+	public List<WebElement> selectArticle;
+
+	@FindBy(xpath ="//*[@id='error_title']")
+	public WebElement stockAdjFail;
+
+	@FindBy(xpath ="(//*[@id='error_title'])[3]")
+	public WebElement stockAdjFail1;
+
+	@FindBy(xpath ="//*[@id='error_title']")
+	public List<WebElement> stockAdjFailList;
+
+	@FindBy(xpath ="//*[@id='error_msg']/li")
+	public List<WebElement> stockAdjFailList1;
+
+
+	@FindBy(xpath ="//*[@id='searchOrder']/a/label")
+	public WebElement orderSearch;
+
+	@FindBy(xpath ="//*[@id='order_search_result_table']/tbody/tr")
+	public List<WebElement> orderList;
+	
+	public static final String check2="//*[@id='article_search_result_table']/tbody/tr[dynamic]/td[1]";
+	public static final String check3="//*[@id='article_search_result_table']/tbody/tr[dynamic]/td[4]";
+
+	public static final String clickORDER="//*[@id='order_search_result_table']/tbody/tr[dynamic]/td[1]";
+
+	public static final String orderSegmentSelect = "//*[@id='order_search_result_table']/tbody/tr[dynamic]/td[value]";
+
+	public static final String orderselect="(//*[@id='0']/label)[dynamic]";
+
+	@FindBy(xpath ="//*[@id='uomRadioContent']/input[@class='textbox numberBox adjustSOHKeyPress']")
+	public static WebElement adjSOHvalue;
+	
+	@FindBy(xpath ="//*[contains(text(),'Received Qty')]/strong")
+	public WebElement recQtyCheck;
+
+	@FindBy(xpath ="//*[@id='uomRadioContent']/input[@class='textbox numberBox adjustSOHKeyPress weight-box']")
+	public WebElement adjSOHvalue_wt;
+
+	@FindBy(xpath ="//*[@id='uomRadioContent']/input[@class='textbox numberBox adjustSOHKeyPress']")
+	public List<WebElement> adjSOHlist;
+
+	public static final String adjSOH="(//*[@id='uomRadioContent']/input[@class='textbox numberBox adjustSOHKeyPress'])[dynamic]";
+
+	public static final String adjSOH1="(//*[@id='uomRadioContent']/input[@class='textbox numberBox adjustSOHKeyPress weight-box'])[dynamic]";
+
+	@FindBy(xpath ="//*[@id='authCodeUndrWhse']")
+	public WebElement authcodevalue;
+
+	@FindBy(xpath ="//*[@id='endSOHUom']")
+	public WebElement endSOHUom;
+
+	public static final String ordersort="//*[@id='thead_order_search_result']/tr/th[dynamic]";
+
+	public static final String orderno_sort="//*[@id='order_search_result_table']/tbody/tr[dynamic]/td[1]";
+
+	public static final String segno_sort="//*[@id='order_search_result_table']/tbody/tr[dynamic]/td[2]";
+
+	public static final String rdate_sort="//*[@id='order_search_result_table']/tbody/tr[dynamic]/td[3]";
+
+	public static final String supplier_sort="//*[@id='order_search_result_table']/tbody/tr[dynamic]/td[4]";
+
+	@FindBy(xpath ="//*[@class='pageStatusContent']/div/a")
+	public WebElement msgclose;	
+
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[2]/ol/li")
+	public WebElement ArtMsg;
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[2]/ol/li")
+	public List<WebElement> ArtMsg1;
+	
+	@FindBy(xpath ="//*[@id='order_search_result_head_page']")
+	public List<WebElement> OrderPage;
+
+	@FindBy(xpath ="//*[@class='pageStatusContent']/div/a")
+	public List<WebElement> msgclose1;
+
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[1]/h4")
+	public WebElement SOHUDerror;
+
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[1]/h4")
+	public List<WebElement> SOHUDerrorlist;
+
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[1]/a")
+	public WebElement idtErrorClose;
+
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[2]")
+	public WebElement SOHUDerrormsg;	
+
+	@FindBy(xpath ="(//*[@class='secondaryActionBtn'])[20]")
+	public WebElement noORDERlistcancel;	
+
+	@FindBy(xpath ="//*[@id='error_msg']/li")
+	public WebElement cannotrvsemsg;
+
+	@FindBy(xpath ="//*[@id='error_msg']/li")
+	public List<WebElement> cannotrvsemsg1;
+
+	@FindBy(id="sohValue")
+	public WebElement sohValue;
+	
+	@FindBy(xpath = "//*[contains(text(),'Add Articles to List')]")
+	public WebElement check;
+	
+	@FindBy(xpath ="//*[@id='article_search_result_table']/tbody/tr")
+	public List<WebElement> check1;
+
+	@FindBy(xpath = "//*[@id='searchBox']")
+	public WebElement searchText;
+
+	@FindBy(xpath = "//*[@id='articleGO']")
+	public WebElement clickGO;
+
+	@FindBy(xpath ="(//*[@id='message'])[2]")
+	public WebElement childArticleError;
+
+	@FindBy(xpath ="(//*[@class='popupData popupTitle']/h4)[3]")
+	public List<WebElement> childArticleErrorList;
+
+	@FindBy(xpath ="(//*[@id='ok']/label)[2]")
+	public WebElement childArticleErrorOkButton;
+
+	@FindBy(id="linkageFactorVal")
+	public WebElement linkageFactorValue;
+
+	@FindBy(xpath ="//*[@id='linkFactor']/label[1]/strong/label[1]")
+	public WebElement linkageFactorLabel;
+
+	@FindBy(xpath ="//*[@id='article_search_result_head']/div")
+	public WebElement LinkedArticleDescSearchBox;
+
+	@FindBy(xpath ="//*[@id='0']/label")
+	public WebElement LinkedArticleDescSelect;
+
+	@FindBy(xpath ="//*[@id='success-wrapper']/div/div/div[1]/a")
+	public WebElement SuccessMessageClose;
+
+	@FindBy(xpath ="//*[@id='success_title']")
+	public WebElement SuccessMessage;
+
+	@FindBy(xpath ="//*[@id='subCatToList']")
+	public WebElement subcatDD;
+
+	@FindBy(xpath ="//*[@id='idtToSubCatList']")
+	public WebElement subcatDD1;
+
+	@FindBy(xpath ="//*[@id='idt_comments']")
+	public WebElement IDTcomments;
+
+	@FindBy(xpath ="//*[@id='success_title']")
+	public WebElement IDTsuccessmsg;
+
+	@FindBy(xpath ="//*[@id='idtToQtyList']")
+	public WebElement idtToQtyList;
+
+	@FindBy(xpath ="//*[@id='error_msg']")
+	public WebElement BWSerroremsg;	
+
+	@FindBy(xpath ="//*[@id='error_msg']")
+	public List<WebElement> BWSerremsg;	
+
+	@FindBy(xpath ="//*[@id='info_msg']/li")
+	public WebElement kgArticle;	
+
+	@FindBy(xpath ="//*[@id='info_msg']/li")
+	public List<WebElement> kgArticlelist;
+
+	@FindBy(xpath ="//*[@id='historyTable']")
+	public WebElement History;
+
+	@FindBy(xpath ="//*[@id='historyTable']/tr")
+	public List<WebElement> History1;
+
+	@FindBy(xpath ="//*[@id='error_msg']/li")
+	public WebElement linkedChildError;
+
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[1]/h4")
+	public List<WebElement> linkedChildErrors;
+
+	@FindBy(xpath ="//*[@id='dialog-unreceived-orders']/div/div[1]/div/h5/span")
+	public WebElement unReceivedPopup;
+
+	@FindBy(xpath ="//*[@id='yes-btn-orders']")
+	public WebElement continueBtn;
+
+	@FindBy(id="endPiSOHValue")
+	public WebElement endEASOHValue;
+
+	@FindBy(xpath ="(//*[@id='error_title'])[3]")
+	public WebElement stockAdjFail3;
+
+	//ArticleLookup
+	@FindBy(xpath = "//*[@id='sohValue']")
+	public WebElement soh;
+
+	@FindBy(xpath ="//*[@class='hideBlock tfilter']/following::tbody/tr/td[1]")
+	public List<WebElement> allCpbdArt;
+
+	@FindBy(css = ".linkBtn.linkBtn1")
+	public List<WebElement> selectSOH;
+
+	@FindBy(xpath ="//*[@id='searchBox']")
+	public WebElement searchBox;
+
+	@FindBy(id ="articleGO")
+	public WebElement articleGO;
+
+	@FindBy(xpath = "//*[@id='lookUp']/a")
+	public WebElement Lookup;
+
+	@FindBy(xpath ="//*[@id='lookUp']/ul/li[2]/a")
+	public WebElement Article;
+
+	//StockAdjCPBD
+	@FindBy(xpath ="//*[@name='adjustSOH']")
+	public WebElement adjustSohPI;
+
+	@FindBy(xpath ="(//*[@name='adjustSOH'])[2]")
+	public WebElement adjustSohPI1;
+
+	@FindBy(xpath ="//span[@id='yes']")
+	public WebElement contYes;
+
+	@FindBy(xpath ="//*[contains(text(),'PI Verify is not allowed for complex pack break down article')]")
+	public WebElement piErrorForMPKandCAR;
+
+	@FindBy(xpath ="//*[@class='margni-top30 popupActionsWrapper']/span/label")
+	public WebElement piErrorForMPKandCARPopUp;
+
+	@FindBy(id = "endSOHValueAdj")
+	public WebElement endSohValueAdj; 
+
+	@FindBy(xpath = "//*[@id='dialog-unreceived-orders']/div/div[2]/div/table/tbody/tr/td[1]")
+	public List<WebElement> unrecOrders;
+
+	//StockAdj WeightedAndRandom Article - Whse and IDT
+	@FindBy(xpath="//*[@id='KG']")
+	public WebElement adjustRanWeiKG;
+
+	@FindBy(xpath="//*[@id='CA1']")
+	public WebElement adjustRanWeiCA1;
+
+	@FindBy(xpath = "//*[(@id='order_search_result_head_page')]/ul/li")
+	public List<WebElement> orderPage;
+
+
+}

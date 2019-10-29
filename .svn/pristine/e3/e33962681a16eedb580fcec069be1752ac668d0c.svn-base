@@ -1,0 +1,934 @@
+package au.wow.ngbomain.tests;
+
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.DSCandPLUReportObjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.DSCandPLUReportPage;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+
+
+public class DSCandPLUReportTests extends TestBase{
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+    int count=0;		
+	int MCcount=0;
+	public static XMLDataReader data;
+	public static boolean isFirstTest=true;
+	public static WebDriver driver;
+
+	
+	private Logger log = LogManager.getLogger(StockAdjustmentTests.class);
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	DSCandPLUReportObjects objDscReport;
+	DSCandPLUReportPage objDscReportPage;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;
+	
+	
+	public DSCandPLUReportTests(){
+		super.log=log;
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Daily Stock Check Report for All Departments")
+	public void verifyDSCReportAllDepartments()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(DSCandPLUArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		//List<List<Object>> recentHisList;
+		TestStatus status = getTestStatus();
+		try
+		{
+			navToDSCReport(status);
+			List<List<Object>> results;
+			List<List<Object>> randomList;
+			List<List<Object>> articleReasonDBList;
+			int countAllDept;
+			String ranArticle;
+			//System.out.println("DSC Report Query"+data.getText("countAllDepartment"));
+			String count_all_department_sql= data.getText("countAllDepartment").replace("date1", LocalDate.now().toString());
+			results = sql.executeQuery(getContext(), count_all_department_sql);
+			if(results.size()!=0)
+			{
+				countAllDept = results.size();
+				objDscReportPage.verifyDSCReportAllDepartment(objDscReport,countAllDept,driver);
+			}
+			else
+			{  
+				htmlToExtent(cName,mName,extLogger,driver, "No Data found in Daily Stock Check Report in DB;;;Pass");
+				//Report_AddStep("testcase", "No Data found in Daily Stock Check Report in DB ","" ,"" , "Pass");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(DSCandPLUArtScenarios, DSCandPLUArttestname,driver));		
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Daily Stock Check Report for Articles with Multiple Reason Codes")
+	public void verifyDSCReportMultipleReasonCode()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(DSCandPLUArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		TestStatus status = getTestStatus();
+		try{
+			navToDSCReport(status);
+			List<List<Object>> randomList;
+			List<List<Object>> articleReasonDBList;
+			String ranArticle;
+
+			String multiple_reasonCode_sql= data.getText("multipleReasonCodeSql");
+			randomList = sql.executeQuery(getContext(), multiple_reasonCode_sql);
+			if(randomList.size()!=0)
+			{
+				int num = common.RandomFromDB(randomList);
+				//System.out.println("Db values"+ num);
+				ranArticle = randomList.get(num).get(0).toString();
+				//ranArticle = "968380";
+				String multipleReasonCodeArticleSql= data.getText("multipleReasonCodeArticleSql").replace("article_num", ranArticle);			
+				articleReasonDBList = sql.executeQuery(getContext(), multipleReasonCodeArticleSql);
+				int count = articleReasonDBList.size();
+
+				htmlToExtent(cName,mName,extLogger,driver, "Multiple reason code will be verified for the article : "+ranArticle+";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, "The no of reason code present for the article : "+ranArticle+" is " +count+";;;Pass");
+
+				objDscReportPage.verifyMultipleReasonCodes(objDscReport,articleReasonDBList,ranArticle,count,driver);
+
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No Article found in Daily Stock Check Report with Multiple Reason Codes;;;Pass");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(DSCandPLUArtScenarios, DSCandPLUArttestname,driver));		
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Daily Stock Check Report for PDB Articles ")
+	public void verifyDSCReportPartialDepartment()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(DSCandPLUArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		List<String> depList;
+		List<List<Object>> applicationRecord;
+		List<List<Object>> dbRecord =null;
+		List<List<Object>> results = null;
+		List<Object> dbOneRecord;
+
+		TestStatus status = getTestStatus();
+		try{
+			navToDSCReport(status);
+			depList= objDscReportPage.fnChoosePartialDepartmentDSCReport(objDscReport,driver);
+
+			//Pass the 3 departments
+			if(depList.size() == 3)
+			{
+				String count_partial_department_sql= 
+						data.getText("countPartialDepartment").replace("deptName1", depList.get(0)).replace("deptName2", depList.get(1)).replace("deptName3", depList.get(2)).replace("date1", LocalDate.now().toString().trim());
+				//System.out.println("DSC Report Query"+count_partial_department_sql);
+				results = sql.executeQuery(getContext(), count_partial_department_sql);
+				System.out.println(results);
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Departments are not selected properly;;;Pass");
+				//Report_AddStep("testcase","Departments are not selected properly","" ,"" , "Fail");
+
+			}
+
+			int count = results.size();
+//			System.out.println(count);
+			if(count >0)
+			{
+				applicationRecord = objDscReportPage.fnVerifyDSCReportPartialDepartment(objDscReport,count,driver);
+
+				String articleNum = (String) applicationRecord.get(0).get(0);
+
+				htmlToExtent(cName,mName,extLogger,driver, "The DSR table values are validated for a Random Article"+articleNum+";;;Pass");
+				//Report_AddStep("testcase","The DSR table values are validated for a Random Article"+articleNum,"" ,"" , "PASS");
+
+				String today_date = objDscReportPage.getTodayDate();
+				////System.out.println("Today's date is *************"+today_date);
+
+				String dscReportValues = data.getText("dscReportValue").replace("article_num", articleNum).replace("today_date", today_date);
+				//System.out.println("DSC Report Query"+dscReportValues);
+				dbRecord = sql.executeQuery(getContext(), dscReportValues);
+
+				dbOneRecord = dbRecord.get(0);
+				for(int i=0;i<dbOneRecord.size();i++)
+				{
+					if(dbOneRecord.get(i)==null)
+						dbOneRecord.set(i, "");
+				}
+
+							//Extra spaces are present in DB for some article description. replace 1 or more white spaces with single space
+//							String articleDesc = (String)dbOneRecord.get(1);
+//							articleDesc.replaceAll("[^\\S\\r\\n]+", " ");
+//							dbOneRecord.set(1, articleDesc);
+				List<List<Object>> temp= new ArrayList<List<Object>>();
+				temp.add(dbOneRecord);
+
+				//Verify the random record in application matches with DB.	
+
+				//ElementContains(applicationRecord,dbRecord);
+				System.out.println(dbRecord);
+				System.out.println(dbOneRecord);
+				removeextraspaces(temp);
+				System.out.println(applicationRecord);
+				removeextraspaces(applicationRecord);
+				System.out.println(temp);
+				System.out.println(applicationRecord);
+				ElementContains1(cName, mName,extLogger,driver, applicationRecord, temp);
+
+
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No data avalaible in DB for these departments;;;Pass");
+				//Report_AddStep("testcase","No data avalaible in DB for these departments","" ,"" , "Fail");
+
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(DSCandPLUArtScenarios, DSCandPLUArttestname,driver));		
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();	
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Daily Stock Check Report for Meat Departments- Random weight, weight and Normal articles")
+	public void verifyDSCReportMeatDepartment()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(DSCandPLUArtpreCount2==-1){
+			MCcount=MCcount+4;}
+		List<List<Object>> firstRecord;
+		List<String> recordList;
+		TestStatus status = getTestStatus();
+		try{
+			navToDSCReport(status);
+			String eaValue =null,kgValue=null,sohDBValue=null;
+
+			List<List<Object>> results;
+			int countMeatDept;
+			String deptName = data.getText("deptName");
+
+			String count_meat_department_sql= data.getText("countMeatDepartment").replace("date1", LocalDate.now().toString().trim());
+			results = sql.executeQuery(getContext(), count_meat_department_sql);
+			System.out.println(results);
+
+			if(results.size()!=0)
+			{
+				int countDept = results.size();
+				recordList = objDscReportPage.fnDSCReportMeatDepartment(objDscReport,deptName,countDept,driver);
+
+				String ranArticleNum =recordList.get(0);
+				String soh =recordList.get(1);
+
+				//Verify Random Weight Articles
+				if(soh.contains("&"))
+				{
+					//System.out.println("Random weight Articles");
+					String randomWeightSOH_sql = data.getText("randomWeightSOH").replace("article_num", ranArticleNum);
+					firstRecord = sql.executeQuery(getContext(), randomWeightSOH_sql);
+					if(firstRecord.get(0).get(0)!=null)
+						kgValue = firstRecord.get(0).get(0).toString();
+
+					if(firstRecord.get(0).get(1)!=null)
+						eaValue = firstRecord.get(0).get(1).toString();
+
+					objDscReportPage.verifyRandomWeightOrWeightArticleSOH(objDscReport,ranArticleNum,kgValue,eaValue,soh,driver);
+				}
+				//Weighted Article
+				else if(soh.contains("KG") && !soh.contains("EA"))
+				{
+					String weightSOH_sql = data.getText("weightSOH").replace("article_num", ranArticleNum);
+					firstRecord = sql.executeQuery(getContext(), weightSOH_sql);
+					if(firstRecord.get(0).get(0)!=null)
+						kgValue = firstRecord.get(0).get(0).toString();
+
+					objDscReportPage.verifyWeightedArticleSOH(objDscReport,ranArticleNum,kgValue,soh,driver);
+				}
+				//Normal Article
+				else
+				{
+					String currentSOH_sql = data.getText("weightSOH").replace("article_num", ranArticleNum);
+					firstRecord = sql.executeQuery(getContext(), currentSOH_sql);
+					if(firstRecord.get(0).get(0)!=null)
+						sohDBValue = firstRecord.get(0).get(0).toString();
+
+					objDscReportPage.verifyArticleSOH(objDscReport,ranArticleNum,sohDBValue,soh,driver);
+				}
+
+
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No Data found in Daily Stock Check Report in DB;;;Pass");
+				//Report_AddStep("testcase", "No Data found in Daily Stock Check Report ","" ,"" , "Pass");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(DSCandPLUArtScenarios, DSCandPLUArttestname,driver));		
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Daily Stock Check Report for PDB Articles ")
+	public void verifyDSCReportPDBArticle()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(DSCandPLUArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		List<List<Object>> firstRecord;
+		List<String> recordList;
+		TestStatus status = getTestStatus();
+		try{
+			navToDSCReport(status);
+			String firstArticleNum,eaValue =null,kgValue=null,sohDBValue=null;
+
+			List<List<Object>> results;
+
+			String deptName = data.getText("deptName");
+			String count_cig_department_sql= data.getText("countCigarettesDepartment").replace("dept_name", deptName).replace("date1", LocalDate.now().toString().trim());;
+			results = sql.executeQuery(getContext(), count_cig_department_sql);
+
+
+			if(results.size()!=0)
+			{
+				int countDept = results.size();
+				recordList = objDscReportPage.fnVerifyDSCReportPDBorLitreArticle(objDscReport,deptName,countDept,driver);
+
+				String ranArticleNum =recordList.get(0);
+				String soh =recordList.get(1);
+
+				String currentSOH_sql = data.getText("currentSOH").replace("article_num", ranArticleNum);
+				firstRecord = sql.executeQuery(getContext(), currentSOH_sql);
+				if(firstRecord.get(0).get(0)!=null)
+					sohDBValue = firstRecord.get(0).get(0).toString();
+
+				objDscReportPage.verifyArticleSOH(objDscReport,ranArticleNum,sohDBValue,soh,driver);
+
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No Data found in Daily Stock Check Report in DB;;;Pass");
+				//Report_AddStep("testcase", "No Data found in Daily Stock Check Report in DB ","" ,"" , "Pass");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(DSCandPLUArtScenarios, DSCandPLUArttestname,driver));		
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Daily Stock Check Report for Litre Articles ")
+	public void verifyDSCReportLitreArticle()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(DSCandPLUArtpreCount2==-1){
+			MCcount=MCcount+4;}
+		List<List<Object>> firstRecord;
+		List<String> recordList;
+		TestStatus status = getTestStatus();
+		try{
+			navToDSCReport(status);
+			String sohDBValue=null;
+
+			List<List<Object>> results;
+
+			String deptName = data.getText("deptName");
+			String count_cig_department_sql= data.getText("countLitreDepartment").replace("dept_name", deptName).replace("date1", LocalDate.now().toString().trim());;
+			results = sql.executeQuery(getContext(), count_cig_department_sql);
+
+
+			if(results.size()!=0)
+			{
+				int countDept = results.size();
+				recordList = objDscReportPage.fnVerifyDSCReportPDBorLitreArticle(objDscReport,deptName,countDept,driver);
+
+				String ranArticleNum =recordList.get(0);
+				String soh =recordList.get(1);
+
+				String currentSOH_sql = data.getText("currentSOH").replace("article_num", ranArticleNum);
+				firstRecord = sql.executeQuery(getContext(), currentSOH_sql);
+				if(firstRecord.get(0).get(0)!=null)
+					sohDBValue = firstRecord.get(0).get(0).toString();
+
+				objDscReportPage.verifyArticleSOH(objDscReport,ranArticleNum,sohDBValue,soh,driver);
+
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No Data found in Daily Stock Check Report in DB;;;Pass");
+				//Report_AddStep("testcase", "No Data found in Daily Stock Check Report in DB ","" ,"" , "Pass");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(DSCandPLUArtScenarios, DSCandPLUArttestname,driver));		
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying PLU Report for All Department ")
+	public void verifyPLUReportAllDepartment()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(DSCandPLUArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		List<String> recordList = new ArrayList<String>();
+		List<List<Object>> firstRecord;
+		String pluCodeDB = null;
+
+		TestStatus status = getTestStatus();
+		try{
+			navToPLUReport(status);
+			recordList= objDscReportPage.verifyPLUReportAllDepartment(objDscReport,driver);
+
+			String ranArticleNum =recordList.get(0);
+			String pluCodeApp =recordList.get(1);
+
+			String PLUCode_sql = data.getText("PLUCode").replace("article_num", ranArticleNum);
+			firstRecord = sql.executeQuery(getContext(), PLUCode_sql);
+			if(firstRecord.get(0).get(0)!=null)
+				pluCodeDB = firstRecord.get(0).get(0).toString();
+
+			if(pluCodeApp.equals(pluCodeDB))
+				htmlToExtent(cName,mName,extLogger,driver, "PLU Code Value matches for the Random Article :"+ranArticleNum+";"+pluCodeApp+";"+pluCodeDB+";Pass");
+			//Report_AddStep("testcase","PLU Code Value matches for the Random Article :"+ranArticleNum,pluCodeApp ,pluCodeDB , "Pass");
+			else
+				htmlToExtent(cName,mName,extLogger,driver, "PLU Code Value Doesn't matches for the Random Article :"+ranArticleNum+";"+pluCodeApp+";"+pluCodeDB+";Fail");
+			//Report_AddStep("testcase","PLU Code Value Doesn't matches for the Random Article :"+ranArticleNum,pluCodeApp ,pluCodeDB , "Fail");
+
+			objDscReportPage.verifyPLUReportPagination(objDscReport,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(DSCandPLUArtScenarios, DSCandPLUArttestname,driver));		
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying PLU Report for Partial Department ")
+	public void verifyPLUReportPartialDepartment()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(DSCandPLUArtpreCount2==-1){
+		MCcount=MCcount+4;}
+		List<String> recordList = new ArrayList<String>();
+		List<List<Object>> firstRecord;
+		String pluCodeDB = null;
+		
+		TestStatus status = getTestStatus();
+		try{
+		navToPLUReport(status);
+		recordList= objDscReportPage.fnChoosePartialDepartmentPLUReport(objDscReport,driver);
+		
+		String ranArticleNum =recordList.get(0);
+		String pluCodeApp =recordList.get(1);
+		
+		String PLUCode_sql = data.getText("PLUCode").replace("article_num", ranArticleNum);
+		firstRecord = sql.executeQuery(getContext(), PLUCode_sql);
+		if(firstRecord.get(0).get(0)!=null)
+		 pluCodeDB = firstRecord.get(0).get(0).toString();
+		
+		if(pluCodeApp.equals(pluCodeDB))
+		{htmlToExtent(cName,mName,extLogger,driver, "PLU Code Value matches for the Random Article :"+ranArticleNum+";"+pluCodeApp+";"+pluCodeDB+";Pass");
+		}else{
+			 htmlToExtent(cName,mName,extLogger,driver, "PLU Code Value matches for the Random Article :"+ranArticleNum+";"+pluCodeApp+";"+pluCodeDB+";Fail");
+		}htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(DSCandPLUArtScenarios, DSCandPLUArttestname,driver));		
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying PLU Report for Article num and Desc ")
+	public void verifyPLUReportForArticleNumber()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(DSCandPLUArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		List<List<Object>> results;
+		String ranArticle=null,ranArticleDesc=null,ranArtEAN = null,ranArtPLU=null;
+
+
+		TestStatus status = getTestStatus();
+		try{
+			navToPLUReport(status);
+			String articles_sql = data.getText("articleDetails");
+			results = sql.executeQuery(getContext(), articles_sql);
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				//System.out.println("Db values"+ num);
+				ranArticle = results.get(num).get(0).toString();
+				ranArticleDesc = results.get(num).get(1).toString();
+				ranArtPLU = results.get(num).get(2).toString();
+				ranArtEAN = results.get(num).get(3).toString();
+
+
+				String articleDescApp = objDscReportPage.fnVerifyPLUReportForArticleNumber(objDscReport,ranArticle,ranArtPLU,driver);
+				click(objDscReport.backBtn);
+				waitForJSandJQueryToLoad(driver);;
+
+				objDscReportPage.clickOnPLUReport(objDscReport,driver);
+
+				objDscReportPage.fnVerifyPLUReportForArticleDesc(objDscReport,articleDescApp,ranArticle,ranArtPLU,driver);
+
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No Article found in DB;;;Pass");
+				//Report_AddStep("testcase", "No Article found in DB ","" ,"" , "Pass");
+
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(DSCandPLUArtScenarios, DSCandPLUArttestname,driver));		
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying PLU Report for Article PLU Code ")
+	public void verifyPLUReportForArticlePLU()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(DSCandPLUArtpreCount2==-1){
+			MCcount=MCcount+4;}
+		List<List<Object>> results;
+		String ranArticle=null,ranArticleDesc=null,ranArtEAN = null,ranArtPLU=null;
+
+
+		TestStatus status = getTestStatus();
+		try{
+			navToPLUReport(status);
+			String articles_sql = data.getText("articleDetails");
+			results = sql.executeQuery(getContext(), articles_sql);
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				//System.out.println("Db values"+ num);
+				ranArticle = results.get(num).get(0).toString();
+				ranArticleDesc = results.get(num).get(1).toString();
+				ranArtPLU = results.get(num).get(2).toString();
+				ranArtEAN = results.get(num).get(3).toString();
+
+
+				objDscReportPage.fnVerifyPLUReportForArticlePLU(objDscReport,ranArticle,ranArtPLU,driver);
+
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No Article found in DB;;;Pass");
+				//Report_AddStep("testcase", "No Article found in DB ","" ,"" , "Pass");
+
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(DSCandPLUArtScenarios, DSCandPLUArttestname,driver));		
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying PLU Report for deleted PLU")
+	public void verifyPLUReportDeletedPLU()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(DSCandPLUArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		List<List<Object>> applicationRecord;
+		List<List<Object>> dbRecord = new ArrayList<List<Object>>();
+
+		TestStatus status = getTestStatus();
+		try{
+			navToPLUReport(status);
+			applicationRecord= objDscReportPage.fnverifyPLUReportDeletedPLU(objDscReport,driver);
+
+			if(applicationRecord.size()!=0)
+			{
+				String ranArticleNum =applicationRecord.get(0).get(0).toString();
+				htmlToExtent(cName,mName,extLogger,driver, "PLU Report is verified for a Random Article"+ranArticleNum+";;;Pass");
+				//Report_AddStep("testcase","PLU Report is verified for a Random Article"+ranArticleNum,"" ,"" , "Pass");
+
+				String ALCStatus_sql = data.getText("ALCStatus").replace("article_num", ranArticleNum);
+				dbRecord = sql.executeQuery(getContext(), ALCStatus_sql);
+			}
+
+			if(dbRecord.size()>0)
+			{
+
+				ElementContains1(cName, mName,extLogger,driver, dbRecord, applicationRecord);
+
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(DSCandPLUArtScenarios, DSCandPLUArttestname,driver));		
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying PLU Report for Multiple Departments")
+	public void verifyPLUReportMultiDepartment()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(DSCandPLUArtpreCount2==-1){
+		MCcount=MCcount+4;	}
+		List<List<Object>> results = null;
+		List<Object> randomRecord = new ArrayList<Object>();
+				
+		TestStatus status = getTestStatus();
+		try{
+		navToPLUReport(status);
+		String multiDepartment_sql = data.getText("multiDepartment");
+		results = sql.executeQuery(getContext(), multiDepartment_sql);
+		System.out.println(results);
+		
+		if(results.size()>0)
+		{
+			int num = common.RandomFromDB(results);
+			//System.out.println("Db values"+ num);
+			randomRecord = results.get(num);
+			objDscReportPage.fnverifyPLUReportMultiDepartment(objDscReport,randomRecord,driver);
+		
+		}		
+		else{
+			 htmlToExtent(cName,mName,extLogger,driver, "The Department Category Sub-category Segment are not available in DB;;;Pass");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(DSCandPLUArtScenarios, DSCandPLUArttestname,driver));		
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying PLU Report for Primary Departments")
+	public void verifyPLUReportPrimaryDepartment()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(DSCandPLUArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		List<List<Object>> results = null;
+		List<String> deptNameList = new ArrayList<String>();
+
+		TestStatus status = getTestStatus();
+		try{
+			navToPLUReportPrimary(status);
+			String storeNo= System.getProperty("store");
+			String userId= getContext().getStringProperty("usernameR");
+
+			//String primaryDepartment_sql = data.getText("primaryDepartment").replace("user_id", userId).replace("store_num", storeNo);
+			String primaryDepartment_sql = data.getText("primaryDepartment").replace("user_id", userId);
+
+			results = sql.executeQuery(getContext(), primaryDepartment_sql);
+			System.out.println(results);
+
+			for (Iterator<List<Object>> it = results.iterator(); it.hasNext();) {
+				List<Object> elem = it.next(); 
+				deptNameList.add(elem.get(0).toString());
+
+			}
+
+			objDscReportPage.fnverifyPLUReportPrimaryDepartment(objDscReport,deptNameList,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(DSCandPLUArtScenarios, DSCandPLUArttestname,driver));		
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	
+	
+	
+	public void navToDSCReport(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		 htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		if(System.getProperty("store")==null){
+			StoreNo = getContext().getStringProperty("store");
+			 htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+ ";;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : " + getContext().getStringProperty("store"),"","", "Pass");
+			objDscReportPage = loginPage.navToDSCAndPLUReport(getContext().getStringProperty("store"),driver);
+		}else{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			 htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+ ";;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : " + store,"","", "Pass");
+			objDscReportPage = loginPage.navToDSCAndPLUReport(store,driver);
+		}
+
+		log.info("-------------Navigate to DSC Report Page------------");
+		 htmlToExtent(cName,mName,extLogger,driver, "---------------Navigate to DSC Report  Page---------------------;;;Pass");
+		//Report_AddStep("testcase", "----------------Navigate to DSC Report  Page---------------------","","", "Pass");
+		objDscReportPage.clickOnDsctReport(objDscReport,driver);
+		
+	}
+	
+	
+	public void navToPLUReport(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		 htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		if(System.getProperty("store")==null){
+			StoreNo = getContext().getStringProperty("store");
+			 htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : " + getContext().getStringProperty("store"),"","", "Pass");
+			objDscReportPage = loginPage.navToDSCAndPLU(getContext().getStringProperty("store"),driver);
+		}else{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			 htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : " + store,"","", "Pass");
+			objDscReportPage = loginPage.navToDSCAndPLU(store,driver);
+		}
+
+		log.info("-------------Navigate to PLU Report  Page------------");
+		 htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to PLU Report  Page---------------------;;;Pass");
+		//Report_AddStep("testcase", "----------------Navigate to PLU Report  Page---------------------","","", "Pass");
+		objDscReportPage.clickOnPLUReport(objDscReport,driver);
+		
+	}
+	
+	public void navToPLUReportPrimary(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		 htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		if(System.getProperty("store")==null){
+			StoreNo = getContext().getStringProperty("store");
+			 htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : " + getContext().getStringProperty("store"),"","", "Pass");
+			objDscReportPage = loginPage.navToDSCAndPLUReport(getContext().getStringProperty("store"),driver);
+		}else{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			 htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : " + store,"","", "Pass");
+			objDscReportPage = loginPage.navToDSCAndPLUReport(store,driver);
+		}
+
+		log.info("-------------Navigate to PLU Report  Page------------");
+		 htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to PLU Report  Page---------------------;;;Pass");
+		//Report_AddStep("testcase", "----------------Navigate to PLU Report  Page---------------------","","", "Pass");
+		objDscReportPage.clickOnPLUReport(objDscReport,driver);
+		
+	}
+	
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		waitFor(2);		
+        mName=m9.getName().toString().trim();			
+		if(!methodList.contains(m9.getName().toString().trim())){
+		methodList.add(m9.getName().toString().trim());
+		extLogger = extReport.startTest(m9.getName().toString().trim());
+		}
+		initializeTestcontext();
+		System.out.println("test1 - beforemethod");
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		}else{
+			String title = driver.getCurrentUrl();
+			if(title.contains("logginOut"))
+			{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+			}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+						WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+						scrolltoElement(home,driver);
+						home.click();
+						TimeUnit.SECONDS.sleep(5);
+						loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+						driver.navigate().refresh();
+						TimeUnit.SECONDS.sleep(5);}
+				}
+			}
+		}
+			isFirstTest=false;
+		
+		//driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser"));
+		setDriver(driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		DSCandPLUArttestname = m9.getName().toString().trim();
+		DSCandPLUArttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		objDscReport = PageFactory.initElements(this.driver, DSCandPLUReportObjects.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+	}
+	
+	@BeforeClass
+	public void loadXMLFile(){	
+		System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\dscAndPLUReport.xml");
+		customreport.createExtentReport();		
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+	}
+	
+	
+	
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitFor(1);
+		System.out.println("afterclass");
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(), MCcount);
+		//System.out.println(extentList);
+		//System.out.println(methodList);
+        extReport.endTest(extLogger);
+		extReport.flush();
+		removeDriver();
+		closeDriver(driver);
+		
+		waitFor(1);
+		moduleName.put("Modules", DSCandPLUArtModules);
+		waitFor(1);
+		
+		int dscArtM=MCcount;
+		DSCandPLUArtMC=""+dscArtM;
+	}
+
+
+	
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+		
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				//System.out.println();
+			
+			}
+
+		System.out.println("AffterMethod");
+		waitFor(1);
+		/*Date ppMEndDate1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		DSCandPLUArtMEndDate = dateFormat.format(ppMEndDate1);
+		//System.out.println(DSCandPLUArtMEndDate); // 12/01/2011 4:48:16 PM
+		String EnhancedArtTime = DSCandPLUArttestdesc +";"+ DSCandPLUArtStartdat +";" + DSCandPLUArtMEndDate;
+
+		DSCandPLUArtTime.put(DSCandPLUArttestname, EnhancedArtTime);*/
+		//Report_AddStep("testcase", "Running Completed Status","","", getResultStatusName(result.getStatus()));
+		
+		//closeDriver(driver);
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")){
+			int cnt = DSCandPLUArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			DSCandPLUArtpreCount2++;
+		}
+		/*waitFor(1);
+		if((getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")) && DSCandPLUArtpreCount2!=reCount){
+			waitFor(1);
+			DSCandPLUArtTime.removeAll(DSCandPLUArttestname);
+			waitFor(1);
+			DSCandPLUArtScenarios.removeAll(DSCandPLUArttestname);
+		}
+		waitFor(1);*/
+		if(DSCandPLUArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+			DSCandPLUArtpreCount2=-1;
+		}
+		waitFor(1);
+	}
+
+
+}

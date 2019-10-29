@@ -1,0 +1,222 @@
+<h2>Methods run, sorted chronologically</h2><h3>&gt;&gt; means before, &lt;&lt; means after</h3><p/><br/><em>Default suite</em><p/><small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table border="1">
+<tr><th>Time</th><th>Delta (ms)</th><th>Suite<br>configuration</th><th>Test<br>configuration</th><th>Class<br>configuration</th><th>Groups<br>configuration</th><th>Method<br>configuration</th><th>Test<br>method</th><th>Thread</th><th>Instances</th></tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:09:16</td>   <td>0</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.CheckPromopriceexcludingOneCardPromo()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">CheckPromopriceexcludingOneCardPromo</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:09:47</td>   <td>31219</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedActivePromobigW()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedActivePromobigW</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:09:57</td>   <td>40370</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedAddAndCompareExpiryDate()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedAddAndCompareExpiryDate</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:09</td>   <td>53037</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedArticleIndicator()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedArticleIndicator</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:19</td>   <td>62310</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedArticleLookUpSM()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedArticleLookUpSM</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:27</td>   <td>70498</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedBannerBWS()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedBannerBWS</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:35</td>   <td>78760</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedBannerbigW()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedBannerbigW</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:43</td>   <td>86978</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedCPBDDescriptionCheck()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedCPBDDescriptionCheck</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:51</td>   <td>95237</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedCheckGrossProfit()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedCheckGrossProfit</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:00</td>   <td>103496</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedCheckNZStore()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedCheckNZStore</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:08</td>   <td>111758</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedCheckPOSPrice()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedCheckPOSPrice</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:16</td>   <td>119908</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedCupPriceNZ()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedCupPriceNZ</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:24</td>   <td>128224</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedDraftFunctionality()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedDraftFunctionality</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:33</td>   <td>136470</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedFacingValue()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedFacingValue</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:41</td>   <td>144721</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedFullHistory()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedFullHistory</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:49</td>   <td>152829</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedFullHistorybigW()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedFullHistorybigW</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:57</td>   <td>161073</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedLTODetails()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedLTODetails</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:05</td>   <td>169269</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedLookupInputParameter()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedLookupInputParameter</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:14</td>   <td>177390</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedMPLSCarticles()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedMPLSCarticles</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:22</td>   <td>185543</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedPLUandsupplierInfo()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedPLUandsupplierInfo</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:30</td>   <td>193689</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedPOGdetailsUnitiInfo()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedPOGdetailsUnitiInfo</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:39</td>   <td>202381</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedPOSdetails()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedPOSdetails</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:47</td>   <td>210517</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedPriceUnitDetails()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedPriceUnitDetails</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:55</td>   <td>218641</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedPrintTicketAllticket()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedPrintTicketAllticket</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:03</td>   <td>227281</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedPrintTicketDefaultLabel()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedPrintTicketDefaultLabel</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:12</td>   <td>235545</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedPrintTicketDefaultTalker()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedPrintTicketDefaultTalker</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:20</td>   <td>243766</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedReplinshmentFunctionality()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedReplinshmentFunctionality</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:28</td>   <td>251959</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedReplinshmentFunctionalityBWS()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedReplinshmentFunctionalityBWS</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:36</td>   <td>260077</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedSalesHistory()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedSalesHistory</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:44</td>   <td>268262</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedSecurityTag()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedSecurityTag</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:53</td>   <td>276471</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedSellandPromoPrice()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedSellandPromoPrice</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:14:01</td>   <td>284609</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedSmartSearch()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedSmartSearch</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:14:10</td>   <td>293754</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedUnknownItem()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedUnknownItem</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:14:18</td>   <td>302003</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancedbigWAdvanceSearch()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancedbigWAdvanceSearch</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:14:26</td>   <td>310164</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="EnhancedArticleLookUpTests.enhancednearByStores()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">enhancednearByStores</td> 
+  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:09:38</td>   <td>22097</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:09:47</td>   <td>31234</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:09:57</td>   <td>40573</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:09</td>   <td>53053</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:19</td>   <td>62341</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:27</td>   <td>70529</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:35</td>   <td>78776</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:43</td>   <td>86994</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:51</td>   <td>95253</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:00</td>   <td>103512</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:08</td>   <td>111774</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:16</td>   <td>119932</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:24</td>   <td>128240</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:33</td>   <td>136485</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:41</td>   <td>144736</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:49</td>   <td>152876</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:57</td>   <td>161089</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:05</td>   <td>169270</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:14</td>   <td>177422</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:22</td>   <td>185559</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:30</td>   <td>193705</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:39</td>   <td>202397</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:47</td>   <td>210548</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:55</td>   <td>218657</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:04</td>   <td>227312</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:12</td>   <td>235561</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:20</td>   <td>243783</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:28</td>   <td>251975</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:36</td>   <td>260092</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:44</td>   <td>268263</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:53</td>   <td>276487</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:14:01</td>   <td>284646</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:14:10</td>   <td>293785</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:14:18</td>   <td>302019</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:14:26</td>   <td>310179</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="a7c7e0">  <td>18/07/01 21:14:32</td>   <td>315783</td> <td title="&lt;&lt;TestBase.flushReports1()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;flushReports1</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/06/21 19:46:04</td>   <td>-868992474</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.loadXMLFile()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;loadXMLFile</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="a7c7e0">  <td>18/06/21 19:46:03</td>   <td>-868993492</td> <td title="&gt;&gt;TestBase.onStart()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;onStart</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/06/21 19:46:04</td>   <td>-868992254</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:09:41</td>   <td>24646</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:09:50</td>   <td>33435</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:09:59</td>   <td>43007</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:12</td>   <td>56151</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:21</td>   <td>64403</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:29</td>   <td>72683</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:37</td>   <td>80896</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:45</td>   <td>89054</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:10:54</td>   <td>97327</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:02</td>   <td>105575</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:10</td>   <td>113855</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:18</td>   <td>122014</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:26</td>   <td>130294</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:35</td>   <td>138545</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:43</td>   <td>146784</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:51</td>   <td>154966</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:11:59</td>   <td>163135</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:08</td>   <td>171315</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:16</td>   <td>179484</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:24</td>   <td>187623</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:32</td>   <td>195754</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:41</td>   <td>204429</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:49</td>   <td>212594</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:12:57</td>   <td>220704</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:06</td>   <td>229358</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:14</td>   <td>237612</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:22</td>   <td>245871</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:30</td>   <td>254024</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:38</td>   <td>262157</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:47</td>   <td>270335</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:13:55</td>   <td>278527</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:14:03</td>   <td>286780</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:14:12</td>   <td>295834</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:14:20</td>   <td>304081</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;EnhancedArticleLookUpTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+<tr bgcolor="84ab65">  <td>18/07/01 21:14:28</td>   <td>312286</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;EnhancedArticleLookUpTests.tearDown()[pri:0, instance:au.wow.ngbomain.tests.EnhancedArticleLookUpTests@44040454]">&lt;&lt;tearDown</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>main@1262110193</td>   <td></td> </tr>
+</table>

@@ -1,0 +1,1505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<TCName name = "ReceivingWarehouseMultipleSegmentOrdeFullHigh" >
+<orderNumber_7051>8481558</orderNumber_7051>8481373
+<orderNumber>8517948</orderNumber>
+<chilled>1</chilled>
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as qty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)'as totalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as dispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)' as totaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as rcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as totalrcve 
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_INd having ebeln = 'seg_no' and display_article = 'art_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+<TCName name = "ReceivingWarehouseMultipleSegmentOrderFull" >
+<orderNumber_7051>8481558</orderNumber_7051>8517350
+<orderNumber>8517948</orderNumber>
+<chilled>1</chilled>8493009
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as qty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)'as totalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as dispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)' as totaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as rcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as totalrcve 
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_INd having ebeln = 'seg_no' and display_article = 'art_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+
+<TCName name = "ReceivingWarehouseMultipleSegmentOrderWithCancel" >
+<orderNumber_7051>8481558</orderNumber_7051>8517350
+<orderNumber>8517350</orderNumber>
+<chilled>1</chilled>8493009
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as qty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)'as totalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as dispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)' as totaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as rcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as totalrcve 
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_INd having ebeln = 'seg_no' and display_article = 'art_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+
+<TCName name = "ReceivingWarehouseMultipleSegmentOrderWithCancelInException" >
+<orderNumber_7051>8481558</orderNumber_7051>8517350
+<orderNumber>8517350</orderNumber>
+<chilled>1</chilled>8493009
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as qty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)'as totalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as dispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)' as totaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as rcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as totalrcve 
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_INd having ebeln = 'seg_no' and display_article = 'art_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+<TCName name = "ReceivingWarehouseMultipleSegmentOrderException" >
+<orderNumber_7051>8481558</orderNumber_7051>
+<orderNumber>8517948</orderNumber>
+<chilled>1</chilled>8493009
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childqty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childdispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childrcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalrcve  
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_IND having ebeln = 'seg_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+
+<TCName name = "ReceivingWarehouseSingleSegmentFullWithHighTemperature" >
+<orderNumber_7051>8481558</orderNumber_7051>
+<orderNumber>8401447</orderNumber>
+<chilled>1</chilled>8493009
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as qty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)'as totalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as dispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)' as totaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as rcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as totalrcve 
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_INd having ebeln = 'seg_no' and display_article = 'art_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+
+<TCName name = "ReceivingWarehouseSingleSegmentException" >
+<orderNumber_7051>8481558</orderNumber_7051>
+<orderNumber>8401447</orderNumber>
+<chilled>1</chilled>8493009
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as qty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)'as totalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as dispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)' as totaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as rcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as totalrcve 
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_INd having ebeln = 'seg_no' and display_article = 'art_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+<TCName name = "ReceivingWarehouseSingleSegmentFullUsingPostLater" >
+<orderNumber_7051></orderNumber_7051>
+<orderNumber>5176202</orderNumber>
+<chilled>1</chilled>8493009
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as qty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)'as totalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as dispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)' as totaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as rcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as totalrcve 
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_INd having ebeln = 'seg_no' and display_article = 'art_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+<TCName name = "ReceivingWarehouseMultipleSegmentOrderFullWithPostLater" >
+<orderNumber_7051>8481558</orderNumber_7051>8517350
+<orderNumber>8517948</orderNumber>
+<chilled>1</chilled>8493009
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as qty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)'as totalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as dispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)' as totaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as rcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as totalrcve 
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_INd having ebeln = 'seg_no' and display_article = 'art_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+<TCName name = "ReceivingWarehouseSingleSegmentOrderLineByLineByAcceptingNRArticle" >
+<orderNumber_7051>8481558</orderNumber_7051>
+<orderNumber>1957157</orderNumber>
+<chilled>1</chilled>8493009
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childqty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childdispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childrcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalrcve  
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_IND having ebeln = 'seg_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+<TCName name = "ReceivingWarehouseSingleSegmentOrderLineByLineByRejectingNRArticle" >
+<orderNumber_7051>8481558</orderNumber_7051>
+<orderNumber>1957157</orderNumber>
+<chilled>1</chilled>8493009
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childqty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childdispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childrcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalrcve  
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_IND having ebeln = 'seg_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+<TCName name = "ReceivingWarehouseSingleSegmentOrderLineByLineByAcceptingHighTemperature" >
+<orderNumber_7051>8517948</orderNumber_7051>
+<orderNumber>8517948</orderNumber>1949318
+<chilled>1</chilled>
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childqty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childdispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childrcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalrcve  
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_IND having ebeln = 'seg_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+<TCName name = "ReceivingWarehouseSingleSegmentOrderLineByLineByRejectingHighTemperature" >
+<orderNumber_7051>8481558</orderNumber_7051>
+<orderNumber>8517948</orderNumber>
+<chilled>1</chilled>1949318
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childqty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childdispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childrcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalrcve  
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_IND having ebeln = 'seg_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+<TCName name = "ReceivingWarehouseMultipleSegmentOrderLineByLine" >
+<orderNumber_7051>8517948</orderNumber_7051>
+<orderNumber>8517948</orderNumber>1962240
+<chilled>1</chilled>
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childqty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childdispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childrcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalrcve  
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_IND having ebeln = 'seg_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+<TCName name = "ReceivingWarehouseMultipleSegmentOrderBothAcceptandRejectLineByLine" >
+<orderNumber_7051>8517948</orderNumber_7051>
+<orderNumber>8517948</orderNumber>1962240
+<chilled>1</chilled>8493009
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childqty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childdispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childrcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalrcve  
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_IND having ebeln = 'seg_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+
+<TCName name = "ReceivingWarehouseSingleSegmentOrderLineByLineWithAllArticleTypes" >
+<orderNumber_7051>8481558</orderNumber_7051>
+<orderNumber>1949318</orderNumber>1960566
+<chilled>1</chilled>
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childqty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childdispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childrcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalrcve  
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_IND having ebeln = 'seg_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+</TCName>
+
+<TCName name = "ReceivingWarehouseMultipleSegmentOrderBothAcceptandRejectNotRangedArticleLineByLine" >
+<orderNumber_7051>8481558</orderNumber_7051>
+<orderNumber>1962240</orderNumber>1956506
+<chilled>1</chilled>
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childqty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childdispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childrcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as childtotalrcve  
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_IND having ebeln = 'seg_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+</TCName>
+
+<TCName name = "ReceivingWarehouseMultipleSegmentOrderFullWithPostLaterInLineByLineOption" >
+<orderNumber_7051>8481558</orderNumber_7051>8517948
+<orderNumber>8517948</orderNumber>
+<chilled>1</chilled>1962240
+<hardFrozen>-20</hardFrozen>
+<deliveryNumber>
+<![CDATA[select vbeln from ZWOWO_ORDER_NOTIF_HDR where lifex like '%order_no%' and vbeln <> 'order_no']]>
+</deliveryNumber>
+<desc>
+<![CDATA[select a.vbeln, a.created_by, b.NAME1 || ' (' || b.werks || ')' as supplier from ZWOWO_ORDER_NOTIF_HDR a,ZWOWC_SITE_MASTER b  where a.vbeln ='order_no' and a.lifnr = b.werks]]>
+</desc>
+<TotArticle>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT), count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'order_no']]>
+</TotArticle>
+<orderedDetails>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' '||PITM.MEINS AS "ORDER QUANTITY",
+ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG",convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND, convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS as TotOrdQTy,
+convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, PITM.ARTICLE_OM) || ' '|| ZAU.MEINS || ' (' || convert(DOUBLE, SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE, ZAL.PI_OM) || ' EA)' as OrdWgt,
+ convert(DOUBLE, ZAL.PI_OM) || ' (EA)' as piom FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN) JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'seg_no' and ZAU.base_uom_ind = 'Y';]]>
+</orderedDetails>
+<orderDateDetails>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+convert(char(12), convert(date,A.podat), 103) AS "DELIVERY DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "Delivery DATE1"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MIN(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG,  ZONH.PODAT as PODAT  FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN LOCAL_NOTIF_INFO_HDR LONH  ON (ZONH.VBELN = LONH.VBELN) JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'seg_no'
+) A;]]>
+</orderDateDetails>
+<segmentDetails>
+<![CDATA[select distinct PITM.MATNR, convert(DOUBLE,OPTM.ARTICLE_OM)|| ' ' ||  art_uom.meinh as OM ,convert(DOUBLE,ZAL.pi_om)|| ' (' ||  ZAL.pi_uom  || ')'as PIOMS, 
+convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' || PITM.MEINS as qty ,
+convert(DOUBLE,OPTM.ARTICLE_OM)*convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) || ' ' ||  art_uom.meinh  as TotalUnits,
+'(' || convert(DOUBLE,SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS)) * convert(DOUBLE,ZAL.PI_OM) || ' EA)' as  randWtOM,
+convert(double,sum(a.lfimg)) || ' ' || a.VRKME as dispqty,
+case when art_uom.meinh='KG' and a.ZZDESPATCH_WEIGHT>0.000
+THEN convert(double,a.ZZDESPATCH_WEIGHT) || ' ' || art_uom.meinh
+ELSE convert(double,sum(a.lfimg))*convert(DOUBLE,OPTM.ARTICLE_OM) || ' ' || a.MEINS END as disptotalqty,
+'' as recqty,'' as recTU,
+ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND ,'(' || convert(DOUBLE,ZAL.pi_om)*convert(double,sum(a.lfimg)) || ' EA)' as disprandwt
+FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) join ZWOWC_ARTICLE_UOM art_uom on (ZAL.MATNR=art_uom.matnr) 
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) JOIN ZWOWO_ORDER_NOTIF_ITM a ON (ZAM.MATNR = a.MATNR) 
+WHERE LONH.VBELN = 'seg_no' and ART_UOM.base_uom_ind = 'Y' group by a.matnr,PITM.MATNR,art_uom.meinh,OPTM.ARTICLE_OM,ZAL.pi_uom,ZAL.pi_om,PITM.MEINS,PITM.MENGE,
+a.VRKME,a.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.IS_CPBD,ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND,a.vbeln,a.ZZDESPATCH_WEIGHT having a.vbeln = 'seg_no']]>
+</segmentDetails>
+<dispArticle>
+<![CDATA[select distinct a.MATNR, convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as qty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)'as totalunits,
+convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as dispQty,convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS || ' ' || '(0 EA)' as totaldisp
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as rcveQty,
+--convert(int,sum(a.ARTICLE_QTY)) || ' ' || a.MEINS as totalrcve 
+from ZWOWO_ORDER_COMPONENT a JOIN ZWOWC_ARTICLE_MASTER ZAM ON (a.display_article = ZAM.MATNR)
+group by a.MATNR, a.ebeln, a.display_article, a.order_type,a.MEINS,ZAM.TEMPERATURE_INd having ebeln = 'seg_no' and display_article = 'art_no']]>
+</dispArticle>
+<soh>
+<![CDATA[SELECT distinct (a.ARTICLE) ,a.STORE_SOH ,a.STORE_SOH_RAND_WGHT,list.PI_UOM,uom.MEINS, list.random_weight_flg,list.article_om,list.PI_OM 
+FROM LOCAL_WOW_SOH A,ZWOWC_ARTICLE_LISTING list,zwowc_article_uom uom
+WHERE A.ARTICLE = list.MATNR
+and list.matnr = uom.matnr
+and uom.BASE_UOM_IND = 'Y'
+and list.matnr = 'art_no']]>
+</soh>
+<rxtype>
+<![CDATA[SELECT lfbnr,recv_method,sap_recv_method FROM ZWOWT_MDOCHD where lfbnr='seg_no']]>
+</rxtype>
+<articleALCStatus>
+<![CDATA[SELECT ALC_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR = 'art']]>
+</articleALCStatus>
+<revert>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"seg_no"}'); commit]]>
+</revert>
+<ebelenNumber>
+<![CDATA[select order_no from LOCAL_NOTIF_INFO_HDR where delivery_no = 'number']]>
+</ebelenNumber>
+<updateHDROnShowDate>
+<![CDATA[UPDATE ZWOWO_PO_HDR SET on_show_date = 'onshowDate' where ebeln = 'ebeln_no']]>
+</updateHDROnShowDate>
+<updateINFOOnShowDate>
+<![CDATA[UPDATE LOCAL_ORDER_PO_INFO SET on_show_date = 'onshowDate' where ebeln = 'ebeln_no']]>
+</updateINFOOnShowDate>
+</TCName>
+
+</configuration>

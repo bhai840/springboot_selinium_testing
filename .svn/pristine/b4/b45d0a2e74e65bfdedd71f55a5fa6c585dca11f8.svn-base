@@ -1,0 +1,383 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.IOException;
+import java.text.ParseException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbomain.objects.InstoreOMAObject;
+import au.wow.ngbomain.tests.InstoreOMATest;
+
+public class InstoreOMAPage1 extends BasePage{
+
+	WebDriver driver ;
+	public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+	CommonFunctions common = PageFactory.initElements(driver,
+			CommonFunctions.class);
+	private Logger log = LogManager.getLogger(InstoreOMATest.class);
+	SQLWrapper sql = new SQLWrapper(log);
+
+	String retString;
+
+	ExtentTest extLogger=InstoreOMATest.extLogger;
+	String cName= InstoreOMATest.cName;
+	String mName=InstoreOMATest.mName;
+
+	String returnedString;
+
+	//Actions act = new Actions(driver);
+
+	public void clickOnInstoreOMA(InstoreOMAObject objInstoreOMAObjects,WebDriver driver) throws AWTException{
+		//waitForJSandJQueryToLoad(driver);;
+		waitForJSandJQueryToLoad(driver);
+		Point coordinates = objInstoreOMAObjects.Pricing.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+
+		Actions action = new Actions(driver);
+		action.moveToElement(objInstoreOMAObjects.Pricing).click().build().perform();	
+		waitForJSandJQueryToLoad(driver);
+
+		Point coordinates2 = objInstoreOMAObjects.InstorePromotions.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates2.getX(),coordinates2.getY()+100);
+
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objInstoreOMAObjects.InstorePromotions).click().build().perform();
+		waitForJSandJQueryToLoad(driver);
+
+		Point coordinates3 = objInstoreOMAObjects.OtherMarkdownPromotions.getLocation();
+		Robot robo1t1 = new Robot();
+		robo1t1.mouseMove(coordinates3.getX(),coordinates3.getY()+100);
+
+		Actions action3= new Actions(driver);
+		action3.moveToElement(objInstoreOMAObjects.OtherMarkdownPromotions).click().build().perform();
+		waitForJSandJQueryToLoad(driver);
+		robot.mouseMove(5,5);	
+	}
+	
+public void DeletePreArticle(InstoreOMAObject objInstoreOMAObjects,WebDriver driver) throws ParseException, IOException {
+		
+		if(objInstoreOMAObjects.Checkboxall.isDisplayed())
+		{
+			verticalScroll(driver);
+			waitForJSandJQueryToLoad(driver);
+			int DeleteSize = objInstoreOMAObjects.deletedraftAll.size();
+			for(int i=1;i<=DeleteSize;i++)
+			{
+				WebElement delete =  prepareWebElementWithDynamicXpathWithInt(objInstoreOMAObjects.deletedraftdynamic, 1,driver);
+				delete.click();
+				waitForJSandJQueryToLoad(driver);
+				objInstoreOMAObjects.conformdeleteRecord.click();
+			}
+				
+		//System.out.println("Article deleted in the draft");
+		}
+	}
+	
+
+
+
+	public void DatePicker(InstoreOMAObject objInstoreOMAObjects,int i,int d,WebDriver driver)throws ParseException, IOException {
+
+		objInstoreOMAObjects.startDate.clear();
+		String sDate = common.addDaystoCurrentDate(i); //
+		objInstoreOMAObjects.startDate.sendKeys(sDate);
+		htmlToExtent(cName,mName,extLogger,driver,"Starting Date of the promotion : " +sDate+" ;;;Pass");
+		objInstoreOMAObjects.endDate.clear();
+		String eDate = common.AddDate(common.ConvertdateFormatddmmyy(sDate),d);
+		objInstoreOMAObjects.endDate.sendKeys(eDate);
+		htmlToExtent(cName,mName,extLogger,driver,"Ending Date of the promotion : " +eDate+";;;Pass");
+		objInstoreOMAObjects.Advertised.click();
+		waitForJSandJQueryToLoad(driver);
+		//waitFor(1);
+		try{
+
+			objInstoreOMAObjects.searchAndAdd.click();
+
+		}catch(Exception e){
+
+			WebElement ele = driver.findElement(By.id("searchAndAdd"));
+			JavascriptExecutor executor = (JavascriptExecutor)driver;
+			executor.executeScript("arguments[0].click();", ele);
+
+		}
+
+		//objInstoreOMAObjects.searchAndAdd.click();
+		//Actions act = new Actions(driver);
+		//act.moveToElement(objInstoreOMAObjects.searchAndAdd).click().perform();
+		//try{
+		//do{
+		//objInstoreOMAObjects.searchAndAdd.click();}while(objInstoreOMAObjects.searchAndAdd.isDisplayed()==true);}catch(Exception e){
+		//	System.out.println();
+		//}
+
+
+	}
+
+	public String Duration (InstoreOMAObject objInstoreOMAObjects,String ranData,int dateDiff,WebDriver driver) throws ParseException, IOException {
+
+		htmlToExtent(cName,mName,extLogger,driver,"MAXIMUM DURATION from Start to End Date is "+(dateDiff+1)+";;;Pass");
+		//		try{
+		if(objInstoreOMAObjects.proceedtocreate.isDisplayed()){
+			objInstoreOMAObjects.proceedtocreate.click();
+			waitForJSandJQueryToLoad(driver);;
+			waitForJSandJQueryToLoad(driver);
+			objInstoreOMAObjects.OMAWarningClose.click();
+			waitForJSandJQueryToLoad(driver);
+			objInstoreOMAObjects.percent.click();
+			objInstoreOMAObjects.PercentValue.sendKeys("55");
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion Percentage is given as 55% ;;;Pass");
+			objInstoreOMAObjects.ExpandArticle.click();
+			htmlToExtent(cName,mName,extLogger,driver,"SUPPLIER NAME : "+objInstoreOMAObjects.Supplier.getText()+";;;Pass");
+			objInstoreOMAObjects.validateButton.click();
+			waitForJSandJQueryToLoad(driver);;
+
+			retString = promoPriceError(objInstoreOMAObjects, driver);
+			if(retString.equals("nodata")){
+				return "nodata";
+			}
+
+
+			waitForJSandJQueryToLoad(driver);
+			objInstoreOMAObjects.create.click();
+
+			waitFor(1);
+
+			try{
+				waitForElement(objInstoreOMAObjects.nodatafound, driver);
+				if(objInstoreOMAObjects.nodatafound.isDisplayed()){
+					htmlToExtent(cName,mName,extLogger,driver,"Not able to create promotion due to "+objInstoreOMAObjects.nodatafound.getText()+";;;Pass");	
+					return "nodata";
+				}
+			}catch(Exception e){
+
+			}
+
+			waitForJSandJQueryToLoad(driver);;
+			waitForJSandJQueryToLoad(driver);
+			try {if(objInstoreOMAObjects.nodatafound.isDisplayed()){
+				objInstoreOMAObjects.BackButton.click();
+				htmlToExtent(cName,mName,extLogger,driver,"Error Message : "+objInstoreOMAObjects.nodatafound.getText()+";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver,"Business Role has only VIEW promotion option;;;Pass");
+			}else {htmlToExtent(cName,mName,extLogger,driver,"Promotion has been created successfully for "+ranData+";;;Pass");
+			waitForJSandJQueryToLoad(driver);;
+			objInstoreOMAObjects.okButton.click();}}catch (Exception e){
+				//System.out.println(e);
+			}}return "available";
+	}	
+
+
+	public String MaxDuration(InstoreOMAObject objInstoreOMAObjects,String ranData,int dateDiff,WebDriver driver) throws ParseException, IOException {
+
+		//ranData = "633169";  
+		objInstoreOMAObjects.article.sendKeys(ranData);
+		htmlToExtent(cName,mName,extLogger,driver,"Article number fetched from DB : " +ranData+" ;;;Pass");
+		//try{
+		DatePicker(objInstoreOMAObjects,-1,dateDiff,driver);
+		htmlToExtent(cName,mName,extLogger,driver,"Starting date is been given as PREVIOUS date;;;Pass");
+		waitForJSandJQueryToLoad(driver);
+		try{
+			if(objInstoreOMAObjects.MaxDurationError.isDisplayed()){
+				htmlToExtent(cName,mName,extLogger,driver,"ERROR MESSAGE : "+objInstoreOMAObjects.MaxDurationError.getAttribute("title")+";;;Pass");
+			}}catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver,"No Error Message Displayed when giving previous date as start date;;;Fail");
+			}	
+		DatePicker(objInstoreOMAObjects,0,dateDiff,driver);
+		try{
+			if(objInstoreOMAObjects.MaxDurationError.isDisplayed()){
+				htmlToExtent(cName,mName,extLogger,driver,"ERROR MESSAGE : "+objInstoreOMAObjects.MaxDurationError.getAttribute("title")+";;;Fail");
+			}}		
+		catch(Exception e){
+			returnedString =  Duration(objInstoreOMAObjects,ranData,dateDiff,driver);
+
+			if(returnedString.equals("nodata")){
+				return "nodata";
+			}
+
+		}
+		objInstoreOMAObjects.article.sendKeys(ranData);
+		int randomNum = common.generateRandomNumber(1, 50);
+		DatePicker(objInstoreOMAObjects,randomNum,dateDiff,driver);
+		try{
+			if(objInstoreOMAObjects.MaxDurationError.isDisplayed()){
+				htmlToExtent(cName,mName,extLogger,driver,"ERROR MESSAGE : "+objInstoreOMAObjects.MaxDurationError.getAttribute("title")+";;;Fail");
+			}}		
+		catch(Exception e){
+			returnedString = Duration(objInstoreOMAObjects,ranData,dateDiff,driver);
+			if(returnedString.equals("nodata")){
+				return "nodata";
+			}
+		}return "available";
+	}
+
+	public void MaxDuratioError(InstoreOMAObject objInstoreOMAObjects,String ranData,WebDriver driver) throws ParseException, IOException {
+
+		objInstoreOMAObjects.article.sendKeys(ranData);
+		htmlToExtent(cName,mName,extLogger,driver,"Article number fetched from DB : " +ranData+" ;;;Pass");
+		String  Date = common.getCurrentDate();
+		objInstoreOMAObjects.startDate.sendKeys(Date);
+		htmlToExtent(cName,mName,extLogger,driver,"Starting Date of the promotion " +Date+" ;;;Pass");
+
+		objInstoreOMAObjects.endDate.clear();
+		String eDate = common.AddDate(common.ConvertdateFormatddmmyy(Date),32);
+		objInstoreOMAObjects.endDate.sendKeys(eDate);
+		htmlToExtent(cName,mName,extLogger,driver,"Ending Date of the promotion " +eDate+";;;Pass");
+		objInstoreOMAObjects.Advertised.click();
+		waitForJSandJQueryToLoad(driver);
+		//waitFor(1);
+		try{
+
+			objInstoreOMAObjects.searchAndAdd.click();
+
+		}catch(Exception e){
+
+			WebElement ele = driver.findElement(By.id("searchAndAdd"));
+			JavascriptExecutor executor = (JavascriptExecutor)driver;
+			executor.executeScript("arguments[0].click();", ele);
+
+		}
+
+		//objInstoreOMAObjects.searchAndAdd.click();
+		waitForJSandJQueryToLoad(driver);
+
+		pbdArticleSelection(objInstoreOMAObjects, ranData, driver);
+
+		objInstoreOMAObjects.proceedtocreate.click();
+		waitForJSandJQueryToLoad(driver);
+		waitForJSandJQueryToLoad(driver);;
+		if(objInstoreOMAObjects.MaxDurationError.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver,"Difference between Start and End dates is 32;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"Error Message: "+objInstoreOMAObjects.MaxDurationError.getAttribute("title")+";;;Pass");
+		}else{
+
+			htmlToExtent(cName,mName,extLogger,driver,"No such Error Message is displayed ;;;Fail");
+		}
+
+
+	}
+
+	public void BlockedArticle(InstoreOMAObject objInstoreOMAObjects,String ranData,WebDriver driver) throws ParseException, IOException {
+
+		objInstoreOMAObjects.article.sendKeys(ranData);
+		htmlToExtent(cName,mName,extLogger,driver,"Article : " +ranData+" ;;;Pass");
+		objInstoreOMAObjects.Advertised.click();
+		waitForJSandJQueryToLoad(driver);
+		//waitFor(1);
+		try{
+
+			objInstoreOMAObjects.searchAndAdd.click();
+
+		}catch(Exception e){
+
+			WebElement ele = driver.findElement(By.id("searchAndAdd"));
+			JavascriptExecutor executor = (JavascriptExecutor)driver;
+			executor.executeScript("arguments[0].click();", ele);
+
+		}
+
+		//objInstoreOMAObjects.searchAndAdd.click();
+		waitForJSandJQueryToLoad(driver);
+
+		pbdArticleSelection(objInstoreOMAObjects, ranData, driver);
+
+		if(objInstoreOMAObjects.MessageBox.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver,"Error Message : " +objInstoreOMAObjects.MessageBox.getText()+" ;;;Pass");
+			objInstoreOMAObjects.okButton.click();	
+		}else if(objInstoreOMAObjects.nodatafound.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver,"Error Message : " +objInstoreOMAObjects.nodatafound.getText()+";;;Pass");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver,"No Such Error Message displayed while adding article to the promotion ;;;Fail");
+		}
+	}
+
+
+	public void pbdArticleSelection(InstoreOMAObject objInstoreOMAObjects,String artNum,WebDriver driver) throws ParseException, IOException {
+
+		try{
+			for(int j=1;j<=objInstoreOMAObjects.pbdArticlePopUpList.size();j++){
+				WebElement popupCheck = prepareWebElementWithDynamicXpathWithInt(objInstoreOMAObjects.pbdPop,j,driver);
+				if(popupCheck.isDisplayed()){
+					for(int i=2;i<=objInstoreOMAObjects.articlelist.size();i++){
+						WebElement artDync = prepareWebElementWithDynamicXpathWithIntInt(objInstoreOMAObjects.articledyn, i,1,driver);
+						String art = artDync.getText();
+						if(art.equals(artNum)){
+							WebElement checkBox = prepareWebElementWithDynamicXpathWithIntInt(objInstoreOMAObjects.articledyn, i,4,driver);
+							checkBox.click();
+							waitFor(2);
+							objInstoreOMAObjects.addtolist.click();
+							break;
+						}
+					}
+				}
+				else{
+					continue;
+				}
+
+			}
+		}catch(Exception e){
+			System.out.println("Not a pbd article");
+		}
+
+
+	}
+
+
+
+	public String promoPriceError(InstoreOMAObject objInstoreOMAObjects,WebDriver driver) throws ParseException, IOException {
+
+		try{
+			waitFor(1);
+			if(objInstoreOMAObjects.MaxpercentError.isDisplayed()){
+				String errorText =  objInstoreOMAObjects.MaxpercentError.getText();
+				if(errorText.contains("less than Promo price")){
+					htmlToExtent(cName,mName,extLogger,driver, ""+errorText+";;;Info");
+					driver.findElement(By.xpath("//*[@id='errorWrapper']/div/div[1]/a")).click();
+					return "nodata";
+				}
+
+			}
+		}catch(Exception e){
+			System.out.println("No error message -- less than Promo price ");
+		}
+		return "available";
+	}
+
+
+
+	/*public void clickPercentage(InstoreOMAdvtObjects objInstoreOMAObjects)  throws ParseException, IOException {
+
+		if(objInstoreOMAObjects.filterInd.isDisplayed()){
+
+			int perSize = objInstoreOMAObjects.per.size();
+			for(int i=1;i<=perSize;i++){
+				WebElement percentage = prepareWebElementWithDynamicXpathWithInt(objInstoreOMAObjects.perDynamic, i);
+				WebElement percentageText = prepareWebElementWithDynamicXpathWithInt(objInstoreOMAObjects.percentDynamic, i);
+				//percentage.click();
+				if(percentage.isDisplayed()){
+					percentage.click();
+					percentageText.sendKeys("55");
+				}
+			}
+		}
+	}
+	 */
+
+
+}

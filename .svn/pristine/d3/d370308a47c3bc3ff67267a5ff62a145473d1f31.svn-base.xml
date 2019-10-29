@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<TCName name = "verifyDSCReportAllDepartments">
+<countAllDepartment>
+<![CDATA[select * from sp_wow_article_display_for_dsc_basic ('{"iv_session_id":"","iv_sales_org":"1005","iv_site_no":"3064",
+"iv_date":"date1", "iv_flag":"UNACTIONED","iv_user_ids":"ALL", "iv_department_ids":"ALL", "iv_article_no":"",
+"iv_article_barcode":"","iv_barcode_flag":"","valid":"Y","deptNameStr":"All Departments"}') a,zwowc_article_master b,zwowc_article_listing c where a.article_no=b.matnr
+and b.matnr=c.matnr]]>
+</countAllDepartment>
+</TCName>
+<TCName name = "verifyDSCReportMultipleReasonCode">
+<multipleReasonCodeSql>
+<![CDATA[select MATNR,STOCK_CHECK_REASON from saap.LOCAL_WOW_DSC_DRAFTS where ACTIONED_FLAG='N' and CREATION_DATE_TIME = (SELECT CONVERT(date, GETDATE())) and matnr IN (
+select MATNR from saap.LOCAL_WOW_DSC_DRAFTS where ACTIONED_FLAG='N' and CREATION_DATE_TIME = (SELECT CONVERT(date, GETDATE())) 
+GROUP BY MATNR HAVING count(*)>1 )]]>
+</multipleReasonCodeSql>
+<multipleReasonCodeArticleSql>
+<![CDATA[select MATNR,STOCK_CHECK_REASON from saap.LOCAL_WOW_DSC_DRAFTS where ACTIONED_FLAG='N' and CREATION_DATE_TIME = (SELECT CONVERT(date, GETDATE())) and matnr IN (
+select MATNR from saap.LOCAL_WOW_DSC_DRAFTS where ACTIONED_FLAG='N' and CREATION_DATE_TIME = (SELECT CONVERT(date, GETDATE())) 
+GROUP BY MATNR HAVING count(*)>1 ) and matnr='article_num']]>
+</multipleReasonCodeArticleSql>
+</TCName>
+<TCName name = "verifyDSCReportPartialDepartment">
+<countPartialDepartment>
+<![CDATA[select * from sp_wow_article_display_for_dsc_basic ('{"iv_session_id":"","iv_sales_org":"1005","iv_site_no":"1108","iv_date":"date1", "iv_flag":"UNACTIONED","iv_user_ids":"ALL", "iv_department_ids":"", "iv_article_no":"","iv_article_barcode":"","iv_barcode_flag":"","valid":"Y","deptNameStr":"All Departments"}') a,zwowc_article_master b,zwowc_article_listing c,zwowc_art_list_department d where a.article_no=b.matnr
+and b.matnr=c.matnr and c.matnr=d.matnr and d.dept_name in ('deptName1','deptName2','deptName3')]]>
+</countPartialDepartment>
+<dscReportValue>
+<![CDATA[select article_no,article_desc,om,soh,sit,lto_details,display_type,stock_check_desc from  sp_wow_article_display_for_dsc_basic ('{"iv_session_id":"","iv_sales_org":"1005","iv_site_no":"3064","iv_date":"today_date",
+"iv_flag":"UNACTIONED","iv_user_ids":"ALL",
+"iv_department_ids":"45,27,62,28,15,05,20,25,00,10,30,47,55,40,60",
+"iv_article_no":"","iv_article_barcode":"","iv_barcode_flag":"","valid":"Y","deptNameStr":"All Departments"}') where article_no='article_num']]>
+</dscReportValue>
+</TCName>
+<TCName name = "verifyDSCReportMeatDepartment">
+<deptName>MEAT</deptName>
+<countMeatDepartment>
+<![CDATA[select * from sp_wow_article_display_for_dsc_basic ('{"iv_session_id":"","iv_sales_org":"1005","iv_site_no":"3064",
+"iv_date":"date1", "iv_flag":"UNACTIONED","iv_user_ids":"ALL", "iv_department_ids":"25", "iv_article_no":"",
+"iv_article_barcode":"","iv_barcode_flag":"","valid":"Y","deptNameStr":"All Departments"}') a,zwowc_article_master b,zwowc_article_listing c where a.article_no=b.matnr
+and b.matnr=c.matnr
+]]>
+</countMeatDepartment>
+<randomWeightSOH>
+<![CDATA[select STORE_SOH,STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='article_num']]>
+</randomWeightSOH>
+<weightSOH>
+<![CDATA[select STORE_SOH from saap.local_wow_soh where article='article_num']]>
+</weightSOH>
+</TCName>
+<TCName name = "verifyDSCReportPDBArticle">
+<deptName>CIGARETTES</deptName>
+<countCigarettesDepartment>
+<![CDATA[select * from sp_wow_article_display_for_dsc_basic ('{"iv_session_id":"","iv_sales_org":"1005","iv_site_no":"3064",
+"iv_date":"date1", "iv_flag":"UNACTIONED","iv_user_ids":"ALL", "iv_department_ids":"27", "iv_article_no":"",
+"iv_article_barcode":"","iv_barcode_flag":"","valid":"Y","deptNameStr":"dept_name"}') a,zwowc_article_master b,zwowc_article_listing c where a.article_no=b.matnr
+and b.matnr=c.matnr
+]]>
+</countCigarettesDepartment>
+<currentSOH>
+<![CDATA[select STORE_SOH from saap.local_wow_soh where article='article_num']]>
+</currentSOH>
+</TCName>
+<TCName name = "verifyDSCReportLitreArticle">
+<deptName>BAKEHOUSE</deptName>
+<countLitreDepartment>
+<![CDATA[select * from sp_wow_article_display_for_dsc_basic ('{"iv_session_id":"","iv_sales_org":"1005","iv_site_no":"3064",
+"iv_date":"date1", "iv_flag":"UNACTIONED","iv_user_ids":"ALL", "iv_department_ids":"45", "iv_article_no":"",
+"iv_article_barcode":"","iv_barcode_flag":"","valid":"Y","deptNameStr":"dept_name"}') a,zwowc_article_master b,zwowc_article_listing c where a.article_no=b.matnr
+and b.matnr=c.matnr]]>
+</countLitreDepartment>
+<currentSOH>
+<![CDATA[select STORE_SOH from saap.local_wow_soh where article='article_num']]>
+</currentSOH>
+</TCName>
+<TCName name = "verifyPLUReportAllDepartment">
+<PLUCode>
+<![CDATA[select PLU_code from ZWOWC_ARTICLE_MASTER where matnr='article_num']]>
+</PLUCode>
+</TCName>
+<TCName name = "verifyPLUReportPartialDepartment">
+<PLUCode>
+<![CDATA[select PLU_code from ZWOWC_ARTICLE_MASTER where matnr='article_num']]>
+</PLUCode>
+</TCName>
+<TCName name = "verifyPLUReportForArticleNumber">
+<articleDetails>
+<![CDATA[select distinct a.MATNR,a.online_desc,a.PLU_CODE,b.EAN11 from ZWOWC_ARTICLE_MASTER a 
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr) 
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11)where a.PLU_code!='']]>
+</articleDetails>
+</TCName>
+<TCName name = "verifyPLUReportForArticlePLU">
+<articleDetails>
+<![CDATA[select distinct a.MATNR,a.online_desc,a.PLU_CODE,b.EAN11 from ZWOWC_ARTICLE_MASTER a 
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr) 
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11)where a.PLU_code!='']]>
+</articleDetails>
+</TCName>
+<TCName name = "verifyPLUReportDeletedPLU">
+<ALCStatus>
+<![CDATA[select a.matnr,a.plu_code,b.alc_status_desc from saap.ZWOWC_ARTICLE_MASTER a,saap.zwowc_article_listing b where a.matnr=b.matnr and a.matnr='article_num']]>
+</ALCStatus>
+</TCName>
+<TCName name = "verifyPLUReportMultiDepartment">
+<multiDepartment>
+<![CDATA[Select DISTINCT dept_name, cat_name, sub_cat_name, seg_name from saap.ZWOWC_ART_LIST_DEPARTMENT]]>
+</multiDepartment>
+</TCName>
+<TCName name = "verifyPLUReportPrimaryDepartment">
+<primaryDepartment>
+<![CDATA[select distinct dept_name from USR_PRIMARY_DEPTS where usr_id='user_id' and site='NONE']]>
+</primaryDepartment>
+</TCName>
+</configuration>

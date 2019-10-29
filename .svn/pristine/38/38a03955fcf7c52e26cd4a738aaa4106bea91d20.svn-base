@@ -1,0 +1,790 @@
+
+
+package au.wow.ngbomain.pages;
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+//import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.regex.Pattern;
+import java.util.Iterator;
+
+
+
+//21 tests
+import org.openqa.selenium.internal.Locatable;
+
+
+//import javax.swing.text.html.HTMLDocument.Iterator;
+
+
+
+
+
+
+
+
+
+
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.google.common.collect.Multimap;
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.RoutineObjects;
+import au.wow.ngbomain.objects.ltoreportobjects;
+import au.wow.ngbomain.objects.oocreportobjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.tests.AdjustmentLogReportTests;
+import au.wow.ngbomain.tests.ltoreporttest;
+//import au.wow.ngbomain.tests.oocreporttest;
+
+
+public class ltoreportpage extends BasePage {
+	ExtentTest extLogger=ltoreporttest.extLogger;
+	String cName= ltoreporttest.cName;
+	String mName=ltoreporttest.mName;
+	public static WebDriver driver;
+	
+	public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+	ltoreporttest test = new ltoreporttest();
+	CommonFunctions common = PageFactory.initElements(driver,
+			CommonFunctions.class);
+	private Logger log = LogManager.getLogger(ltoreporttest.class);
+	SQLWrapper sql = new SQLWrapper(log);
+
+	public void clickOnroutines(ltoreportobjects ltoobj, WebDriver driver) throws AWTException{
+		// TODO Auto-generated method stub
+		waitForJSandJQueryToLoad(driver);
+		verticalScroll(driver);
+		waitForElement(ltoobj.reports,driver);
+
+		Point coordinates = ltoobj.reports.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+
+		waitFor(1);
+		Actions action = new Actions(driver);
+		action.moveToElement(ltoobj.reports).click().build()
+		.perform();
+
+		waitForJSandJQueryToLoad(driver);
+		waitForElement(ltoobj.stockmgmt,driver);
+
+		waitFor(1);
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(ltoobj.stockmgmt).click().build()
+		.perform();
+		waitFor(1);
+		Actions action1 = new Actions(driver);
+		action1.moveToElement(ltoobj.ltoreports).click().build().perform();
+
+		robot.mouseMove(5, 5);
+
+		waitForJSandJQueryToLoad(driver);
+	}
+
+
+
+	public void paginationhandling(ltoreportobjects ltoobj, WebDriver driver) throws IOException  
+	{
+
+		if(ltoobj.msg.size()!=0)
+		{
+			String mesg = ltoobj.msgtext.getText();
+			if(mesg.equals("Sorry, No records found."))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "" + mesg + ";;;Pass");
+				//Report_AddStep("testcase", ""+mesg+"","","", "");
+				ltoobj.close.click();
+			}
+
+			/*##else
+		{
+
+		}*/
+		}		
+		else
+		{
+			int u = ltoobj.pagination.size();//To calc how many pages are there
+			//As Prev & next are included we are subtracting it by 2
+			if(u!=0)
+			{
+				for(int k=1;k<=u-2;k++)
+				{
+					WebElement elements =  prepareWebElementWithDynamicXpathWithInt(ltoobj.paginationdynamic, k+1,driver);//Click on the respective page
+					elements.click();
+					waitFor(1);
+				}
+
+
+				for(int k=2;k<=2;k++)
+				{
+					WebElement elements =  prepareWebElementWithDynamicXpathWithInt(ltoobj.paginationdynamic, k,driver);//Click on the respective page
+					elements.click();
+					waitFor(1);
+				}
+
+			}}}	
+
+	public void paginationhandlingAudit(ltoreportobjects ltoobj, WebDriver driver) throws IOException  
+	{
+
+		if(ltoobj.msg.size()!=0)
+		{
+			String mesg = ltoobj.msgtext.getText();
+			if(mesg.equals("Sorry, No records found."))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "" + mesg + ";;;Pass");
+				//Report_AddStep("testcase", ""+mesg+"","","", "");
+				ltoobj.close.click();
+			}
+
+			/*##else
+		{
+
+		}*/
+		}		
+		else
+		{
+			int u = ltoobj.paginationAudit.size();//To calc how many pages are there
+			//As Prev & next are included we are subtracting it by 2
+			if(u!=0)
+			{
+				for(int k=1;k<=u-2;k++)
+				{
+					WebElement elements =  prepareWebElementWithDynamicXpathWithInt(ltoobj.paginationdynamic1, k+1,driver);//Click on the respective page
+					elements.click();
+					waitFor(1);
+				}
+
+
+				for(int k=2;k<=2;k++)
+				{
+					WebElement elements =  prepareWebElementWithDynamicXpathWithInt(ltoobj.paginationdynamic1, k,driver);//Click on the respective page
+					elements.click();
+					waitFor(1);
+				}
+
+			}}}	
+
+	public int RandomFromDB(List<List<Object>> results) {
+		int max = results.size();
+		int min=1;
+		Random rand=new Random();
+		int num = rand.nextInt((max+1) - min) + min;
+		return num-1;
+	}
+
+	public void descClick(ltoreportobjects ltoobj,String art1)
+	{
+		waitFor(1);
+		int y = ltoobj.Desclist.size();
+		if(y>0)
+		{
+			if(art1.equals(" "))
+			{
+				waitFor(1);
+				ltoobj.Descclick.click();
+				waitFor(1);
+				ltoobj.addtoList.click();
+				waitForJSandJQueryToLoad(driver);
+			}
+			for(int i=1;i<=y;i++)
+			{
+				WebElement ele = prepareWebElementWithDynamicXpathWithInt(ltoobj.Desc, i, driver);
+				if(ele.getText().equals(art1))
+				{
+					ele = prepareWebElementWithDynamicXpathWithInt(ltoobj.DescCheck, i, driver);waitFor(0.5);
+					ele.click();
+					waitFor(1);
+					ltoobj.addtoList.click();
+					waitForJSandJQueryToLoad(driver);
+					break;
+				}
+			}
+			waitFor(1);
+			if(ltoobj.Desclist1.isDisplayed())
+			{
+				waitFor(1);
+				ltoobj.Descclick.click();
+				waitFor(1);
+				ltoobj.addtoList.click();
+				waitForJSandJQueryToLoad(driver);
+			}
+		}
+	}
+	
+	public String randart(List<List<Object>> results, int num) 
+	{		
+		String first = results.get(num).get(0).toString();
+		waitFor(1);
+		return first;		
+	}
+	
+	public String randartNumber(List<List<Object>> results, int num) 
+	{		
+		String first = results.get(num).get(1).toString();
+		waitFor(1);
+		return first;		
+	}
+	
+	//##Compare appln data with db
+	public void dbcomparison(ltoreportobjects ltoobj,List<List<Object>> results, WebDriver driver) throws IOException  
+
+	{
+		List<Object> firstvalue = new ArrayList<Object>();
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		List<Object> dbvalue = new ArrayList<Object>();
+		List<List<Object>> tempdb = new ArrayList<List<Object>>();
+		//## appln data
+		//Table heading-location,totalarticles
+		String location = getText(ltoobj.location);//
+		String totalarticles = getText(ltoobj.totalarticles);//1
+		String totalfullcartons = getText(ltoobj.totalfullcartons);//0	 
+		String totalweightedarticles = getText(ltoobj.totalweightedarticles);
+		String totalrandomweightarticles = getText(ltoobj.totalrandomweightarticles);
+		String totaleach = getText(ltoobj.totaleach);//5
+		String totalmpk = getText(ltoobj.totalmpk);
+
+		//firstvalue.add(Table heading)
+		firstvalue.add(location);
+		firstvalue.add(totalarticles);
+		firstvalue.add(totalfullcartons);
+		firstvalue.add(totalweightedarticles);
+		firstvalue.add(totalrandomweightarticles);
+		firstvalue.add(totaleach);
+		firstvalue.add(totalmpk);//[, 1, 0, 0, 0, 5, 0]
+
+		temp.add(firstvalue);//[[, 1, 0, 0, 0, 5, 0]]
+
+		replaceblankspaceToZero(temp);//[[0, 1, 0, 0, 0, 5, 0]]
+
+		htmlToExtent(cName,mName,extLogger,driver, "" + temp + ";;;Pass");
+		//Report_AddStep("testcase", ""+temp+"","","", "PASS");
+
+		// ##0 t0 6 values in table
+		String locationdb = results.get(0).get(0).toString();
+		String totalarticlesdb = results.get(0).get(1).toString();
+		String totalfullcartonsdb = decimalFormat(results.get(0).get(2).toString());
+		String totalweightedarticlesdb = results.get(0).get(3).toString();
+		String totalrandomweightarticlesdb = results.get(0).get(4).toString();
+		String totaleachdb = results.get(0).get(5).toString();//5
+		String totalmpkdb = decimalFormat(results.get(0).get(6).toString());
+
+		dbvalue.add(locationdb);
+		dbvalue.add(totalarticlesdb);
+		dbvalue.add(totalfullcartonsdb);
+		dbvalue.add(totalweightedarticlesdb);
+		dbvalue.add(totalrandomweightarticlesdb);
+		dbvalue.add(totaleachdb);
+		dbvalue.add(totalmpkdb);//[0, 1, 0, 0, 0, 5, 0]
+
+		tempdb.add(dbvalue);
+
+
+		//##replaceblankspaceToZero(tempdb);
+
+
+		htmlToExtent(cName,mName,extLogger,driver, "" + tempdb + ";;;Pass");
+
+		//Report_AddStep("testcase", ""+tempdb+"","","", "PASS");
+		/* ##public void ElementContains(Multimap<String, String> scenarios,
+					String testname, List<List<Object>> one, List<List<Object>> two)*/
+
+		//##compare temp and tempdb
+		ElementContains(cName, mName,extLogger,driver,  temp,tempdb);
+		// ###temp-->[[0, 1, 0, 0, 0, 5, 0]] tempdb-->[[0, 1, 0, 0, 0, 5, 0]]
+		//ElementContains(temp,tempdb);
+
+
+	}
+
+
+	public void auditdbcomparison(ltoreportobjects ltoobj, List<List<Object>> DBList, WebDriver driver) throws IOException  
+
+	{
+		List<Object> firstvalue = new ArrayList<Object>();
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		List<Object> dbvalue = new ArrayList<Object>();
+		List<List<Object>> tempdb = new ArrayList<List<Object>>();
+
+
+		temp = getValuesFromTable(ltoobj.auditfirst1);
+		//System.out.println(temp);
+		replaceblankspaceToZero(temp);
+		//[[739940, Pauls Thickened Cream 2 x 4L, CAR, 8, 0, 1, 1, 0]]
+		htmlToExtent(cName,mName,extLogger,driver, "" + temp + ";;;Pass");
+		//Report_AddStep("testcase", "" + temp + "", "", "", "");//Extracting table values
+		ElementContains(cName, mName,extLogger,driver,  temp,DBList);
+		//ElementContains(temp,DBList);
+		//##temp->[[739940, Pauls Thickened Cream 2 x 4L, CAR, 8, , 1, 1, ]]
+		//DBList->[[7016, Kilkenny Draught Beer 440ml, EA, 24, 46, 4, 3, 1]	
+
+		/*String articleno = getText(ltoobj.articleno);
+		 String articledesc = getText(ltoobj.articledesc);
+		 String uom = getText(ltoobj.uom);
+
+		 String om = getText(ltoobj.om);
+		 String shelfcapacity = getText(ltoobj.shelfcapacity);
+		 String ltoqty = getText(ltoobj.ltoqty);
+		 String auditqty = getText(ltoobj.auditqty);
+		 String difference = getText(ltoobj.difference);
+
+		 if(getText(ltoobj.difference).isEmpty())
+		 {
+			 difference = getText(ltoobj.difference).replace("","0");
+
+
+		 }
+
+
+
+
+
+
+		 firstvalue.add(articleno);
+		 firstvalue.add(articledesc);
+		 firstvalue.add(uom);
+		 firstvalue.add(om);
+		 firstvalue.add(shelfcapacity);
+		 firstvalue.add(ltoqty);
+		 firstvalue.add(auditqty);
+		 firstvalue.add(difference);
+
+
+		 temp.add(firstvalue);
+
+		 Report_AddStep("testcase", ""+temp+"","","", "PASS");
+
+
+		 String artnodb = results.get(0).get(3).toString();
+		 String artdescdb = results.get(0).get(4).toString();
+		 String uomdb = results.get(0).get(8).toString();
+		 String omdb = decimalFormat(results.get(0).get(9).toString());
+		 String shelfcapacitydb = decimalFormat(results.get(0).get(10).toString());
+		 String ltoqtydb = decimalFormat(results.get(0).get(6).toString());
+		 String auditqtydb = decimalFormat(results.get(0).get(5).toString());
+		 String differencedb = decimalFormat(results.get(0).get(12).toString());
+
+
+		dbvalue.add(artnodb);
+		dbvalue.add(artdescdb);
+		dbvalue.add(uomdb);
+		dbvalue.add(omdb);
+		dbvalue.add(shelfcapacitydb);
+		dbvalue.add(ltoqtydb);
+		dbvalue.add(auditqtydb);
+		dbvalue.add(differencedb);
+
+		tempdb.add(dbvalue);
+
+		Report_AddStep("testcase", ""+tempdb+"","","", "PASS");
+
+		//ElementContains(temp,tempdb);
+
+		 */
+
+
+
+
+
+	}
+
+	public void logsdbcomparison(ltoreportobjects ltoobj,List<List<Object>> results1, WebDriver driver) throws IOException  
+
+	{
+
+		List<Object> firstvalue = new ArrayList<Object>();
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+
+		temp= getValuesFromTable(ltoobj.logsfirst);
+		removeExtraSpaces(temp,1);
+		//replaceblankspaceToZero(temp);
+		removetriplezero(temp,3);
+
+		htmlToExtent(cName,mName,extLogger,driver, "" + temp + ";;;Pass");
+		//Report_AddStep("testcase", "" + temp + "", "", "", "");//Extracting table values
+
+
+		//ElementContains(cName, mName,extLogger,driver,  temp,results1);
+
+		//temp->[[218019, Nudie Fire Fighter Crnbry Raspbry 750ml, CHECKOUT, 45, EA, xsnd2, Saravanan, 21/02/2018 02:40 PM]]
+		//results1->[[145370, 620, AUDITOUT, KG, 2018-03-04, xrmig, PRODUCE, 30, 01:48 PM, 0, 2.0000, 0, 0.0000]		
+
+
+
+
+
+
+
+
+		firstvalue = new ArrayList<Object>();
+		temp = new ArrayList<List<Object>>();
+		List<Object> dbvalue = new ArrayList<Object>();
+		List<List<Object>> tempdb = new ArrayList<List<Object>>();
+
+
+		String logsartno = getText(ltoobj.logsartno);
+		String logsartdesc = getText(ltoobj.logsartdesc);
+		String activity = getText(ltoobj.logsactivity);
+
+		String logsqty = getText(ltoobj.logsqty);
+		String logsuom = getText(ltoobj.logsuom);
+		String logsuserid = getText(ltoobj.logsuserid);
+		String logsusername = getText(ltoobj.logsusername);
+		String logsmodifiedon = getText(ltoobj.logsmodifiedon);
+
+
+
+
+
+
+
+
+		firstvalue.add(logsartno);
+		firstvalue.add(logsartdesc);
+		firstvalue.add(activity);
+		firstvalue.add(logsqty);
+		firstvalue.add(logsuom);
+		firstvalue.add(logsuserid);
+		firstvalue.add(logsusername);
+		firstvalue.add(logsmodifiedon);
+
+
+		temp.add(firstvalue);
+		//temp->[[326316, Kp Canola Oil 15l, CHECKOUT, 4, L, xrmig, Maruthai, 28/02/2018 04:37 AM]]
+		removeLastZeromodi(temp,3);
+
+		// Report_AddStep("testcase", ""+temp+"","","", "PASS");
+
+
+		/*###String artnodb = results1.get(0).get(0).toString();
+	 String artdescdb = results1.get(0).get(1).toString();
+
+	 String activitydb = results1.get(0).get(2).toString();
+	 String logsqtydb = results1.get(0).get(3).toString();
+	 String logsuomdb = results1.get(0).get(4).toString();
+	 String logsuseriddb = results1.get(0).get(5).toString();
+	 String logsusernamedb = results1.get(0).get(6).toString();
+	 String logsmodifiedondb = results1.get(0).get(7).toString();
+
+
+	dbvalue.add(artnodb);
+	dbvalue.add(artdescdb);
+	dbvalue.add(activitydb);
+	dbvalue.add(logsqtydb);
+	dbvalue.add(logsuomdb);
+	dbvalue.add(logsuseriddb);
+	dbvalue.add(logsusernamedb);
+	dbvalue.add(logsmodifiedondb);
+
+	tempdb.add(dbvalue);
+
+	removeExtraSpaces(tempdb,1);
+	removequadzero(tempdb,3);
+	removequadzero(tempdb,10);
+	removequadzero(tempdb,11);*/
+
+		removeExtraSpaces(results1,1);
+		removequadzero(results1,3);
+		removequadzero(results1,10);
+		removequadzero(results1,11);
+		removequadzero(results1,12);
+		//Report_AddStep("testcase", ""+tempdb+"","","", "PASS");
+		ElementContains(cName, mName,extLogger,driver,  temp,results1);
+		//###ElementContains(cName, mName,extLogger,driver,  temp,tempdb);
+		//DB->[[100035, Raz Bdy Mag P/Hose Tan XL, CHECKOUT, 2, EA, xsnd2, Saravanan, 06/02/2018 08:36 PM]
+		///temp->[[326316, Kp Canola Oil 15l, CHECKOUT, 4, L, xrmig, Maruthai, 28/02/2018 04:37 AM]]
+		//Not available in db
+		//ElementContains(temp,tempdb);
+
+
+
+
+
+	}
+
+
+
+	protected List<List<Object>> removeExtraSpaces(List<List<Object>> one,int position) throws IOException {
+
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next(); 
+			for(int i =0;i<elem.size();i++) {
+				if(i==position){
+					String s = elem.get(i).toString().replaceAll("\\s{2,}"," ");
+					elem.set(i, s);
+				}
+			}
+
+		}
+		return one;
+	}
+
+
+	public void countmatnrdbcomparison(ltoreportobjects ltoobj,List<List<Object>> results1, WebDriver driver) throws IOException  
+
+	{
+
+		//int size = ltoobj.listsize.size();
+		List<Object> firstvalue = new ArrayList<Object>();
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+
+		temp= getValuesFromTable(ltoobj.countfirst);
+		replacenullToZero(temp);
+		//System.out.println("The first table value is "+temp);
+		//[[Bulk On Racking 27.1, 1, 1, 0, 2, 0, 0]]
+		htmlToExtent(cName,mName,extLogger,driver, "" + temp + ";;;Pass");
+		//##Report_AddStep("testcase", "" + temp + "", "", "", "");//Extracting table values
+		ElementContains(cName, mName,extLogger,driver,  temp,results1);
+		//ElementContains(temp,results1);
+		//##Report_AddStep("testcase", "" + temp + "", "", "", "");//Extracting table values
+	}
+	//[[Miscellaneous 38.1, 1, 0, 0, 0, 0, 0]]
+
+
+	public List<List<Object>> removenulltozero(List<List<Object>> one,
+			int position) throws IOException {
+
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next();
+			for (int i = 0; i < elem.size(); i++) {
+				if (i == position) {
+					String s1 = elem.get(i).toString()
+							.replaceAll("", "0");
+					elem.set(i, s1);
+				}
+			}
+		}
+		return one;
+	}
+
+	//##
+
+
+
+	public void auditinputdbcomparison(ltoreportobjects ltoobj,List<List<Object>> results1, WebDriver driver) throws IOException  
+
+	{
+
+
+		List<Object> firstvalue = new ArrayList<Object>();
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+
+		temp= getValuesFromTable(ltoobj.auditfirst);
+		//##[[253620, Bonds Ladies Socks Lowcut Logo 3pk 2-8, EA, 4, , 1, , 1]]
+		replacenullToZero(temp);
+		//System.out.println("temp is "+temp);
+		replaceblankspaceToZero(temp);
+		htmlToExtent(cName,mName,extLogger,driver, "" + temp + ";;;Pass");
+		//Report_AddStep("testcase", "" + temp + "", "", "", "");//Extracting table values
+		ElementContains(cName, mName,extLogger,driver,  temp,results1);
+
+	}
+
+	public void logsinputdbcomparison(ltoreportobjects ltoobj,List<List<Object>> results1, WebDriver driver) throws IOException  
+
+	{
+
+
+		List<Object> firstvalue = new ArrayList<Object>();
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+
+		temp= getValuesFromTable(ltoobj.logsfirst);
+		removeExtraSpaces(temp,1);
+		//replaceblankspaceToZero(temp);
+		removetriplezero(temp,3);
+		htmlToExtent(cName,mName,extLogger,driver, "" + temp + ";;;Pass");
+		//Report_AddStep("testcase", "" + temp + "", "", "", "");//Extracting table values
+		ElementContains(cName, mName,extLogger,driver,  temp,results1);
+		//ElementContains(temp,results1);
+		//Report_AddStep("testcase", "" + temp + "", "", "", "");//Extracting table values
+
+		//ElementContainsTemp(temp,results);
+
+	}
+
+
+	public List<List<Object>> removeLastZeromodi(List<List<Object>> one,
+			int position) throws IOException {
+
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next();
+			for (int i = 0; i < elem.size(); i++) {
+				if (i == position) {
+					String s1 = elem.get(i).toString()
+							.replaceAll(".000", "");
+					elem.set(i, s1);
+
+				}
+			}
+		}
+		return one;
+	}
+
+
+	public List<List<Object>> removeExtraSpacesmodi(List<List<Object>> one,
+			int position) throws IOException {
+
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next();
+			for (int i = 0; i < elem.size(); i++) {
+				if (i == position) {
+					String s = elem.get(i).toString()
+							.replaceAll("\\s{2,}", " ");
+					elem.set(i, s);
+				}
+			}
+
+		}
+		return one;
+	}
+
+
+	public List<List<Object>> removedoublezero(List<List<Object>> one,
+			int position) throws IOException {
+
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next();
+			for (int i = 0; i < elem.size(); i++) {
+				if (i == position) {
+					String s1 = elem.get(i).toString()
+							.replaceAll(".00", "");
+					elem.set(i, s1);
+				}
+			}
+		}
+		return one;
+	}
+
+
+
+
+
+
+
+	public void auditdbcheckinggg(ltoreportobjects ltoobj,List<List<Object>> results1) throws IOException  
+
+	{
+		List<List<Object>> DBList = new ArrayList<List<Object>>();
+		String OM;
+		String Shlf_cap;
+		String lto_qty;
+		String Audit_qty;
+		String difference;
+
+		for(int i = 0;i<results1.size();i++)
+		{
+			if(results1.get(i).get(3).equals("")){
+				OM = "0";
+			}
+			else{
+				OM = decimalFormat(results1.get(i).get(3).toString());
+			}
+
+			if(results1.get(i).get(4).equals("0.00")){
+				Shlf_cap = " ";
+			}
+			else{
+				Shlf_cap = decimalFormat(results1.get(i).get(4).toString());
+			}
+
+			if(results1.get(i).get(5).equals("0.0000")){
+				lto_qty = " ";
+			}
+			else{
+				lto_qty = decimalFormat(results1.get(i).get(5).toString());
+			}
+
+			if(results1.get(i).get(6).equals("0.0000")){
+				Audit_qty = " ";
+			}
+			else{
+				Audit_qty = decimalFormat(results1.get(i).get(6).toString());
+			}
+
+			if(results1.get(i).get(7).equals("0.0000")){
+				difference = " ";
+			}
+			else{
+				difference = decimalFormat(results1.get(i).get(7).toString());
+			}
+
+
+
+
+			String Str = ""+results1.get(i).get(0).toString()+":"+results1.get(i).get(1).toString()+":"+results1.get(i).get(2).toString()+":"+OM+":"+Shlf_cap+":"+lto_qty+":"+Audit_qty+":"+difference;
+			DBList.addAll(StringToListCreation(Str));
+
+		}
+
+
+
+	}
+
+	public List<List<Object>> removequadzero(List<List<Object>> one,
+			int position) throws IOException {
+
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next();
+			for (int i = 0; i < elem.size(); i++) {
+				if (i == position) {
+					String s1 = elem.get(i).toString()
+							.replaceAll(".0000", "");
+					elem.set(i, s1);
+				}
+			}
+		}
+		return one;
+	}	
+
+
+	public List<List<Object>> removetriplezero(List<List<Object>> one,
+			int position) throws IOException {
+
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next();
+			for (int i = 0; i < elem.size(); i++) {
+				if (i == position) {
+					String s1 = elem.get(i).toString()
+							.replaceAll(".000", "");
+					elem.set(i, s1);
+				}
+			}
+		}
+		return one;
+	}	}
+
+
+

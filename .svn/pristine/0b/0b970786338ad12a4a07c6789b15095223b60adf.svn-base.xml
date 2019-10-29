@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+	<TCName name="ltocountmatnr">
+		<matnr>
+<![CDATA[select distinct matnr from ZWOWO_LTO_DETAILS_view]]>
+		</matnr>
+		
+		<dbmatnr>
+<![CDATA[select location_name,sum(tot_articles),sum(tot_cartons),sum(tot_wgt_articles),sum(tot_rdmwgt_articles),sum(tot_eaches),sum(tot_mpk) from (SELECT ZLD.LOCATION_ID location_id,fn_wow_get_lto_location_name(ZLD.LOCATION_ID) as location_name,
+        fn_wow_get_lto_loc_name_to_sort(ZLD.LOCATION_ID) loc_name_to_sort, COUNT(DISTINCT ZLD.MATNR) tot_articles
+        , SUM(CASE WHEN ZLD.MEINH IN ('CAR','CA1','CA2') THEN COALESCE(ZLD.WEIGHT, ZLD.LTO_QTY) ELSE 0 END CASE) tot_cartons
+        , SUM(CASE WHEN ZLD.MEINH IN ('EA') THEN ZLD.LTO_QTY ELSE 0 END CASE) tot_eaches
+        , SUM(CASE WHEN ZLD.MEINH IN ('MPK') THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_mpk
+        , SUM(CASE WHEN ZLD.MEINH IN ('L') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_litres
+        , SUM(CASE WHEN ZLD.MEINH IN ('KG') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_kgs
+        , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN 1 ELSE 0 END CASE) tot_wgt_articles
+        , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN 1 ELSE 0 END CASE) tot_rdmwgt_articles
+        , null as partial_cartons
+        , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_wgt_articles
+        , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN  CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_rdmwgt_articles  , HIER.DEPT_NAME dept_name, HIER.DEPT dept 
+         FROM ZWOWO_LTO_DETAILS_VIEW ZLD
+        JOIN MAT_VIEW_ZWOW_ARTICLES_HIER HIER ON (ZLD.MATNR = HIER.MATNR)
+        JOIN ZWOWC_ARTICLE_MASTER ZM ON (ZLD.MATNR = ZM.MATNR)
+        JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZLD.MATNR = ZAL.MATNR)
+        JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZLD.MATNR AND ZLD.MEINH = ZAU.MEINH) and ZLD.MATNR in('art_no')
+         WHERE 1 =1 
+        GROUP BY ZLD.LOCATION_ID  , HIER.DEPT_NAME, HIER.DEPT ORDER BY dept_name, substr(loc_name_to_sort, 1, locate(loc_name_to_sort, '|', 1)-1), 
+        CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', 1)+1, abs(locate(loc_name_to_sort, '|', -1)-locate(loc_name_to_sort, '|', 1))-1) AS double),
+        CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', -1)+1) AS double) )temp1
+group by temp1.location_name
+order by 1,2]]>
+		</dbmatnr>
+		
+		
+	</TCName>
+	
+	
+
+	<TCName name="ltoauditmatnr">
+		<matnr>
+<![CDATA[select distinct matnr from ZWOWT_LTO_LOGS where lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD') and action in('AUDITIN','AUDITOUT')]]>
+		</matnr>
+		
+		<auditdbmatnr>
+<![CDATA[SELECT A.MATNR as article_no,fn_wow_get_article_description(A.MATNR) AS article_desc,A.MEINH AS uom,CAST(fn_wow_get_order_multiple(A.MATNR) AS NUMERIC(17,3)) as om,fn_wow_get_sc_by_matnr(A.MATNR,A.MEINH) AS shelf_capacity,COALESCE(A.PREV_WEIGHT,A.PREV_LTO_QTY) as lto_qty, COALESCE(A.WEIGHT,A.LTO_QTY) AS audit_qty,ABS(audit_qty - lto_qty) as difference
+      FROM (
+      SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+      USERID, LTO_LOG_DATE, LTO_LOG_TIME, SOURCE FROM ZWOWT_LTO_LOGS
+      UNION
+      SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+      USERID, LTO_LOG_DATE, LTO_LOG_TIME, SOURCE FROM ZWOWO_LTO_LOGS
+      ) A
+      JOIN ZWOWC_ARTICLE_UOM B ON (A.MATNR = B.MATNR AND A.MEINH = B.MEINH)
+      JOIN MAT_VIEW_ZWOW_ARTICLES_HIER C ON (A.MATNR = C.MATNR)
+      JOIN ZWOWC_ARTICLE_MASTER D ON (A.MATNR = D.MATNR)
+      JOIN ZWOWC_ARTICLE_LISTING E ON (A.MATNR = E.MATNR)
+      WHERE UPPER(A.ACTION) LIKE '%AUDIT%'  AND A.LOCATION_ID <> 0 AND A.LTO_LOG_DATE BETWEEN dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD') and A.matnr in ('ar1','ar2','ar3')
+ORDER BY article_no]]>
+		</auditdbmatnr>
+		
+		
+		
+	</TCName>
+	
+	
+
+	<TCName name="ltocountdescription">
+		<description>
+<![CDATA[select distinct  b.article_desc from ZWOWO_LTO_DETAILS_VIEW a, zwowc_article_master b where a.matnr=b.matnr]]>
+		</description>
+		
+		<artdesc>
+	<![CDATA[select distinct  b.matnr,b.article_desc from ZWOWO_LTO_DETAILS_VIEW a, zwowc_article_master b where a.matnr=b.matnr]]>
+	   </artdesc>
+	   
+	<dbcountdesc>
+<![CDATA[select location_name,sum(tot_articles),sum(tot_cartons),sum(tot_wgt_articles),sum(tot_rdmwgt_articles),sum(tot_eaches),sum(tot_mpk) from (SELECT ZLD.LOCATION_ID location_id,fn_wow_get_lto_location_name(ZLD.LOCATION_ID) as location_name,
+        fn_wow_get_lto_loc_name_to_sort(ZLD.LOCATION_ID) loc_name_to_sort, COUNT(DISTINCT ZLD.MATNR) tot_articles
+        , SUM(CASE WHEN ZLD.MEINH IN ('CAR','CA1','CA2') THEN COALESCE(ZLD.WEIGHT, ZLD.LTO_QTY) ELSE 0 END CASE) tot_cartons
+        , SUM(CASE WHEN ZLD.MEINH IN ('EA') THEN ZLD.LTO_QTY ELSE 0 END CASE) tot_eaches
+        , SUM(CASE WHEN ZLD.MEINH IN ('MPK') THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_mpk
+        , SUM(CASE WHEN ZLD.MEINH IN ('L') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_litres
+        , SUM(CASE WHEN ZLD.MEINH IN ('KG') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_kgs
+        , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN 1 ELSE 0 END CASE) tot_wgt_articles
+        , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN 1 ELSE 0 END CASE) tot_rdmwgt_articles
+        , null as partial_cartons
+        , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_wgt_articles
+        , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN  CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_rdmwgt_articles  , HIER.DEPT_NAME dept_name, HIER.DEPT dept 
+         FROM ZWOWO_LTO_DETAILS_VIEW ZLD
+        JOIN MAT_VIEW_ZWOW_ARTICLES_HIER HIER ON (ZLD.MATNR = HIER.MATNR)
+        JOIN ZWOWC_ARTICLE_MASTER ZM ON (ZLD.MATNR = ZM.MATNR)
+        JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZLD.MATNR = ZAL.MATNR)
+        JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZLD.MATNR AND ZLD.MEINH = ZAU.MEINH) and zld.matnr='art_no'   WHERE 1 =1 
+        GROUP BY ZLD.LOCATION_ID  , HIER.DEPT_NAME, HIER.DEPT ORDER BY dept_name, substr(loc_name_to_sort, 1, locate(loc_name_to_sort, '|', 1)-1), 
+        CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', 1)+1, abs(locate(loc_name_to_sort, '|', -1)-locate(loc_name_to_sort, '|', 1))-1) AS double),
+        CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', -1)+1) AS double))temp1
+group by temp1.location_name
+order by 1,2]]>
+		</dbcountdesc>
+		</TCName>
+
+	<TCName name="ltoauditdescription">
+		<description>
+<![CDATA[select distinct b.article_desc,b.matnr from ZWOWT_LTO_LOGS a, zwowc_article_master b where lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD') and action='AUDITIN' and a.matnr=b.matnr]]>
+		</description>
+		
+		<auditdbdesc>
+<![CDATA[SELECT A.MATNR as article_no,fn_wow_get_article_description(A.MATNR) AS article_desc,A.MEINH AS uom,CAST(fn_wow_get_order_multiple(A.MATNR) AS NUMERIC(17,3)) as om,fn_wow_get_sc_by_matnr(A.MATNR,A.MEINH) AS shelf_capacity,COALESCE(A.PREV_WEIGHT,A.PREV_LTO_QTY) as lto_qty, COALESCE(A.WEIGHT,A.LTO_QTY) AS audit_qty,ABS(audit_qty - lto_qty) as difference
+      FROM (
+      SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+      USERID, LTO_LOG_DATE, LTO_LOG_TIME, SOURCE FROM ZWOWT_LTO_LOGS
+      UNION
+      SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+      USERID, LTO_LOG_DATE, LTO_LOG_TIME, SOURCE FROM ZWOWO_LTO_LOGS
+      ) A
+      JOIN ZWOWC_ARTICLE_UOM B ON (A.MATNR = B.MATNR AND A.MEINH = B.MEINH)
+      JOIN MAT_VIEW_ZWOW_ARTICLES_HIER C ON (A.MATNR = C.MATNR)
+      JOIN ZWOWC_ARTICLE_MASTER D ON (A.MATNR = D.MATNR)
+      JOIN ZWOWC_ARTICLE_LISTING E ON (A.MATNR = E.MATNR)
+      WHERE UPPER(A.ACTION) LIKE '%AUDIT%'  AND A.LOCATION_ID <> 0 AND A.LTO_LOG_DATE BETWEEN dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD') and A.matnr in ('ar1')
+ORDER BY article_no]]>
+		</auditdbdesc>
+	</TCName>
+
+	<TCName name="ltologsdescription">
+		<description>
+<![CDATA[select distinct  b.article_desc,b.matnr from ZWOWO_LTO_DETAILS_VIEW a, zwowc_article_master b where a.matnr=b.matnr]]>
+		</description>
+		
+		<logsdb>
+<![CDATA[SELECT DISTINCT 
+    /*fn_wow_get_lto_location_short_name(A.LOCATION_ID) as loc_short_name,*/
+     A.MATNR as article_no,
+    fn_wow_get_article_description(A.MATNR) AS article_desc,A.ACTION as action,case when  ABS(lto_qty-prev_lto_qty) >'0' then ABS(lto_qty-prev_lto_qty)  else ABS(WEIGHT-PREV_WEIGHT) END AS action_qty ,A.MEINH as uom, A.USERID as userid,
+    /*C.USR_NM*/fn_wow_get_user_name(A.USERID) as username,
+    dateformat(A.lto_log_date, 'DD/MM/YYYY')||' '||A.lto_log_time as modified_on
+    FROM (
+    SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+    USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWT_LTO_LOGS
+    UNION
+    SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+    USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWO_LTO_LOGS
+    ) A
+    JOIN MAT_VIEW_ZWOW_ARTICLES_HIER B ON (A.MATNR = B.MATNR)
+    JOIN ZWOWC_ARTICLE_MASTER C ON (A.MATNR = C.MATNR)
+    JOIN ZWOWC_ARTICLE_UOM D ON (A.MATNR = D.MATNR AND A.MEINH = D.MEINH)
+    JOIN ZWOWC_ARTICLE_LISTING E ON (A.MATNR = E.MATNR)
+    WHERE 1 = 1 AND A.LOCATION_ID <> 0 --UPPER(A.ACTION) LIKE '%CHECK%'
+     AND A.LTO_LOG_DATE BETWEEN '2017-09-29' AND '2019-09-30' and A.matnr in ('ar1','ar2','ar3')]]>
+		</logsdb>
+		
+		
+	</TCName>
+	
+	
+
+	<TCName name="ltocountean">
+		<ean>
+<![CDATA[select distinct b.ean11 from zwowo_lto_details_view a, ZWOWC_ARTICLE_EAN b where a.matnr=b.matnr]]>
+		</ean>
+		<artdesc>
+	<![CDATA[select distinct a.matnr,b.ean11 from zwowo_lto_details_view a, ZWOWC_ARTICLE_EAN b where a.matnr=b.matnr and len(ean11)=14 and lto_action_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD')]]>
+	   </artdesc>
+		
+		<dbcountean>
+<![CDATA[select location_name,sum(tot_articles),sum(tot_cartons),sum(tot_wgt_articles),sum(tot_rdmwgt_articles),sum(tot_eaches),sum(tot_mpk) from (SELECT ZLD.LOCATION_ID location_id,fn_wow_get_lto_location_name(ZLD.LOCATION_ID) as location_name,
+        fn_wow_get_lto_loc_name_to_sort(ZLD.LOCATION_ID) loc_name_to_sort, COUNT(DISTINCT ZLD.MATNR) tot_articles
+        , SUM(CASE WHEN ZLD.MEINH IN ('CAR','CA1','CA2') THEN COALESCE(ZLD.WEIGHT, ZLD.LTO_QTY) ELSE 0 END CASE) tot_cartons
+        , SUM(CASE WHEN ZLD.MEINH IN ('EA') THEN ZLD.LTO_QTY ELSE 0 END CASE) tot_eaches
+        , SUM(CASE WHEN ZLD.MEINH IN ('MPK') THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_mpk
+        , SUM(CASE WHEN ZLD.MEINH IN ('L') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_litres
+        , SUM(CASE WHEN ZLD.MEINH IN ('KG') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_kgs
+        , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN 1 ELSE 0 END CASE) tot_wgt_articles
+        , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN 1 ELSE 0 END CASE) tot_rdmwgt_articles
+        , null as partial_cartons
+        , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_wgt_articles
+        , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN  CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_rdmwgt_articles  , HIER.DEPT_NAME dept_name, HIER.DEPT dept 
+         FROM ZWOWO_LTO_DETAILS_VIEW ZLD
+        JOIN MAT_VIEW_ZWOW_ARTICLES_HIER HIER ON (ZLD.MATNR = HIER.MATNR)
+        JOIN ZWOWC_ARTICLE_MASTER ZM ON (ZLD.MATNR = ZM.MATNR)
+        JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZLD.MATNR = ZAL.MATNR)
+        JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZLD.MATNR AND ZLD.MEINH = ZAU.MEINH) and zld.matnr='art_no'   WHERE 1 =1 
+        GROUP BY ZLD.LOCATION_ID  , HIER.DEPT_NAME, HIER.DEPT ORDER BY dept_name, substr(loc_name_to_sort, 1, locate(loc_name_to_sort, '|', 1)-1), 
+        CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', 1)+1, abs(locate(loc_name_to_sort, '|', -1)-locate(loc_name_to_sort, '|', 1))-1) AS double),
+        CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', -1)+1) AS double))temp1
+group by temp1.location_name
+order by 1,2]]>
+		</dbcountean>	
+	</TCName>
+	
+	<TCName name="ltoauditean">
+		<ean>
+<![CDATA[select distinct b.ean11,b.matnr from zwowt_lto_logs a, ZWOWC_ARTICLE_EAN b where a.matnr=b.matnr and lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD') and ACTION in('AUDITIN','AUDITOUT')]]>
+		</ean>
+	
+	
+	<auditdbean>
+		<![CDATA[SELECT A.MATNR as article_no,fn_wow_get_article_description(A.MATNR) AS article_desc,A.MEINH AS uom,CAST(fn_wow_get_order_multiple(A.MATNR) AS NUMERIC(17,3)) as om,fn_wow_get_sc_by_matnr(A.MATNR,A.MEINH) AS shelf_capacity,COALESCE(A.PREV_WEIGHT,A.PREV_LTO_QTY) as lto_qty, COALESCE(A.WEIGHT,A.LTO_QTY) AS audit_qty,ABS(audit_qty - lto_qty) as difference
+      FROM (
+      SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+      USERID, LTO_LOG_DATE, LTO_LOG_TIME, SOURCE FROM ZWOWT_LTO_LOGS
+      UNION
+      SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+      USERID, LTO_LOG_DATE, LTO_LOG_TIME, SOURCE FROM ZWOWO_LTO_LOGS
+      ) A
+      JOIN ZWOWC_ARTICLE_UOM B ON (A.MATNR = B.MATNR AND A.MEINH = B.MEINH)
+      JOIN MAT_VIEW_ZWOW_ARTICLES_HIER C ON (A.MATNR = C.MATNR)
+      JOIN ZWOWC_ARTICLE_MASTER D ON (A.MATNR = D.MATNR)
+      JOIN ZWOWC_ARTICLE_LISTING E ON (A.MATNR = E.MATNR)
+      WHERE UPPER(A.ACTION) LIKE '%AUDIT%'  AND A.LOCATION_ID <> 0 AND A.LTO_LOG_DATE BETWEEN dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD') and A.matnr in ('ar1')
+ORDER BY article_no]]>
+</auditdbean>
+	</TCName>
+	
+	<TCName name="ltologsean">
+		<ean>
+<![CDATA[select distinct b.ean11,b.matnr from zwowt_lto_logs a, ZWOWC_ARTICLE_EAN b where a.matnr=b.matnr and lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD')]]>
+		</ean>
+		
+		<logsdb>
+<![CDATA[SELECT DISTINCT 
+    /*fn_wow_get_lto_location_short_name(A.LOCATION_ID) as loc_short_name,*/
+     A.MATNR as article_no,
+    fn_wow_get_article_description(A.MATNR) AS article_desc,A.ACTION as action,case when  ABS(lto_qty-prev_lto_qty) >'0' then ABS(lto_qty-prev_lto_qty)  else ABS(WEIGHT-PREV_WEIGHT) END AS action_qty ,A.MEINH as uom, A.USERID as userid,
+    /*C.USR_NM*/fn_wow_get_user_name(A.USERID) as username,
+    dateformat(A.lto_log_date, 'DD/MM/YYYY')||' '||A.lto_log_time as modified_on
+    FROM (
+    SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+    USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWT_LTO_LOGS
+    UNION
+    SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+    USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWO_LTO_LOGS
+    ) A
+    JOIN MAT_VIEW_ZWOW_ARTICLES_HIER B ON (A.MATNR = B.MATNR)
+    JOIN ZWOWC_ARTICLE_MASTER C ON (A.MATNR = C.MATNR)
+    JOIN ZWOWC_ARTICLE_UOM D ON (A.MATNR = D.MATNR AND A.MEINH = D.MEINH)
+    JOIN ZWOWC_ARTICLE_LISTING E ON (A.MATNR = E.MATNR)
+    WHERE 1 = 1 AND A.LOCATION_ID <> 0 --UPPER(A.ACTION) LIKE '%CHECK%'
+     AND A.LTO_LOG_DATE BETWEEN '2017-09-29' AND '2019-09-30' and A.matnr in ('ar1','ar2','ar3')]]>
+		</logsdb>	
+		
+		
+		
+		
+	</TCName>
+
+
+	<TCName name="ltocountplu">
+		<plu>
+<![CDATA[select distinct b.plu_code from zwowo_lto_details_view a, ZWOwc_article_master b where a.matnr=b.matnr and b.plu_code>'1']]>
+		</plu>
+		
+	<artdesc>
+	<![CDATA[select distinct a.matnr, b.plu_code from zwowo_lto_details_view a, ZWOwc_article_master b where a.matnr=b.matnr and b.plu_code>'1']]>
+	</artdesc>	
+		
+	<dbcountplu>
+<![CDATA[select location_name,sum(tot_articles),sum(tot_cartons),sum(tot_wgt_articles),sum(tot_rdmwgt_articles),sum(tot_eaches),sum(tot_mpk) from (SELECT ZLD.LOCATION_ID location_id,fn_wow_get_lto_location_name(ZLD.LOCATION_ID) as location_name,
+        fn_wow_get_lto_loc_name_to_sort(ZLD.LOCATION_ID) loc_name_to_sort, COUNT(DISTINCT ZLD.MATNR) tot_articles
+        , SUM(CASE WHEN ZLD.MEINH IN ('CAR','CA1','CA2') THEN COALESCE(ZLD.WEIGHT, ZLD.LTO_QTY) ELSE 0 END CASE) tot_cartons
+        , SUM(CASE WHEN ZLD.MEINH IN ('EA') THEN ZLD.LTO_QTY ELSE 0 END CASE) tot_eaches
+        , SUM(CASE WHEN ZLD.MEINH IN ('MPK') THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_mpk
+        , SUM(CASE WHEN ZLD.MEINH IN ('L') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_litres
+        , SUM(CASE WHEN ZLD.MEINH IN ('KG') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_kgs
+        , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN 1 ELSE 0 END CASE) tot_wgt_articles
+        , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN 1 ELSE 0 END CASE) tot_rdmwgt_articles
+        , null as partial_cartons
+        , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_wgt_articles
+        , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN  CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_rdmwgt_articles  , HIER.DEPT_NAME dept_name, HIER.DEPT dept 
+         FROM ZWOWO_LTO_DETAILS_VIEW ZLD
+        JOIN MAT_VIEW_ZWOW_ARTICLES_HIER HIER ON (ZLD.MATNR = HIER.MATNR)
+        JOIN ZWOWC_ARTICLE_MASTER ZM ON (ZLD.MATNR = ZM.MATNR)
+        JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZLD.MATNR = ZAL.MATNR)
+        JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZLD.MATNR AND ZLD.MEINH = ZAU.MEINH) and zld.matnr='art_no'   WHERE 1 =1 
+        GROUP BY ZLD.LOCATION_ID  , HIER.DEPT_NAME, HIER.DEPT ORDER BY dept_name, substr(loc_name_to_sort, 1, locate(loc_name_to_sort, '|', 1)-1), 
+        CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', 1)+1, abs(locate(loc_name_to_sort, '|', -1)-locate(loc_name_to_sort, '|', 1))-1) AS double),
+        CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', -1)+1) AS double))temp1
+group by temp1.location_name
+order by 1,2]]>
+		</dbcountplu>	
+		
+		
+		
+	</TCName>
+
+	<TCName name="ltoauditplu">
+		<plu>
+<![CDATA[select distinct b.plu_code,b.matnr from ZWOWT_LTO_LOGS a, zwowc_article_master b where lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD') and action in('AUDITIN','AUDITOUT') and a.matnr=b.matnr]]>
+		</plu>
+		
+		<auditdbplu>
+		<![CDATA[SELECT A.MATNR as article_no,fn_wow_get_article_description(A.MATNR) AS article_desc,A.MEINH AS uom,CAST(fn_wow_get_order_multiple(A.MATNR) AS NUMERIC(17,3)) as om,fn_wow_get_sc_by_matnr(A.MATNR,A.MEINH) AS shelf_capacity,COALESCE(A.PREV_WEIGHT,A.PREV_LTO_QTY) as lto_qty, COALESCE(A.WEIGHT,A.LTO_QTY) AS audit_qty,ABS(audit_qty - lto_qty) as difference
+      FROM (
+      SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+      USERID, LTO_LOG_DATE, LTO_LOG_TIME, SOURCE FROM ZWOWT_LTO_LOGS
+      UNION
+      SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+      USERID, LTO_LOG_DATE, LTO_LOG_TIME, SOURCE FROM ZWOWO_LTO_LOGS
+      ) A
+      JOIN ZWOWC_ARTICLE_UOM B ON (A.MATNR = B.MATNR AND A.MEINH = B.MEINH)
+      JOIN MAT_VIEW_ZWOW_ARTICLES_HIER C ON (A.MATNR = C.MATNR)
+      JOIN ZWOWC_ARTICLE_MASTER D ON (A.MATNR = D.MATNR)
+      JOIN ZWOWC_ARTICLE_LISTING E ON (A.MATNR = E.MATNR)
+      WHERE UPPER(A.ACTION) LIKE '%AUDIT%'  AND A.LOCATION_ID <> 0 AND A.LTO_LOG_DATE BETWEEN dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD') and A.matnr in ('ar1','ar2','ar3')
+ORDER BY article_no]]>
+</auditdbplu>
+		
+		
+		
+		
+	</TCName>
+	
+	<TCName name="ltologsplu">
+		<plu>
+<![CDATA[select distinct b.plu_code,b.matnr from ZWOWT_LTO_LOGS a, zwowc_article_master b where lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD') and a.matnr=b.matnr and b.plu_code>1]]>
+		</plu>
+		
+	<artdesc>
+	<![CDATA[select distinct a.matnr,b.plu_code from ZWOWT_LTO_LOGS a, zwowc_article_master b where lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD') and a.matnr=b.matnr and b.plu_code>1]]>
+	</artdesc>
+	
+	<logsdb>
+<![CDATA[SELECT DISTINCT 
+    /*fn_wow_get_lto_location_short_name(A.LOCATION_ID) as loc_short_name,*/
+     A.MATNR as article_no,
+    fn_wow_get_article_description(A.MATNR) AS article_desc,A.ACTION as action,case when  ABS(lto_qty-prev_lto_qty) >'0' then ABS(lto_qty-prev_lto_qty)  else ABS(WEIGHT-PREV_WEIGHT) END AS action_qty ,A.MEINH as uom, A.USERID as userid,
+    /*C.USR_NM*/fn_wow_get_user_name(A.USERID) as username,
+    dateformat(A.lto_log_date, 'DD/MM/YYYY')||' '||A.lto_log_time as modified_on
+    FROM (
+    SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+    USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWT_LTO_LOGS
+    UNION
+    SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+    USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWO_LTO_LOGS
+    ) A
+    JOIN MAT_VIEW_ZWOW_ARTICLES_HIER B ON (A.MATNR = B.MATNR)
+    JOIN ZWOWC_ARTICLE_MASTER C ON (A.MATNR = C.MATNR)
+    JOIN ZWOWC_ARTICLE_UOM D ON (A.MATNR = D.MATNR AND A.MEINH = D.MEINH)
+    JOIN ZWOWC_ARTICLE_LISTING E ON (A.MATNR = E.MATNR)
+    WHERE 1 = 1 AND A.LOCATION_ID <> 0 --UPPER(A.ACTION) LIKE '%CHECK%'
+     AND A.LTO_LOG_DATE BETWEEN '2017-09-29' AND '2019-09-30' and A.matnr in ('ar1','ar2','ar3')]]>
+		</logsdb>	
+		
+	</TCName>
+	
+	
+
+	<TCName name="verifyreport">
+		<countdb>
+<![CDATA[SELECT fn_wow_get_lto_location_name(ZLD.LOCATION_ID) as location_name, COUNT(DISTINCT ZLD.MATNR) tot_articles, SUM(CASE WHEN ZLD.MEINH IN ('CAR','CA1','CA2') THEN COALESCE(ZLD.WEIGHT, ZLD.LTO_QTY) ELSE 0 END CASE) tot_cartons,SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN 1 ELSE 0 END CASE) tot_wgt_articles,SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN 1 ELSE 0 END CASE) tot_rdmwgt_articles, SUM(CASE WHEN ZLD.MEINH IN ('EA') THEN ZLD.LTO_QTY ELSE 0 END CASE) tot_eaches, SUM(CASE WHEN ZLD.MEINH IN ('MPK') THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_mpk, SUM(CASE WHEN ZLD.MEINH IN ('L') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_litres, SUM(CASE WHEN ZLD.MEINH IN ('KG') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_kgs, fn_wow_get_lto_loc_name_to_sort(ZLD.LOCATION_ID) loc_name_to_sort, null as partial_cartons, SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_wgt_articles, SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN  CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_rdmwgt_articles  , HIER.DEPT_NAME dept_name, HIER.DEPT dept FROM ZWOWO_LTO_DETAILS_VIEW ZLD JOIN MAT_VIEW_ZWOW_ARTICLES_HIER HIER ON (ZLD.MATNR = HIER.MATNR)JOIN ZWOWC_ARTICLE_MASTER ZM ON (ZLD.MATNR = ZM.MATNR)JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZLD.MATNR = ZAL.MATNR)JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZLD.MATNR AND ZLD.MEINH = ZAU.MEINH)WHERE 1 =1 GROUP BY ZLD.LOCATION_ID  , HIER.DEPT_NAME, HIER.DEPT ORDER BY dept_name, substr(loc_name_to_sort, 1, locate(loc_name_to_sort, '|', 1)-1), CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', 1)+1, abs(locate(loc_name_to_sort, '|', -1)-locate(loc_name_to_sort, '|', 1))-1) AS double),CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', -1)+1) AS double)]]>
+		</countdb>
+	</TCName>
+
+
+	<TCName name="verifyltoaudit">
+		<auditdb>
+<![CDATA[SELECT A.MATNR as article_no, fn_wow_get_article_description(A.MATNR) AS article_desc,A.MEINH AS uom,CAST(fn_wow_get_order_multiple(A.MATNR) AS NUMERIC(17,3)) as om,fn_wow_get_sc_by_matnr(A.MATNR,A.MEINH) AS shelf_capacity,COALESCE(A.PREV_WEIGHT,A.PREV_LTO_QTY) as lto_qty, COALESCE(A.WEIGHT,A.LTO_QTY) AS audit_qty,ABS(audit_qty - lto_qty) as difference FROM (SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,USERID, LTO_LOG_DATE, LTO_LOG_TIME, SOURCE FROM ZWOWT_LTO_LOGS UNION SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION, USERID, LTO_LOG_DATE, LTO_LOG_TIME, SOURCE FROM ZWOWO_LTO_LOGS ) A JOIN ZWOWC_ARTICLE_UOM B ON (A.MATNR = B.MATNR AND A.MEINH = B.MEINH) JOIN MAT_VIEW_ZWOW_ARTICLES_HIER C ON (A.MATNR = C.MATNR) JOIN ZWOWC_ARTICLE_MASTER D ON (A.MATNR = D.MATNR) JOIN ZWOWC_ARTICLE_LISTING E ON (A.MATNR = E.MATNR) WHERE UPPER(A.ACTION) LIKE '%AUDIT%'  AND A.LOCATION_ID <> 0 AND A.LTO_LOG_DATE BETWEEN dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD')]]>
+		</auditdb>
+	</TCName>
+
+	<TCName name="verifyltologs">
+		<logsdb>
+
+         
+         <![CDATA[SELECT DISTINCT 
+        /*fn_wow_get_lto_location_short_name(A.LOCATION_ID) as loc_short_name,*/
+         A.MATNR as article_no,
+        fn_wow_get_article_description(A.MATNR) AS article_desc,A.ACTION as action, ABS(lto_qty-prev_lto_qty) AS action_qty,A.MEINH as uom, A.USERID as userid,
+        /*C.USR_NM*/fn_wow_get_user_name(A.USERID) as username,
+        dateformat(A.lto_log_date, 'DD/MM/YYYY')||' '||A.lto_log_time as modified_on
+        FROM (
+        SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+        USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWT_LTO_LOGS
+        UNION
+        SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+        USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWO_LTO_LOGS
+        ) A
+        JOIN MAT_VIEW_ZWOW_ARTICLES_HIER B ON (A.MATNR = B.MATNR)
+        JOIN ZWOWC_ARTICLE_MASTER C ON (A.MATNR = C.MATNR)
+        JOIN ZWOWC_ARTICLE_UOM D ON (A.MATNR = D.MATNR AND A.MEINH = D.MEINH)
+        JOIN ZWOWC_ARTICLE_LISTING E ON (A.MATNR = E.MATNR)
+        WHERE 1 = 1 AND A.LOCATION_ID <> 0 --UPPER(A.ACTION) LIKE '%CHECK%'
+         AND A.LTO_LOG_DATE BETWEEN '2017-09-29' AND '2017-09-30']]>
+		</logsdb>
+	</TCName>
+
+
+<TCName name="ltocounttun">
+		<tun>
+<![CDATA[select distinct b.ean11 from zwowo_lto_details_view a, ZWOWC_ARTICLE_EAN b where a.matnr=b.matnr and len(ean11)=14 and lto_action_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD')]]>
+		</tun>
+		
+		<artdesc>
+	<![CDATA[select distinct a.matnr,b.ean11 from zwowo_lto_details_view a, ZWOWC_ARTICLE_EAN b where a.matnr=b.matnr and len(ean11)=14 and lto_action_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD')]]>
+	   </artdesc>
+		
+		<dbcounttun>	
+	<![CDATA[select location_name,sum(tot_articles),sum(tot_cartons),sum(tot_wgt_articles),sum(tot_rdmwgt_articles),sum(tot_eaches),sum(tot_mpk) from (SELECT ZLD.LOCATION_ID location_id,fn_wow_get_lto_location_name(ZLD.LOCATION_ID) as location_name,
+       fn_wow_get_lto_loc_name_to_sort(ZLD.LOCATION_ID) loc_name_to_sort, COUNT(DISTINCT ZLD.MATNR) tot_articles
+        , SUM(CASE WHEN ZLD.MEINH IN ('CAR','CA1','CA2') THEN COALESCE(ZLD.WEIGHT, ZLD.LTO_QTY) ELSE 0 END CASE) tot_cartons
+        , SUM(CASE WHEN ZLD.MEINH IN ('EA') THEN ZLD.LTO_QTY ELSE 0 END CASE) tot_eaches
+        , SUM(CASE WHEN ZLD.MEINH IN ('MPK') THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_mpk
+        , SUM(CASE WHEN ZLD.MEINH IN ('L') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_litres
+        , SUM(CASE WHEN ZLD.MEINH IN ('KG') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_kgs
+        , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN 1 ELSE 0 END CASE) tot_wgt_articles
+        , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN 1 ELSE 0 END CASE) tot_rdmwgt_articles
+        , null as partial_cartons
+        , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_wgt_articles
+        , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN  CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_rdmwgt_articles  , HIER.DEPT_NAME dept_name, HIER.DEPT dept 
+         FROM ZWOWO_LTO_DETAILS_VIEW ZLD
+        JOIN MAT_VIEW_ZWOW_ARTICLES_HIER HIER ON (ZLD.MATNR = HIER.MATNR)
+        JOIN ZWOWC_ARTICLE_MASTER ZM ON (ZLD.MATNR = ZM.MATNR)
+        JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZLD.MATNR = ZAL.MATNR)
+        JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZLD.MATNR AND ZLD.MEINH = ZAU.MEINH) and ZLD.MATNR='art_no'
+         WHERE 1 =1 
+        GROUP BY ZLD.LOCATION_ID  , HIER.DEPT_NAME, HIER.DEPT ORDER BY dept_name, substr(loc_name_to_sort, 1, locate(loc_name_to_sort, '|', 1)-1), 
+        CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', 1)+1, abs(locate(loc_name_to_sort, '|', -1)-locate(loc_name_to_sort, '|', 1))-1) AS double),
+        CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', -1)+1) AS double) )temp1
+group by temp1.location_name
+order by 1,2]]>
+		</dbcounttun>	
+		
+</TCName>
+
+<TCName name="ltologstun">
+		<tun>
+<![CDATA[select distinct b.ean11,b.matnr from zwowt_lto_logs a, ZWOWC_ARTICLE_EAN b where a.matnr=b.matnr and len(ean11)=14 and lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD')]]>
+		</tun>
+		
+		<logsdb>
+<![CDATA[SELECT DISTINCT 
+    /*fn_wow_get_lto_location_short_name(A.LOCATION_ID) as loc_short_name,*/
+     A.MATNR as article_no,
+    fn_wow_get_article_description(A.MATNR) AS article_desc,A.ACTION as action,case when  ABS(lto_qty-prev_lto_qty) >'0' then ABS(lto_qty-prev_lto_qty)  else ABS(WEIGHT-PREV_WEIGHT) END AS action_qty ,A.MEINH as uom, A.USERID as userid,
+    /*C.USR_NM*/fn_wow_get_user_name(A.USERID) as username,
+    dateformat(A.lto_log_date, 'DD/MM/YYYY')||' '||A.lto_log_time as modified_on
+    FROM (
+    SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+    USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWT_LTO_LOGS
+    UNION
+    SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+    USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWO_LTO_LOGS
+    ) A
+    JOIN MAT_VIEW_ZWOW_ARTICLES_HIER B ON (A.MATNR = B.MATNR)
+    JOIN ZWOWC_ARTICLE_MASTER C ON (A.MATNR = C.MATNR)
+    JOIN ZWOWC_ARTICLE_UOM D ON (A.MATNR = D.MATNR AND A.MEINH = D.MEINH)
+    JOIN ZWOWC_ARTICLE_LISTING E ON (A.MATNR = E.MATNR)
+    WHERE 1 = 1 AND A.LOCATION_ID <> 0 --UPPER(A.ACTION) LIKE '%CHECK%'
+     AND A.LTO_LOG_DATE BETWEEN '2017-09-29' AND '2019-09-30' and A.matnr in ('ar1','ar2','ar3')]]>
+		</logsdb>
+		
+		
+</TCName>
+
+
+<TCName name="ltoaudittun">
+		<tun>
+<![CDATA[select distinct b.ean11,b.matnr from zwowt_lto_logs a, ZWOWC_ARTICLE_EAN b where a.matnr=b.matnr and len(ean11)=14 and lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD') and ACTION in('AUDITIN','AUDITOUT')]]>
+		</tun>
+
+
+<auditdbtun>
+		<![CDATA[SELECT A.MATNR as article_no,fn_wow_get_article_description(A.MATNR) AS article_desc,A.MEINH AS uom,CAST(fn_wow_get_order_multiple(A.MATNR) AS NUMERIC(17,3)) as om,fn_wow_get_sc_by_matnr(A.MATNR,A.MEINH) AS shelf_capacity,COALESCE(A.PREV_WEIGHT,A.PREV_LTO_QTY) as lto_qty, COALESCE(A.WEIGHT,A.LTO_QTY) AS audit_qty,ABS(audit_qty - lto_qty) as difference
+      FROM (
+      SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+      USERID, LTO_LOG_DATE, LTO_LOG_TIME, SOURCE FROM ZWOWT_LTO_LOGS
+      UNION
+      SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+      USERID, LTO_LOG_DATE, LTO_LOG_TIME, SOURCE FROM ZWOWO_LTO_LOGS
+      ) A
+      JOIN ZWOWC_ARTICLE_UOM B ON (A.MATNR = B.MATNR AND A.MEINH = B.MEINH)
+      JOIN MAT_VIEW_ZWOW_ARTICLES_HIER C ON (A.MATNR = C.MATNR)
+      JOIN ZWOWC_ARTICLE_MASTER D ON (A.MATNR = D.MATNR)
+      JOIN ZWOWC_ARTICLE_LISTING E ON (A.MATNR = E.MATNR)
+      WHERE UPPER(A.ACTION) LIKE '%AUDIT%'  AND A.LOCATION_ID <> 0 AND A.LTO_LOG_DATE BETWEEN dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD') and A.matnr in ('ar1','ar2','ar3')
+ORDER BY article_no]]>
+</auditdbtun>
+</TCName>
+
+
+<TCName name="ltologsmatnr">
+		<matnr>
+<![CDATA[select distinct matnr from ZWOWT_LTO_LOGS where lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD')]]>
+		</matnr>
+
+<logsdb>
+<![CDATA[SELECT DISTINCT 
+    /*fn_wow_get_lto_location_short_name(A.LOCATION_ID) as loc_short_name,*/
+     A.MATNR as article_no,
+    fn_wow_get_article_description(A.MATNR) AS article_desc,A.ACTION as action,case when  ABS(lto_qty-prev_lto_qty) >'0' then ABS(lto_qty-prev_lto_qty)  else ABS(WEIGHT-PREV_WEIGHT) END AS action_qty ,A.MEINH as uom, A.USERID as userid,
+    /*C.USR_NM*/fn_wow_get_user_name(A.USERID) as username,
+    dateformat(A.lto_log_date, 'DD/MM/YYYY')||' '||A.lto_log_time as modified_on
+    FROM (
+    SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+    USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWT_LTO_LOGS
+    UNION
+    SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+    USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWO_LTO_LOGS
+    ) A
+    JOIN MAT_VIEW_ZWOW_ARTICLES_HIER B ON (A.MATNR = B.MATNR)
+    JOIN ZWOWC_ARTICLE_MASTER C ON (A.MATNR = C.MATNR)
+    JOIN ZWOWC_ARTICLE_UOM D ON (A.MATNR = D.MATNR AND A.MEINH = D.MEINH)
+    JOIN ZWOWC_ARTICLE_LISTING E ON (A.MATNR = E.MATNR)
+    WHERE 1 = 1 AND A.LOCATION_ID <> 0 --UPPER(A.ACTION) LIKE '%CHECK%'
+     AND A.LTO_LOG_DATE BETWEEN '2017-09-29' AND '2019-09-30' and A.matnr in ('ar1','ar2','ar3')]]>
+		</logsdb>
+		
+		
+		<prevlto>
+<![CDATA[SELECT DISTINCT 
+        /*fn_wow_get_lto_location_short_name(A.LOCATION_ID) as loc_short_name,*/
+         A.MATNR as article_no,
+        fn_wow_get_article_description(A.MATNR) AS article_desc,A.ACTION as action,COALESCE(A.PREV_WEIGHT,A.PREV_LTO_QTY) as prev_lto_qty,A.MEINH as uom, A.USERID as userid,
+        /*C.USR_NM*/fn_wow_get_user_name(A.USERID) as username,
+        dateformat(A.lto_log_date, 'DD/MM/YYYY')||' '||A.lto_log_time as modified_on
+        FROM (
+        SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+        USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWT_LTO_LOGS
+        UNION
+        SELECT WERKS, LOCATION_ID, MATNR, MEINH, PREV_LTO_QTY, PREV_WEIGHT, LTO_QTY, WEIGHT, ACTION,
+        USERID, LTO_LOG_DATE, LTO_LOG_TIME/*, SOURCE*/ FROM ZWOWO_LTO_LOGS
+        ) A
+        JOIN MAT_VIEW_ZWOW_ARTICLES_HIER B ON (A.MATNR = B.MATNR)
+        JOIN ZWOWC_ARTICLE_MASTER C ON (A.MATNR = C.MATNR)
+        JOIN ZWOWC_ARTICLE_UOM D ON (A.MATNR = D.MATNR AND A.MEINH = D.MEINH)
+        JOIN ZWOWC_ARTICLE_LISTING E ON (A.MATNR = E.MATNR)
+        WHERE 1 = 1 AND A.LOCATION_ID <> 0 --UPPER(A.ACTION) LIKE '%CHECK%'
+         AND A.LTO_LOG_DATE BETWEEN '2017-09-29' AND '2017-09-30']]>
+		</prevlto>
+		
+		
+		</TCName>
+		
+		
+<TCName name="dbfilter">
+		
+		<dbmatnr>
+<![CDATA[select location_name,sum(tot_articles),sum(tot_cartons),sum(tot_wgt_articles),sum(tot_rdmwgt_articles),sum(tot_eaches),sum(tot_mpk) from (SELECT ZLD.LOCATION_ID location_id,fn_wow_get_lto_location_name(ZLD.LOCATION_ID) as location_name,
+        fn_wow_get_lto_loc_name_to_sort(ZLD.LOCATION_ID) loc_name_to_sort, COUNT(DISTINCT ZLD.MATNR) tot_articles
+        , SUM(CASE WHEN ZLD.MEINH IN ('CAR','CA1','CA2') THEN COALESCE(ZLD.WEIGHT, ZLD.LTO_QTY) ELSE 0 END CASE) tot_cartons
+        , SUM(CASE WHEN ZLD.MEINH IN ('EA') THEN ZLD.LTO_QTY ELSE 0 END CASE) tot_eaches
+        , SUM(CASE WHEN ZLD.MEINH IN ('MPK') THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_mpk
+        , SUM(CASE WHEN ZLD.MEINH IN ('L') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_litres
+        , SUM(CASE WHEN ZLD.MEINH IN ('KG') AND ZM.WEIGHTED_IND ='N' THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_kgs
+        , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN 1 ELSE 0 END CASE) tot_wgt_articles
+        , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN 1 ELSE 0 END CASE) tot_rdmwgt_articles
+        , null as partial_cartons
+        , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_wgt_articles
+        , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN  CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_rdmwgt_articles  , HIER.DEPT_NAME dept_name, HIER.DEPT dept 
+         FROM ZWOWO_LTO_DETAILS_VIEW ZLD
+        JOIN MAT_VIEW_ZWOW_ARTICLES_HIER HIER ON (ZLD.MATNR = HIER.MATNR)
+        JOIN ZWOWC_ARTICLE_MASTER ZM ON (ZLD.MATNR = ZM.MATNR)
+        JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZLD.MATNR = ZAL.MATNR)
+        JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZLD.MATNR AND ZLD.MEINH = ZAU.MEINH)
+         WHERE 1 =1 
+        GROUP BY ZLD.LOCATION_ID  , HIER.DEPT_NAME, HIER.DEPT ORDER BY dept_name, substr(loc_name_to_sort, 1, locate(loc_name_to_sort, '|', 1)-1), 
+        CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', 1)+1, abs(locate(loc_name_to_sort, '|', -1)-locate(loc_name_to_sort, '|', 1))-1) AS double),
+        CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', -1)+1) AS double))temp1
+group by temp1.location_name
+order by 1,2]]>
+		</dbmatnr>
+		
+	</TCName>
+	
+	<TCName name="nonltoarticles">
+		<matnr>
+<![CDATA[select distinct matnr from ZWOWC_ARTICLE_MASTER]]>
+		</matnr>
+	</TCName>
+	
+	
+	<TCName name="MCcountdescription">
+		<description>
+<![CDATA[select distinct  b.article_desc,b.matnr from ZWOWO_LTO_DETAILS_VIEW a, zwowc_article_master b where a.matnr=b.matnr]]>
+		</description>
+		<dbcountdesc>
+<![CDATA[select location_name,sum(tot_articles),sum(tot_cartons),sum(tot_wgt_articles),sum(tot_rdmwgt_articles),sum(tot_eaches),sum(tot_mpk) from (SELECT HIER.dept_name as deptartment,ZLD.LOCATION_ID location_id,fn_wow_get_lto_location_name(ZLD.LOCATION_ID) as location_name,
+       fn_wow_get_lto_loc_name_to_sort(ZLD.LOCATION_ID) loc_name_to_sort, COUNT(DISTINCT ZLD.MATNR) tot_articles
+       , SUM(CASE WHEN ZLD.MEINH IN ('CAR','CA1','CA2') THEN COALESCE(ZLD.WEIGHT, ZLD.LTO_QTY) ELSE 0 END CASE) tot_cartons
+       , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN 1 ELSE 0 END CASE) tot_rdmwgt_articles
+       , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN 1 ELSE 0 END CASE) tot_wgt_articles
+       , SUM(CASE WHEN ZLD.MEINH IN ('EA') THEN ZLD.LTO_QTY ELSE 0 END CASE) tot_eaches
+       , SUM(CASE WHEN ZLD.MEINH IN ('MPK') THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_mpk      
+        , null as partial_cartons
+       , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_wgt_articles
+       , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN  CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_rdmwgt_articles  , HIER.DEPT_NAME dept_name, HIER.DEPT dept 
+        FROM ZWOWO_LTO_DETAILS_VIEW ZLD
+       JOIN MAT_VIEW_ZWOW_ARTICLES_HIER HIER ON (ZLD.MATNR = HIER.MATNR)
+       JOIN ZWOWC_ARTICLE_MASTER ZM ON (ZLD.MATNR = ZM.MATNR)
+       JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZLD.MATNR = ZAL.MATNR)
+       JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZLD.MATNR AND ZLD.MEINH = ZAU.MEINH)
+        WHERE 1 =1 
+       and HIER.DEPT_NAME <> ('') and zld.matnr in ('ar1', 'ar2', 'ar3')
+GROUP BY HIER.DEPT_NAME,ZLD.LOCATION_ID  , HIER.DEPT_NAME, HIER.DEPT ORDER BY dept_name, substr(loc_name_to_sort, 1, locate(loc_name_to_sort, '|', 1)-1), 
+       CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', 1)+1, abs(locate(loc_name_to_sort, '|', -1)-locate(loc_name_to_sort, '|', 1))-1) AS double),
+       CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', -1)+1) AS double))temp1 group by temp1.deptartment,temp1.location_name
+order by temp1.location_name asc]]>
+		</dbcountdesc>
+	</TCName>
+	
+	<TCName name="MCcountean">
+		<ean>
+<![CDATA[select distinct b.ean11,b.matnr from zwowt_lto_logs a, ZWOWC_ARTICLE_EAN b where a.matnr=b.matnr and lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD')]]>
+		</ean>
+		<dbcountean>
+<![CDATA[select location_name,sum(tot_articles),sum(tot_cartons),sum(tot_wgt_articles),sum(tot_rdmwgt_articles),sum(tot_eaches),sum(tot_mpk) from (SELECT HIER.dept_name as deptartment,ZLD.LOCATION_ID location_id,fn_wow_get_lto_location_name(ZLD.LOCATION_ID) as location_name,
+       fn_wow_get_lto_loc_name_to_sort(ZLD.LOCATION_ID) loc_name_to_sort, COUNT(DISTINCT ZLD.MATNR) tot_articles
+       , SUM(CASE WHEN ZLD.MEINH IN ('CAR','CA1','CA2') THEN COALESCE(ZLD.WEIGHT, ZLD.LTO_QTY) ELSE 0 END CASE) tot_cartons
+       , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN 1 ELSE 0 END CASE) tot_rdmwgt_articles
+       , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN 1 ELSE 0 END CASE) tot_wgt_articles
+       , SUM(CASE WHEN ZLD.MEINH IN ('EA') THEN ZLD.LTO_QTY ELSE 0 END CASE) tot_eaches
+       , SUM(CASE WHEN ZLD.MEINH IN ('MPK') THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_mpk      
+        , null as partial_cartons
+       , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_wgt_articles
+       , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN  CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_rdmwgt_articles  , HIER.DEPT_NAME dept_name, HIER.DEPT dept 
+        FROM ZWOWO_LTO_DETAILS_VIEW ZLD
+       JOIN MAT_VIEW_ZWOW_ARTICLES_HIER HIER ON (ZLD.MATNR = HIER.MATNR)
+       JOIN ZWOWC_ARTICLE_MASTER ZM ON (ZLD.MATNR = ZM.MATNR)
+       JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZLD.MATNR = ZAL.MATNR)
+       JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZLD.MATNR AND ZLD.MEINH = ZAU.MEINH)
+        WHERE 1 =1 
+       and HIER.DEPT_NAME <> ('')  and zld.matnr in ('ar1', 'ar2', 'ar3')
+GROUP BY HIER.DEPT_NAME,ZLD.LOCATION_ID  , HIER.DEPT_NAME, HIER.DEPT ORDER BY dept_name, substr(loc_name_to_sort, 1, locate(loc_name_to_sort, '|', 1)-1), 
+       CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', 1)+1, abs(locate(loc_name_to_sort, '|', -1)-locate(loc_name_to_sort, '|', 1))-1) AS double),
+       CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', -1)+1) AS double))temp1 group by temp1.deptartment,temp1.location_name
+order by temp1.location_name asc]]>
+		</dbcountean>
+	</TCName>
+	
+	<TCName name="MCcountmatnr">
+		<matnr>
+<![CDATA[select distinct matnr from ZWOWT_LTO_LOGS where lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD')]]>
+		</matnr>
+		<dbmatnr>
+<![CDATA[select location_name,sum(tot_articles),sum(tot_cartons),sum(tot_wgt_articles),sum(tot_rdmwgt_articles),sum(tot_eaches),sum(tot_mpk) from (SELECT HIER.dept_name as deptartment,ZLD.LOCATION_ID location_id,fn_wow_get_lto_location_name(ZLD.LOCATION_ID) as location_name,
+       fn_wow_get_lto_loc_name_to_sort(ZLD.LOCATION_ID) loc_name_to_sort, COUNT(DISTINCT ZLD.MATNR) tot_articles
+       , SUM(CASE WHEN ZLD.MEINH IN ('CAR','CA1','CA2') THEN COALESCE(ZLD.WEIGHT, ZLD.LTO_QTY) ELSE 0 END CASE) tot_cartons
+       , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN 1 ELSE 0 END CASE) tot_rdmwgt_articles
+       , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN 1 ELSE 0 END CASE) tot_wgt_articles
+       , SUM(CASE WHEN ZLD.MEINH IN ('EA') THEN ZLD.LTO_QTY ELSE 0 END CASE) tot_eaches
+       , SUM(CASE WHEN ZLD.MEINH IN ('MPK') THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_mpk      
+        , null as partial_cartons
+       , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_wgt_articles
+       , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN  CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_rdmwgt_articles  , HIER.DEPT_NAME dept_name, HIER.DEPT dept 
+        FROM ZWOWO_LTO_DETAILS_VIEW ZLD
+       JOIN MAT_VIEW_ZWOW_ARTICLES_HIER HIER ON (ZLD.MATNR = HIER.MATNR)
+       JOIN ZWOWC_ARTICLE_MASTER ZM ON (ZLD.MATNR = ZM.MATNR)
+       JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZLD.MATNR = ZAL.MATNR)
+       JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZLD.MATNR AND ZLD.MEINH = ZAU.MEINH)
+        WHERE 1 =1 
+       and HIER.DEPT_NAME <> ('') and zld.matnr in ('ar1', 'ar2', 'ar3')
+GROUP BY HIER.DEPT_NAME,ZLD.LOCATION_ID  , HIER.DEPT_NAME, HIER.DEPT ORDER BY dept_name, substr(loc_name_to_sort, 1, locate(loc_name_to_sort, '|', 1)-1), 
+       CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', 1)+1, abs(locate(loc_name_to_sort, '|', -1)-locate(loc_name_to_sort, '|', 1))-1) AS double),
+       CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', -1)+1) AS double))temp1 group by temp1.deptartment,temp1.location_name
+order by temp1.location_name asc]]>
+		</dbmatnr>
+	</TCName>
+	
+	<TCName name="MCcountplu">
+		<plu>
+<![CDATA[select distinct b.plu_code,b.matnr from ZWOWT_LTO_LOGS a, zwowc_article_master b where lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD') and a.matnr=b.matnr and b.plu_code>1]]>
+		</plu>
+		<dbcountplu>
+<![CDATA[select location_name,sum(tot_articles),sum(tot_cartons),sum(tot_wgt_articles),sum(tot_rdmwgt_articles),sum(tot_eaches),sum(tot_mpk) from (SELECT HIER.dept_name as deptartment,ZLD.LOCATION_ID location_id,fn_wow_get_lto_location_name(ZLD.LOCATION_ID) as location_name,
+       fn_wow_get_lto_loc_name_to_sort(ZLD.LOCATION_ID) loc_name_to_sort, COUNT(DISTINCT ZLD.MATNR) tot_articles
+       , SUM(CASE WHEN ZLD.MEINH IN ('CAR','CA1','CA2') THEN COALESCE(ZLD.WEIGHT, ZLD.LTO_QTY) ELSE 0 END CASE) tot_cartons
+       , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN 1 ELSE 0 END CASE) tot_rdmwgt_articles
+       , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN 1 ELSE 0 END CASE) tot_wgt_articles
+       , SUM(CASE WHEN ZLD.MEINH IN ('EA') THEN ZLD.LTO_QTY ELSE 0 END CASE) tot_eaches
+       , SUM(CASE WHEN ZLD.MEINH IN ('MPK') THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_mpk      
+        , null as partial_cartons
+       , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_wgt_articles
+       , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN  CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_rdmwgt_articles  , HIER.DEPT_NAME dept_name, HIER.DEPT dept 
+        FROM ZWOWO_LTO_DETAILS_VIEW ZLD
+       JOIN MAT_VIEW_ZWOW_ARTICLES_HIER HIER ON (ZLD.MATNR = HIER.MATNR)
+       JOIN ZWOWC_ARTICLE_MASTER ZM ON (ZLD.MATNR = ZM.MATNR)
+       JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZLD.MATNR = ZAL.MATNR)
+       JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZLD.MATNR AND ZLD.MEINH = ZAU.MEINH)
+        WHERE 1 =1 
+       and HIER.DEPT_NAME <> ('') and zld.matnr in ('ar1', 'ar2', 'ar3')
+GROUP BY HIER.DEPT_NAME,ZLD.LOCATION_ID  , HIER.DEPT_NAME, HIER.DEPT ORDER BY dept_name, substr(loc_name_to_sort, 1, locate(loc_name_to_sort, '|', 1)-1), 
+       CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', 1)+1, abs(locate(loc_name_to_sort, '|', -1)-locate(loc_name_to_sort, '|', 1))-1) AS double),
+       CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', -1)+1) AS double))temp1 group by temp1.deptartment,temp1.location_name
+order by temp1.location_name asc]]>
+		</dbcountplu>
+	</TCName>
+	
+	
+	<TCName name="MCcounttun">
+		<tun>
+<![CDATA[select distinct b.ean11,b.matnr from zwowt_lto_logs a, ZWOWC_ARTICLE_EAN b where a.matnr=b.matnr and len(ean11)=14 and lto_log_date between dateformat(TODAY() - 28,'YYYY/MM/DD')  and dateformat(TODAY(),'YYYY/MM/DD')]]>
+		</tun>
+		<dbcounttun>
+<![CDATA[select location_name,sum(tot_articles),sum(tot_cartons),sum(tot_wgt_articles),sum(tot_rdmwgt_articles),sum(tot_eaches),sum(tot_mpk) from (SELECT HIER.dept_name as deptartment,ZLD.LOCATION_ID location_id,fn_wow_get_lto_location_name(ZLD.LOCATION_ID) as location_name,
+       fn_wow_get_lto_loc_name_to_sort(ZLD.LOCATION_ID) loc_name_to_sort, COUNT(DISTINCT ZLD.MATNR) tot_articles
+       , SUM(CASE WHEN ZLD.MEINH IN ('CAR','CA1','CA2') THEN COALESCE(ZLD.WEIGHT, ZLD.LTO_QTY) ELSE 0 END CASE) tot_cartons
+       , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN 1 ELSE 0 END CASE) tot_rdmwgt_articles
+       , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN 1 ELSE 0 END CASE) tot_wgt_articles
+       , SUM(CASE WHEN ZLD.MEINH IN ('EA') THEN ZLD.LTO_QTY ELSE 0 END CASE) tot_eaches
+       , SUM(CASE WHEN ZLD.MEINH IN ('MPK') THEN COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_mpk      
+        , null as partial_cartons
+       , SUM(CASE WHEN ZM.WEIGHTED_IND ='Y' THEN CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_wgt_articles
+       , SUM(CASE WHEN ZAL.RANDOM_WEIGHT_FLG ='Y' THEN  CASE WHEN ZM.PBD_IND = 'Y' THEN ZAU.PACK_SIZE/ZAU.PACK_SIZE_BASE ELSE ZAU.PACK_SIZE END CASE * COALESCE(ZLD.WEIGHT,ZLD.LTO_QTY) ELSE 0 END CASE) tot_lto_qty_rdmwgt_articles  , HIER.DEPT_NAME dept_name, HIER.DEPT dept 
+        FROM ZWOWO_LTO_DETAILS_VIEW ZLD
+       JOIN MAT_VIEW_ZWOW_ARTICLES_HIER HIER ON (ZLD.MATNR = HIER.MATNR)
+       JOIN ZWOWC_ARTICLE_MASTER ZM ON (ZLD.MATNR = ZM.MATNR)
+       JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZLD.MATNR = ZAL.MATNR)
+       JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAU.MATNR = ZLD.MATNR AND ZLD.MEINH = ZAU.MEINH)
+        WHERE 1 =1 
+       and HIER.DEPT_NAME <> ('') and zld.matnr in ('ar1', 'ar2', 'ar3')
+GROUP BY HIER.DEPT_NAME,ZLD.LOCATION_ID  , HIER.DEPT_NAME, HIER.DEPT ORDER BY dept_name, substr(loc_name_to_sort, 1, locate(loc_name_to_sort, '|', 1)-1), 
+       CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', 1)+1, abs(locate(loc_name_to_sort, '|', -1)-locate(loc_name_to_sort, '|', 1))-1) AS double),
+       CAST(substr(loc_name_to_sort, locate(loc_name_to_sort, '|', -1)+1) AS double))temp1 group by temp1.deptartment,temp1.location_name
+order by temp1.location_name asc]]>
+		</dbcounttun>
+	</TCName>
+	</configuration>
+	
+	
+		
+		
+		
+
+

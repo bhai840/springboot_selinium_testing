@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+<TCName name = "VerifyLTOLocationsSM">
+<getinUseCt>
+<![CDATA[select count(*) from zwowt_c_lto_location where location_type='I']]>
+</getinUseCt>
+<getnotinUseCt>
+<![CDATA[select count(*) from zwowt_c_lto_location where location_type='N']]>
+</getnotinUseCt>
+<getlocationName>
+<![CDATA[select location_name from zwowt_c_lto_location]]>
+</getlocationName>
+<getLocCt>
+<![CDATA[select count(*) from zwowt_c_lto_location]]>
+</getLocCt>
+</TCName>
+
+
+<TCName name = "ValidateLTOLocationsSM">
+<getlocationName>
+<![CDATA[select location_name from zwowt_c_lto_location where location_type='I']]>
+</getlocationName>
+<getlocationSeq>
+<![CDATA[select LOCATION_NAME from zwowt_c_lto_location where location_name like 'TEST%' order by LOCATION_SEQ desc]]>
+</getlocationSeq>
+<getlocationType>
+<![CDATA[select LOCATION_TYPE from zwowt_c_lto_location where location_name='TEST']]>
+</getlocationType>
+</TCName>
+
+
+
+<TCName name = "VerifyLTONonInUSeLocSM">
+<getAisle>
+<![CDATA[select Aisle from ZWOWT_C_LTO_AISLE where Location_id in (select LOCATION_ID from zwowt_c_lto_location where location_name like 'TEST' order by LOCATION_SEQ desc )]]>
+</getAisle>
+<getnotInuseLoc>
+<![CDATA[select location_name from zwowt_c_lto_location where location_type='N']]>
+</getnotInuseLoc>
+</TCName>
+</configuration>

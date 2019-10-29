@@ -1,0 +1,2017 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.Select;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.PromotionEndTypeObjects;
+import au.wow.ngbomain.objects.PromotionEndTypeObjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.PromotionEndTypePage;
+import au.wow.ngbomain.pages.PromotionEndTypePage;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+public class PromotionEndTypeTest extends TestBase {
+	
+	private Logger log = LogManager.getLogger(PromotionEndTypeTest.class);
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	PromotionEndTypePage objPromoEndTypePage;
+	PromotionEndTypeObjects objPromoEndTypeObjects;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;			
+	List<List<Object>> result;
+	List<List<Object>> result_temp;
+	public static WebDriver driver;
+	public static XMLDataReader data;
+	
+	
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+    int count=0;		
+	int MCcount=0;
+	
+	public PromotionEndTypeTest(){
+		super.log=log;
+	}
+	
+	@Test(description = "Enabling and Disabling Application Settings")
+	public void appSettingCheck() throws SQLException, IOException, AWTException, ParseException{
+	try{
+		if(promoEndTypeArtpreCount2==-1)
+		{
+			MCcount =MCcount+6;
+		}
+		
+		TestStatus status = getTestStatus();
+		navToPromoEndType(status);
+		Actions act = new Actions(driver);
+		htmlToExtent(cName,mName,extLogger,driver, "****Enabling and Disabling Promotion End Type when logged in as Admin for SMKT banner****;;;Info");
+		objPromoEndTypeObjects.adminTab.click();
+		objPromoEndTypeObjects.appSettings.click();
+		objPromoEndTypeObjects.wowSMKT.click(); waitFor(5);
+		waitForJSandJQueryToLoad(driver);
+		objPromoEndTypeObjects.itadminRole.click();
+		waitForJSandJQueryToLoad(driver);
+		objPromoEndTypeObjects.pricingMenu_appSetting.click();
+		waitForJSandJQueryToLoad(driver); 
+		if(objPromoEndTypeObjects.promoEndTypeCheckBox.isSelected()){
+			objPromoEndTypePage.disablingPromoEndType(objPromoEndTypeObjects, driver);
+			objPromoEndTypePage.enablingPromoEndType(objPromoEndTypeObjects, driver);
+			
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion endtype is disabled in application setting;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"Enabling it by now;;;Pass");
+			objPromoEndTypePage.enablingPromoEndType(objPromoEndTypeObjects, driver);
+		}
+		htmlToExtent(cName,mName,extLogger,driver, "****Enabling and Disabling Promotion End Type when logged in as Admin for Specific SMKT Stores****;;;Info");
+		htmlToExtent(cName,mName,extLogger,driver, "Enabling for given SMKT Store alone;;;Info");
+		if(objPromoEndTypeObjects.includeStoreAll.isSelected()){
+			objPromoEndTypeObjects.includeStoreAll.click(); waitFor(4);
+			objPromoEndTypeObjects.addStoreAppSetting.click(); waitFor(4);
+			objPromoEndTypeObjects.addStoreRow.click(); waitFor(4);
+			objPromoEndTypeObjects.sendStore.sendKeys("3064");
+			objPromoEndTypeObjects.verifyStore.click();
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver, "Store Added to be included : "+objPromoEndTypeObjects.storeNameAdded.getText().replace("Store","").replace("Actions","")+";;;Pass");
+			objPromoEndTypeObjects.saveStorebtn.click();waitFor(5);
+		}
+		htmlToExtent(cName,mName,extLogger,driver, "Disabling for enabled SMKT Store alone;;;Info");
+		objPromoEndTypeObjects.includeStoreAll.click(); waitFor(5);
+		objPromoEndTypeObjects.addExcludeStore.click();waitFor(5);
+		objPromoEndTypeObjects.addStoreRow.click(); waitFor(5);
+		objPromoEndTypeObjects.sendStore.sendKeys("3064");
+		objPromoEndTypeObjects.verifyStore.click();
+		waitForJSandJQueryToLoad(driver);
+		htmlToExtent(cName,mName,extLogger,driver, "Store Added to be excluded : "+objPromoEndTypeObjects.storeNameAdded.getText().replace("Store","").replace("Actions","")+";;;Pass");
+		objPromoEndTypeObjects.saveStorebtn.click(); waitFor(4);
+		objPromoEndTypeObjects.saveAppSetting.click(); waitFor(4);
+		waitForJSandJQueryToLoad(driver);
+		objPromoEndTypeObjects.okAppSetting.click(); waitFor(5);
+		
+		waitFor(5);
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios,promoEndTypeArttestname,driver));
+		status.assertAll();
+		
+		
+	}
+	catch(Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+	}
+}
+	
+	@Test(description = "Promotion End Type Check for different user roles")
+	public void roleAccessCheck() throws SQLException, IOException, AWTException, ParseException{
+	try{
+		if(promoEndTypeArtpreCount2==-1)
+		{
+			MCcount =MCcount+19;
+		}
+		
+		TestStatus status = getTestStatus();
+		navToPromoEndTypeDeptManager(status);
+		if(objPromoEndTypeObjects.promoEndTypePage.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Department Manager;;;Pass");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Department Manager;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeOffAssistant(status);
+		if(objPromoEndTypeObjects.promoEndTypePage.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Office Assistant;;;Pass");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Office Assistant;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeOffSupervisor(status);
+		if(objPromoEndTypeObjects.promoEndTypePage.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Office Supervisor;;;Pass");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Office Supervisor;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeTeamMember(status);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Team Member;;;Fail");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Team Member;;;Pass");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeBussReview(status);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Business Review;;;Fail");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Business Review;;;Pass");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeCustAssistant(status);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Customer Assistant;;;Fail");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Customer Assistant;;;Pass");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeStoreManage(status);
+		if(objPromoEndTypeObjects.promoEndTypePage.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Store Management;;;Pass");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Store Management;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeSupervisor(status);
+		if(objPromoEndTypeObjects.promoEndTypePage.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Supervisor / Service Assistant;;;Pass");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Supervisor / Service Assistant;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeITSupport1(status);
+		if(objPromoEndTypeObjects.promoEndTypePage.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for IT Support Level 1;;;Pass");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for IT Support Level 1;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeReporting(status);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Reporting;;;Fail");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Reporting;;;Pass");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeITS2(status);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for IT Support Level 2;;;Fail");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for IT Support Level 2;;;Pass");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeSS(status);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Store Support;;;Fail");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Store Support;;;Pass");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeReadOnly(status);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Read Only User;;;Fail");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Read Only User;;;Pass");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeStockTakeMange(status);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Stock Take Manager;;;Fail");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Stock Take Manager;;;Pass");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeStockTakeTeamMem(status);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Stock Take Team Member;;;Fail");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Stock Take Team Member;;;Pass");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeITUserAdmin(status);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for IT User Admin;;;Fail");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for IT User Admin;;;Pass");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeServiceDesk(status);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Service Desk Assistant;;;Fail");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Service Desk Assistant;;;Pass");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		
+		navToPromoEndTypeServiceCash(status);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is availabe for Service Cashier;;;Fail");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type Page is not availabe for Service Cashier;;;Pass");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios, promoEndTypeArttestname,driver));
+		status.assertAll();
+		
+		
+	}catch(Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+	}
+}
+	
+	
+	@Test(description = "Promotion End Type Drop Down Check")
+	public void dropDownCheck() throws SQLException, IOException, AWTException, ParseException{
+	try{
+		if(promoEndTypeArtpreCount2==-1)
+		{
+			MCcount =MCcount+7;
+
+		}
+		TestStatus status = getTestStatus();
+		navToPromoEndType(status);
+		htmlToExtent(cName,mName,extLogger,driver, "****Checking for Department and Promotion Week Drpo Down****;;;Pass");
+		if(objPromoEndTypeObjects.promotionWeekDropDown.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion Week Drop Down is displayed in Promotion End Type Screen;;;Pass");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion Week Drop Down is not displayed in Promotion End Type Screen;;;Fail");
+		}
+		if(objPromoEndTypeObjects.departmentDropDown.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Department Drop Down is displayed in Promotion End Type Screen;;;Pass");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Department Drop Down is not displayed in Promotion End Type Screen;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver, "****Checking for Drop Down Selection Values****;;;Info");
+		htmlToExtent(cName,mName,extLogger,driver, "Proceeding to Load article without selecting any of the drop down values;;;Info");
+		objPromoEndTypeObjects.loadArticleBtn.click(); waitFor(5);
+		if(objPromoEndTypeObjects.errorMessage.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Throws error message :"+objPromoEndTypeObjects.errorText.getText()+" ;;;Pass");
+			objPromoEndTypeObjects.errorMessage.click();
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "There is no error message displayed after proceeding without selecting a dropdown;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver, "Proceeding to Load article by Selecting only Promotion Week Drop Down;;;Info");
+		objPromoEndTypePage.selectingPromoWeek(objPromoEndTypeObjects, driver);
+		objPromoEndTypeObjects.loadArticleBtn.click(); waitFor(5);
+		if(objPromoEndTypeObjects.errorMessage.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Throws error message :"+objPromoEndTypeObjects.errorText.getText()+" ;;;Pass");
+			objPromoEndTypeObjects.errorMessage.click();
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "There is no error message displayed after proceeding without selecting a dropdown;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver, "Proceeding to Load article by Selecting only Department Drop Down;;;Info");
+		objPromoEndTypeObjects.promoWeekClear.click();
+		objPromoEndTypePage.selectingdepartment(objPromoEndTypeObjects, driver);
+		objPromoEndTypeObjects.loadArticleBtn.click(); waitFor(5);
+		if(objPromoEndTypeObjects.errorMessage.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Throws error message :"+objPromoEndTypeObjects.errorText.getText()+" ;;;Pass");
+			objPromoEndTypeObjects.errorMessage.click();
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "There is no error message displayed after proceeding without selecting a dropdown;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver, "Proceeding to Load article by Selecting both the Promotion Week and Department Drop Down;;;Info");
+		objPromoEndTypePage.selectingPromoWeek(objPromoEndTypeObjects, driver);
+		objPromoEndTypePage.selectingdepartment(objPromoEndTypeObjects, driver);
+		objPromoEndTypeObjects.loadArticleBtn.click(); waitFor(5);
+		if(objPromoEndTypeObjects.errorMessage.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "There are no promotions with selected weeks and department, Please select different values;;;Info");	
+			htmlToExtent(cName,mName,extLogger,driver, "Throws error message :"+objPromoEndTypeObjects.errorText.getText()+" ;;;Pass");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion Data are available for the selected week and department ;;;Info");
+		}
+		//htmlToExtent(cName,mName,extLogger,driver, "****Checking values under Promotion Week Drop Down****;;;Info");
+		//objPromoEndTypePage.valuesInPromoWeekDD(objPromoEndTypeObjects, ,driver);
+		
+		waitFor(5);
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios,promoEndTypeArttestname,driver));
+		status.assertAll();
+		
+		
+	}catch(Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+	}
+	
+	
+}
+
+	@Test(description = "Validating the details in the Promotion end type page")
+	public void promoEndTypeScreen() throws SQLException, IOException, AWTException, ParseException{
+	try{
+		if(promoEndTypeArtpreCount2==-1)
+		{
+			MCcount =MCcount+15;
+		}
+		List<List<Object>> articleDetailsAppln = new ArrayList<List<Object>>();
+		
+		TestStatus status = getTestStatus();
+	
+		//String b = a.substring(0,a.indexOf("+"));//.replace("$","");
+			
+		navToPromoEndType(status);
+		objPromoEndTypeObjects.twoWeeksOut.click();
+		String weekSelected = objPromoEndTypeObjects.twoWeeksOut.getText();
+		String startingWeek = objPromoEndTypeObjects.twoWeeksOut.getText().replaceAll("[^\\d/]","").substring(1);
+		System.out.println(weekSelected.replaceAll("\\s{2,}", " "));
+		objPromoEndTypeObjects.deptGeneralMerch.click();
+		String deptSelected = objPromoEndTypeObjects.deptGeneralMerch.getText();
+		objPromoEndTypeObjects.loadArticleBtn.click(); waitFor(5);
+		htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type for "+weekSelected+" and "+deptSelected+" department is selected;;;Pass");
+		if(objPromoEndTypeObjects.titlePromoEndPage.getText().contains(weekSelected.replaceAll("\\s{2,}", " "))&&objPromoEndTypeObjects.titlePromoEndPage.getText().contains(deptSelected)){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End type title is displayed as expected;;;Pass");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End type title is displayed as "+objPromoEndTypeObjects.titlePromoEndPage.getText()+";;;Fail");
+		}
+		if(objPromoEndTypeObjects.endtypeTab.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "End Type header is displayed in the promotion end type page;;;Pass");
+			if(objPromoEndTypeObjects.endTypeDropDown.isDisplayed()){
+				if(objPromoEndTypeObjects.endTypeDropDownOptions.size()<=4){
+					htmlToExtent(cName,mName,extLogger,driver, "Total of "+objPromoEndTypeObjects.endTypeDropDownOptions.size()+" end types are displayed in the drop down options;;;Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Total of "+objPromoEndTypeObjects.endTypeDropDownOptions.size()+" end type is available in drop down;;;Fail");
+				}
+				
+				//objPromoEndTypePage.endtypevalues(objPromoEndTypeObjects, driver);
+			}
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "End Type header is not displayed in the promotion end type page;;;Fail");
+		}
+		
+		
+		
+		
+		System.out.println(objPromoEndTypeObjects.displayTypeAppln.getText());
+		String[] dispvalues = objPromoEndTypeObjects.displayTypeAppln.getText().split("\\s+");
+		String disptypeApp = dispvalues[0];
+		String dispNoApp = dispvalues[1];
+		htmlToExtent(cName,mName,extLogger,driver, "Display type is displayed as : "+objPromoEndTypeObjects.displayTypeAppln.getText()+";;;Pass");
+		
+		String artDetailsDB = data.getText("artDetails").replace("store_no", getContext().getStringProperty("store")).replace("displaytype", disptypeApp)
+				.replace("department_no","15").replace("startingWeek",startingWeek);
+		results=sql.executeQueryRC(getContext(), artDetailsDB);
+		
+		List<List<Object>> endtypeDBList = new ArrayList<List<Object>>();
+		
+		Select endtypedropdown1 = new Select(driver.findElement(By.xpath("//*[contains(@class,'endTypeDropDown')]")));
+		String endtypeApp1 = endtypedropdown1.getFirstSelectedOption().getText();
+		
+		for(int i=0;i<results.size();i++){
+			//if()
+			
+			String endtypeDB = results.get(i).get(9).toString();
+			endtypeDBList.addAll(StringToListCreation(endtypeDB));
+			
+		}
+		
+		objPromoEndTypePage.endtypevalues(objPromoEndTypeObjects,endtypeDBList, driver);
+		
+		
+		try{
+		if(objPromoEndTypeObjects.moreArticles.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "More than one article are availabe under selected criteria ;;;Pass");
+			objPromoEndTypeObjects.moreArticles.click();
+			articleDetailsAppln = getValuesFromTable(objPromoEndTypeObjects.secondaryArticleDetails);
+			int totalArticle = articleDetailsAppln.size() +1;
+			waitFor(5);
+			htmlToExtent(cName,mName,extLogger,driver, "There are total of "+totalArticle+" article under the selected criteria;;;Pass");
+			}
+			if(objPromoEndTypeObjects.descriptionHeader.isDisplayed()){
+				htmlToExtent(cName,mName,extLogger,driver, "Article description is available in the header;;;Pass");
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver, "Article description is not available in the header;;;Fail");
+			}
+			
+			if(objPromoEndTypeObjects.promotionHeader.isDisplayed()){
+				if(objPromoEndTypeObjects.promotionHeader.getText().contains("Price")&&(objPromoEndTypeObjects.promotionHeader.getText().contains("Saving"))){
+				htmlToExtent(cName,mName,extLogger,driver, "Promotion Price and Savings are available in the header;;;Pass");	
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver, "Promotion Price and Savings are not available in the header;;;Fail");
+			}
+			
+			htmlToExtent(cName,mName,extLogger,driver, "Trying to save the end type without changing any details in it;;;Pass");
+			objPromoEndTypeObjects.endTypeSave.click();
+			waitFor(4);
+			if(objPromoEndTypeObjects.errorMessage.isDisplayed()){
+				if(objPromoEndTypeObjects.errorText.getText().equals("No changes made.")){
+					htmlToExtent(cName,mName,extLogger,driver, "Throws an error message : \"No Changes Made\";;;Pass");
+					objPromoEndTypeObjects.errorMessage.click();
+					if(objPromoEndTypeObjects.promoEndTypePage.isDisplayed()){
+						htmlToExtent(cName,mName,extLogger,driver, "Retained in same promotion end type page after acknowledging the error message;;;Pass");
+					}
+				}
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "There is no error message displayed;;;Fail");
+			}
+		
+		}catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "Only one article are availabe under selected criteria ;;;Pass");
+				
+				System.out.println(objPromoEndTypeObjects.articleDetails.getText());
+				String firstArt = objPromoEndTypeObjects.articleDetails.getText().replace("|"," ");
+				System.out.println(firstArt);
+				String[] firstArticleDetails=firstArt.split("\\s{2,}");
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Article number displayed as "+firstArticleDetails[0]+";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, "Article description displayed as "+firstArticleDetails[1]+";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, "Article promotion price is displayed as "+firstArticleDetails[2]+";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, "Article saving price is displayed as "+firstArticleDetails[3]+";;;Pass");
+					
+			}
+		
+		htmlToExtent(cName,mName,extLogger,driver, "Selecting another endtype again rather then the prrvious one;;;Info");
+		objPromoEndTypePage.selectingendtype(objPromoEndTypeObjects, driver);
+		objPromoEndTypeObjects.backBtn.click();
+		
+	//	if(objPromoEndTypeObjects.endTypeDropDownOptions.size()==1){
+		waitFor(4);
+		if(objPromoEndTypeObjects.discardPopUp.isDisplayed()){
+			if(objPromoEndTypeObjects.discardPopUp.getText().equals("Changes have not been saved. Do you want to save changes?")){
+				htmlToExtent(cName,mName,extLogger,driver, "PopUp is displayed after changing and going back without saving anything;;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, "Message : "+objPromoEndTypeObjects.discardPopUp.getText()+" with buttons "+objPromoEndTypeObjects.discardBackBtn.getText()+""
+						+ " and "+objPromoEndTypeObjects.discardYesBtn.getText()+";;;Pass");
+	
+				
+				objPromoEndTypeObjects.discardBackBtn.click();
+			
+			}
+		}
+		else{
+			
+			htmlToExtent(cName,mName,extLogger,driver, "PopUp is not displayed after changing and going back without saving anything;;;Fail");		
+		}
+		
+		waitFor(2);
+		objPromoEndTypeObjects.loadArticleBtn.click(); 
+		waitFor(5);
+		
+		Select endtypedropdown2 = new Select(driver.findElement(By.xpath("//*[contains(@class,'endTypeDropDown')]")));
+		String endtypeApp2 = endtypedropdown2.getFirstSelectedOption().getText();
+		
+		if(endtypeApp1.equals(endtypeApp2)){
+			
+			htmlToExtent(cName,mName,extLogger,driver, "AFter going back without saving any changes, initial endtype is displayed ;;;Pass");
+		}
+		else{
+			
+			htmlToExtent(cName,mName,extLogger,driver, "AFter going back without saving any changes, initial endtype is not displayed ;;;Fail");
+		}
+		
+		
+		
+		if(objPromoEndTypeObjects.endTypeDropDown.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "After clicking back button screen is retained in same page;;;Pass");
+		}else{		
+			htmlToExtent(cName,mName,extLogger,driver, "After clicking back button screen is not retained in same page;;;Fail");
+		}
+		
+	//	}
+	/*	else{
+			System.out.println(objPromoEndTypeObjects.articleDetails.getText());
+			String firstArt = objPromoEndTypeObjects.articleDetails.getText().replace("|"," ");
+			System.out.println(firstArt);
+			String[] firstArticleDetails=firstArt.split("\\s{2,}");
+			htmlToExtent(cName,mName,extLogger,driver, "Article number is displayed as "+firstArticleDetails[0]+";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver, "Article escription : "+firstArticleDetails[1]+";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion Price : "+firstArticleDetails[2].replace("$","")+";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver, "Price that saved "+firstArticleDetails[3].replace("$","")+";;;Pass");
+			
+		}
+	*/	objPromoEndTypePage.selectingendtype(objPromoEndTypeObjects, driver);
+		
+		
+		
+		htmlToExtent(cName,mName,extLogger,driver, "Navigating to other functionality say \"StockTake \" without saving the changes;;;Info");
+	//	objPromoEndTypeObjects.stockManagement.click();
+	//	objPromoEndTypeObjects.stockTake.click();
+		objPromoEndTypeObjects.prevScreen.click();
+		waitForJSandJQueryToLoad(driver);
+		if(objPromoEndTypeObjects.discardPopUp.isDisplayed()){
+			if(objPromoEndTypeObjects.discardPopUp.getText().equals("Changes have not been saved. Do you want to save changes?")){
+				//htmlToExtent(cName,mName,extLogger,driver, "Throws Popup :"+objPromoEndTypeObjects.discardPopUp.getText()+";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, "Message : "+objPromoEndTypeObjects.discardPopUp.getText()+" with buttons "+objPromoEndTypeObjects.discardBackBtn.getText()+""
+						+ " and "+objPromoEndTypeObjects.discardYesBtn.getText()+";;;Pass");
+	
+				objPromoEndTypeObjects.discardBackBtn.click();
+			}
+			
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "There is not popup displayed when moving to other screen without saving details;;;Fail");
+		}
+		/*String source=data.getText("sourceTable");
+		List<List<Object>> results_state = sql.executeQueryRC(getContext(),source);
+		System.out.println(results_state);	*/
+	
+	waitFor(5);
+	log.info("-----------------Logout from Application------------------");
+	htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios,promoEndTypeArttestname,driver));
+	status.assertAll();
+			
+	}catch(Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+	}
+	
+	
+}
+	
+	@Test(description = "Validating the details between RC DB and Promotion endtype screen")
+	public void rcandScreenCheck() throws SQLException, IOException, AWTException, ParseException{
+	try{
+		if(promoEndTypeArtpreCount2==-1)
+		{
+			MCcount =MCcount+4;
+		}
+		
+		List<List<Object>> articleDetailsAppln = new ArrayList<List<Object>>();	
+		List<List<Object>> articleDetailsDB = new ArrayList<List<Object>>();	
+		List<List<Object>> articleNumDB = new ArrayList<List<Object>>();	
+		List<List<Object>> articleNumAppln = new ArrayList<List<Object>>();	
+		List<List<Object>> weekDBReturn = new ArrayList<List<Object>>();	
+		//List<List<Object>> results = new ArrayList<List<Object>>();
+		List<String> weekList = new ArrayList<String>();
+		
+		TestStatus status = getTestStatus();
+		navToPromoEndType(status);
+		objPromoEndTypeObjects.twoWeeksOut.click();
+		String startingWeek = objPromoEndTypeObjects.twoWeeksOut.getText().replaceAll("[^\\d/]","").substring(1);
+		System.out.println(startingWeek);
+		
+		String weekDBQuery = data.getText("weeks").replace("salesorg",  "1005");
+		results=sql.executeQueryRC(getContext(), weekDBQuery);
+		
+		String week0 = results.get(0).get(0).toString().substring(0,10).replace("-", "/");
+		String week1 = results.get(0).get(1).toString().substring(0,10).replace("-", "/");
+		String week2 = results.get(0).get(2).toString().substring(0,10).replace("-", "/");
+		String week3 = results.get(0).get(3).toString().substring(0,10).replace("-", "/");
+		String week4 = results.get(0).get(4).toString().substring(0,10).replace("-", "/");
+		String week5 = results.get(0).get(5).toString().substring(0,10).replace("-", "/");
+		String week6 = results.get(0).get(6).toString().substring(0,10).replace("-", "/");
+		String week7 = results.get(0).get(7).toString().substring(0,10).replace("-", "/");
+		String week8 = results.get(0).get(8).toString().substring(0,10).replace("-", "/");
+		weekList.add(week0);
+		weekList.add(week1);
+		weekList.add(week2);
+		weekList.add(week3);
+		weekList.add(week4);
+		weekList.add(week5);
+		weekList.add(week6);
+		weekList.add(week7);
+		weekList.add(week8);
+		
+		weekDBReturn = objPromoEndTypePage.weekconversion(objPromoEndTypeObjects, weekList, driver);
+		
+		objPromoEndTypePage.valuesInPromoWeekDD(objPromoEndTypeObjects,weekDBReturn,driver);
+		
+		objPromoEndTypeObjects.deptGeneralMerch.click();
+		objPromoEndTypeObjects.loadArticleBtn.click(); waitFor(5);
+	
+		String[] dispvalues = objPromoEndTypeObjects.displayTypeAppln.getText().split("\\s+");
+		String disptypeApp = dispvalues[0];
+		String dispNoApp = dispvalues[1];
+		
+		String disptypeDBQuery = data.getText("disptype").replace("store_no",  getContext().getStringProperty("store")).replace("dept_no","15")
+				.replace("startingWeek", startingWeek);
+		results=sql.executeQueryRC(getContext(), disptypeDBQuery);
+		String disptypeDB = results.get(0).get(0).toString();
+		String dispnumberDB = results.get(0).get(3).toString();
+		
+		if(disptypeDB.equals(disptypeApp) && dispnumberDB.equals(dispNoApp)){
+			htmlToExtent(cName,mName,extLogger,driver, "Display type and display number matches betweem DB and Application;;;Pass");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Display type and display number doesnot matches betweem DB and Application;"+disptypeApp+"\n"+dispNoApp+";"+disptypeDB+"\n"+dispnumberDB+";Fail");
+		}
+				
+		
+		Select endtypedropdown = new Select(driver.findElement(By.xpath("//*[contains(@class,'endTypeDropDown')]")));
+		String endtypeApp = endtypedropdown.getFirstSelectedOption().getText();
+		
+		//String endtypeApp = driver.findElement(By.xpath("//*[contains(@class,'endTypeDropDown')]")).getText();
+		System.out.println(endtypeApp);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "Getting values from RC DB for selected week;;;Info");
+		
+		//if(objPromoEndTypeObjects.moreArticles.isDisplayed()){
+		try{
+		if(driver.findElement(By.xpath("//*[@class='defaultExpanded endTypeTableRow'][1]/descendant::label/descendant::a")).isDisplayed()){
+			objPromoEndTypeObjects.moreArticles.click();
+			articleDetailsAppln = getValuesFromTable(objPromoEndTypeObjects.secondaryArticleDetails);
+			int totalArticle = articleDetailsAppln.size() +1;
+			
+			for(int i=0;i<articleDetailsAppln.size();i++){
+				articleDetailsAppln.get(i).remove(1);
+				System.out.println(articleDetailsAppln);
+				}
+			}
+		}
+		catch(Exception e){
+			System.out.println("only one article available");
+		
+		}
+			System.out.println(objPromoEndTypeObjects.articleDetails.getText());
+			String firstArt = objPromoEndTypeObjects.articleDetails.getText().replace("|"," ");
+			System.out.println(firstArt);
+			String[] firstArticleDetails=firstArt.split("\\s{2,}");
+			String strAppln;
+			if(firstArticleDetails[3].contains("more")){
+			 strAppln = ""+firstArticleDetails[0]+":"+firstArticleDetails[1].trim()+":"+firstArticleDetails[2].replace("$","")+":"+firstArticleDetails[3].replace("$","").substring(0,firstArticleDetails[3].indexOf("+")).replace("$","").replace("+","").trim()+":"+firstArticleDetails[4];
+			}
+			else{
+			  strAppln = ""+firstArticleDetails[0]+":"+firstArticleDetails[1].trim()+":"+firstArticleDetails[2].replace("$","")+":"+firstArticleDetails[3].replace("$","").trim()+":"+firstArticleDetails[4];	
+			}
+			articleDetailsAppln.addAll(StringToListCreation(strAppln));
+			
+			System.out.println(articleDetailsAppln);
+			
+		
+		String artDetailsDB = data.getText("artDetails").replace("store_no", getContext().getStringProperty("store")).replace("displaytype", disptypeApp)
+				.replace("department_no","15").replace("startingWeek",startingWeek);
+		results=sql.executeQueryRC(getContext(), artDetailsDB);
+	//	String artDetails = results.get(0).get(0).toString();
+		
+		String defaultFlagSetArticle="";
+		String defaultFlagSetEndtype="";
+		for(int i=0;i<results.size();i++){
+			if(results.get(i).get(18).toString().equals("1")){
+				defaultFlagSetArticle = results.get(i).get(1).toString();
+				defaultFlagSetEndtype = results.get(i).get(9).toString();
+			//	List<List<Object>> defaultFlags= new ArrayList<List<Object>>();    more than one default flag 
+			//	String defDB = ""+defaultFlagSetArticle+":"+defaultFlagSetEndtype;
+			//	defaultFlags.addAll(StringToListCreation(defDB));
+				//defaultFlags.add(defaultFlagSetEndtype);
+			}else{
+				continue;
+			}		
+		}
+		
+		if(endtypeApp.equals(defaultFlagSetEndtype)){
+		
+			htmlToExtent(cName,mName,extLogger,driver, "Default Endtype is displayed first in the dropdown for endtype "+endtypeApp+";;;Pass");
+		}
+		else{
+			
+			htmlToExtent(cName,mName,extLogger,driver, "Default Endtype is not displayed first in the dropdown;"+defaultFlagSetEndtype+";"+endtypeApp+";Fail");
+		}
+		
+		
+		
+		/*
+		String detailsRC=data.getText("sourceTable").replace("promo_no",promoOfferNum ).replace("store_no", getContext().getStringProperty("store")).replace("disptype", disptypeApp)
+				.replace("dispno",dispNoApp);
+		results = sql.executeQueryRC(getContext(),detailsRC);
+		//System.out.println(results_state);
+		for(int i=0;i<results.size();i++){
+				String articleNum = results.get(i).get(0).toString();
+				String buildQty = results.get(i).get(1).toString();
+				String dispQty = results.get(i).get(2).toString();
+				String stdPrice = results.get(i).get(4).toString();
+				String promoPrice = results.get(i).get(3).toString();
+				String discPrice = results.get(i).get(5).toString();
+				//float discoutPrice = Float.parseFloat(discPrice);
+				int savings = Integer.parseInt(stdPrice)-Integer.parseInt(promoPrice);
+				System.out.println(savings);
+				System.out.println(Math.round(savings));
+				String strDB = ""+articleNum+":"+promoPrice+":"+Math.round(savings);
+				articleDetailsDB.addAll(StringToListCreation(strDB));
+				System.out.println(articleDetailsDB);
+				
+		}
+	*/	
+		
+		String articleNumberDB = results.get(0).get(1).toString();
+		String articleDescDB = results.get(0).get(3).toString();
+		String promoPriceDB = results.get(0).get(16).toString();
+		String savingPriceDB = results.get(0).get(17).toString();
+		String displayQuantityDB = results.get(0).get(12).toString();
+		
+		
+		
+		
+		String strDB1 = ""+articleNumberDB+":"+articleDescDB+":"+promoPriceDB+":"+savingPriceDB+":"+displayQuantityDB;
+		articleDetailsDB.addAll(StringToListCreation(strDB1));
+		htmlToExtent(cName,mName,extLogger,driver, "Comparing the Article,Description,Promotion Price Saving price and display Quantity between application and db;;;Info");
+		ElementContains1(cName,mName,extLogger,driver,articleDetailsAppln,articleDetailsDB);
+		
+		if(articleDetailsAppln.size()>1){
+			String a = ""+articleDetailsAppln.get(articleDetailsAppln.size()-1).get(0);
+			articleNumAppln.addAll(StringToListCreation(a));
+			for(int i=0;i<articleDetailsAppln.size()-1;i++){
+				String str = ""+articleDetailsAppln.get(i+1).get(0); 
+				articleNumAppln.addAll(StringToListCreation(str)) ;
+			}
+			
+		}
+		//articleNumAppln.add(articleDetailsAppln.get(index));
+		else if(articleDetailsAppln.size()==1){
+			String a = ""+articleDetailsAppln.get(0).get(0);
+			articleNumAppln.addAll(StringToListCreation(a));
+		}
+		
+		//String strDB = "755775"; 
+		articleNumDB.addAll(StringToListCreation(articleNumberDB)) ;
+		
+		int totalcount=0;
+		for(int i=0;i<articleNumAppln.size();i++){
+			//int count =0;
+			if(articleNumAppln.get(i).equals(articleNumDB.get(i))){
+				totalcount = totalcount+1;
+			}
+		}
+		
+		if(totalcount==articleNumAppln.size()&&totalcount==articleNumDB.size()){
+			
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion details are available in screen in descending order based on build quantity;;;Pass");
+		}
+		else{
+			
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion details are available in screen which are not sorted in descending order based on build quantity;;;Fail");
+		}
+		
+		waitFor(5);
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios,promoEndTypeArttestname,driver));
+		status.assertAll();
+
+	}catch(Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+	}
+	
+}
+	
+	
+	//Srivinith
+		@Test(description = "Validating Change End Type to Yes between Screens and DB")
+		public void changeEndTypeYes() throws SQLException, IOException, AWTException, ParseException{
+		try{
+			if(promoEndTypeArtpreCount2==-1)
+			{
+				MCcount =MCcount+4;
+			}
+			
+			List<List<Object>> articleDetailsAppln = new ArrayList<List<Object>>();	
+			List<List<Object>> articleDetailsDB = new ArrayList<List<Object>>();	
+			List<List<Object>> articleNumDB = new ArrayList<List<Object>>();	
+			List<List<Object>> articleNumAppln = new ArrayList<List<Object>>();	
+			List<List<Object>> weekDBReturn = new ArrayList<List<Object>>();	
+			//List<List<Object>> results = new ArrayList<List<Object>>();
+			List<String> weekList = new ArrayList<String>();
+			
+			TestStatus status = getTestStatus();
+			navToPromoEndType(status);
+			objPromoEndTypeObjects.currentWeek.click();
+			objPromoEndTypeObjects.deptGeneralMerch.click();
+			objPromoEndTypeObjects.loadArticleBtn.click(); waitFor(5);
+			
+			/*Select endtypedropdown1 = new Select(driver.findElement(By.xpath("//*[contains(@class,'endTypeDropDown')]")));
+			String endtypeApp1 = endtypedropdown1.getFirstSelectedOption().getText();
+			System.out.println(endtypeApp1);*/
+			
+			objPromoEndTypePage.selectingendtype(objPromoEndTypeObjects, driver);
+			objPromoEndTypePage.clickOnPromoEndType(objPromoEndTypeObjects, driver);
+			String actualMessage = objPromoEndTypeObjects.messageValidation.getText();
+			
+			if(actualMessage.contains("Changes have not been saved. Do you want to save changes?")){
+				htmlToExtent(cName,mName,extLogger,driver, "Message in the popup message box is as expected;;;Pass");
+			}
+			else{
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Message in the popup message box is as not expected;;;Fail");
+			}	
+			
+			objPromoEndTypeObjects.messagePopupBoxYesButton.click();
+			//wait(15000);
+			waitForElement(objPromoEndTypeObjects.successfullySavedMessage, driver);
+			
+			
+			/*Select endtypedropdown1 = new Select(driver.findElement(By.xpath("//*[contains(@class,'endTypeDropDown')]")));
+			String endtypeApp1 = endtypedropdown1.getFirstSelectedOption().getText();
+			System.out.println(endtypeApp1);
+			wait(3000);*/
+			
+			String successMessage = objPromoEndTypeObjects.successfullySavedMessage.getText();
+			
+			if(successMessage.contains("Promotion changes have been saved.")){
+				htmlToExtent(cName,mName,extLogger,driver, "Default end type change is changed to latest end type by store user as expected;;;Pass");
+			}
+			else{
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Default end type change is not changed to latest end type by store user;;;Fail");
+			}
+		}
+		catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		}
+		
+		
+		@Test(description = "Enabling and Disabling Application Settings For All Stores")
+		public void appSettingCheckForAllStores() throws SQLException, IOException, AWTException, ParseException{
+		try{
+			if(promoEndTypeArtpreCount2==-1)
+			{
+				MCcount =MCcount+6;
+			}
+			
+			TestStatus status = getTestStatus();
+			navToPromoEndType(status);
+			Actions act = new Actions(driver);
+			htmlToExtent(cName,mName,extLogger,driver, "****Enabling and Disabling Promotion End Type  For All Stores when logged in as Admin for SMKT banner****;;;Info");
+			objPromoEndTypeObjects.adminTab.click();
+			objPromoEndTypeObjects.appSettings.click();
+			objPromoEndTypeObjects.wowSMKT.click(); waitFor(5);
+			waitForJSandJQueryToLoad(driver);
+			objPromoEndTypeObjects.itadminRole.click();
+			waitForJSandJQueryToLoad(driver);
+			objPromoEndTypeObjects.pricingMenu_appSetting.click();
+			waitForJSandJQueryToLoad(driver); 
+//			if(objPromoEndTypeObjects.promoEndTypeCheckBox.isSelected()){
+//				objPromoEndTypePage.disablingPromoEndType(objPromoEndTypeObjects, driver);
+//				objPromoEndTypePage.enablingPromoEndType(objPromoEndTypeObjects, driver);
+//				
+//			}else{
+//				htmlToExtent(cName,mName,extLogger,driver,"Promotion endtype is disabled in application setting;;;Pass");
+//				htmlToExtent(cName,mName,extLogger,driver,"Enabling it by now;;;Pass");
+//				objPromoEndTypePage.enablingPromoEndType(objPromoEndTypeObjects, driver);
+//			}
+//			htmlToExtent(cName,mName,extLogger,driver, "****Enabling and Disabling Promotion End Type when logged in as Admin for Specific SMKT Stores****;;;Info");
+//			htmlToExtent(cName,mName,extLogger,driver, "Enabling for given SMKT Store alone;;;Info");
+			if(objPromoEndTypeObjects.includeStoreAll.isSelected()){
+				objPromoEndTypeObjects.includeStoreAll.click(); waitFor(4);
+				objPromoEndTypeObjects.addStoreAppSettingPromoEndType.click(); waitFor(4);
+				objPromoEndTypeObjects.addStoreRow.click(); waitFor(4);
+				objPromoEndTypeObjects.sendStore.sendKeys("3064");
+				objPromoEndTypeObjects.verifyStore.click();
+				waitForJSandJQueryToLoad(driver);
+				htmlToExtent(cName,mName,extLogger,driver, "Store Added to be included : "+objPromoEndTypeObjects.storeNameAdded.getText().replace("Store","").replace("Actions","")+";;;Pass");
+				objPromoEndTypeObjects.saveStorebtn.click();waitFor(5);
+				
+				String disableValidation = objPromoEndTypeObjects.addStoreAppSettingPromoEndType.getText();
+				System.out.println(disableValidation);
+				waitForJSandJQueryToLoad(driver);
+				objPromoEndTypeObjects.saveAppSetting.click(); waitFor(4);
+				waitForJSandJQueryToLoad(driver);
+				objPromoEndTypeObjects.okAppSetting.click(); waitFor(5);
+					if(disableValidation.contains("1")){
+						htmlToExtent(cName,mName,extLogger,driver, "The Promotion End Type For All Stores is Disabled;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, "The Promotion End Type For All Stores is Not Disabled as Expected;;;Fail");
+					}
+			
+					}
+			else if(!objPromoEndTypeObjects.includeStoreAll.isSelected()){
+				objPromoEndTypeObjects.includeStoreAll.click(); waitFor(4);
+				objPromoEndTypeObjects.saveAppSetting.click(); waitFor(4);
+				waitForJSandJQueryToLoad(driver);
+				objPromoEndTypeObjects.okAppSetting.click(); waitFor(5);
+				waitFor(5);
+					if(objPromoEndTypeObjects.includeStoreAll.isSelected()){
+						htmlToExtent(cName,mName,extLogger,driver, "The Promotion End Type For All Stores is Enabled;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, "The Promotion End Type For All Stores is Not Enabled as Expected;;;Fail");
+					}
+					}
+				
+			objPromoEndTypeObjects.adminTab.click();
+			objPromoEndTypeObjects.appSettings.click();
+			objPromoEndTypeObjects.wowSMKT.click(); waitFor(5);
+			waitForJSandJQueryToLoad(driver);
+			objPromoEndTypeObjects.itadminRole.click();
+			waitForJSandJQueryToLoad(driver);
+			objPromoEndTypeObjects.pricingMenu_appSetting.click();
+			waitForJSandJQueryToLoad(driver); 
+			if(objPromoEndTypeObjects.includeStoreAll.isSelected()){
+				objPromoEndTypeObjects.includeStoreAll.click(); waitFor(4);
+				objPromoEndTypeObjects.addStoreAppSettingPromoEndType.click(); waitFor(4);
+				objPromoEndTypeObjects.addStoreRow.click(); waitFor(4);
+				objPromoEndTypeObjects.sendStore.sendKeys("3064");
+				objPromoEndTypeObjects.verifyStore.click();
+				waitForJSandJQueryToLoad(driver);
+				htmlToExtent(cName,mName,extLogger,driver, "Store Added to be included : "+objPromoEndTypeObjects.storeNameAdded.getText().replace("Store","").replace("Actions","")+";;;Pass");
+				objPromoEndTypeObjects.saveStorebtn.click();waitFor(5);
+				
+				String disableValidation = objPromoEndTypeObjects.addStoreAppSettingPromoEndType.getText();
+				System.out.println(disableValidation);
+				waitForJSandJQueryToLoad(driver);
+				objPromoEndTypeObjects.saveAppSetting.click(); waitFor(4);
+				waitForJSandJQueryToLoad(driver);
+				objPromoEndTypeObjects.okAppSetting.click(); waitFor(5);
+					if(disableValidation.contains("1")){
+						htmlToExtent(cName,mName,extLogger,driver, "The Promotion End Type For All Stores is Disabled;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, "The Promotion End Type For All Stores is Not Disabled as Expected;;;Fail");
+					}
+			
+					}
+			else if(!objPromoEndTypeObjects.includeStoreAll.isSelected()){
+				objPromoEndTypeObjects.includeStoreAll.click(); waitFor(4);
+				objPromoEndTypeObjects.saveAppSetting.click(); waitFor(4);
+				waitForJSandJQueryToLoad(driver);
+				objPromoEndTypeObjects.okAppSetting.click(); waitFor(5);
+				waitFor(5);
+					if(objPromoEndTypeObjects.includeStoreAll.isSelected()){
+						htmlToExtent(cName,mName,extLogger,driver, "The Promotion End Type For All Stores is Enabled;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, "The Promotion End Type For All Stores is Not Enabled as Expected;;;Fail");
+					}
+					}
+			
+//				objPromoEndTypeObjects.addStoreRow.click(); waitFor(4);
+//				objPromoEndTypeObjects.sendStore.sendKeys("3064");
+//				objPromoEndTypeObjects.verifyStore.click();
+//				waitForJSandJQueryToLoad(driver);
+//				htmlToExtent(cName,mName,extLogger,driver, "Store Added to be included : "+objPromoEndTypeObjects.storeNameAdded.getText().replace("Store","").replace("Actions","")+";;;Pass");
+//				objPromoEndTypeObjects.saveStorebtn.click();waitFor(5);
+//			
+//			htmlToExtent(cName,mName,extLogger,driver, "Disabling for enabled SMKT Store alone;;;Info");
+//			objPromoEndTypeObjects.includeStoreAll.click(); waitFor(5);
+//			objPromoEndTypeObjects.addExcludeStore.click();waitFor(5);
+//			objPromoEndTypeObjects.addStoreRow.click(); waitFor(5);
+//			objPromoEndTypeObjects.sendStore.sendKeys("3064");
+//			objPromoEndTypeObjects.verifyStore.click();
+//			waitForJSandJQueryToLoad(driver);
+//			htmlToExtent(cName,mName,extLogger,driver, "Store Added to be excluded : "+objPromoEndTypeObjects.storeNameAdded.getText().replace("Store","").replace("Actions","")+";;;Pass");
+//			objPromoEndTypeObjects.saveStorebtn.click(); waitFor(4);
+//			objPromoEndTypeObjects.saveAppSetting.click(); waitFor(4);
+//			waitForJSandJQueryToLoad(driver);
+//			objPromoEndTypeObjects.okAppSetting.click(); waitFor(5);
+			
+			waitFor(5);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios,promoEndTypeArttestname,driver));
+			status.assertAll();
+			
+			
+		}
+		catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+	}
+		
+		@Test(description = "Validating Change End TypeFeed from RC Data between Screens and DB")
+		public void validationRCDataScreen() throws SQLException, IOException, AWTException, ParseException{
+		try{
+			if(promoEndTypeArtpreCount2==-1)
+			{
+				MCcount =MCcount+4;
+			}
+			
+			List<List<Object>> articleDetailsAppln = new ArrayList<List<Object>>();	
+			List<List<Object>> articleDetailsDB = new ArrayList<List<Object>>();
+			List<List<Object>> articleNumDB = new ArrayList<List<Object>>();	
+			List<List<Object>> articleNumAppln = new ArrayList<List<Object>>();	
+			List<List<Object>> weekDBReturn = new ArrayList<List<Object>>();	
+			//List<List<Object>> results = new ArrayList<List<Object>>();
+			List<String> weekList = new ArrayList<String>();
+			
+			TestStatus status = getTestStatus();
+			navToPromoEndType(status);
+			objPromoEndTypeObjects.threeWeeksOut.click();
+			objPromoEndTypeObjects.deptGroceries.click();
+			objPromoEndTypeObjects.loadArticleBtn.click(); waitFor(5);
+			
+			String[] dispvalues = objPromoEndTypeObjects.displayType.getText().split("\\s+");
+			String disptypeApp = dispvalues[0];
+			System.out.println(disptypeApp);
+			String dispNoApp = dispvalues[1];
+			System.out.println(dispNoApp);
+			
+			String article = objPromoEndTypeObjects.articleNumber.getText();
+			String articleNum[] =article.split("\\|");
+			String articleNumber = articleNum[0].trim();
+			System.out.println(articleNumber);
+			
+			objPromoEndTypeObjects.showAllArticles.click(); waitFor(3);
+			
+			String buildQty = objPromoEndTypeObjects.buildQtyEndType.getText();
+			int buildQtyInt = Integer.parseInt(buildQty);
+			System.out.println(buildQty);
+			
+			String omValue = objPromoEndTypeObjects.omValueEndType.getText();
+			float omValueInt = Integer.parseInt(omValue);
+			System.out.println(omValue);
+			
+			
+			String orderQty = data.getText("disptype1").replace("store_no",getContext().getStringProperty("store")).replace("dispType",disptypeApp).replace("dispNo", dispNoApp).replace("articleNum", articleNumber);
+			results=sql.executeQueryRC(getContext(), orderQty);
+			String orderQuantity = results.get(1).get(0).toString();
+//			String orderQuantity = "1659";
+			System.out.println(orderQuantity);
+			
+			
+			float orderQuantityInt = Integer.parseInt(orderQuantity);
+			
+			//Compare values
+			
+			float buildQuantityCalc = orderQuantityInt/omValueInt;
+			int buildQuantityCalculation = Math.round(buildQuantityCalc);
+			System.out.println(buildQuantityCalc+"*******");
+			String buildQuantityCalcStr = String.valueOf(buildQuantityCalculation);
+			
+			if(buildQuantityCalcStr.equals(buildQty)){
+				htmlToExtent(cName,mName,extLogger,driver, "Build Quantity is Same in Promotion End Type and Database as Expected;;;Pass");
+				
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Build Quantity is Not Same in Promotion End Type and Database;;;Fail");
+			}
+			
+			objPromoEndTypePage.clickOnPromoManagemt(objPromoEndTypeObjects, driver);
+			objPromoEndTypeObjects.threeWeeksOut.click();
+			objPromoEndTypeObjects.deptPromoMagtDropDownGroceries.click();
+			objPromoEndTypeObjects.promoMngemntArticleNo.sendKeys(articleNumber);
+			objPromoEndTypeObjects.promoMngemntLoadArticle.click();waitFor(3);
+			
+			String buildQtyPromoMagt= objPromoEndTypeObjects.buildQtyPromoMagt.getText();
+			System.out.println(buildQtyPromoMagt);
+			
+			if(buildQty.contains(buildQtyPromoMagt)){
+				htmlToExtent(cName,mName,extLogger,driver, "Build Quantity is same in Promotion End Type and Promotion Management Screens as Expected;;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Build Quantity is not same in Promotion End Type and Promotion Management Screens;;;Fail");
+			}
+			
+			//Changing Promotion End Type
+			objPromoEndTypePage.clickOnPromoEndType(objPromoEndTypeObjects, driver);
+			objPromoEndTypeObjects.threeWeeksOut.click();
+			objPromoEndTypeObjects.deptGroceries.click();
+			objPromoEndTypeObjects.loadArticleBtn.click(); waitFor(5);
+			objPromoEndTypePage.selectingendtype(objPromoEndTypeObjects, driver);
+			objPromoEndTypeObjects.endTypeSave.click();waitFor(3);
+			
+			String successMessage = objPromoEndTypeObjects.successfullySavedMessage.getText();
+			
+			if(successMessage.contains("Promotion changes have been saved.")){
+				htmlToExtent(cName,mName,extLogger,driver, "Default end type change is changed to latest end type by store user as expected;;;Pass");
+			}
+			else{
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Default end type change is not changed to latest end type by store user;;;Fail");
+			}
+			
+			objPromoEndTypeObjects.successfullySavedMessage.click();
+			objPromoEndTypeObjects.showAllArticles.click(); waitFor(3);
+			
+			String buildQtyAfter = objPromoEndTypeObjects.buildQtyEndType.getText();
+			int buildQtyAfterInt = Integer.parseInt(buildQtyAfter);
+			System.out.println(buildQtyAfter);
+			
+			String omValueAfter = objPromoEndTypeObjects.omValueEndType.getText();
+			float omValueAfterInt = Integer.parseInt(omValueAfter);
+			System.out.println(omValue);
+			
+			String orderQtyAfter = data.getText("disptype1").replace("store_no",getContext().getStringProperty("store")).replace("dispType",disptypeApp).replace("dispNo", dispNoApp).replace("articleNum", articleNumber);
+			results=sql.executeQueryRC(getContext(), orderQtyAfter);
+			String orderQuantityAfter = results.get(0).get(0).toString();
+//			String orderQuantityAfter = "20";
+			System.out.println(orderQuantityAfter);
+			float orderQuantityAfterInt = Integer.parseInt(orderQuantityAfter);
+			
+			//Compare values
+			
+			float buildQuantityCalcAfter = orderQuantityAfterInt/omValueAfterInt;
+			int buildQuantityCalculationAfter = Math.round(buildQuantityCalcAfter);
+			String buildQuantityCalcStrAfter = String.valueOf(buildQuantityCalculationAfter);
+			
+			if(buildQuantityCalcStrAfter.equals(buildQtyAfter)){
+				htmlToExtent(cName,mName,extLogger,driver, "Build Quantity is Same in Promotion End Type and Database as Expected After Change in Promotion End Type;;;Pass");
+				
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Build Quantity is Not Same in Promotion End Type and Database After Change in Promotion End Type;;;Fail");
+			}
+			
+			objPromoEndTypePage.clickOnPromoManagemt(objPromoEndTypeObjects, driver);
+			objPromoEndTypeObjects.threeWeeksOut.click();
+			objPromoEndTypeObjects.deptPromoMagtDropDownGroceries.click();
+			objPromoEndTypeObjects.promoMngemntArticleNo.sendKeys(articleNumber);
+			objPromoEndTypeObjects.promoMngemntLoadArticle.click();waitFor(3);
+			
+			String buildQtyPromoMagtAfter= objPromoEndTypeObjects.buildQtyPromoMagt.getText();
+			System.out.println(buildQtyPromoMagtAfter);
+			
+			if(buildQtyAfter.contains(buildQtyPromoMagtAfter)){
+				htmlToExtent(cName,mName,extLogger,driver, "Build Quantity is same After Change in Promotion End Type and Promotion Management Screens as Expected;;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Build Quantity is not same After Change in Promotion End Type and Promotion Management Screens;;;Fail");
+			}
+			
+			
+		}
+		catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		}
+		
+		
+		@Test(description = "Validating Build and Display Quantity between Screens and DB")
+		public void buildAndDisplayQuantity() throws SQLException, IOException, AWTException, ParseException{
+		try{
+			if(promoEndTypeArtpreCount2==-1)
+			{
+				MCcount =MCcount+4;
+			}
+			
+			List<List<Object>> articleDetailsAppln = new ArrayList<List<Object>>();	
+			List<List<Object>> articleDetailsDB = new ArrayList<List<Object>>();	
+			List<List<Object>> articleNumDB = new ArrayList<List<Object>>();	
+			List<List<Object>> articleNumAppln = new ArrayList<List<Object>>();	
+			//List<List<Object>> results = new ArrayList<List<Object>>();
+			
+			TestStatus status = getTestStatus();
+			navToPromoEndType(status);
+			objPromoEndTypeObjects.twoWeeksOut.click();
+			objPromoEndTypeObjects.deptGeneralMerch.click();
+			objPromoEndTypeObjects.loadArticleBtn.click(); waitFor(5);
+		
+			String dispvaluesPromoEndType = objPromoEndTypeObjects.displayTypeAppln.getText();
+			String firstArtPromoEndType = objPromoEndTypeObjects.articleDetails.getText().replace("|"," ");
+			String[] firstArticleDetailsPromoEndType=firstArtPromoEndType.split("\\s{2,}");
+			String articleNumPromoEndType = firstArticleDetailsPromoEndType[0].trim();
+			String articleDescPromoEndType = firstArticleDetailsPromoEndType[1].trim();
+			String articlePromoPricePromoEndType = firstArticleDetailsPromoEndType[2].trim();
+			String articlePromoSavingsPromoEndType = firstArticleDetailsPromoEndType[3].trim();
+			
+			objPromoEndTypePage.clickOnPromoManagemt(objPromoEndTypeObjects, driver);
+			
+			objPromoEndTypeObjects.promoMngemntWeekSelect.click();
+			waitFor(1);
+			objPromoEndTypeObjects.promoMngemntArticleNo.sendKeys(articleNumPromoEndType);
+			objPromoEndTypeObjects.promoMngemntLoadArticle.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			String[] articleDetailsPromoMangement = objPromoEndTypeObjects.promoMngemntArticleandDesc.getText().replace("Promotion Sales History","").split("[\\-]+");
+			String articleNumPromoMangement = articleDetailsPromoMangement[0].trim();
+			String articleDescPromoMangement = articleDetailsPromoMangement[1].trim();
+			String dispTypePromoMangement = objPromoEndTypeObjects.promoMngemntDispType.getText().replace("-", " ");
+			String promoPricePromoMangement =  objPromoEndTypeObjects.promoMngemntPromoPrice.getText().trim();
+			String savingPricePromoMangement = objPromoEndTypeObjects.promoMngemntSavings.getText().trim();
+			String displayQuantityAppln= objPromoEndTypeObjects.promoMngemntDisplay.getAttribute("value");		
+			String buildQuantityAppln=objPromoEndTypeObjects.promoMngemntBuild.getAttribute("value");
+			
+			if(dispvaluesPromoEndType.equals(dispTypePromoMangement)){
+				htmlToExtent(cName,mName,extLogger,driver, "Display type "+dispTypePromoMangement+" in Promotion Management page is same as display type "+dispvaluesPromoEndType+" in Promotion Endtype screen;;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Display type in Promotion Management page "+dispTypePromoMangement+" and in Promotion Endtype screen "+dispvaluesPromoEndType+";;;Fail");
+			}
+			
+			if(articleNumPromoMangement.equals(articleNumPromoEndType)){
+				htmlToExtent(cName,mName,extLogger,driver, "Article number "+articleNumPromoMangement+" in Promotion Management page is same as article number "+articleNumPromoEndType+" in Promotion Endtype screen;;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Article number in Promotion Management page "+articleNumPromoMangement+" and in Promotion Endtype screen "+articleNumPromoEndType+";;;Fail");
+			}
+			
+			if(articleDescPromoMangement.equals(articleDescPromoEndType)){
+				htmlToExtent(cName,mName,extLogger,driver, "Article description "+articleDescPromoMangement+" in Promotion Management page is same as article description "+articleDescPromoEndType+" in Promotion Endtype screen;;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Article description in Promotion Management page "+articleDescPromoMangement+" and in Promotion Endtype screen "+articleDescPromoEndType+";;;Fail");
+			}
+			
+			if(promoPricePromoMangement.equals(articlePromoPricePromoEndType+".00")){
+				htmlToExtent(cName,mName,extLogger,driver, "Article Promotion price "+promoPricePromoMangement+" in Promotion Management page is same as article promotion price "+articlePromoPricePromoEndType+".00"+" in Promotion Endtype screen;;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Article Promotion price "+promoPricePromoMangement+" in Promotion Management page is not same as article promotion price "+articlePromoPricePromoEndType+".00"+" in Promotion Endtype screen;;;Fail");
+			}
+			
+			if(savingPricePromoMangement.equals(articlePromoSavingsPromoEndType+".00")){
+				htmlToExtent(cName,mName,extLogger,driver, "Article Savings price "+savingPricePromoMangement+" in Promotion Management page is same as article savings price "+articlePromoSavingsPromoEndType+".00"+" in Promotion Endtype screen;;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Article Savings price "+savingPricePromoMangement+" in Promotion Management page is same as article savings price "+articlePromoSavingsPromoEndType+".00"+" in Promotion Endtype screen;;;Fail");
+			}
+			
+			htmlToExtent(cName,mName,extLogger,driver, "*****Changing Build and Display Quantity from Promotion Management screen;;;Info");
+			objPromoEndTypeObjects.promoMngemntDisplay.clear();
+			driver.findElement(By.xpath("//*[@class='centerValue' and @title ='UOM']")).click();;
+			//objPromoEndTypeObjects.promoMngemntDisplay.click();
+			String sendDisplay = Integer.toString((Integer.parseInt(displayQuantityAppln)+2));
+			System.out.println(sendDisplay);
+			objPromoEndTypeObjects.promoMngemntDisplay.sendKeys(sendDisplay);
+		/*	
+			objPromoEndTypeObjects.promoMngemntBuild.clear();
+			driver.findElement(By.xpath("//*[@class='centerValue' and @title ='UOM']")).click();;
+			String sendBuild = Integer.toString((Integer.parseInt(buildQuantityAppln)+2));
+			System.out.println(sendBuild);
+			objPromoEndTypeObjects.promoMngemntBuild.sendKeys(sendBuild);
+		*/
+			objPromoEndTypeObjects.promoMngemntSaveAndNext.click();
+			waitFor(2);
+			
+			objPromoEndTypePage.clickOnAuditTrail(objPromoEndTypeObjects, driver);
+			
+			objPromoEndTypeObjects.auditTrailArticleSearch.sendKeys(articleNumPromoEndType);
+			objPromoEndTypeObjects.generateBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "****Checking Old and New Display Quantity in Audit trail screen****;;;Info");
+			if(objPromoEndTypeObjects.auditOldDisplay.getText().equals(displayQuantityAppln)){
+				htmlToExtent(cName,mName,extLogger,driver, "Old Display quantity "+objPromoEndTypeObjects.auditOldDisplay.getText()+" in audit trail screen is same as previous display quantity "+displayQuantityAppln+";;;Pass");
+				if(objPromoEndTypeObjects.auditNewDisplay.getText().equals(sendDisplay)){
+					htmlToExtent(cName,mName,extLogger,driver, "New Display quantity "+objPromoEndTypeObjects.auditNewDisplay.getText()+" in audit trail screen is not same as updated display quantity "+sendDisplay+";;;Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver, "New Display quantity "+objPromoEndTypeObjects.auditNewDisplay.getText()+" in audit trail screen is not same as updated display quantity "+sendDisplay+";;;Fail");
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver, "Old Display quantity "+objPromoEndTypeObjects.auditOldDisplay.getText()+" in audit trail screen is not same as previous display quantity "+displayQuantityAppln+";;;Fail");
+			}
+			
+			
+		/*	
+			htmlToExtent(cName,mName,extLogger,driver, "****Checking Old and New Build Quantity in Audit trail screen****;;;Info");
+			if(objPromoEndTypeObjects.auditOldBuild.getText().equals(buildQuantityAppln)){
+				htmlToExtent(cName,mName,extLogger,driver, "Old build quantity "+objPromoEndTypeObjects.auditOldBuild.getText()+" in audit trail screen is same as previous display quantity "+buildQuantityAppln+";;;Pass");
+				if(objPromoEndTypeObjects.auditNewBuild.getText().equals(sendBuild)){
+					htmlToExtent(cName,mName,extLogger,driver, "New Display quantity "+objPromoEndTypeObjects.auditNewBuild.getText()+" in audit trail screen is not same as updated display quantity "+sendBuild+";;;Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver, "New Display quantity "+objPromoEndTypeObjects.auditNewBuild.getText()+" in audit trail screen is not same as updated display quantity "+sendBuild+";;;Fail");
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver, "Old Display quantity "+objPromoEndTypeObjects.auditOldDisplay.getText()+" in audit trail screen is not same as previous display quantity "+buildQuantityAppln+";;;Fail");
+			}
+		*/	
+			waitFor(5);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(promoEndTypeArtScenarios,promoEndTypeArttestname,driver));
+			status.assertAll();		
+			
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		
+		
+	}
+		
+	
+	
+
+	
+	//----------------------------Login Function
+	
+	public void navToPromoEndType(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndType(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndType(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+		//	objPromoEndTypePage.clickOnInstore(objPromoEndTypeObjects,driver);
+			objPromoEndTypePage.clickOnPromoEndType(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoMangemnt(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndType(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndType(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+		//	objPromoEndTypePage.clickOnInstore(objPromoEndTypeObjects,driver);
+			objPromoEndTypePage.clickOnPromoManagemt(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeDeptManager(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Department Manager--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeDM(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeDM(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromoEndType(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeOffAssistant(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Office Assistant--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeOA(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeOA(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromoEndType(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeCustAssistant(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Customer Assistant--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeCA(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeCA(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromo(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeOffSupervisor(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Office Supervisor--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeOS(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeOS(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromoEndType(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeStoreManage(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Store Management--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeSM(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeSM(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromoEndType(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeSupervisor(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Supervisor / Service Assistant--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeSSA(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeSSA(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromoEndType(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeITSupport1(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as IT SUpport Level 1--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeITS1(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeITS1(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromoEndType(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeReporting(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Reporting--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeReport(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeReport(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromo(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeITS2(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as IT Support Level 2--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeITS2(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeITS2(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromo(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeSS(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Store Support--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeSS(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeSS(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromo(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeReadOnly(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Read Only User--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeRO(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeRO(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromo(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeStockTakeMange(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Stock take manager--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeSTM(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeSTM(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromo(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeStockTakeTeamMem(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Stock take manager--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeSTTM(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeSTTM(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromo(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeITUserAdmin(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as IT User Admin--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeITUserAdmin(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeITUserAdmin(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromo(objPromoEndTypeObjects, driver);
+	}
+	
+
+	public void navToPromoEndTypeServiceDesk(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Service Desk Assistant--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeServiceDesk(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeServiceDesk(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromo(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeServiceCash(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Service Cashier--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeServiceCash(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeServiceCash(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromo(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeTeamMember(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Team Member--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeTM(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeTM(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromo(objPromoEndTypeObjects, driver);
+	}
+	
+	public void navToPromoEndTypeBussReview(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application as Department Manager--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application as Business Review--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objPromoEndTypePage = loginPage.navToPromoEndTypeBR(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objPromoEndTypePage = loginPage.navToPromoEndTypeBR(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Promotion EndType Page--------------------;;;Pass");
+			objPromoEndTypePage.clickOnPromo(objPromoEndTypeObjects, driver);
+	}
+	
+	
+	//----------------------------------------------------------
+	
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException{	
+		
+		 mName=m9.getName().toString().trim();			
+ 			if(!methodList.contains(m9.getName().toString().trim())){
+ 			methodList.add(m9.getName().toString().trim());
+ 			extLogger = extReport.startTest(m9.getName().toString().trim());
+ 			}
+		
+		waitFor(5);
+		initializeTestcontext();
+		System.out.println("test1 - beforemethod");
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"),cName,mName,extLogger,driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		promoEndTypeArttestname = m9.getName().toString().trim();
+		promoEndTypeArttestdesc = m9.getAnnotation(Test.class).description();
+
+		objPromoEndTypeObjects = PageFactory.initElements(this.driver, PromotionEndTypeObjects.class);
+		objPromoEndTypePage = PageFactory.initElements(this.driver, PromotionEndTypePage.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+		
+		Date ppStartdat1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String formattedDatepp = dateFormat.format(ppStartdat1);
+		System.out.println(formattedDatepp); // 12/01/2011 4:48:16 PM
+		promoEndTypeArtStartdat = formattedDatepp;
+
+	}
+	
+	@BeforeClass
+	public void loadXMLFile(){	
+		//initializeTestcontext();
+		
+		
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+		
+		System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\promoEndType.xml");
+		customreport.createExtentReport();
+		
+		Date enhancedArtMod = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		promoEndTypeArtStdateex = dateFormat.format(enhancedArtMod);
+	}
+	
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(), MCcount);
+		System.out.println(extentList);
+		System.out.println(methodList);
+        extReport.endTest(extLogger);
+		extReport.flush();
+		
+		removeDriver();
+		waitFor(5);
+		System.out.println("afterclass");
+		String Pp1className = this.getClass().getSimpleName().toString();
+		promoEndTypeArtModules.put(Pp1className, promoEndTypeArtScenarios);
+		waitFor(5);
+		moduleName.put("Modules", promoEndTypeArtModules);
+		waitFor(5);
+		Date ppModEnd2 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		promoEndTypeArtenddateex = dateFormat.format(ppModEnd2);
+
+		System.out.println(promoEndTypeArtenddateex);
+		waitFor(5);
+		
+		int ArtMC=MCcount;
+		promoEndTypeArtMC=""+MCcount;
+		waitFor(5);
+		System.out.println("Clearance - " +promoEndTypeArtMC);
+		waitFor(5);
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {				
+		System.out.println("AffterMethod");
+		
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				System.out.println();
+			
+			}
+		
+		waitFor(5);
+		Date ppMEndDate1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		promoEndTypeArtMEndDate = dateFormat.format(ppMEndDate1);
+		System.out.println(promoEndTypeArtMEndDate); // 12/01/2011 4:48:16 PM
+		String EnhancedArtTime = promoEndTypeArttestdesc +";"+ promoEndTypeArtStartdat +";" + promoEndTypeArtMEndDate;
+		
+		htmlToExtent(cName,mName,extLogger,driver, "Running Completed Status;;;Pass"); 
+		promoEndTypeArtTime.put(promoEndTypeArttestname, EnhancedArtTime);
+		waitFor(4);
+		closeDriver(driver);
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(5);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info"))
+		{
+			int cnt = promoEndTypeArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"Completed Status: Iteration - "+ cnt +";;;Fail");
+			promoEndTypeArtpreCount2++;
+		}
+		waitFor(5);
+		if((getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")) && promoEndTypeArtpreCount2!=reCount)
+		{
+			waitFor(5);
+			promoEndTypeArtTime.removeAll(promoEndTypeArttestname);
+			waitFor(5);
+			promoEndTypeArtScenarios.removeAll(promoEndTypeArttestname);
+		}
+		waitFor(5);
+		if(promoEndTypeArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass"))
+		{
+			promoEndTypeArtpreCount2=-1;
+		}
+		waitFor(5);
+	}
+	
+}
+	
+
+

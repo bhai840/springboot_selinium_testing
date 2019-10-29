@@ -1,0 +1,3282 @@
+/*package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+//import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbomain.objects.OrderingAndReceivingObject;
+import au.wow.ngbomain.tests.OrderingAndReceivingTest;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+public class OrderingAndReceivingPage extends BasePage {
+	
+	ExtentTest extLogger=OrderingAndReceivingTest.extLogger;
+	String cName= OrderingAndReceivingTest.cName;
+	String mName=OrderingAndReceivingTest.mName;
+      WebDriver driver;
+      public void setDriver(WebDriver driver){
+  		this.driver=driver;
+  	}
+	
+	CommonFunctions common = PageFactory.initElements(driver,
+			CommonFunctions.class);
+	private Logger log = LogManager.getLogger(OrderingAndReceivingTest.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	
+	public void ClickonOrderEnq(OrderingAndReceivingObject objOrdRecObjects,WebDriver driver) throws AWTException
+	{
+		waitFor(1);
+		Point coordinates = objOrdRecObjects.Orders.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+
+		Actions action = new Actions(driver);
+		action.moveToElement(objOrdRecObjects.Orders).click().build()
+				.perform();
+		waitFor(1);
+
+		Point coordinates1 = objOrdRecObjects.orderEnquiry.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(), coordinates1.getY() + 100);
+
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objOrdRecObjects.orderEnquiry).click()
+				.build().perform();
+		waitFor(1);
+		robot.mouseMove(5, 5);
+		 waitForJSandJQueryToLoad(driver);
+	}
+
+
+	public List<String> articleSplit(String articlesget){
+		String[] arrSplit = articlesget.split(",");
+		List<String> articlelist = new ArrayList<String>(Arrays.asList(arrSplit));
+		return articlelist;
+	}
+
+	public void clickOnOrderEnquiry(OrderingAndReceivingObject objOrdRecObjects,WebDriver driver) throws AWTException{
+		//		waitForJSandJQueryToLoad(driver);;
+		waitFor(1);
+		Point coordinates = objOrdRecObjects.Orders.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+
+		Actions action = new Actions(driver);
+		action.moveToElement(objOrdRecObjects.Orders).click().build().perform();	
+		waitFor(1);
+
+		Point coordinates1 = objOrdRecObjects.orderEnquiry.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(),coordinates1.getY()+100);
+
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objOrdRecObjects.orderEnquiry).click().build().perform();
+		waitFor(1);
+		robot.mouseMove(5,5);	
+	}
+
+	public void waitFn(WebDriver driver)
+	{
+		waitForJSandJQueryToLoad(driver);;
+		//waitForPageToLoad();
+	}
+
+	public void scrolldown(WebDriver driver)
+	{
+		verticalScroll(driver);
+	}
+
+	public void scrollUp(WebDriver driver)
+	{
+		((JavascriptExecutor)driver).executeScript("scrollBy(0, -1000);");	
+	}
+
+	public void delOrder(OrderingAndReceivingObject objOrdRecObjects,WebDriver driver) throws IOException
+	{
+		waitFor(1);
+		int totalArt = objOrdRecObjects.totalArt.size(); // total art = no of deliverydate*2 rows
+		for(int i=1;i<totalArt;i++)
+		{
+			WebElement element =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.Articleexpand, 1,driver);
+			i++;
+			element.click();
+			verticalScroll(driver);
+			List<WebElement> artlist = driver.findElements(By.xpath("//*[@class='grpTbody']/tr[2]/td/table/tbody/tr"));
+			for(int j=1;j<=artlist.size()/2;j++)
+			{
+				WebElement deleteRec =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.delRecordList, 1,driver);
+				deleteRec.click();				
+				waitFor(1);
+				objOrdRecObjects.accept.click();
+				waitFor(1);
+			}
+			verticalScroll(driver);
+		}
+		htmlToExtent(cName,mName,extLogger,driver,"previously added articles are deleted;;;Pass");
+		//htmlToExtent(cName,mName,extLogger,driver,"previously added articles are deleted" , "", "", "Pass");
+	}
+
+	public void VendorOrderRecFull(OrderingAndReceivingObject objOrdRecObjects,String InvoiceNo,List<List<Object>> DBList, 
+			List<List<Object>> DBList1,List<List<Object>> DBList2,WebDriver driver) throws IOException
+	{
+		String OrdNo = objOrdRecObjects.Chkordno.getText();
+		String Deldate = objOrdRecObjects.chkDelDate.getText();
+		String Stat = objOrdRecObjects.ChkStatus.getText();
+
+		String Suppliername = objOrdRecObjects.ChkSupName.getText();
+		String Ordertype = objOrdRecObjects.ChkOrdType.getText();
+		String TotCartons = objOrdRecObjects.ChkTotCar.getText();
+		String TotPallet = objOrdRecObjects.ChkTotPall.getText();
+		String ChckSrc = objOrdRecObjects.ChkSru.getText();
+
+		if(DBList.get(0).get(0).toString().equals(OrdNo)  && Stat.equals("AUTHORISED") && DBList.get(0).get(1).toString().equals(Deldate))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Order Number, Delivery Date, Status details are displayed correctly;Local Value is ["+OrdNo+", "+Deldate+", "+Stat+"];DB Value is ["+DBList.get(0).get(0).toString()+", "+DBList.get(0).get(1).toString()+", AUTHORISED];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Order Number, Delivery Date, Status details are displayed correctly;Local Value is ["+OrdNo+", "+Deldate+", "+Stat+"];DB Value is ["+DBList.get(0).get(0).toString()+", "+DBList.get(0).get(1).toString()+", AUTHORISED];Fail");
+		}
+
+		if ( DBList.get(0).get(4).toString().equals(Suppliername) && Ordertype.equals("VENDOR") && DBList.get(0).get(5).toString().equals(TotCartons)
+				&& TotPallet.equals("0"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Supplier, Order Type, Total Cartons, Total Pallets details are displayed correctly;Local Value is ["+Suppliername+", "+Ordertype+", "+TotCartons+", "+TotPallet+"];DB Value is ["+DBList.get(0).get(4).toString()+", VENDOR, "+DBList.get(0).get(5).toString()+", 0];Pass");
+
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Supplier, Order Type, Total Cartons, Total Pallets details are displayed correctly;Local Value is ["+Suppliername+", "+Ordertype+", "+TotCartons+", "+TotPallet+"];DB Value is ["+DBList.get(0).get(4).toString()+", VENDOR, "+DBList.get(0).get(5).toString()+", 0];Fail");
+		}
+		click(objOrdRecObjects.Clkorderno);
+		htmlToExtent(cName,mName,extLogger,driver,"*** Checking the order header details displayed after opening the order;;;Pass");
+
+		String OrdNo1 = objOrdRecObjects.ChkOrHr.getText();
+		Long OrdNum =  Long.parseLong(OrdNo1.replaceAll("[^0-9\\.]+", ""));
+		String Deldate1 = objOrdRecObjects.ChkDelhr.getText();
+		String Stat1 = objOrdRecObjects.ChkStaHr.getText();
+		String Suppliername1 = objOrdRecObjects.ChkSupHr.getText();
+		String Createdby1 = objOrdRecObjects.ChkCreatedHr.getText();
+		//Long Cretedby2 =  Long.parseLong(Createdby1.replaceAll("[A-Za-z0-9]+",""));
+		//String onshowdate = objOrdRecObjects.ChkShowdateHr.getText();
+
+		if(ChckSrc.equals("STORE"))
+		{
+			String onshowdate = objOrdRecObjects.ChkShowdateHr.getText();
+
+			if(OrdNum.toString().equals(DBList.get(0).get(0).toString())  && Stat1.equals("Authorised") && DBList.get(0).get(1).toString().equals(Deldate1)
+					&& DBList.get(0).get(4).toString().equals(Suppliername1) && DBList.get(0).get(2).toString().equals(onshowdate))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, Created By & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+onshowdate+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(2).toString()+"];Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, Created By & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+onshowdate+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(2).toString()+"];Fail");
+			}
+		}
+		else
+		{
+			String onshowdate = objOrdRecObjects.ChkShowdateHr1.getText();
+			
+			if(OrdNum.toString().equals(DBList.get(0).get(0).toString())  && Stat1.equals("Authorised") && DBList.get(0).get(1).toString().equals(Deldate1)
+					&& DBList.get(0).get(4).toString().equals(Suppliername1) && DBList.get(0).get(2).toString().equals(onshowdate) && DBList.get(0).get(3).toString().equals(Createdby1)) 
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+", "+onshowdate+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(3).toString()+", "+DBList.get(0).get(2).toString()+"];Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+", "+onshowdate+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(3).toString()+", "+DBList.get(0).get(2).toString()+"];Fail");
+			}
+		}
+
+		String TotPallets = objOrdRecObjects.GetTotPal.getText();
+		String TotArticles = objOrdRecObjects.GetTotArt.getText();
+		String TotDispQty = objOrdRecObjects.GetTotDisQty.getText();
+		String TotCartOrd = objOrdRecObjects.GetTotCarOrd.getText();
+		String TotDispWt = objOrdRecObjects.GetTotDisWt.getText();
+		String SealNumber =objOrdRecObjects.GetSealNo.getText();
+
+		if(TotPallets.equals("0") && TotArticles.equals(DBList.get(0).get(6).toString()) && TotDispQty.equals("NA") && TotCartOrd.equals(DBList.get(0).get(5).toString()) && TotDispWt.equals("NA") && SealNumber.equals("NA"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Pallet Count, Total Articles count, Dispatched Qty, Total Cartons Ordered, Dispatched Weight, Seal Number are displayed correctly in header details;Local Value is ["+TotPallets+", "+TotArticles+", "+TotDispQty+", "+TotCartOrd+", "+TotDispWt+", "+SealNumber+"];DB Value is [0, "+DBList.get(0).get(6).toString()+", NA, " +DBList.get(0).get(5).toString()+", NA, NA];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Pallet Count, Total Articles count, Dispatched Qty, Total Cartons Ordered, Dispatched Weight, Seal Number are displayed correctly in header details;Local Value is ["+TotPallets+", "+TotArticles+", "+TotDispQty+", "+TotCartOrd+", "+TotDispWt+", "+SealNumber+"];DB Value is [0, "+DBList.get(0).get(6).toString()+", NA, " +DBList.get(0).get(5).toString()+", NA, NA];Fail");
+		}
+
+		scrolldown(driver);
+
+		htmlToExtent(cName,mName,extLogger,driver, "Articles List is Displayed;;;Pass");
+
+		click(objOrdRecObjects.Clrgrpby);
+		String artnum1=null,artdes1=null,artom1=null,OrdQty1=null,OrdTotUnits1=null;
+		for(int i=1;i<=DBList1.size();i++)
+		{
+			WebElement artnum  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getartno,i,driver);
+			WebElement artdes  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getartdes,i,driver);
+			WebElement artom  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getartOM,i,driver);
+			WebElement Odrqty  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getOrdQty,i,driver);
+			WebElement Totunt  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getTotUnt,i,driver);
+			artnum1 = artnum.getText();
+			artdes1 = artdes.getText();
+			artom1 = artom.getText();
+			//Long art_om1 =  Long.parseLong(artom1.replaceAll("[^0-9\\.]+", ""));
+			OrdQty1 = Odrqty.getText();
+			
+			//Long Ord_Qty1 =  Long.parseLong(OrdQty1.replaceAll("[^0-9\\.]+", ""));
+			OrdTotUnits1 = Totunt.getText();
+			//String Str2 = ""+artnum1+":"+artdes1+":"+artom1+":"+OrdQty1+":"+OrdTotUnits1;
+			//DBList2.addAll(StringToListCreation(Str2));
+			System.out.println("Artical Details: " +artnum1 +artdes1 +artom1 +OrdQty1 +OrdTotUnits1);
+
+			for(int j=0;j<DBList1.size();j++)
+			{
+
+				Integer TotUnits = Integer.parseInt(DBList1.get(j).get(1).toString()) * Integer.parseInt(DBList1.get(j).get(3).toString());
+				System.out.println("TotUnits:" +TotUnits);
+				//String TotUnitsQty = Integer.toString(TotUnits);
+
+				String Str2 = ""+TotUnits;
+				DBList2.addAll(StringToListCreation(Str2));
+
+				if(artnum1.equals(DBList1.get(j).get(0).toString())) 
+				{
+					if(OrdQty1.equals((DBList1.get(j).get(1).toString())+" "+(DBList1.get(j).get(2).toString())) && artom1.equals((DBList1.get(j).get(3).toString())+" "+(DBList1.get(j).get(4).toString())) && OrdTotUnits1.equals((DBList2.get(j).get(0).toString())+" "+(DBList1.get(j).get(4).toString())))
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Article Number, OM, Ordered Qty and Total units are displayed correctly in List of articles;Local Value is ["+artnum1+","+OrdQty1+","+artom1+","+OrdTotUnits1+"];DB Value is ["+DBList1.get(j).get(0).toString()+","+DBList1.get(j).get(1).toString()+" "+DBList1.get(j).get(2).toString()+","+DBList1.get(j).get(3).toString()+" "+DBList1.get(j).get(4).toString()+","+DBList2.get(j).get(0).toString()+" "+(DBList1.get(j).get(4).toString())+"];Pass");
+					}
+					else
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Article Number, OM, Ordered Qty and Total units are displayed correctly in List of articles;Local Value is ["+artnum1+","+OrdQty1+","+artom1+","+OrdTotUnits1+"];DB Value is ["+DBList1.get(j).get(0).toString()+","+DBList1.get(j).get(1).toString()+" "+DBList1.get(j).get(2).toString()+","+DBList1.get(j).get(3).toString()+" "+DBList1.get(j).get(4).toString()+","+DBList2.get(j).get(0).toString()+" "+(DBList1.get(j).get(4).toString())+"];Fail");
+					}
+				}
+			}
+		}
+
+		click(objOrdRecObjects.ReceiveOrder);
+		if(objOrdRecObjects.Sessionpopup.getText().contains("Previous receiving session exists."))
+		{
+			click(objOrdRecObjects.ResumeSession);
+			waitFor(1);
+			click(objOrdRecObjects.RecFullOdr);
+			waitFor(1);
+			enterText(objOrdRecObjects.EnterInvoice,InvoiceNo,driver);
+			waitFor(1);
+			if(objOrdRecObjects.Temperature1.getText().equals("Temperature Details"))
+			{
+				if(objOrdRecObjects.TempTypes.getText().equals("Hard Frozen Temperature"))
+				{
+					waitFor(1);
+					objOrdRecObjects.EnterForzenTemp.sendKeys("-17");
+					//enterText(objOrdRecObjects.EnterForzenTemp,ForzenTem);
+				}
+				if(objOrdRecObjects.TempTypes1.getText().equals("Chilled Temperature"))
+				{
+					waitFor(1);
+					objOrdRecObjects.EnterChillTemp.sendKeys("1.2");
+					//enterText(objOrdRecObjects.EnterChillTemp,ForzenTem);
+				}
+				
+			}
+			click(objOrdRecObjects.Next);
+		}
+		else
+		{
+			click(objOrdRecObjects.RecFullOdr);
+			waitFor(1);
+			enterText(objOrdRecObjects.EnterInvoice,InvoiceNo,driver);
+			waitFor(1);
+			if(objOrdRecObjects.Temperature1.getText().equals("Temperature Details"))
+			{
+				if(objOrdRecObjects.TempTypes.getText().equals("Hard Frozen Temperature"))
+				{
+					waitFor(1);
+					objOrdRecObjects.EnterForzenTemp.sendKeys("-17");
+					//enterText(objOrdRecObjects.EnterForzenTemp,ForzenTem);
+				}
+				if(objOrdRecObjects.TempTypes1.getText().equals("Chilled Temperature"))
+				{
+					waitFor(1);
+					objOrdRecObjects.EnterChillTemp.sendKeys("1.2");
+					//enterText(objOrdRecObjects.EnterChillTemp,ForzenTem);
+				}
+				
+			}
+			click(objOrdRecObjects.Next);
+		}
+
+		htmlToExtent(cName,mName,extLogger,driver, "Check summary and submit the order;;;Pass");
+
+		String TotArtOrd =  objOrdRecObjects.ChkTotArtOrd.getText();
+		String TotArtRcd =  objOrdRecObjects.ChkTotArtRed.getText();
+		String TotCarOrd =  objOrdRecObjects.ChkTotCarOrd.getText();
+		String TotCarRcd =  objOrdRecObjects.ChkTotCarRed.getText();
+		String TotULDRed =  objOrdRecObjects.ChkTotULDRed.getText();
+		String TotULDRet =  objOrdRecObjects.ChkTotULDRet.getText();
+
+		if(TotArtOrd.equals(DBList.get(0).get(6).toString()) && TotArtRcd.equals(DBList.get(0).get(6).toString()) && TotCarOrd.equals(DBList.get(0).get(5).toString()) && TotCarRcd.equals(DBList.get(0).get(5).toString()) && TotULDRed.equals("0") && TotULDRet.equals("0"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Article Ordered, Total Articles Received, Total Cartons Ordered, Total Cartons Received, Total ULD's Received, Total ULD's Returned are displayed correctly in Receive Summary Page;Local Value is ["+TotArtOrd+", "+TotArtRcd+", "+TotCarOrd+", "+TotCarRcd+", "+TotULDRed+", "+TotULDRet+"];DB Value is ["+DBList.get(0).get(6).toString()+", "+DBList.get(0).get(6).toString()+", " +DBList.get(0).get(5).toString()+", " +DBList.get(0).get(5).toString()+", 0, 0];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Article Ordered, Total Articles Received, Total Cartons Ordered, Total Cartons Received, Total ULD's Received, Total ULD's Returned are displayed correctly in Receive Summary Page;Local Value is ["+TotArtOrd+", "+TotArtRcd+", "+TotCarOrd+", "+TotCarRcd+", "+TotULDRed+", "+TotULDRet+"];DB Value is ["+DBList.get(0).get(6).toString()+", "+DBList.get(0).get(6).toString()+", " +DBList.get(0).get(5).toString()+", " +DBList.get(0).get(5).toString()+", 0, 0];Fail");
+		}
+
+
+		htmlToExtent(cName,mName,extLogger,driver, "Discrepancies;;;Pass");
+
+		String PackSize = objOrdRecObjects.ChkPackSize.getText();
+		String ZeroQty = objOrdRecObjects.ChkZeroQty.getText();
+		String OtherQty = objOrdRecObjects.ChkOtherQty.getText();
+
+		if(PackSize.equals("0") && ZeroQty.equals("0") && OtherQty.equals("0"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"PackSize, ZeroQty, OtherQty are displayed correctly in Receive Summary Page;Local Value is ["+PackSize+", "+ZeroQty+", "+OtherQty+"];DB Value is [0, 0, 0];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"PackSize, ZeroQty, OtherQty are displayed correctly in Receive Summary Page;Local Value is ["+PackSize+", "+ZeroQty+", "+OtherQty+"];DB Value is [0, 0, 0];Fail");
+		}
+
+		click(objOrdRecObjects.clksub);
+		
+		if(objOrdRecObjects.ConfPopup.getText().contains("Do you want to apply"))
+		{
+			click(objOrdRecObjects.ClkContinue1);
+			waitForJSandJQueryToLoad(driver);;
+		}
+		
+		String successmsg1 = objOrdRecObjects.successmsg.getText();
+		if(successmsg1.contains("Receiving Details Posted Successfully"))
+		{
+			click(objOrdRecObjects.StatusPopup);
+			htmlToExtent(cName,mName,extLogger,driver,""+successmsg1+";;;Pass");
+		}
+		
+		scrolldown(driver);
+		
+		click(objOrdRecObjects.Clgrp);
+		
+		scrollUp(driver);
+		
+		List<List<Object>> applist=getValuesFromTable(objOrdRecObjects.tab1);
+		removeIndex(applist, "4");
+		removeIndex(applist, "2");
+		removeIndex(applist, "0");
+		replacenullToZero(applist);
+		
+		List<List<Object>> applist1=getValuesFromTable(objOrdRecObjects.tab2);
+		removeIndex(applist1, "5");
+		removeIndex(applist1, "4");
+		removeIndex(applist1, "2");
+		removeIndex(applist1, "0");
+		replacenullToZero(applist1);
+		
+		List<List<Object>> applist2=getValuesFromTable(objOrdRecObjects.tab3);
+		removeIndex(applist2, "5");
+		removeIndex(applist2, "4");
+		removeIndex(applist2, "2");
+		removeIndex(applist2, "0");
+		replacenullToZero(applist2);
+		
+		List<List<Object>> applist3=getValuesFromTable(objOrdRecObjects.tab4);
+		removeIndex(applist3, "2");
+		removeIndex(applist3, "0");
+		replacenullToZero(applist3);
+		
+		scrolldown(driver);
+		
+		List<List<Object>> DB1= new ArrayList<List<Object>>();
+		List<List<Object>> DB2= new ArrayList<List<Object>>();
+		
+		String rectotunits2 =" ";
+
+		for(int a=1;a<=objOrdRecObjects.receivedartlist.size();a++)
+	
+		{
+			WebElement Ordqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartordqty, a,driver); 
+			String Ordqty1 = Ordqty.getText();
+		
+			WebElement recqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartrecqty, a,driver);
+			String recqty1 = recqty.getText();
+			String [] recqty2 = splitString(recqty1, " ");
+			recqty1 = recqty2[0];
+			
+			WebElement disqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartdisqty, a,driver);
+			String disqty1 = disqty.getText();
+			
+			WebElement rectotunits =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartTotunits, a,driver);
+			String rectotunits1 = rectotunits.getText();
+			rectotunits2 = rectotunits1.replace("\n", " ").replace("\r", " ");
+			
+			String str = ""+Ordqty1+":"+recqty1+":"+rectotunits2+":"+disqty1;
+			DB1.addAll(StringToListCreation(str));
+	
+		}
+		
+		System.out.println("DB1values:" +DB1);
+		
+		Integer Recqtyval =0;
+		
+		Integer ordqt = 0;
+		
+		for(int i=0; i<DB1.size();i++)
+		{
+			
+			String ordqtyval = DB1.get(i).get(0).toString();
+			String[] ordqt1= splitString(ordqtyval, " ");
+			ordqtyval = ordqt1[0];
+			ordqt = ordqt + Integer.parseInt(ordqtyval);
+		
+		}
+		
+		for(int j=0; j<DB1.size();j++)
+		{
+
+			String Recqtyvalue = DB1.get(j).get(1).toString();
+			Recqtyval = Recqtyval + (Integer.parseInt(Recqtyvalue));
+	
+		}
+		
+		System.out.println("Recqtyvalue:" +Recqtyval);
+		
+		String ranwt1 = decimalFormat1(applist.get(2).get(0).toString());
+		
+	
+		Integer Totart = objOrdRecObjects.receivedartlist.size();
+		String str1 = ""+Recqtyval+":"+Totart+":"+ordqt;
+		DB2.addAll(StringToListCreation(str1)); 
+	
+		if(applist.get(0).get(0).toString().equals("NA") && applist.get(0).get(1).toString().equals("0") && applist.get(0).get(2).toString().equals(DB2.get(0).get(1).toString()))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets and Total articles;[NA,0,"+Totart+"];["+applist.get(0).get(0).toString()+","+applist.get(0).get(1).toString()+","+applist.get(0).get(2).toString()+"];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets and Total articles;[NA,0,"+Totart+"];["+applist.get(0).get(0).toString()+","+applist.get(0).get(1).toString()+","+applist.get(0).get(2).toString()+"];Fail");
+		}
+		
+		if(applist.get(1).get(0).toString().equals(DB2.get(0).get(0).toString()) && applist.get(1).get(1).toString().equals("NA") && applist.get(1).get(2).toString().equals(DB2.get(0).get(2).toString()))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Cartons Received, Total Dispatched Qty and Total Cartons Ordered;["+Recqtyval+",NA,"+ordqt+"];["+applist.get(1).get(0).toString()+","+applist.get(1).get(1).toString()+","+applist.get(1).get(2).toString()+"];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Cartons Received, Total Dispatched Qty and Total Cartons Ordered;["+Recqtyval+",NA,"+ordqt+"];["+applist.get(1).get(0).toString()+","+applist.get(1).get(1).toString()+","+applist.get(1).get(2).toString()+"];Fail");
+		}	
+		
+		if(ranwt1.equals("0") && applist.get(2).get(1).toString().equals("NA"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Random weight and  Total Dispatched Weight;["+ranwt1+","+applist.get(2).get(1).toString()+"];[0,NA];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Random weight and  Total Dispatched Weight;["+ranwt1+","+applist.get(2).get(1).toString()+"];[0,NA];Fail");
+		}
+		
+		if(applist.get(3).get(0).toString().equals("NA"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total pallets Returned;["+applist.get(3).get(0).toString()+"];[NA];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total pallets Returned;["+applist.get(3).get(0).toString()+"];[NA];Fail");
+		}
+	}
+
+
+
+
+	public List<List<Object>> VendorOrderExpArt(OrderingAndReceivingObject objOrdRecObjects,String InvoiceNo, String AddArtNo, 
+			String AddArtQty,String ChillTem, String ForzenTem, String Sohval_1, String baseuom_1, 
+			String baseord1,List<List<Object>> DBList, List<List<Object>> DBList1,WebDriver driver) throws IOException
+	{
+		List<List<Object>> DBList2 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList3 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList5 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList6 = new ArrayList<List<Object>>();
+		String OrdNo = objOrdRecObjects.Chkordno.getText();
+		String Deldate = objOrdRecObjects.chkDelDate.getText();
+		String Stat = objOrdRecObjects.ChkStatus.getText();
+
+		String Suppliername = objOrdRecObjects.ChkSupName.getText();
+		String Ordertype = objOrdRecObjects.ChkOrdType.getText();
+		String TotCartons = objOrdRecObjects.ChkTotCar.getText();
+		String TotPallet = objOrdRecObjects.ChkTotPall.getText();
+		String ChckSrc = objOrdRecObjects.ChkSru.getText();
+
+		if(DBList.get(0).get(0).toString().equals(OrdNo)  && Stat.equals("AUTHORISED") && DBList.get(0).get(1).toString().equals(Deldate))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Order Number, Delivery Date, Status details are displayed correctly;Local Value is ["+OrdNo+", "+Deldate+", "+Stat+"];DB Value is ["+DBList.get(0).get(0).toString()+", "+DBList.get(0).get(1).toString()+", AUTHORISED];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Order Number, Delivery Date, Status details are displayed correctly;Local Value is ["+OrdNo+", "+Deldate+", "+Stat+"];DB Value is ["+DBList.get(0).get(0).toString()+", "+DBList.get(0).get(1).toString()+", AUTHORISED];Fail");
+		}
+
+		if ( DBList.get(0).get(4).toString().equals(Suppliername) && Ordertype.equals("VENDOR") && DBList.get(0).get(5).toString().equals(TotCartons)
+				&& TotPallet.equals("0"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Supplier, Order Type, Total Cartons, Total Pallets details are displayed correctly;Local Value is ["+Suppliername+", "+Ordertype+", "+TotCartons+", "+TotPallet+"];DB Value is ["+DBList.get(0).get(4).toString()+", VENDOR, "+DBList.get(0).get(5).toString()+", 0];Pass");
+
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Supplier, Order Type, Total Cartons, Total Pallets details are displayed correctly;Local Value is ["+Suppliername+", "+Ordertype+", "+TotCartons+", "+TotPallet+"];DB Value is ["+DBList.get(0).get(4).toString()+", VENDOR, "+DBList.get(0).get(5).toString()+", 0];Fail");
+		}
+		click(objOrdRecObjects.Clkorderno);
+		htmlToExtent(cName,mName,extLogger,driver,"*** Checking the order header details displayed after opening the order;;;Pass");
+
+		String OrdNo1 = objOrdRecObjects.ChkOrHr.getText();
+		Long OrdNum =  Long.parseLong(OrdNo1.replaceAll("[^0-9\\.]+", ""));
+		String Deldate1 = objOrdRecObjects.ChkDelhr.getText();
+		String Stat1 = objOrdRecObjects.ChkStaHr.getText();
+		String Suppliername1 = objOrdRecObjects.ChkSupHr.getText();
+		String Createdby1 = objOrdRecObjects.ChkCreatedHr.getText();
+		//Long Cretedby2 =  Long.parseLong(Createdby1.replaceAll("[A-Za-z0-9]+",""));
+		//String onshowdate = objOrdRecObjects.ChkShowdateHr.getText();
+
+		if(ChckSrc.equals("STORE"))
+		{
+			String onshowdate = objOrdRecObjects. ChkShowdateHr.getText();
+			String createdby = objOrdRecObjects.ChkCreatedbyHr.getText();
+
+			if(OrdNum.toString().equals(DBList.get(0).get(0).toString())  && Stat1.equals("Authorised") && DBList.get(0).get(1).toString().equals(Deldate1)
+					&& DBList.get(0).get(4).toString().equals(Suppliername1) && DBList.get(0).get(2).toString().equals(onshowdate))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, Created By & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+onshowdate+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(2).toString()+"];Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, Created By & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+onshowdate+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(2).toString()+"];Fail");
+			}
+		}
+		else
+		{
+			String onshowdate = objOrdRecObjects.ChkShowdateHr1.getText();
+			
+			if(OrdNum.toString().equals(DBList.get(0).get(0).toString())  && Stat1.equals("Authorised") && DBList.get(0).get(1).toString().equals(Deldate1)
+					&& DBList.get(0).get(4).toString().equals(Suppliername1) && DBList.get(0).get(2).toString().equals(onshowdate) && DBList.get(0).get(3).toString().equals(Createdby1)) 
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+", "+onshowdate+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(3).toString()+", "+DBList.get(0).get(2).toString()+"];Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+", "+onshowdate+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(3).toString()+", "+DBList.get(0).get(2).toString()+"];Fail");
+			}
+		}
+
+		String TotPallets = objOrdRecObjects.GetTotPal.getText();
+		String TotArticles = objOrdRecObjects.GetTotArt.getText();
+		String TotDispQty = objOrdRecObjects.GetTotDisQty.getText();
+		String TotCartOrd = objOrdRecObjects.GetTotCarOrd.getText();
+		String TotDispWt = objOrdRecObjects.GetTotDisWt.getText();
+		String SealNumber =objOrdRecObjects.GetSealNo.getText();
+
+		if(TotPallets.equals("0") && TotArticles.equals(DBList.get(0).get(6).toString()) && TotDispQty.equals("NA") && TotCartOrd.equals(DBList.get(0).get(5).toString()) && TotDispWt.equals("NA") && SealNumber.equals("NA"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Pallet Count, Total Articles count, Dispatched Qty, Total Cartons Ordered, Dispatched Weight, Seal Number are displayed correctly in header details;Local Value is ["+TotPallets+", "+TotArticles+", "+TotDispQty+", "+TotCartOrd+", "+TotDispWt+", "+SealNumber+"];DB Value is [0, "+DBList.get(0).get(6).toString()+", NA, " +DBList.get(0).get(5).toString()+", NA, NA];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Pallet Count, Total Articles count, Dispatched Qty, Total Cartons Ordered, Dispatched Weight, Seal Number are displayed correctly in header details;Local Value is ["+TotPallets+", "+TotArticles+", "+TotDispQty+", "+TotCartOrd+", "+TotDispWt+", "+SealNumber+"];DB Value is [0, "+DBList.get(0).get(6).toString()+", NA, " +DBList.get(0).get(5).toString()+", NA, NA];Fail");
+		}
+
+		scrolldown(driver);
+
+		htmlToExtent(cName,mName,extLogger,driver, "Articles List is Displayed;;;Pass");
+
+		click(objOrdRecObjects.Clrgrpby);
+
+		String artnum1=null,artdes1=null,artom1=null,OrdQty1=null,OrdTotUnits1=null;
+		for(int i=1;i<=objOrdRecObjects.OrderedQty1.size();i++)
+		{
+			WebElement artnum  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getartno,i,driver);
+			WebElement artdes  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getartdes,i,driver);
+			WebElement artom  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getartOM,i,driver);
+			WebElement Odrqty  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getOrdQty,i,driver);
+			WebElement Totunt  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getTotUnt,i,driver);
+			artnum1 = artnum.getText();
+			artdes1 = artdes.getText();
+			artom1 = artom.getText();
+			OrdQty1 = Odrqty.getText();
+			OrdTotUnits1 = Totunt.getText();
+
+			System.out.println("Artical Details: " +artnum1 +artdes1 +artom1 +OrdQty1 +OrdTotUnits1);
+
+			for(int j=0;j<DBList1.size();j++)
+			{
+				Integer TotUnits = Integer.parseInt(DBList1.get(j).get(1).toString()) * Integer.parseInt(DBList1.get(j).get(3).toString());
+				System.out.println("TotUnits:" +TotUnits);
+
+				String Str2 = ""+TotUnits;
+				DBList2.addAll(StringToListCreation(Str2));
+
+				if(artnum1.equals(DBList1.get(j).get(0).toString())) 
+				{
+					if(OrdQty1.equals((DBList1.get(j).get(1).toString())+" "+(DBList1.get(j).get(2).toString())) && artom1.equals((DBList1.get(j).get(3).toString())+" "+(DBList1.get(j).get(4).toString())) && OrdTotUnits1.equals((DBList2.get(j).get(0).toString())+" "+(DBList1.get(j).get(4).toString())))
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Article Number, OM, Ordered Qty and Total units are displayed correctly in List of articles;Local Value is ["+artnum1+","+artom1+","+OrdQty1+","+OrdTotUnits1+"];DB Value is ["+DBList1.get(j).get(0).toString()+","+DBList1.get(j).get(3).toString()+" "+DBList1.get(j).get(4).toString()+","+DBList1.get(j).get(1).toString()+" "+DBList1.get(j).get(2).toString()+","+DBList2.get(j).get(0).toString()+" "+(DBList1.get(j).get(4).toString())+"];Pass");
+					}
+					else
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Article Number, OM, Ordered Qty and Total units are displayed correctly in List of articles;Local Value is ["+artnum1+","+artom1+","+OrdQty1+","+OrdTotUnits1+"];DB Value is ["+DBList1.get(j).get(0).toString()+","+DBList1.get(j).get(3).toString()+" "+DBList1.get(j).get(4).toString()+","+DBList1.get(j).get(1).toString()+" "+DBList1.get(j).get(2).toString()+","+DBList2.get(j).get(0).toString()+" "+(DBList1.get(j).get(4).toString())+"];Fail");
+					}
+				}
+			}
+		}
+
+		click(objOrdRecObjects.ReceiveOrder);
+		waitForJSandJQueryToLoad(driver);;
+		if(objOrdRecObjects.Sessionpopup.getText().contains("Previous receiving session exists."))
+		{
+			click(objOrdRecObjects.ClkNewSession);
+			click(objOrdRecObjects.ReceiveException);
+			//enterText(objOrdRecObjects.EnterInvoice,InvoiceNo);
+			objOrdRecObjects.EnterInvoice.sendKeys("12345");
+			waitFor(1);
+			if(objOrdRecObjects.Temperature1.getText().equals("Temperature Details"))
+			{
+				if(objOrdRecObjects.TempTypes.getText().equals("Hard Frozen Temperature"))
+				{
+					waitFor(1);
+					objOrdRecObjects.EnterForzenTemp.sendKeys("-17");
+					//enterText(objOrdRecObjects.EnterForzenTemp,ForzenTem);
+				}
+				if(objOrdRecObjects.TempTypes1.getText().equals("Chilled Temperature"))
+				{
+					waitFor(1);
+					objOrdRecObjects.EnterChillTemp.sendKeys("1.2");
+					//enterText(objOrdRecObjects.EnterChillTemp,ForzenTem);
+				}
+				
+			}
+
+			click(objOrdRecObjects.Next);
+
+		}
+		else
+		{
+			click(objOrdRecObjects.ReceiveException);
+			//enterText(objOrdRecObjects.EnterInvoice,InvoiceNo);
+			objOrdRecObjects.EnterInvoice.sendKeys("12345");
+			waitFor(1);
+			if(objOrdRecObjects.Temperature1.getText().equals("Temperature Details"))
+			{
+				if(objOrdRecObjects.TempTypes.getText().equals("Hard Frozen Temperature"))
+				{
+					waitFor(1);
+					objOrdRecObjects.EnterForzenTemp.sendKeys("-17");
+					//enterText(objOrdRecObjects.EnterForzenTemp,ForzenTem);
+				}
+				if(objOrdRecObjects.TempTypes1.getText().equals("Chilled Temperature"))
+				{
+					waitFor(1);
+					objOrdRecObjects.EnterChillTemp.sendKeys("1.2");
+					//enterText(objOrdRecObjects.EnterChillTemp,ForzenTem);
+				}
+			}
+			click(objOrdRecObjects.Next);
+		}
+
+		click(objOrdRecObjects.ClkAddMisArt2);
+		enterText(objOrdRecObjects.EnterArtNo1,AddArtNo,driver);
+		enterText(objOrdRecObjects.EnterArtQty,AddArtQty,driver);
+		click(objOrdRecObjects.ClkSeaAddbutton);
+		waitForJSandJQueryToLoad(driver);;
+		if(objOrdRecObjects.ConfPopup.getText().contains("Are you sure you want"))
+			//if(objOrdRecObjects.ConfPopup.getText().equals("Confirmation"))
+		{
+			click(objOrdRecObjects.ClkContinue1);
+			waitForJSandJQueryToLoad(driver);;
+			for(int k=1;k<=objOrdRecObjects.clkchkboxes1.size();k++)
+			{
+				WebElement clkchkboxes1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.clickcheckboxlist,k,driver);
+				clkchkboxes1.click();
+				waitFor(2);
+			}
+
+		}
+		else
+		{	
+			for(int k=1;k<=objOrdRecObjects.clkchkboxes1.size();k++)
+			{
+				WebElement clkchkboxes1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.clickcheckboxlist,k,driver);
+				clkchkboxes1.click();
+				waitFor(2);
+			}
+
+		}
+
+		htmlToExtent(cName,mName,extLogger,driver, "Receive Articles page;;;Pass");
+
+		for(Integer a=1;a<=objOrdRecObjects.ListofArticles1.size();a++)
+		{
+			WebElement artnum_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getartno1,a,driver);
+			WebElement artom_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getomno1,a,driver);
+			WebElement Odrqty_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getordqtyno1,a,driver);
+			WebElement Totunt_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getordTotno1,a,driver);
+			
+			WebElement RecTot_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+			String artno_1 = artnum_1.getText();
+			String OMno_1 = artom_1.getText();
+			String OrdQtyno_1 = Odrqty_1.getText();
+			String OrdTotno_1 = Totunt_1.getText();
+			
+			String RecTotno_1 =RecTot_1.getText();
+			Long RecTotno_2 =  Long.parseLong(RecTotno_1.replaceAll("[^0-9\\.]+", ""));
+
+			String Str3 = ""+artno_1+":"+OMno_1+":"+OrdQtyno_1+":"+OrdTotno_1+":"+RecTotno_1;
+			DBList3.addAll(StringToListCreation(Str3));
+
+			Integer art2 = objOrdRecObjects.ListofArticles1.size();
+			Long Ordqty1 =  Long.parseLong(OrdQtyno_1.replaceAll("[^0-9\\.]+", ""));
+			
+			Long Om1 =  Long.parseLong(OMno_1.replaceAll("[^0-9\\.]+", ""));
+
+			if(a.toString().equals(art2.toString()))
+				
+			{
+				WebElement Recqty_1 =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+				String RecQtyno_1 = Recqty_1.getAttribute("value");
+				String Str_DB = ""+artno_1+":"+RecQtyno_1+":"+baseuom_1+":"+Om1+":"+baseord1+":"+Sohval_1;
+				DBList1.addAll(StringToListCreation(Str_DB));
+			}
+
+			System.out.println("DBList1" +DBList1);
+			System.out.println("DBList3" +DBList3);
+			System.out.println("Receive Articles page:" +artno_1 +OMno_1 +OrdQtyno_1 +OrdTotno_1 +RecTotno_1 );
+
+			for(int b=0;b<DBList3.size();b++)
+			{
+				if(artno_1.equals(DBList3.get(b).get(0).toString())) 
+				{
+					if(OMno_1.equals(DBList3.get(b).get(1).toString()) && OrdQtyno_1.equals(DBList3.get(b).get(2).toString()) && OrdTotno_1.equals(DBList3.get(b).get(3).toString()) && RecTotno_1.equals(DBList3.get(b).get(4).toString()))
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Article Number, OM, Ordered Qty , Ordered Total Units and  Received Total units are displayed correctly in List of articles;Local Value is ["+artno_1+","+OMno_1+","+OrdQtyno_1+","+OrdTotno_1+","+RecTotno_1+"];DB Value is ["+DBList3.get(b).get(0).toString()+","+DBList3.get(b).get(1).toString()+" "+DBList3.get(b).get(2).toString()+","+DBList3.get(b).get(3).toString()+" "+DBList3.get(b).get(4).toString()+"];Pass");
+					}
+					else
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Article Number, OM, Ordered Qty , Ordered Total Units and  Received Total units are displayed correctly in List of articles;Local Value is ["+artno_1+","+OMno_1+","+OrdQtyno_1+","+OrdTotno_1+","+RecTotno_1+"];DB Value is ["+DBList3.get(b).get(0).toString()+","+DBList3.get(b).get(1).toString()+" "+DBList3.get(b).get(2).toString()+","+DBList3.get(b).get(3).toString()+" "+DBList3.get(b).get(4).toString()+"];Fail");
+					}
+				}
+			}
+		}
+
+		verticalScroll(driver);
+		click(objOrdRecObjects.Next);
+		waitForJSandJQueryToLoad(driver);;
+
+		htmlToExtent(cName,mName,extLogger,driver, "Review Discrepanciese page;;;Pass");
+		for(int r=1;r<=objOrdRecObjects.ClkDis.size();r++)
+		{
+			WebElement ClkDis = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.Disccheckbox,r,driver);
+			ClkDis.click();
+			waitFor(2);
+		}
+		
+		for(int p=1;p<=objOrdRecObjects.DiscrepanciesList1.size();p++)
+		{
+			WebElement disartno  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisart,p,driver);
+			WebElement disordqty  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisordqty,p,driver);
+			WebElement disordtot  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisordTot,p,driver);
+			WebElement disrecqty	= prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisRecqty,p,driver);
+			WebElement disrectot = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisRecTot,p,driver);
+			String disartno1 = disartno.getText();
+			String disordqty1 = disordqty.getText();
+			String disordtot1 = disordtot.getText();
+			String disrecqty1 = disrecqty.getText();
+			String disrectot1 = disrectot.getText();
+
+			String Str4 = ""+disartno1+":"+disordqty1+":"+disordtot1+":"+disrecqty1+":"+disrectot1;
+			DBList4.addAll(StringToListCreation(Str4));
+
+			System.out.println("DBList4:" +DBList4);
+
+			for(int q=0;q<DBList4.size();q++)
+			{
+				String[] recval= splitString(DBList4.get(q).get(4).toString()," ");
+				String[] ordval = splitString(DBList4.get(q).get(2).toString()," ");
+				Integer Diff = ((Integer.parseInt(recval[q]))-(Integer.parseInt(ordval[q])));
+				String Diffval = Integer.toString(Diff);
+				System.out.println("Diffvalue:" +Diffval);
+
+				String Str5 = ""+Diffval;
+				DBList5.addAll(StringToListCreation(Str5));
+
+				System.out.println("DBList5" +DBList5);
+
+				if(disartno1.equals(DBList4.get(q).get(0).toString())) 
+				{
+					if(disordqty1.equals(DBList4.get(q).get(1).toString()) && disordtot1.equals(DBList4.get(q).get(2).toString()) && disrecqty1.equals(DBList4.get(q).get(3).toString()) && disrectot1.equals(DBList4.get(q).get(4).toString()) && Diffval.equals(DBList5.get(0).get(0).toString()))
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Article Number, Ordered Qty , Ordered Total Units, Received Qty and Received Total units are displayed correctly in List of articles;Local Value is ["+disartno1+","+disordqty1+","+disordtot1+","+disrecqty1+","+disrectot1+","+Diffval+"];DB Value is ["+DBList4.get(q).get(0).toString()+","+DBList4.get(q).get(1).toString()+","+DBList4.get(q).get(2).toString()+","+DBList4.get(q).get(3).toString()+","+DBList4.get(q).get(4).toString()+","+DBList5.get(0).get(0).toString()+"];Pass");
+					}
+					else
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Article Number, Ordered Qty , Ordered Total Units, Received Qty and Received Total units are displayed correctly in List of articles;Local Value is ["+disartno1+","+disordqty1+","+disordtot1+","+disrecqty1+","+disrectot1+","+Diffval+"];DB Value is ["+DBList4.get(q).get(0).toString()+","+DBList4.get(q).get(1).toString()+","+DBList4.get(q).get(2).toString()+","+DBList4.get(q).get(3).toString()+","+DBList4.get(q).get(4).toString()+","+DBList5.get(0).get(0).toString()+"];Fail");
+					}
+				}
+			}
+		}
+
+		waitFor(2);
+		click(objOrdRecObjects.Next);
+		//waitForJSandJQueryToLoad(driver);;
+
+		htmlToExtent(cName,mName,extLogger,driver, "Check summary and submit the order;;;Pass");
+
+		String TotArtOrd =  objOrdRecObjects.ChkTotArtOrd.getText();
+		String TotArtRcd =  objOrdRecObjects.ChkTotArtRed.getText();
+		String TotCarOrd =  objOrdRecObjects.ChkTotCarOrd.getText();
+		String TotCarRcd =  objOrdRecObjects.ChkTotCarRed.getText();
+		String TotULDRed =  objOrdRecObjects.ChkTotULDRed.getText();
+		String TotULDRet =  objOrdRecObjects.ChkTotULDRet.getText();
+
+		String str6 = ""+TotArtOrd+":"+TotArtRcd+":"+TotCarOrd+":"+TotCarRcd+":"+TotULDRed;
+		DBList6.addAll(StringToListCreation(str6));
+
+		System.out.println("DBList6" +DBList6);
+
+		if(TotArtOrd.equals(DBList6.get(0).get(0).toString()) && TotArtRcd.equals(DBList6.get(0).get(1).toString()) && TotCarOrd.equals(DBList6.get(0).get(2).toString()) && TotCarRcd.equals(DBList6.get(0).get(3).toString()) && TotULDRed.equals("0") && TotULDRet.equals("0"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Article Ordered, Total Articles Received, Total Cartons Ordered, Total Cartons Received, Total ULD's Received, Total ULD's Returned are displayed correctly in Receive Summary Page;Local Value is ["+TotArtOrd+", "+TotArtRcd+", "+TotCarOrd+", "+TotCarRcd+", "+TotULDRed+", "+TotULDRet+"];DB Value is ["+DBList6.get(0).get(0).toString()+", "+DBList6.get(0).get(1).toString()+", " +DBList6.get(0).get(2).toString()+", " +DBList6.get(0).get(3).toString()+", 0, 0];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Article Ordered, Total Articles Received, Total Cartons Ordered, Total Cartons Received, Total ULD's Received, Total ULD's Returned are displayed correctly in Receive Summary Page;Local Value is ["+TotArtOrd+", "+TotArtRcd+", "+TotCarOrd+", "+TotCarRcd+", "+TotULDRed+", "+TotULDRet+"];DB Value is ["+DBList6.get(0).get(0).toString()+", "+DBList6.get(0).get(3).toString()+", " +DBList6.get(0).get(2).toString()+", " +DBList6.get(0).get(3).toString()+", 0, 0];Fail");
+		}
+
+
+		htmlToExtent(cName,mName,extLogger,driver, "Discrepancies;;;Pass");
+
+		String PackSize = objOrdRecObjects.ChkPackSize.getText();
+		String ZeroQty = objOrdRecObjects.ChkZeroQty.getText();
+		String OtherQty = objOrdRecObjects.ChkOtherQty.getText();
+		
+		
+		Integer OtherQty1 = objOrdRecObjects.DiscrepanciesList1.size();
+
+		String str7 = ""+OtherQty1;
+		DBList6.addAll(StringToListCreation(str7));
+
+		System.out.println("DBList6" +DBList6);
+
+		if(PackSize.equals("0") && ZeroQty.equals("0") && OtherQty.equals(DBList6.get(1).get(0).toString()))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"PackSize, ZeroQty, OtherQty are displayed correctly in Receive Summary Page;Local Value is ["+PackSize+", "+ZeroQty+", "+OtherQty+"];DB Value is [0, 0, "+DBList6.get(0).get(0).toString()+"];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"PackSize, ZeroQty, OtherQty are displayed correctly in Receive Summary Page;Local Value is ["+PackSize+", "+ZeroQty+", "+OtherQty+"];DB Value is [0, 0, "+DBList6.get(0).get(0).toString()+"];Fail");
+		}
+		
+		click(objOrdRecObjects.clksub);
+		if(objOrdRecObjects.ConfPopup.getText().contains("Do you want to apply"))
+		{
+			click(objOrdRecObjects.ClkContinue1);
+			waitForJSandJQueryToLoad(driver);;
+		}
+		String successmsg1 = objOrdRecObjects.successmsg.getText();
+		if(successmsg1.contains("Receiving Details Posted Successfully"))
+		{
+			click(objOrdRecObjects.StatusPopup);
+			htmlToExtent(cName,mName,extLogger,driver,""+successmsg1+";;;Pass");
+		}
+		
+		click(objOrdRecObjects.Clgrp);
+		
+		scrollUp(driver);
+		
+		List<List<Object>> applist=getValuesFromTable(objOrdRecObjects.tab1);
+		removeIndex(applist, "4");
+		removeIndex(applist, "2");
+		removeIndex(applist, "0");
+		replacenullToZero(applist);
+		
+		List<List<Object>> applist1=getValuesFromTable(objOrdRecObjects.tab2);
+		removeIndex(applist1, "5");
+		removeIndex(applist1, "4");
+		removeIndex(applist1, "2");
+		removeIndex(applist1, "0");
+		replacenullToZero(applist1);
+		
+		List<List<Object>> applist2=getValuesFromTable(objOrdRecObjects.tab3);
+		removeIndex(applist2, "5");
+		removeIndex(applist2, "4");
+		removeIndex(applist2, "2");
+		removeIndex(applist2, "0");
+		replacenullToZero(applist2);
+		
+		List<List<Object>> applist3=getValuesFromTable(objOrdRecObjects.tab4);
+		removeIndex(applist3, "2");
+		removeIndex(applist3, "0");
+		replacenullToZero(applist3);
+		
+		scrolldown(driver);
+		
+		List<List<Object>> DB1= new ArrayList<List<Object>>();
+		List<List<Object>> DB2= new ArrayList<List<Object>>();
+		
+		String rectotunits2 =" ";
+
+		for(int a=1;a<=objOrdRecObjects.receivedartlist.size();a++)
+	
+		{
+			WebElement Ordqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartordqty,a,driver); 
+			String Ordqty1 = Ordqty.getText();
+		
+			WebElement recqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartrecqty,a,driver);
+			String recqty1 = recqty.getText();
+			String [] recqty2 = splitString(recqty1, " ");
+			recqty1 = recqty2[0];
+			
+			WebElement disqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartdisqty,a,driver);
+			String disqty1 = disqty.getText();
+			
+			WebElement rectotunits =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartTotunits,a,driver);
+			String rectotunits1 = rectotunits.getText();
+			rectotunits2 = rectotunits1.replace("\n", " ").replace("\r", " ");
+			
+			String str = ""+Ordqty1+":"+recqty1+":"+rectotunits2+":"+disqty1;
+			DB1.addAll(StringToListCreation(str));
+	
+		}
+		
+		System.out.println("DB1values:" +DB1);
+		
+		Integer Recqtyval =0;
+		
+		Integer ordqt = 0;
+		
+		for(int i=0; i<DB1.size();i++)
+		{
+			
+			String ordqtyval = DB1.get(i).get(0).toString();
+			if(ordqtyval.equals("NA"))
+			{
+				ordqtyval = "0";
+			}
+			else
+			{
+			String[] ordqt1= splitString(ordqtyval, " ");
+			ordqtyval = ordqt1[0];
+			}
+			ordqt = ordqt + Integer.parseInt(ordqtyval);
+		
+		}
+		
+		for(int j=0; j<DB1.size();j++)
+		{
+
+			String Recqtyvalue = DB1.get(j).get(1).toString();
+			Recqtyval = Recqtyval + (Integer.parseInt(Recqtyvalue));
+	
+		}
+		
+		System.out.println("Recqtyvalue:" +Recqtyval);
+		
+		String ranwt1 = applist.get(2).get(0).toString();
+		ranwt1 = decimalFormat1(ranwt1);
+	
+		Integer Totart = objOrdRecObjects.receivedartlist.size();
+		String str1 = ""+Recqtyval+":"+Totart+":"+ordqt;
+		DB2.addAll(StringToListCreation(str1)); 
+	
+		if(applist.get(0).get(0).toString().equals("NA") && applist.get(0).get(1).toString().equals("0") && applist.get(0).get(2).toString().equals(DB2.get(0).get(1).toString()))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets and Total articles;[NA,0,"+Totart+"];["+applist.get(0).get(0).toString()+","+applist.get(0).get(1).toString()+","+applist.get(0).get(2).toString()+"];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets and Total articles;[NA,0,"+Totart+"];["+applist.get(0).get(0).toString()+","+applist.get(0).get(1).toString()+","+applist.get(0).get(2).toString()+"];Fail");
+		}
+		
+		if(applist.get(1).get(0).toString().equals(DB2.get(0).get(0).toString()) && applist.get(1).get(1).toString().equals("NA") && applist.get(1).get(2).toString().equals(DB2.get(0).get(2).toString()))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Cartons Received, Total Dispatched Qty and Total Cartons Ordered;["+Recqtyval+",NA,"+ordqt+"];["+applist.get(1).get(0).toString()+","+applist.get(1).get(1).toString()+","+applist.get(1).get(2).toString()+"];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Cartons Received, Total Dispatched Qty and Total Cartons Ordered;["+Recqtyval+",NA,"+ordqt+"];["+applist.get(1).get(0).toString()+","+applist.get(1).get(1).toString()+","+applist.get(1).get(2).toString()+"];Fail");
+		}	
+		
+		if(ranwt1.equals("0") && applist.get(2).get(1).toString().equals("NA"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Random weight and  Total Dispatched Weight;["+ranwt1+","+applist.get(2).get(1).toString()+"];[0,NA];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Random weight and  Total Dispatched Weight;["+ranwt1+","+applist.get(2).get(1).toString()+"];[0,NA];Fail");
+		}
+		
+		if(applist.get(3).get(0).toString().equals("NA"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total pallets Returned;["+applist.get(3).get(0).toString()+"];[NA];Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Total pallets Returned;["+applist.get(3).get(0).toString()+"];[NA];Fail");
+		}
+	
+		return DBList1;
+	}
+		
+		
+		
+
+
+	public List<List<Object>> AddingArticles(OrderingAndReceivingObject objOrdRecObjects,List articlelist, List<String> disp,
+			List<String> normalart,List<String> random,List<String> cpbd,List<List<Object>> DB1,
+			List<List<Object>> DB2,List<List<Object>> DB3,List<List<Object>> DB4,String artno1,String RanSoh,
+			String artno2,String baseuom_1,String sohval,String artno3,String cpbd_1,String complex_art,String artno4,
+			List<List<Object>> DBList1,WebDriver driver) throws IOException, ParseException
+	{	
+		for(int i=0;i<articlelist.size();i++)
+		{
+			if(i==0)
+			{
+				waitFor(0.5);
+				waitForClickOfElement(objOrdRecObjects.orderonreceiptart, driver);
+				objOrdRecObjects.orderonreceiptart.sendKeys(articlelist.get(i).toString());
+				//enterText(objOrdRecObjects.orderonreceiptart, articlelist.get(i).toString(),driver);
+				objOrdRecObjects.orderonreceiptart.sendKeys(Keys.ENTER);waitForJSandJQueryToLoad(driver);
+			}
+			
+			Integer article_list = objOrdRecObjects.orderonreceiptartList.size();
+			System.out.println("article_list:" +article_list);
+		
+			if(objOrdRecObjects.orderonreceiptartList.size()!=0)
+			{
+				for(int k=article_list-1;k>0;k-=2)
+				{					
+				WebElement deletebtn = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptDelete, k,driver);
+				waitForClickOfElement(deletebtn, driver);
+				deletebtn.click();
+				if(objOrdRecObjects.ConfPopup.getText().contains("Please Confirm to remove article list?"))
+				{
+					click(objOrdRecObjects.accept);
+				}
+				//k--;
+				}
+			}
+			
+			if(i==0)
+			{
+				waitFor(0.5);
+				waitForClickOfElement(objOrdRecObjects.orderonreceiptart, driver);
+				objOrdRecObjects.orderonreceiptart.sendKeys(articlelist.get(i).toString());
+				//enterText(objOrdRecObjects.orderonreceiptart, articlelist.get(i).toString(),driver);
+				objOrdRecObjects.orderonreceiptart.sendKeys(Keys.ENTER);waitForJSandJQueryToLoad(driver);
+			}
+			
+			for(i=1;i<articlelist.size();i++)
+			{
+				waitFor(0.5);
+				waitForClickOfElement(objOrdRecObjects.orderonreceiptart2, driver);
+				objOrdRecObjects.orderonreceiptart2.sendKeys(articlelist.get(i).toString());
+				//enterText(objOrdRecObjects.orderonreceiptart, articlelist.get(i).toString(),driver);
+				objOrdRecObjects.orderonreceiptartAdd.click();waitForJSandJQueryToLoad(driver);	
+				waitFor(1);
+				if(objOrdRecObjects.addartList.size()==1)
+				{
+					objOrdRecObjects.addartList1.click();
+					waitForJSandJQueryToLoad(driver);
+					objOrdRecObjects.addartListOK.click();
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+		}
+
+			scrolldown(driver);
+			for(int k=1;k<=objOrdRecObjects.orderonreceiptartList.size();k+=2)
+			{
+				waitFor(1);
+				WebElement article =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptartNo,k,driver);
+				String art = article.getText();
+				WebElement rcvdQty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptrcvdQty,k,driver);
+				int n = random_no(8)+1;
+				String ordrQty = ""+n;
+				waitFor(1);
+				rcvdQty.clear();
+				rcvdQty.sendKeys(ordrQty);
+				WebElement Date =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptDate,k,driver);
+				WebElement Datemore =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptDatemore,k,driver);
+				Date.sendKeys(common.getCurrentDate());
+				rcvdQty.click();
+				waitFor(1);
+				Datemore.click();
+				WebElement Datemoredate =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptDatemoredate,k,driver);
+				Datemoredate.sendKeys(common.addDaystoCurrentDate(1));
+				rcvdQty.click();
+				htmlToExtent(cName,mName,extLogger,driver,"Expiry date added for Article - "+articlelist+" successfully;;;Pass");
+				List<WebElement> KGlist = driver.findElements(By.xpath("//*[@id='oor_articleListTable']/tbody/tr["+k+"]/td[6]/input[2]"));
+				if(KGlist.size()!=0)
+				{
+					WebElement kgQty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptkgQty,k,driver);
+					int n1 = random_no(8)+1;
+					String kgQtyy = ""+n1;
+					kgQtyy=kgQtyy+".57";
+					kgQty.sendKeys(kgQtyy);	
+					htmlToExtent(cName,mName,extLogger,driver,"Total weight entered for Article - "+articlelist+" is "+kgQtyy+";;;Pass");
+				} 
+
+				if(!random.equals("Y") && !disp.equals("Y"))
+				{
+				WebElement NewOm1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.ordreceiptNewOm1,k,driver);
+				
+				if(NewOm1.getAttribute("readonly")==null)
+				{
+					int n2 = random_no(8)+1;
+					String New_Om = ""+n2;
+					waitFor(1);
+					NewOm1.sendKeys(New_Om);
+					WebElement totalOrder =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptTotalUnit,k,driver);
+					String totalOrderno = totalOrder.getText();
+					htmlToExtent(cName,mName,extLogger,driver,"New Om entered for Article - "+articlelist+" is "+New_Om+";;;Pass");
+					int order=n*Integer.parseInt(New_Om);
+					if(order==(Integer.parseInt(totalOrderno)))
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Total order qty matched for the article "+articlelist+";;;Pass");
+					}
+					else
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Total order qty mismatched for the article "+articlelist+";;;Fail");
+					}
+				}
+				else
+				{
+					WebElement OrderOM =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptOM,k,driver);
+					String OM_appl = OrderOM.getText();
+					String[] OM = OM_appl.split(" ");
+					OM_appl = OM[0];
+					WebElement totalOrder =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptTotalUnit,k,driver);
+					String totalOrderno = totalOrder.getText();
+					int order=n*Integer.parseInt(OM_appl);
+					if(order==(Integer.parseInt(totalOrderno)))
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Total order qty matched for the article "+articlelist+";;;Pass");
+					}
+					else
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Total order qty mismatched for the article "+articlelist+";;;Fail");
+					}
+				}
+				}
+				
+				if(disp.contains(art))
+				{
+					for(int x=0;x<DB1.size();x++) 
+					{
+						String childart = DB1.get(x).get(1).toString();
+						String Childqty = DB1.get(x).get(2).toString();
+						String SOHvalue=DB1.get(x).get(3).toString();
+						String str = ""+art+":"+childart+":"+Childqty+":"+SOHvalue;
+						DBList1.addAll(StringToListCreation(str));
+					}
+					
+				}
+				else if(random.contains(art))
+				{
+					WebElement Ran_SOH =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptSOH,k,driver);
+					String Ran_SOH1 = Ran_SOH.getText();
+					String RanSOH1=decimalFormat(Ran_SOH1);
+					
+					String str =  ""+art+":"+sohval+":"+RanSOH1;
+					DBList1.addAll(StringToListCreation(str));
+					
+				}
+				else if (cpbd.contains(art))
+				{
+					for(int y=0;y<DB3.size();y++)
+					{
+						String SOHvalue = DB3.get(0).get(3).toString();
+						String str =""+art+":"+cpbd_1+":"+complex_art+":"+SOHvalue+":"+RanSoh;
+						DBList1.addAll(StringToListCreation(str));
+					}
+					
+				}
+				
+				else 
+				{
+				WebElement SOH =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptSOH,k,driver);
+				String SOH_appl = SOH.getText();
+				String SOH_val="";
+				if(SOH_appl.contains("."))
+				{
+					SOH_val=SOH_appl.replaceAll("\\.?0+$","");
+				}else{
+					SOH_val=SOH_appl;
+				}
+				
+				String str = ""+art+":"+SOH_val;
+				DBList1.addAll(StringToListCreation(str));
+				
+				}
+			
+			}
+			
+			System.out.println("Applicationvaluesbeforecalculation:" +DBList1);
+			
+			
+		
+		return DBList1;	
+	}
+	
+	public int random_no(int max) {
+		Random rand = new Random();
+		int n = rand.nextInt(max);
+		return n;
+	}
+	
+	public List<List<Object>> articleCompare(OrderingAndReceivingObject objOrdRecObjects,List disp,List cpbd,List random,
+			List normalart,List<List<Object>> DB1,List<List<Object>> DB2,
+			List<List<Object>> DB3,List<List<Object>> DB4,String artno1,
+			String RanSoh,String artno3,String cpbd_1,String complex_art,String artno2,String Pi_om,String artno4,String om,
+			String ranwgt, List<List<Object>> DBList2,WebDriver driver) throws IOException
+	{
+		List<List<Object>> DBran= new ArrayList<List<Object>>();
+		String SOHvalue = " ";
+		
+		for(int k=1;k<=objOrdRecObjects.orderonreceiptartList.size();k+=2)
+		{
+			WebElement article =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptartNo,k,driver);
+			String art = article.getText();
+			WebElement totalOrder =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptTotalUnit1,k,driver);
+			String totalOrderno = totalOrder.getAttribute("value");
+			
+			if(disp.contains(art))
+			{
+				for(int x=0;x<DB1.size();x++)
+				{
+					WebElement rcvdQty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptrcvdQty,k,driver);
+					String recqtyval = rcvdQty.getAttribute("value");
+					
+					String childart = DB1.get(x).get(1).toString();
+					String Childqty = DB1.get(x).get(2).toString();
+					if(DB1.get(x).get(3).toString().contains("."))
+					{
+						Double SOHvalue1 =Double.parseDouble(DB1.get(x).get(3).toString()) + (Integer.parseInt(recqtyval)*Integer.parseInt(DB1.get(x).get(2).toString())) ;
+						SOHvalue = SOHvalue1.toString();
+						
+					}
+					else
+					{
+						Integer SOHvalue1 =Integer.parseInt(DB1.get(x).get(3).toString()) + (Integer.parseInt(recqtyval)*Integer.parseInt(DB1.get(x).get(2).toString())) ;
+						SOHvalue = SOHvalue1.toString();
+					}
+					
+					String str = ""+art+":"+childart+":"+Childqty+":"+SOHvalue;
+					DBList2.addAll(StringToListCreation(str));
+				}
+			}	
+				else if(random.contains(art))
+				{
+					WebElement kgQty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptkgQty,k,driver);
+					
+					String Kgval = kgQty.getAttribute("value");
+					
+					ranwgt += Double.parseDouble(Kgval.toString());
+					ranwgt = decimalFormat1(ranwgt);
+					for(int i=0;i<DB2.size();i++)
+					{
+						if(art.equals(DB2.get(i).get(0).toString()))
+						{
+							if(DB2.get(i).get(1).toString().contains("."))
+							{
+								Double SOHvalue1 =Double.parseDouble(DB2.get(i).get(1).toString())+Integer.parseInt(totalOrderno);
+								round(SOHvalue1, 3);
+								SOHvalue = SOHvalue1.toString();
+								break;
+							}
+							else
+							{
+								Integer SOHvalue1 =Integer.parseInt(DB2.get(i).get(1).toString())+Integer.parseInt(totalOrderno);
+								SOHvalue = SOHvalue1.toString();
+								break;
+							}
+						}
+					}
+					Double NewRansoh = Double.parseDouble(DB2.get(0).get(1).toString()) + Double.parseDouble(Kgval);
+					
+					String NewRansoh1 = NewRansoh.toString().replaceAll("\\.?0+$","");
+					
+					//String str = ""+art+":"+NewRansoh1+":"+SOHvalue+":"+ranwgt;
+					String str = ""+art+":"+SOHvalue+":"+SOHvalue+":"+ranwgt;
+					DBList2.addAll(StringToListCreation(str));
+					
+				}
+			
+				
+				else if (cpbd.contains(art))
+				{
+					for(int y=0;y<DB3.size();y++)
+					{
+						Integer SOHvalue1 = 0;
+						for(int i=0;i<DB3.size();i++)
+						{
+							if(art.equals(DB3.get(i).get(0).toString()))
+							{
+								SOHvalue1=Integer.parseInt(DB3.get(0).get(3).toString()) * 24;
+								break;
+							}
+						}
+					//	Integer SOHvalue1 = Integer.parseInt(DB3.get(0).get(3).toString()) * 24;
+						SOHvalue = SOHvalue1.toString();
+						String str =""+art+":"+cpbd_1+":"+complex_art+":"+SOHvalue+":"+RanSoh;
+						DBList2.addAll(StringToListCreation(str));
+					}
+				}
+				else 
+				{
+					Double SOHvalue1 = 0.0;
+					for(int i=0;i<DB4.size();i++)
+					{
+						if(art.equals(DB4.get(i).get(0).toString()))
+						{
+							SOHvalue1=Double.parseDouble(DB4.get(i).get(1).toString())+Integer.parseInt(totalOrderno);
+							break;
+						}
+					}
+					//Integer SOHvalue1=Integer.parseInt(DB4.get(0).get(1).toString())+Integer.parseInt(totalOrderno);
+					SOHvalue = SOHvalue1.toString();
+					if(SOHvalue.contains(".")){SOHvalue=SOHvalue.replaceAll("\\.?0+$","");}
+					String str = ""+art+":"+SOHvalue;
+					DBList2.addAll(StringToListCreation(str));
+					
+				}
+					
+			}
+			
+			System.out.println("Applicationvaluesaftercalculation:" +DBList2);
+			
+		 return DBList2;
+		}
+
+	
+	public void OrderNoCreation(OrderingAndReceivingObject objOrdRecObjects,String InvoicNo, String Cong, 
+			String DGMS, String Carr,String ChillTemp,WebDriver driver) throws IOException
+	{
+		List DBList = new ArrayList();
+		waitFor(3);
+
+		for(int l=2;l<=6;l++)
+		{
+			if(l==6)
+			{
+				{l=7;}
+			}
+			WebElement details =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderonreceiptDetails, l,driver);
+			if(l==2) 
+			{ 
+				enterText(details, InvoicNo,driver);
+			}
+			if(l==3) 
+			{
+				enterText(details, Cong,driver);
+			}
+			if(l==4) 
+			{ 
+				enterText(details, DGMS,driver);
+			}
+			if(l==5) 
+			{ 
+				enterText(details, Carr,driver);
+			}
+			if(l==7) 
+			{  
+
+				enterText(details, ChillTemp,driver);
+				htmlToExtent(cName,mName,extLogger,driver,"Invoiced,Consignment,DGMS department,Carrier,chilled temperature added successfully;;;Pass");
+				click(objOrdRecObjects.finish);
+				waitForJSandJQueryToLoad(driver);;
+				htmlToExtent(cName,mName,extLogger,driver,"***Clicking on finish button***;;;Pass");
+			}
+		}
+		String OrderNo=null;		
+		if(objOrdRecObjects.orderno.isDisplayed())
+		{
+			int ordernosize=objOrdRecObjects.errorOC.size();
+			int errorclse = objOrdRecObjects.ordercloseList.size();
+			int check=0;
+			for(int p=ordernosize;p>1;p--)
+			{
+				List<WebElement> errlist = driver.findElements(By.xpath("(//*[@class='content'])["+p+"]/ol[@class='err_msg']/li"));
+				int list = errlist.size();
+				for(int y=1;y<=list;y++)
+				{
+					WebElement ordermsg =  prepareWebElementWithDynamicXpathWithIntInt(objOrdRecObjects.errordesc, p,y,driver);
+					String errmsg=ordermsg.getText();
+					if(errmsg.contains("has been received"))
+					{
+						htmlToExtent(cName,mName,extLogger,driver,""+errmsg+";;;Pass");
+						String[] split=errmsg.split("Ref No:");
+						OrderNo = split[1];
+						int s = OrderNo.length();
+						OrderNo = OrderNo.substring(0, s-1);
+						htmlToExtent(cName,mName,extLogger,driver,"Order Number generated - "+OrderNo+";;;Pass");
+					}
+				}waitFor(1);
+				if(errorclse!=1)
+				{
+					WebElement orderclse =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderclse, errorclse,driver);
+					errorclse--;
+					orderclse.click();waitForJSandJQueryToLoad(driver);
+				}
+			}
+		}
+	
+		objOrdRecObjects.enterArt.click();
+		objOrdRecObjects.enterArt.sendKeys(OrderNo);
+		objOrdRecObjects.Go.click();
+		waitForJSandJQueryToLoad(driver);
+		
+	
+		htmlToExtent(cName,mName,extLogger,driver,"Entered Order no - "+OrderNo+" to check status;;;Pass");
+		
+
+		if(!(objOrdRecObjects.ordercloseList.size()==0))
+		{
+			String orderstatus = objOrdRecObjects.orderStatus.getText();
+			if(orderstatus.equals("RECEIVED"))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Order no - "+OrderNo+" is in received status;;;Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Order no - "+OrderNo+" is in "+orderstatus+" status;;;Pass");
+			}				
+		}
+		else
+		{
+			WebElement orderclse =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.orderclse, 2,driver);
+			orderclse.click();
+			htmlToExtent(cName,mName,extLogger,driver,"Sorry!! No result found for Order no - "+OrderNo+";;;Pass");
+		}
+		click(objOrdRecObjects.ClickOrNO);
+		waitForJSandJQueryToLoad(driver);;
+	}
+
+
+public void CompareTablevalues(OrderingAndReceivingObject objOrdRecObjects,List<List<Object>> DBList2,WebDriver driver) throws IOException
+{
+
+		List<List<Object>> applist=getValuesFromTable(objOrdRecObjects.tab1);
+		removeIndex(applist, "4");
+		removeIndex(applist, "2");
+		removeIndex(applist, "0");
+		replacenullToZero(applist);
+		//htmlToExtent(cName,mName,extLogger,driver,"Tab1;["+applist+"];;Pass");
+		
+		List<List<Object>> applist1=getValuesFromTable(objOrdRecObjects.tab2);
+		removeIndex(applist1, "5");
+		removeIndex(applist1, "4");
+		removeIndex(applist1, "2");
+		removeIndex(applist1, "0");
+		replacenullToZero(applist1);
+		//htmlToExtent(cName,mName,extLogger,driver,"Tab2;["+applist1+"];;Pass");
+		//DBList.add(applist1);
+		//ElementContains1(cName, mName,extLogger,driver, applist1, DBList);
+		
+		List<List<Object>> applist2=getValuesFromTable(objOrdRecObjects.tab3);
+		removeIndex(applist2, "5");
+		removeIndex(applist2, "4");
+		removeIndex(applist2, "2");
+		removeIndex(applist2, "0");
+		replacenullToZero(applist2);
+		//htmlToExtent(cName,mName,extLogger,driver,"Tab3;["+applist2+"];;Pass");
+		
+		
+		List<List<Object>> applist3=getValuesFromTable(objOrdRecObjects.tab4);
+		removeIndex(applist3, "2");
+		removeIndex(applist3, "0");
+		replacenullToZero(applist3);
+		//htmlToExtent(cName,mName,extLogger,driver,"Tab4;["+applist3+"];;Pass");
+		
+		List<List<Object>> DBList4= new ArrayList<List<Object>>();
+		List<List<Object>> DBList5= new ArrayList<List<Object>>();
+		
+		scrolldown(driver);
+		click(objOrdRecObjects.Clgrp);
+		
+		String rectotunits2 =" ";
+
+		for(int a=1;a<=objOrdRecObjects.receivedartlist.size();a++)
+	
+		{
+			WebElement Ordqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartordqty,a,driver); 
+			String Ordqty1 = Ordqty.getText();
+			String[] Ordqty2=splitString(Ordqty1, " ");
+			Ordqty1 = Ordqty2[0];
+			WebElement recqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartrecqty,a,driver);
+			String recqty1 = recqty.getText();
+			String [] recqty2 = splitString(recqty1, " ");
+			recqty1 = recqty2[0];
+			
+			WebElement disqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartdisqty,a,driver);
+			String disqty1 = disqty.getText();
+			
+			WebElement rectotunits =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartTotunits,a,driver);
+			String rectotunits1 = rectotunits.getText();
+			rectotunits2 = rectotunits1.replace("\n", " ").replace("\r", " ");
+			
+			String str = ""+Ordqty1+":"+recqty1+":"+rectotunits2+":"+disqty1;
+			DBList4.addAll(StringToListCreation(str));
+	
+		}
+			System.out.println("DBList4:" +DBList4);
+			
+			Integer Ordqtyval1 = 0;
+			Integer Recqtyval1 = 0;
+			
+			for(int i=0;i<DBList4.size();i++)
+			{
+				String Ordqtyval = DBList4.get(i).get(0).toString();
+				Ordqtyval1 = Ordqtyval1 + Integer.parseInt(Ordqtyval);
+				
+				String Recqtyval = DBList4.get(i).get(0).toString();
+				Recqtyval1 = Recqtyval1 + Integer.parseInt(Recqtyval);
+			
+			}
+			
+			System.out.println("ordqtyvalue and Recqtyvalue:" +Ordqtyval1 +Recqtyval1);
+			
+			String ranwgt = DBList2.get(4).get(3).toString();
+			
+			String ranwt1 = applist.get(2).get(0).toString();
+			ranwt1 = decimalFormat1(ranwt1);
+			
+			Integer Totart = objOrdRecObjects.receivedartlist.size();
+			String str1 = ""+Ordqtyval1+":"+Recqtyval1+":"+Totart+":"+ranwgt;
+			DBList5.addAll(StringToListCreation(str1)); 
+			
+			if(applist.get(0).get(0).toString().equals("NA") && applist.get(0).get(1).toString().equals("0") && applist.get(0).get(2).toString().equals(DBList5.get(0).get(2).toString()))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets and Total articles;[NA,0,"+Totart+"];["+applist.get(0).get(0).toString()+","+applist.get(0).get(1).toString()+","+applist.get(0).get(2).toString()+"];Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets and Total articles;[NA,0,"+Totart+"];["+applist.get(0).get(0).toString()+","+applist.get(0).get(1).toString()+","+applist.get(0).get(2).toString()+"];Fail");
+			}
+			
+			if(applist.get(1).get(0).toString().equals(DBList5.get(0).get(0).toString()) && applist.get(1).get(1).toString().equals("NA") && applist.get(1).get(2).toString().equals(DBList5.get(0).get(1).toString()))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Total Cartons Received, Total Dispatched Qty and Total Cartons Ordered;["+Ordqtyval1+",NA,"+Recqtyval1+"];["+applist.get(1).get(0).toString()+","+applist.get(1).get(1).toString()+","+applist.get(1).get(2).toString()+"];Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Total Cartons Received, Total Dispatched Qty and Total Cartons Ordered;["+Ordqtyval1+",NA,"+Recqtyval1+"];["+applist.get(1).get(0).toString()+","+applist.get(1).get(1).toString()+","+applist.get(1).get(2).toString()+"];Fail");
+			}	
+			
+			if(ranwt1.equals(DBList2.get(4).get(3).toString()) && applist.get(2).get(1).toString().equals("NA"))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Total Random weight and  Total Dispatched Weight;["+ranwt1+","+applist.get(2).get(1).toString()+"];["+DBList2.get(4).get(3).toString()+",NA];Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Total Random weight and  Total Dispatched Weight;["+ranwt1+","+applist.get(2).get(1).toString()+"];["+DBList2.get(4).get(3).toString()+",NA];Fail");
+			}
+			
+			if(applist.get(3).get(0).toString().equals("NA"))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Total pallets Returned;["+applist.get(3).get(0).toString()+"];[NA];Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Total pallets Returned;["+applist.get(3).get(0).toString()+"];[NA];Fail");
+			}
+}
+
+ 
+
+public void CompareOrderDetails(OrderingAndReceivingObject objOrdRecObjects,List<List<Object>> DBList1,WebDriver driver) throws IOException
+{
+	
+	List<List<Object>> applist=getValuesFromTable(objOrdRecObjects.Orderdetailstab);
+	removeIndex(applist, "7");
+	removeIndex(applist, "5");
+	
+	replacenullToZero(applist);
+	
+	System.out.println("Browser - OrderDetails" +applist);
+	
+	ElementContains1(cName, mName,extLogger,driver, applist, DBList1);
+}
+	
+public void CheckArticles(OrderingAndReceivingObject objOrdRecObjects,List<List<Object>> DBList2,List<List<Object>> DBList3,
+		List<List<Object>> DBList4,WebDriver driver) throws IOException
+{
+	List DB = new ArrayList();
+	List<List<Object>> applist1 = new ArrayList<List<Object>>();
+	List<List<Object>> applist3 = new ArrayList<List<Object>>();
+	List<List<Object>> appln1 = new ArrayList<List<Object>>();
+	List<List<Object>> DB1 = new ArrayList<List<Object>>();
+	click(objOrdRecObjects.Clkorderno);
+	waitForJSandJQueryToLoad(driver);;
+	
+	htmlToExtent(cName,mName,extLogger,driver,"*** Checking the order header details displayed after opening the order;;;Pass");
+	
+	for(int i=1;i<=7;i+=2)
+	{
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.order, i,driver);
+		DB.add(ele.getText());
+	}
+	applist1.add(DB);
+	
+	System.out.println("Browser - OrderDetails1" +applist1);
+	
+	ElementContains1(cName, mName,extLogger,driver, applist1, DBList2);
+	
+	
+	List<List<Object>> applist2=getValuesFromTable(objOrdRecObjects.OrdTab);
+	removeIndex(applist2, "5");
+	removeIndex(applist2, "4");
+	removeIndex(applist2, "2");
+	removeIndex(applist2, "0");
+	replacenullToZero(applist2);
+	
+	String TolPallets = applist2.get(0).get(0).toString();
+	String TotArt = applist2.get(0).get(1).toString();
+	String TotDispQty = applist2.get(1).get(0).toString();
+	String TotCardOrd = applist2.get(1).get(1).toString();
+	
+	String Dispwt = applist2.get(2).get(0).toString();
+	if(Dispwt.equals("0"))
+	{
+		Dispwt = applist2.get(2).get(0).toString();
+	}
+	else
+	{
+		Dispwt = applist2.get(2).get(0).toString().replaceAll("\\.?0+$","");
+	}
+	
+	String SealNo = applist2.get(2).get(1).toString();
+	String Supply = applist2.get(3).get(0).toString();
+	
+	String Str = ""+TolPallets+":"+TotArt+":"+TotDispQty+":"+TotCardOrd+":"+Dispwt+":"+SealNo+":"+Supply;
+	appln1.addAll(StringToListCreation(Str));
+	
+	String TotArt1 = DBList3.get(0).get(0).toString();
+	String TotDispQty1 = DBList3.get(0).get(1).toString();
+	String TotCarOrd1 = DBList3.get(0).get(1).toString();
+	String Dispwt1 = DBList3.get(0).get(2).toString();
+	
+	
+	String DB_1 = ""+"0"+":"+TotArt1+":"+TotDispQty1+":"+TotCarOrd1+":"+Dispwt1+":"+"NA"+":"+"NA";
+	DB1.addAll(StringToListCreation(DB_1));
+	
+	htmlToExtent(cName,mName,extLogger,driver, "Articles Header Details ;;;Pass");
+	ElementContains1(cName, mName,extLogger,driver, appln1, DB1);
+	
+	if(applist2.get(0).get(0).toString().equals("0") && applist2.get(0).get(1).toString().equals(DBList3.get(0).get(0).toString()) && applist2.get(1).get(0).toString().equals(DBList3.get(0).get(1).toString()) && applist2.get(1).get(1).toString().equals(DBList3.get(0).get(1).toString()) && Dispwt.equals(DBList3.get(0).get(2).toString()) && applist2.get(2).get(1).toString().equals("NA") && applist2.get(3).get(0).toString().equals("NA"))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Pallets, articles, Dispatched qty, cartons Ordered, Dispatched weight, Seal Numbers and Under / Over Supply are displayed;["+applist2.get(0).get(0).toString()+","+applist2.get(0).get(1).toString()+","+applist2.get(1).get(0).toString()+","+applist2.get(1).get(1).toString()+","+Dispwt+","+applist2.get(2).get(1).toString()+","+applist2.get(3).get(0).toString()+"];[0,"+DBList3.get(0).get(0).toString()+","+DBList3.get(0).get(1).toString()+","+DBList3.get(0).get(1).toString()+","+DBList3.get(0).get(2).toString()+",NA,NA];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Pallets, articles, Dispatched qty, cartons Ordered, Dispatched weight, Seal Numbers and Under / Over Supply are displayed;["+applist2.get(0).get(0).toString()+","+applist2.get(0).get(1).toString()+","+applist2.get(1).get(0).toString()+","+applist2.get(1).get(1).toString()+","+Dispwt+","+applist2.get(2).get(1).toString()+","+applist2.get(3).get(0).toString()+"];[0,"+DBList3.get(0).get(0).toString()+","+DBList3.get(0).get(1).toString()+","+DBList3.get(0).get(1).toString()+","+DBList3.get(0).get(2).toString()+",NA,NA];Fail");
+	}
+	
+	scrolldown(driver);
+	
+	htmlToExtent(cName,mName,extLogger,driver, "Articles List is Displayed;;;Pass");
+
+	click(objOrdRecObjects.Clrgrpby);
+	
+	String artnum1=null,artom1=null,OrdQty1=null,OrdTotUnits1=null,Disqty1=null,Distotunt1=null;
+
+	for(int j=1;j<=objOrdRecObjects.OrderedQty1.size();j++)
+	{
+		WebElement artnum  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getartno,j,driver);
+		WebElement artom  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getartOM,j,driver);
+		WebElement Odrqty  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getOrdQty,j,driver);
+		WebElement OrdTotunt  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getTotUnt,j,driver);
+		WebElement Disqty  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisqty,j,driver);
+		WebElement Distotunt  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdistot,j,driver);
+		artnum1 = artnum.getText();
+		artom1 = artom.getText().replace("\n", " ");
+		OrdQty1 = Odrqty.getText();
+		OrdTotUnits1 = OrdTotunt.getText().replace("\n", " ");
+		Disqty1=Disqty.getText();
+		Distotunt1=Distotunt.getText().replace("\n", " ");
+		
+		String str = ""+artnum1+":"+artom1+":"+OrdQty1+":"+OrdTotUnits1+":"+Disqty1+":"+Distotunt1;
+		applist3.addAll(StringToListCreation(str));
+		
+	}
+	
+	System.out.println("Yet to Receive Table:" +applist3);
+	ElementContains1(cName, mName,extLogger,driver, applist3, DBList4);
+	
+	scrollUp(driver);
+	
+}
+
+public void RecOrd(OrderingAndReceivingObject objOrdRecObjects,WebDriver driver)
+{
+	click(objOrdRecObjects.ReceiveOrder);
+	waitForJSandJQueryToLoad(driver);;
+	if(objOrdRecObjects.Sessionpopup.getText().contains("Previous receiving session exists."))
+	{
+		click(objOrdRecObjects.ClkNewSession);
+		waitForJSandJQueryToLoad(driver);;
+		click(objOrdRecObjects.ReceiveException);
+		waitFor(1);
+		//enterText(objOrdRecObjects.EnterInvoice,InvoiceNo);
+		//objOrdRecObjects.EnterInvoice.sendKeys("12345");
+		if(objOrdRecObjects.popup1.getText().contains("Are you sure you want"))
+		{
+			click(objOrdRecObjects.clkyes);
+		}
+		waitFor(1);
+		if(objOrdRecObjects.Temperature1.getText().equals("Temperature Details"))
+		{
+			if(objOrdRecObjects.TempTypes.getText().equals("Hard Frozen Temperature"))
+			{
+				waitFor(1);
+				objOrdRecObjects.EnterForzenTemp.sendKeys("-17");
+				//enterText(objOrdRecObjects.EnterForzenTemp,ForzenTem);
+			}
+			if(objOrdRecObjects.TempTypes1.getText().equals("Chilled Temperature"))
+			{
+				waitFor(1);
+				objOrdRecObjects.EnterChillTemp.sendKeys("1.2");
+				//enterText(objOrdRecObjects.EnterChillTemp,ForzenTem);
+			}
+		}
+
+		click(objOrdRecObjects.Next);
+
+	}
+	else
+	{
+		click(objOrdRecObjects.ReceiveException);
+		//enterText(objOrdRecObjects.EnterInvoice,InvoiceNo);
+		//objOrdRecObjects.EnterInvoice.sendKeys("12345");
+		if(objOrdRecObjects.popup1.getText().contains("Are you sure you want"))
+		{
+			click(objOrdRecObjects.clkyes);
+		}
+		waitFor(1);
+		if(objOrdRecObjects.Temperature1.getText().equals("Temperature Details"))
+		{
+			if(objOrdRecObjects.TempTypes.getText().equals("Hard Frozen Temperature"))
+			{
+				waitFor(1);
+				objOrdRecObjects.EnterForzenTemp.sendKeys("-17");
+				//enterText(objOrdRecObjects.EnterForzenTemp,ForzenTem);
+			}
+			if(objOrdRecObjects.TempTypes1.getText().equals("Chilled Temperature"))
+			{
+				waitFor(1);
+				objOrdRecObjects.EnterChillTemp.sendKeys("1.2");
+				//enterText(objOrdRecObjects.EnterChillTemp,ForzenTem);
+			}
+		}
+		click(objOrdRecObjects.Next);
+	}
+
+}	
+
+public List<List<Object>> Receivearticles(OrderingAndReceivingObject objOrdRecObjects,List random,List weighted, 
+		List<List<Object>> DBList7,WebDriver driver) throws IOException
+{
+	List<List<Object>> applist4 = new ArrayList<List<Object>>();
+	List<List<Object>> appln = new ArrayList<List<Object>>();
+
+	String artno = null, artom = null,  ordqty = null, ordtot = null,disqty = null, distot = null, recqty = null, rectot = null;
+
+	for(Integer a=1;a<=objOrdRecObjects.ListofArticles1.size();a++)
+	{
+		WebElement artnum_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getartno1,a,driver);
+		artno = artnum_1.getText();				
+		WebElement artom_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getomno1,a,driver);
+		artom = artom_1.getText().replace("\n", " ");
+		WebElement Odrqty_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getordqtyno1,a,driver);
+		ordqty = Odrqty_1.getText();
+		WebElement Odrtot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getordTotno1,a,driver);
+		ordtot = Odrtot_1.getText().replace("\n", " ");
+		WebElement disqty_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisqty1,a,driver);
+		disqty = disqty_1.getText();
+		WebElement Distot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisTotno1,a,driver);
+		distot = Distot_1.getText().replace("\n", " ");
+		
+		
+		if(random.contains(artno))
+		{
+			
+			WebElement Recqty_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+			recqty = Recqty_1.getAttribute("value");
+			WebElement Recqty_2 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno2,a,driver);
+			String recqty2 = Recqty_2.getAttribute("value");
+			if(recqty2.equals("0"))
+			{
+				Recqty_2.clear();
+				int n1 = random_no(8)+1;
+				String kgQty = ""+n1;
+				kgQty=kgQty+".57";
+				Recqty_2.sendKeys(kgQty);
+				recqty2 = Recqty_2.getAttribute("value");
+				
+				WebElement clkchkboxes1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.clickcheckboxlist,a,driver);
+				clkchkboxes1.click();
+				waitFor(2);
+			}
+			else
+			{
+				recqty2 = Recqty_2.getAttribute("value");
+			}
+			
+			WebElement Rectot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+			rectot = Rectot_1.getText().replace("\n", " ");
+			
+			
+			String str = ""+artno+":"+artom+":"+ordqty+":"+ordtot+":"+disqty+":"+distot+":"+recqty+":"+recqty2+":"+rectot;
+			applist4.addAll(StringToListCreation(str));
+			
+			//String ran_soh = DBList7.get(a-1).get(1).toString();
+			String ran_soh = " ";
+			
+			if(DBList7.get(a-1).get(0).toString().contains(artno))
+			{
+				ran_soh = DBList7.get(a-1).get(1).toString();
+			}
+			else
+			{
+				ran_soh = DBList7.get(a-2).get(1).toString();
+			}
+			
+			String str1 = ""+artno+":"+ran_soh;
+			appln.addAll(StringToListCreation(str1));
+			
+				
+		}
+		else if(weighted.contains(artno))
+		{
+			WebElement Recqty_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+			recqty = Recqty_1.getAttribute("value");
+			WebElement Rectot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+			rectot = Rectot_1.getText().replace("\n", " ");
+			
+			String str = ""+artno+":"+artom+":"+ordqty+":"+ordtot+":"+disqty+":"+distot+":"+recqty+":"+rectot;
+			applist4.addAll(StringToListCreation(str));
+			
+			String store_soh = " ";
+			
+			if(DBList7.get(a-1).get(0).toString().contains(artno))
+			{
+			store_soh = DBList7.get(a-1).get(1).toString();
+			}
+			else
+			{
+				store_soh = DBList7.get(a-2).get(1).toString();
+			}
+			
+			String str1 = ""+artno+":"+store_soh;
+			appln.addAll(StringToListCreation(str1));
+		}
+		else
+		{
+			WebElement Recqty_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+			recqty = Recqty_1.getAttribute("value");
+			WebElement Rectot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+			rectot = Rectot_1.getText().replace("\n", " ");
+			
+			String str = ""+artno+":"+artom+":"+ordqty+":"+ordtot+":"+disqty+":"+distot+":"+recqty+":"+rectot;
+			applist4.addAll(StringToListCreation(str));
+			
+			//String store_soh = DBList7.get(a-1).get(1).toString();
+			
+			String store_soh = " ";
+			
+			if(DBList7.get(a-1).get(0).toString().contains(artno))
+			{
+			store_soh = DBList7.get(a-1).get(1).toString();
+			}
+			else
+			{
+				store_soh = DBList7.get(a+1).get(1).toString();
+			}
+			
+			String str1 = ""+artno+":"+store_soh;
+			appln.addAll(StringToListCreation(str1));
+			
+		}
+
+		Integer artsize = objOrdRecObjects.ListofArticles1.size();
+		if(a.toString().equals(artsize.toString()))
+		//if(a.toString().equals(artsize.toString()) || random.contains(artno))
+		{
+		WebElement Recqty1 =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+		int n = random_no(8)+1;
+		String recqty_1 = ""+n;
+		waitFor(1);
+		Recqty1.clear();
+		Recqty1.sendKeys(recqty_1);
+		
+		WebElement clkchkboxes1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.clickcheckboxlist,a,driver);
+		clkchkboxes1.click();
+		waitFor(2);
+		}
+	
+	
+	}
+	
+	System.out.println("Receive Articles before changing qty" +applist4);
+	
+	System.out.println("Before SOH values" +appln);
+	
+	htmlToExtent(cName,mName,extLogger,driver, "SOH Values brfore submit the order;;;Pass");
+	
+	ElementContains1(cName, mName,extLogger,driver, appln, DBList7);
+	
+	return applist4;
+}
+
+
+public List<List<Object>> recqtyval(OrderingAndReceivingObject objOrdRecObjects, List random, List weighted,WebDriver driver)
+{
+	String artno = null, recqty = null, artom = null;
+	
+	List<List<Object>> appln1 = new ArrayList<List<Object>>();
+	
+	//List<List<Object>> appln1 = new ArrayList<List<Object>>();
+	
+	for(Integer a=1;a<=objOrdRecObjects.ListofArticles1.size();a++)
+	{
+		WebElement artnum_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getartno1,a,driver);
+		artno = artnum_1.getText();
+		
+		WebElement artom_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getomno1,a,driver);
+		artom = artom_1.getText().replace("\n", " ");
+	
+		if(random.contains(artno))
+		{
+			WebElement Recqty_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+			recqty = Recqty_1.getAttribute("value");
+			
+			WebElement Rectot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+			String rectot = Rectot_1.getText().replace("\n", " ");
+			String[] rectot1 = splitString(rectot, " ");
+			rectot = rectot1[2].replaceAll("\\p{P}","");
+			
+			String str1 = ""+artno+":"+rectot+":"+recqty;
+			appln1.addAll(StringToListCreation(str1));
+		}
+		else if(weighted.contains(artno))
+		{
+			WebElement Recqty_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+			recqty = Recqty_1.getAttribute("value");
+			
+			WebElement Rectot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+			String rectot = Rectot_1.getText().replace("\n", " ");
+			String[] rectot1 = splitString(rectot, " ");
+			rectot = rectot1[0];
+			
+			String str1 = ""+artno+":"+rectot+":"+recqty;
+			appln1.addAll(StringToListCreation(str1));
+		}
+		else
+		{
+			WebElement Recqty_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+			recqty = Recqty_1.getAttribute("value");
+			
+			WebElement Rectot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+			String rectot = Rectot_1.getText().replace("\n", " ");
+			String[] rectot1 = splitString(rectot, " ");
+			rectot = rectot1[0];
+			
+			String str1 = ""+artno+":"+rectot+":"+recqty;
+			appln1.addAll(StringToListCreation(str1));
+		}
+	}
+	System.out.println("Article details after changing rec qty" +appln1);
+	
+	click(objOrdRecObjects.Next);
+	
+	if(objOrdRecObjects.popup1.getText().contains("Remaining items will be received in Full."))
+	{
+		click(objOrdRecObjects.clkyes);
+	}
+	
+	
+	return appln1;
+}
+
+public List<List<Object>> recqtyvalTemp(OrderingAndReceivingObject objOrdRecObjects, List random, List weighted,WebDriver driver)
+{
+	String artno = null, recqty = null, artom = null;
+	
+	List<List<Object>> appln1 = new ArrayList<List<Object>>();
+	
+	//List<List<Object>> appln1 = new ArrayList<List<Object>>();
+	
+	for(Integer a=1;a<=objOrdRecObjects.ListofArticles1.size();a++)
+	{
+		WebElement artnum_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getartno1,a,driver);
+		artno = artnum_1.getText();
+		
+		WebElement artom_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getomno1,a,driver);
+		artom = artom_1.getText().replace("\n", " ");
+	
+		if(random.contains(artno))
+		{
+			WebElement Recqty_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+			recqty = Recqty_1.getAttribute("value");
+			
+			WebElement Rectot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+			String rectot = Rectot_1.getText().replace("\n", " ");
+			String[] rectot1 = splitString(rectot, " ");
+			rectot = rectot1[0];
+			if(rectot.contains("0.000"))
+			{
+				rectot = rectot1[0];
+			}
+			else
+			{
+				rectot = rectot1[0].replaceAll("\\p{P}","");
+			}
+			
+			String str1 = ""+artno+":"+rectot+":"+recqty;
+			appln1.addAll(StringToListCreation(str1));
+		}
+		else if(weighted.contains(artno))
+		{
+			WebElement Recqty_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+			recqty = Recqty_1.getAttribute("value");
+			
+			WebElement Rectot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+			String rectot = Rectot_1.getText().replace("\n", " ");
+			String[] rectot1 = splitString(rectot, " ");
+			rectot = rectot1[0];
+			
+			String str1 = ""+artno+":"+rectot+":"+recqty;
+			appln1.addAll(StringToListCreation(str1));
+		}
+		else
+		{
+			WebElement Recqty_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+			recqty = Recqty_1.getAttribute("value");
+			
+			WebElement Rectot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+			String rectot = Rectot_1.getText().replace("\n", " ");
+			String[] rectot1 = splitString(rectot, " ");
+			rectot = rectot1[0];
+			
+			String str1 = ""+artno+":"+rectot+":"+recqty;
+			appln1.addAll(StringToListCreation(str1));
+		}
+	}
+	System.out.println("Article details after changing rec qty" +appln1);
+	
+	click(objOrdRecObjects.Next);
+	
+	if(objOrdRecObjects.popup1.getText().contains("Remaining items will be received in Full."))
+	{
+		click(objOrdRecObjects.clkyes);
+	}
+	
+	
+	return appln1;
+}
+
+public List<List<Object>> SOHCal (OrderingAndReceivingObject objOrdRecObjects, List random, List weighted, String store_soh, 
+		String ran_soh,List<List<Object>> DBList7,List<List<Object>> applnlist2,WebDriver driver)
+{
+	String SOHval1 = " ";
+	
+	List<List<Object>> appln2 = new ArrayList<List<Object>>();
+	List<String> reclist = new ArrayList();
+	
+	for(Integer a=0;a<DBList7.size();a++)
+	{
+		String artno = DBList7.get(a).get(0).toString();
+		
+		HashMap<String,String> totalUnitsMap = new HashMap<String,String> ();
+		for(int i=0;i<applnlist2.size();i++){
+			totalUnitsMap.put(applnlist2.get(i).get(0).toString(), applnlist2.get(i).get(1).toString());
+		}
+		
+		String New_RanSoh1 = " ";
+		if(random.contains(artno))
+		{
+			
+			String totalUnits= totalUnitsMap.get(artno);
+			//String RecdUnits = applnlist2.get(a).get(1).toString();
+			String OLd_ransoh = DBList7.get(a).get(1).toString();
+			
+			if(OLd_ransoh.equals("0"))
+			{
+				OLd_ransoh = DBList7.get(a).get(1).toString();
+				Double New_RanSoh = Double.parseDouble(OLd_ransoh) + Double.parseDouble(totalUnits);
+				New_RanSoh1 = New_RanSoh.toString();
+			}
+			else if (OLd_ransoh.contains("."))
+			{
+				OLd_ransoh = DBList7.get(a).get(1).toString().replaceAll("\\.?0+$","");
+				Double New_RanSoh = Double.parseDouble(OLd_ransoh) + Double.parseDouble(totalUnits);
+				New_RanSoh1 = New_RanSoh.toString().replaceAll("\\.?0+$","");
+			}
+			else
+			{
+				OLd_ransoh = DBList7.get(a).get(1).toString();
+				Double New_RanSoh = Double.parseDouble(OLd_ransoh) + Double.parseDouble(totalUnits);
+				New_RanSoh1 = New_RanSoh.toString().replaceAll("\\.?0+$","");
+			}
+			
+			//Double OLd_ransoh1 = Double.parseDouble(OLd_ransoh);
+			
+		
+			
+			
+			
+			String str = ""+artno+":"+OLd_ransoh+":"+New_RanSoh1;
+			appln2.addAll(StringToListCreation(str));
+			
+		}
+		else if(weighted.contains(artno))
+		{
+			String New_Soh1 = " ";
+			String totalUnits= totalUnitsMap.get(artno);
+			//String RecdUnits = applnlist2.get(a).get(1).toString();
+			String OLd_Soh = DBList7.get(a).get(1).toString();
+			
+			if(OLd_Soh.equals("0") || OLd_Soh.contains("."))
+			{
+				OLd_Soh = DBList7.get(a).get(1).toString();
+				Double  New_Soh = Double.parseDouble(OLd_Soh) + Double.parseDouble(totalUnits);
+				New_Soh1 = New_Soh.toString();
+			}
+			else
+			{
+				OLd_Soh = DBList7.get(a).get(1).toString().replaceAll("\\.?0+$","");
+				Double  New_Soh = Double.parseDouble(OLd_Soh) + Double.parseDouble(totalUnits);
+				New_Soh1 = New_Soh.toString().replaceAll("\\.?0+$","");
+			}
+			
+			String str = ""+artno+":"+OLd_Soh+":"+New_Soh1;
+			appln2.addAll(StringToListCreation(str));
+			
+		}
+		else
+		{
+			String totalUnits= totalUnitsMap.get(artno);
+			
+			String RecdUnits = " ";
+			
+			if(totalUnits.contains("."))
+			{
+				RecdUnits = totalUnitsMap.get(artno).replaceAll("\\.?0+$","");
+			}
+			else
+			{
+				RecdUnits = totalUnitsMap.get(artno);
+			}
+			String OLd_Soh = DBList7.get(a).get(1).toString().replaceAll("\\.?0+$","");
+			
+			Integer New_Soh = Integer.parseInt(OLd_Soh) + Integer.parseInt(RecdUnits);
+			
+			String str = ""+artno+":"+OLd_Soh+":"+New_Soh;
+			appln2.addAll(StringToListCreation(str));
+	}
+}
+	
+	System.out.println("SOHvalues" +appln2);
+	
+	return appln2;
+	
+}
+
+
+public List<List<Object>> ReviewDis(OrderingAndReceivingObject objOrdRecObjects, List random,List weighted,WebDriver driver)
+{
+	htmlToExtent(cName,mName,extLogger,driver, "Review Discrepancies page;;;Pass");
+	
+	List<List<Object>> applist5 = new ArrayList<List<Object>>();
+	
+	for(int i=1;i<=objOrdRecObjects.DiscrepanciesList1.size();i++)
+	{
+		WebElement artno = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisart,i,driver);
+		String artno1 = artno.getText();
+		WebElement ordqty = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisordqty,i,driver);
+		String ordqty1 = ordqty.getText();
+		WebElement ordtot = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisordTot,i,driver);
+		String ordtot1 = ordtot.getText().replace("\n", " ");
+		WebElement dispqty = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdispqty,i,driver);
+		String dispqty1 = dispqty.getText();
+		
+		WebElement Distotunits1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.Distotalunits,i,driver);
+		String Distot = Distotunits1.getText().replace("\n", " ");
+		String[] Distot1 = splitString(Distot, " ");
+		String Distot2 = Distot1[0];
+		
+		WebElement recqty = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisRecqty,i,driver);
+		String recqty1 = recqty.getText();
+		
+		WebElement Rectotunits1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.rectotalunits,i,driver);
+		String rectot = Rectotunits1.getText().replace("\n", " ");
+		String[] rectot1= splitString(rectot," ");
+		String rectot2 = rectot1[0];
+		
+		WebElement Diffval = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.Diffvalues,i,driver);
+		String Diffval1 = Diffval.getText();
+		
+		WebElement Diffsign = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.DiffSign,i,driver);
+		String Diffsign1 = Diffsign.getAttribute("class");
+		
+		if(Diffsign1.contains("valueUp"))
+		{
+			String sum = Diffval1;
+			
+			String str = ""+artno1+":"+ordqty1+":"+ordtot1+":"+dispqty1+":"+Distot+":"+recqty1+":"+rectot+":"+sum+":"+"Quantity Difference ";
+			applist5.addAll(StringToListCreation(str.trim()));
+		}
+		else
+		{
+			String diff = "-" +Diffval1;
+			
+			String str = ""+artno1+":"+ordqty1+":"+ordtot1+":"+dispqty1+":"+Distot+":"+recqty1+":"+rectot+":"+diff+":"+"Quantity Difference ";
+			applist5.addAll(StringToListCreation(str.trim()));
+		}
+		
+		if(random.contains(artno1))
+		{
+			
+			if(Diffsign1.contains("valueUp"))
+			{
+				String sum = Diffval1;
+				
+				String str = ""+artno1+":"+ordqty1+":"+ordtot1+":"+dispqty1+":"+Distot+":"+recqty1+":"+rectot+":"+sum+":"+"Quantity Difference ";
+				applist5.addAll(StringToListCreation(str.trim()));
+			}
+			else
+			{
+				String diff = "-" +Diffval1;
+				
+				String str = ""+artno1+":"+ordqty1+":"+ordtot1+":"+dispqty1+":"+Distot+":"+recqty1+":"+rectot+":"+diff+":"+"Quantity Difference ";
+				applist5.addAll(StringToListCreation(str.trim()));
+			}
+			
+		}
+		else if(weighted.contains(artno1))
+		{
+			
+			if(Diffsign1.contains("valueUp"))
+			{
+				String sum = Diffval1;
+				
+				String str = ""+artno1+":"+ordqty1+":"+ordtot1+":"+dispqty1+":"+Distot+":"+recqty1+":"+rectot+":"+sum+":"+"Quantity Difference ";
+				applist5.addAll(StringToListCreation(str.trim()));
+			}
+			else
+			{
+				String diff = "-" +Diffval1;
+				
+				String str = ""+artno1+":"+ordqty1+":"+ordtot1+":"+dispqty1+":"+Distot+":"+recqty1+":"+rectot+":"+diff+":"+"Quantity Difference ";
+				applist5.addAll(StringToListCreation(str.trim()));
+			}
+			
+		}
+		else
+		{
+			if(Diffsign1.contains("valueUp"))
+			{
+				String sum = Diffval1;
+				
+				String str = ""+artno1+":"+ordqty1+":"+ordtot1+":"+dispqty1+":"+Distot+":"+recqty1+":"+rectot+":"+sum+":"+"Quantity Difference ";
+				applist5.addAll(StringToListCreation(str.trim()));
+			}
+			else
+			{
+				String diff = "-" +Diffval1;
+				String str = ""+artno1+":"+ordqty1+":"+ordtot1+":"+dispqty1+":"+Distot+":"+recqty1+":"+rectot+":"+diff+":"+"Quantity Difference ";
+				applist5.addAll(StringToListCreation(str.trim()));
+			}
+		
+		}
+			WebElement ClkDis = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.Disccheckbox,i,driver);
+			ClkDis.click();
+			waitFor(2);	
+	}
+	
+	System.out.println("Article Details in Review Discrepancies:" +applist5);
+	
+	return applist5;
+	
+}
+
+
+
+public void ProvideULD(OrderingAndReceivingObject objOrdRecObjects,WebDriver driver)
+{
+	if(objOrdRecObjects.DeliDetails.getText().equals("Delivery Details"))
+	{
+		if(objOrdRecObjects.DocId.getText().equals("Docket ID"))
+		{
+			objOrdRecObjects.EnterdocId.sendKeys("abc123");
+		}
+		if(objOrdRecObjects.Carrier.getText().equals("Carrier"))
+		{
+			objOrdRecObjects.EnterCar.sendKeys("Receive");
+		}
+	}
+	
+	Select dropdown = new Select(driver.findElement(By.id("typeSelect")));
+	List<WebElement> dd = dropdown.getOptions();
+	dropdown.selectByIndex(4);
+	objOrdRecObjects.Entrecqty.sendKeys("2");
+	objOrdRecObjects.Entretqty.sendKeys("1");
+	click(objOrdRecObjects.clkadd);
+	click(objOrdRecObjects.Next);
+}
+
+public void Receivesummary(OrderingAndReceivingObject objOrdRecObjects, List<List<Object>> applnlist, List<List<Object>> applnlist2,WebDriver driver) throws IOException
+{
+	List<List<Object>> DB = new ArrayList<List<Object>>();
+	
+	List<List<Object>> applist6=getValuesFromTable(objOrdRecObjects.recsumtab);
+	removeIndex(applist6, "4");
+	removeIndex(applist6, "2");
+	removeIndex(applist6, "0");
+	replacenullToZero(applist6);
+	
+	Integer TotArtOrd = objOrdRecObjects.ListofArticles1.size();
+	Integer TotArtRec = objOrdRecObjects.ListofArticles1.size();
+	Integer Otherqty = objOrdRecObjects.DiscrepanciesList1.size();
+	
+	Integer TotCarOrd1 = 0;
+
+	for(int i=0;i<applnlist.size();i++)
+	{
+		String TotCarOrd = applnlist.get(i).get(2).toString();
+		String[] TotCarOrd_1 = splitString(TotCarOrd, " ");
+		TotCarOrd = TotCarOrd_1[0];
+		TotCarOrd1 = TotCarOrd1 + (Integer.parseInt(TotCarOrd));
+		
+	}
+	
+	Integer TotCarRec1 = 0;
+	
+	for(int j=0;j<applnlist2.size();j++)
+	{
+		String TotCarRec = applnlist2.get(j).get(2).toString();
+		TotCarRec1 = TotCarRec1 + (Integer.parseInt(TotCarRec));
+		
+	}
+	
+	String str = ""+TotCarOrd1+":"+TotCarRec1+":"+TotArtOrd+":"+TotArtRec+":"+Otherqty;
+	DB.addAll(StringToListCreation(str));
+	
+	System.out.println("TotCarOrd and TotCarRec:" +TotCarOrd1 +TotCarRec1);
+	
+	if(applist6.get(1).get(0).toString().equals(DB.get(0).get(2).toString()) && applist6.get(1).get(1).toString().equals(DB.get(0).get(0).toString()) && applist6.get(1).get(2).toString().equals("0"))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered,Total Cartons Ordered and Total ULDs Received;["+applist6.get(1).get(0).toString()+","+applist6.get(1).get(1).toString()+","+applist6.get(1).get(2).toString()+"];["+DB.get(0).get(2).toString()+","+DB.get(0).get(0).toString()+",0];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered,Total Cartons Ordered and Total ULDs Received;["+applist6.get(1).get(0).toString()+","+applist6.get(1).get(1).toString()+","+applist6.get(1).get(2).toString()+"];["+DB.get(0).get(2).toString()+","+DB.get(0).get(0).toString()+",0];Fail");
+	}
+	
+	if(applist6.get(2).get(0).toString().equals(DB.get(0).get(3).toString()) && applist6.get(2).get(1).toString().equals(DB.get(0).get(1).toString()) && applist6.get(2).get(2).toString().equals("0"))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Articles Received,Total Cartons Received and Total ULDs Returned;["+applist6.get(2).get(0).toString()+","+applist6.get(2).get(1).toString()+","+applist6.get(2).get(2).toString()+"];["+DB.get(0).get(3).toString()+","+DB.get(0).get(1).toString()+",0];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Articles Received,Total Cartons Received and Total ULDs Returned;["+applist6.get(2).get(0).toString()+","+applist6.get(2).get(1).toString()+","+applist6.get(2).get(2).toString()+"];["+DB.get(0).get(3).toString()+","+DB.get(0).get(1).toString()+",0];Fail");
+	}
+	
+	List<List<Object>> applist7=getValuesFromTable(objOrdRecObjects.dissumtab);
+	removeIndex(applist7, "4");
+	removeIndex(applist7, "2");
+	removeIndex(applist7, "0");
+	replacenullToZero(applist7);	
+	
+	if(applist7.get(0).get(0).toString().equals("0") && applist7.get(0).get(1).toString().equals("0") && applist7.get(0).get(2).toString().equals(DB.get(0).get(4).toString()))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Pack Size,Zero Qty and Other Qty;["+applist7.get(0).get(0).toString()+","+applist7.get(0).get(1).toString()+","+applist7.get(0).get(2).toString()+"];[0,0,"+DB.get(0).get(4).toString()+"];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Pack Size,Zero Qty and Other Qty;["+applist7.get(0).get(0).toString()+","+applist7.get(0).get(1).toString()+","+applist7.get(0).get(2).toString()+"];[0,0,"+DB.get(0).get(4).toString()+"];Fail");
+	}
+	
+	click(objOrdRecObjects.clksub);
+	
+	if(objOrdRecObjects.ConfPopup.getText().contains("Do you want to apply"))
+	{
+		click(objOrdRecObjects.ClkContinue1);
+		waitForJSandJQueryToLoad(driver);;
+	}
+	
+	String successmsg1 = objOrdRecObjects.successmsg.getText();
+	if(successmsg1.contains("Receiving Details Posted Successfully"))
+	{
+		click(objOrdRecObjects.StatusPopup);
+		htmlToExtent(cName,mName,extLogger,driver,""+successmsg1+";;;Pass");
+	}
+	
+	click(objOrdRecObjects.Clgrp);
+	
+	scrollUp(driver);
+	
+}
+
+public void ReceivedArticles(OrderingAndReceivingObject objOrdRecObjects, List<List<Object>> applnlist, 
+		List<List<Object>> applnlist2, List random,WebDriver driver) throws IOException
+{
+	List<List<Object>> applist=getValuesFromTable(objOrdRecObjects.tab1);
+	removeIndex(applist, "4");
+	removeIndex(applist, "2");
+	removeIndex(applist, "0");
+	replacenullToZero(applist);
+	
+	List<List<Object>> applist1=getValuesFromTable(objOrdRecObjects.tab2);
+	removeIndex(applist1, "5");
+	removeIndex(applist1, "4");
+	removeIndex(applist1, "2");
+	removeIndex(applist1, "0");
+	replacenullToZero(applist1);
+	
+	List<List<Object>> applist2=getValuesFromTable(objOrdRecObjects.tab3);
+	removeIndex(applist2, "5");
+	removeIndex(applist2, "4");
+	removeIndex(applist2, "2");
+	removeIndex(applist2, "0");
+	replacenullToZero(applist2);
+	
+	List<List<Object>> applist3=getValuesFromTable(objOrdRecObjects.tab4);
+	removeIndex(applist3, "2");
+	removeIndex(applist3, "0");
+	replacenullToZero(applist3);
+	
+	List<List<Object>> DBList= new ArrayList<List<Object>>();
+	List<List<Object>> DB= new ArrayList<List<Object>>();
+	List<List<Object>> DB1= new ArrayList<List<Object>>();
+	List<List<Object>> DB2= new ArrayList<List<Object>>();
+	
+	String distotunits2 = " ";
+	String rectotunits2 =" ";
+	
+	for(int a=1;a<=objOrdRecObjects.receivedartlist.size();a++)
+	{
+		WebElement Artno =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartno,a,driver); 
+		String Artno1 = Artno.getText();
+		
+		WebElement Ordqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartordqty,a,driver); 
+		String Ordqty1 = Ordqty.getText();
+		
+		WebElement disqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartdisqty,a,driver);
+		String disqty1 = disqty.getText();
+		
+		WebElement recqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartrecqty,a,driver);
+		String recqty1 = recqty.getText();
+		
+		if(random.contains(Artno1))
+		{
+			WebElement distotunits =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartdistot,a,driver);
+			String distotunits1 = distotunits.getText();
+			distotunits2 = distotunits1.replace("\n", " ").replace("\r", " ");
+			String[] distot = splitString(distotunits2, " ");
+			distotunits2 = distot[0];
+			
+			WebElement rectotunits =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartTotunits,a,driver);
+			String rectotunits1 = rectotunits.getText();
+			rectotunits2 = rectotunits1.replace("\n", " ").replace("\r", " ");
+			String[] rectot = splitString(rectotunits2, " ");
+			rectotunits2 = rectot[0];
+			
+			String str1 = ""+Artno1+":"+Ordqty1+":"+disqty1+":"+distotunits2+":"+recqty1+":"+rectotunits2;
+			DB2.addAll(StringToListCreation(str1));
+			
+		}
+		else
+		{
+			WebElement distotunits =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartdistot,a,driver);
+			String distotunits1 = distotunits.getText();
+			distotunits2 = distotunits1.replace("\n", " ").replace("\r", " ");
+				
+			WebElement rectotunits =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartTotunits,a,driver);
+			String rectotunits1 = rectotunits.getText();
+			rectotunits2 = rectotunits1.replace("\n", " ").replace("\r", " ");
+			
+			String str1 = ""+Artno1+":"+Ordqty1+":"+disqty1+":"+distotunits2+":"+recqty1+":"+rectotunits2;
+			DB1.addAll(StringToListCreation(str1));
+		}
+		
+	}
+	
+	DBList.addAll(DB1);
+	DBList.addAll(DB2);
+	
+	System.out.println("DBList" +DBList);
+	
+	Integer TotCarOrd1 = 0;
+	Integer TotDisQty1 = 0;
+	Integer TotCarRec1 = 0;
+	
+	Integer TotArt = objOrdRecObjects.receivedartlist.size();
+
+	for(int i=0;i<DBList.size();i++)
+	{
+		String TotCarOrd = DBList.get(i).get(1).toString();
+		String[] TotCarOrd_1 = splitString(TotCarOrd, " ");
+		TotCarOrd = TotCarOrd_1[0];
+		TotCarOrd1 = TotCarOrd1 + (Integer.parseInt(TotCarOrd));
+		
+		String TotDisQty = DBList.get(i).get(2).toString();
+		String[] TotDisQty_1 = splitString(TotDisQty, " ");
+		TotDisQty = TotDisQty_1[0];
+		TotDisQty1 = TotDisQty1 + (Integer.parseInt(TotDisQty));
+		
+		String TotCarRec = DBList.get(i).get(4).toString();
+		String[] TotCarRec_1 = splitString(TotCarRec, " ");
+		TotCarRec = TotCarRec_1[0];
+		TotCarRec1 = TotCarRec1 + (Integer.parseInt(TotCarRec));
+	}
+	
+	Double TotWtRec1 = 0.000;
+	Double TotWtDis1 = 0.000;
+	
+	for(int i=0;i<DB2.size();i++)
+	{
+		String TotWtRec = DB2.get(i).get(5).toString();
+		TotWtRec1 = TotWtRec1 + (Double.parseDouble(TotWtRec));
+		
+		String TotWtDis = DB2.get(i).get(3).toString();
+		TotWtDis1 = TotWtDis1 + (Double.parseDouble(TotWtDis));
+	}
+	
+	String str = ""+TotCarOrd1+":"+TotDisQty1+":"+TotCarRec1+":"+TotArt+":"+TotWtRec1+":"+TotWtDis1;
+	DB.addAll(StringToListCreation(str));
+	
+	System.out.println("TotCarOrd ,TotDisQty, TotCarRec " +TotCarOrd1 +TotDisQty1 +TotCarRec1);
+	
+	scrolldown(driver);
+	
+	if(applist.get(0).get(0).toString().equals("NA") && applist.get(0).get(1).toString().equals("0") && applist.get(0).get(2).toString().equals(DB.get(0).get(3).toString()))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets and Total articles;["+applist.get(0).get(0).toString()+","+applist.get(0).get(1).toString()+","+applist.get(0).get(2).toString()+"];[NA,0,"+DB.get(0).get(3).toString()+"];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets and Total articles;["+applist.get(0).get(0).toString()+","+applist.get(0).get(1).toString()+","+applist.get(0).get(2).toString()+"];[NA,0,"+DB.get(0).get(3).toString()+"];Fail");
+	}
+	
+	if(applist.get(1).get(0).toString().equals(DB.get(0).get(2).toString()) && applist.get(1).get(1).toString().equals(DB.get(0).get(1).toString()) && applist.get(1).get(2).toString().equals(DB.get(0).get(0).toString()))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Cartons Received, Total Dispatched Qty and Total Cartons Ordered;["+applist.get(1).get(0).toString()+","+applist.get(1).get(1).toString()+","+applist.get(1).get(2).toString()+"];["+DB.get(0).get(2).toString()+","+DB.get(0).get(1).toString()+","+DB.get(0).get(0).toString()+"];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Cartons Received, Total Dispatched Qty and Total Cartons Ordered;["+applist.get(1).get(0).toString()+","+applist.get(1).get(1).toString()+","+applist.get(1).get(2).toString()+"];["+DB.get(0).get(2).toString()+","+DB.get(0).get(1).toString()+","+DB.get(0).get(0).toString()+"];Fail");
+	}	
+	
+	String TotRandWt =applist.get(2).get(0).toString().replaceAll("\\.?0+$","");
+	String TotDisWt = applist.get(2).get(1).toString().replaceAll("\\.?0+$","");
+	
+	if(TotRandWt.equals(DB.get(0).get(4).toString()) && TotDisWt.equals(DB.get(0).get(5).toString()))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Random weight and  Total Dispatched Weight;["+TotRandWt+","+TotDisWt+"];["+DB.get(0).get(4).toString()+","+DB.get(0).get(5).toString()+"];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Random weight and  Total Dispatched Weight;["+TotRandWt+","+TotDisWt+"];["+DB.get(0).get(4).toString()+","+DB.get(0).get(5).toString()+"];Fail");
+	}
+	
+	if(applist.get(3).get(0).toString().equals("NA"))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total pallets Returned;["+applist.get(3).get(0).toString()+"];[NA];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total pallets Returned;["+applist.get(3).get(0).toString()+"];[NA];Fail");
+	}
+
+}
+
+public void RecOrdHighTemp(OrderingAndReceivingObject objOrdRecObjects,WebDriver driver)
+{
+	click(objOrdRecObjects.ReceiveOrder);
+	waitForJSandJQueryToLoad(driver);;
+	if(objOrdRecObjects.Sessionpopup.getText().contains("Previous receiving session exists."))
+	{
+		click(objOrdRecObjects.ClkNewSession);
+		click(objOrdRecObjects.ReceiveException);
+		//enterText(objOrdRecObjects.EnterInvoice,InvoiceNo);
+		//objOrdRecObjects.EnterInvoice.sendKeys("12345");
+		if(objOrdRecObjects.popup1.getText().contains("Are you sure you want"))
+		{
+			click(objOrdRecObjects.clkyes);
+		}
+		waitFor(1);
+		if(objOrdRecObjects.Temperature1.getText().equals("Temperature Details"))
+		{
+			if(objOrdRecObjects.TempTypes.getText().equals("Hard Frozen Temperature"))
+			{
+				waitFor(1);
+				objOrdRecObjects.EnterForzenTemp.sendKeys("-17");
+				//enterText(objOrdRecObjects.EnterForzenTemp,ForzenTem);
+			}
+			if(objOrdRecObjects.TempTypes1.getText().equals("Chilled Temperature"))
+			{
+				waitFor(1);
+				objOrdRecObjects.EnterChillTemp.sendKeys("6.0");
+				//enterText(objOrdRecObjects.EnterChillTemp,ForzenTem);
+			}
+		}
+
+		click(objOrdRecObjects.Next);
+		
+		if(objOrdRecObjects.popup1.getText().contains("Some articles have failed temperature check"))
+		{
+			click(objOrdRecObjects.clkyes);
+		}
+
+	}
+	else
+	{
+		click(objOrdRecObjects.ReceiveException);
+		//enterText(objOrdRecObjects.EnterInvoice,InvoiceNo);
+		//objOrdRecObjects.EnterInvoice.sendKeys("12345");
+		if(objOrdRecObjects.popup1.getText().contains("Are you sure you want"))
+		{
+			click(objOrdRecObjects.clkyes);
+		}
+		waitFor(1);
+		if(objOrdRecObjects.Temperature1.getText().equals("Temperature Details"))
+		{
+			if(objOrdRecObjects.TempTypes.getText().equals("Hard Frozen Temperature"))
+			{
+				waitFor(1);
+				objOrdRecObjects.EnterForzenTemp.sendKeys("-17");
+				//enterText(objOrdRecObjects.EnterForzenTemp,ForzenTem);
+			}
+			if(objOrdRecObjects.TempTypes1.getText().equals("Chilled Temperature"))
+			{
+				waitFor(1);
+				objOrdRecObjects.EnterChillTemp.sendKeys("6.0");
+				//enterText(objOrdRecObjects.EnterChillTemp,ForzenTem);
+			}
+		}
+		click(objOrdRecObjects.Next);
+			
+			if(objOrdRecObjects.popup1.getText().contains("Some articles have failed temperature check"))
+			{
+				click(objOrdRecObjects.clkyes);
+			}
+
+		}
+	}
+
+
+public List<List<Object>> ReceivearticlesPage(OrderingAndReceivingObject objOrdRecObjects,List random ,
+		List<List<Object>> DBList7, List Temp_Art,WebDriver driver) throws IOException
+{
+	List<List<Object>> applist4 = new ArrayList<List<Object>>();
+	List<List<Object>> appln = new ArrayList<List<Object>>();
+
+	String artno = null, artom = null,  ordqty = null, ordtot = null,disqty = null, distot = null, recqty = null, rectot = null;
+	
+	HashMap<String,String> OldSohMap = new HashMap<String,String> ();
+	for(int i=0;i<DBList7.size();i++){
+		OldSohMap.put(DBList7.get(i).get(0).toString(), DBList7.get(i).get(1).toString());
+	}
+
+
+	for(Integer a=1;a<=objOrdRecObjects.ListofArticles1.size();a++)
+	{
+		WebElement artnum_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getartno1,a,driver);
+		artno = artnum_1.getText();				
+		WebElement artom_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getomno1,a,driver);
+		artom = artom_1.getText().replace("\n", " ");
+		WebElement Odrqty_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getordqtyno1,a,driver);
+		ordqty = Odrqty_1.getText();
+		WebElement Odrtot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getordTotno1,a,driver);
+		ordtot = Odrtot_1.getText().replace("\n", " ");
+		WebElement disqty_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisqty1,a,driver);
+		disqty = disqty_1.getText();
+		WebElement Distot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getdisTotno1,a,driver);
+		distot = Distot_1.getText().replace("\n", " ");
+		
+		
+		if(random.contains(artno))
+		{
+			
+			WebElement Recqty_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+			recqty = Recqty_1.getAttribute("value");
+			WebElement Recqty_2 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno2,a,driver);
+			String recqty2 = Recqty_2.getAttribute("value");
+			WebElement Rectot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+			rectot = Rectot_1.getText().replace("\n", " ");
+			
+			//Double rectot1 = Double.parseDouble(rectot.toString());
+			
+					if(Temp_Art.contains(artno))
+					{
+						WebElement Rectot  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+						String rectot1 = Rectot_1.getText().replace("\n", " ");
+						String[] rectot2 = splitString(rectot1, " ");
+						rectot1 = rectot2[0];
+						Double rectot_2 = Double.parseDouble(rectot1);
+						
+						WebElement Rectotuts  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+						String Rectotuts1 = Rectot_1.getText().replace("\n", " ");
+						String[] Rectotuts2 = splitString(Rectotuts1, " ");
+						Rectotuts1 = Rectotuts2[1];
+						
+						String str = ""+artno+":"+artom+":"+ordqty+":"+ordtot+":"+disqty+":"+distot+":"+recqty+":"+recqty2+":"+rectot_2+" "+Rectotuts1;
+						applist4.addAll(StringToListCreation(str));
+						
+						WebElement clkchkboxes1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.clickcheckboxlist,a,driver);
+						clkchkboxes1.click();
+						waitFor(2);
+					}
+					else
+					{
+						String str = ""+artno+":"+artom+":"+ordqty+":"+ordtot+":"+disqty+":"+distot+":"+recqty+":"+recqty2+":"+rectot;
+						applist4.addAll(StringToListCreation(str));
+					}
+					
+					String OldSoh= OldSohMap.get(artno);
+			
+			//String ran_soh = DBList7.get(a-1).get(1).toString();
+			
+			String str1 = ""+artno+":"+OldSoh;
+			appln.addAll(StringToListCreation(str1));
+			
+				
+		}
+		else
+		{
+			WebElement Recqty_1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+			recqty = Recqty_1.getAttribute("value");
+			WebElement Rectot_1  = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrectotno1,a,driver);
+			rectot = Rectot_1.getText().replace("\n", " ");
+			
+			if(Temp_Art.contains(artno))
+			{
+				String str = ""+artno+":"+artom+":"+ordqty+":"+ordtot+":"+disqty+":"+distot+":"+recqty+":"+rectot;
+				applist4.addAll(StringToListCreation(str));
+				
+				WebElement clkchkboxes1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.clickcheckboxlist,a,driver);
+				clkchkboxes1.click();
+				waitFor(2);
+			}
+			else
+			{
+				String str = ""+artno+":"+artom+":"+ordqty+":"+ordtot+":"+disqty+":"+distot+":"+recqty+":"+rectot;
+				applist4.addAll(StringToListCreation(str));
+			}
+			
+			String OldSoh= OldSohMap.get(artno);
+			//String store_soh = DBList7.get(a-1).get(1).toString();
+			
+			String str1 = ""+artno+":"+OldSoh;
+			appln.addAll(StringToListCreation(str1));
+			
+		}
+
+		Integer artsize = objOrdRecObjects.ListofArticles1.size();
+		if(a.toString().equals(artsize.toString()))
+		//if(a.toString().equals(artsize.toString()) || random.contains(artno))
+		{
+		WebElement Recqty1 =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.getrecqtyno1,a,driver);
+		int n = random_no(8)+1;
+		String recqty_1 = ""+n;
+		waitFor(1);
+		Recqty1.clear();
+		Recqty1.sendKeys(recqty_1);
+		
+		WebElement clkchkboxes1 = prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.clickcheckboxlist,a,driver);
+		clkchkboxes1.click();
+		waitFor(2);
+		}
+	
+	
+	}
+	
+	System.out.println("applnvalues" +appln);
+	
+	System.out.println("Receive Articles before changing qty" +applist4);
+	
+	htmlToExtent(cName,mName,extLogger,driver, "SOH Values brfore submit the order;;;Pass");
+	
+	ElementContains1(cName, mName,extLogger,driver, appln, DBList7);
+	
+	return applist4;
+}
+
+
+
+
+public void ReceivesummaryPage(OrderingAndReceivingObject objOrdRecObjects, List<List<Object>> applnlist,
+		List<List<Object>> applnlist2, List<List<Object>> applnlist1,WebDriver driver) throws IOException
+{
+	List<List<Object>> DB = new ArrayList<List<Object>>();
+	
+	List<List<Object>> DB1 = new ArrayList<List<Object>>();
+	
+	List<String> ZeroArt = new ArrayList();
+	List<String> OtherArt = new ArrayList();
+	
+	for(int a=0;a<applnlist1.size();a++)
+	{
+		String artno = applnlist1.get(a).get(0).toString();
+		String recqty = applnlist1.get(a).get(5).toString();
+		String[] recqty_1 = splitString(recqty, " ");
+		recqty = recqty_1[0];
+		
+		String str = ""+artno+":"+recqty;
+		DB1.addAll(StringToListCreation(str));
+		
+		if(DB1.get(a).get(1).toString().equals("0"))
+		{
+		ZeroArt.add(artno);
+		}
+		else
+		{
+		OtherArt.add(artno);
+		}
+		
+	}
+	
+	Integer zeroqty = ZeroArt.size();
+	Integer otherqty = OtherArt.size();
+	
+	String str1 = ""+zeroqty+":"+otherqty;
+	DB1.addAll(StringToListCreation(str1));
+	
+	
+	List<List<Object>> applist6=getValuesFromTable(objOrdRecObjects.recsumtab);
+	removeIndex(applist6, "4");
+	removeIndex(applist6, "2");
+	removeIndex(applist6, "0");
+	replacenullToZero(applist6);
+	
+	Integer TotArtOrd = objOrdRecObjects.ListofArticles1.size();
+	Integer TotArtRec = objOrdRecObjects.ListofArticles1.size();
+	//Integer Otherqty = objOrdRecObjects.DiscrepanciesList1.size();
+	
+	Integer TotCarOrd1 = 0;
+
+	for(int i=0;i<applnlist.size();i++)
+	{
+		String TotCarOrd = applnlist.get(i).get(2).toString();
+		String[] TotCarOrd_1 = splitString(TotCarOrd, " ");
+		TotCarOrd = TotCarOrd_1[0];
+		TotCarOrd1 = TotCarOrd1 + (Integer.parseInt(TotCarOrd));
+		
+	}
+	
+	Integer TotCarRec1 = 0;
+	
+	for(int j=0;j<applnlist2.size();j++)
+	{
+		String TotCarRec = applnlist2.get(j).get(2).toString();
+		TotCarRec1 = TotCarRec1 + (Integer.parseInt(TotCarRec));
+		
+	}
+	
+	String str = ""+TotCarOrd1+":"+TotCarRec1+":"+TotArtOrd+":"+TotArtRec+":"+otherqty+":"+zeroqty;
+	DB.addAll(StringToListCreation(str));
+	
+	System.out.println("TotCarOrd and TotCarRec:" +TotCarOrd1 +TotCarRec1);
+	
+	if(applist6.get(1).get(0).toString().equals(DB.get(0).get(2).toString()) && applist6.get(1).get(1).toString().equals(DB.get(0).get(0).toString()) && applist6.get(1).get(2).toString().equals("0"))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered,Total Cartons Ordered and Total ULDs Received;["+applist6.get(1).get(0).toString()+","+applist6.get(1).get(1).toString()+","+applist6.get(1).get(2).toString()+"];["+DB.get(0).get(2).toString()+","+DB.get(0).get(0).toString()+",0];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered,Total Cartons Ordered and Total ULDs Received;["+applist6.get(1).get(0).toString()+","+applist6.get(1).get(1).toString()+","+applist6.get(1).get(2).toString()+"];["+DB.get(0).get(2).toString()+","+DB.get(0).get(0).toString()+",0];Fail");
+	}
+	
+	if(applist6.get(2).get(0).toString().equals(DB.get(0).get(3).toString()) && applist6.get(2).get(1).toString().equals(DB.get(0).get(1).toString()) && applist6.get(2).get(2).toString().equals("0"))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Articles Received,Total Cartons Received and Total ULDs Returned;["+applist6.get(2).get(0).toString()+","+applist6.get(2).get(1).toString()+","+applist6.get(2).get(2).toString()+"];["+DB.get(0).get(3).toString()+","+DB.get(0).get(1).toString()+",0];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Articles Received,Total Cartons Received and Total ULDs Returned;["+applist6.get(2).get(0).toString()+","+applist6.get(2).get(1).toString()+","+applist6.get(2).get(2).toString()+"];["+DB.get(0).get(3).toString()+","+DB.get(0).get(1).toString()+",0];Fail");
+	}
+	
+	List<List<Object>> applist7=getValuesFromTable(objOrdRecObjects.dissumtab);
+	removeIndex(applist7, "4");
+	removeIndex(applist7, "2");
+	removeIndex(applist7, "0");
+	replacenullToZero(applist7);	
+	
+	if(applist7.get(0).get(0).toString().equals("0") && applist7.get(0).get(1).toString().equals(DB.get(0).get(5).toString()) && applist7.get(0).get(2).toString().equals(DB.get(0).get(4).toString()))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Pack Size,Zero Qty and Other Qty;["+applist7.get(0).get(0).toString()+","+applist7.get(0).get(1).toString()+","+applist7.get(0).get(2).toString()+"];[0,"+DB.get(0).get(5).toString()+","+DB.get(0).get(4).toString()+"];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Pack Size,Zero Qty and Other Qty;["+applist7.get(0).get(0).toString()+","+applist7.get(0).get(1).toString()+","+applist7.get(0).get(2).toString()+"];[0,"+DB.get(0).get(5).toString()+","+DB.get(0).get(4).toString()+"];Fail");
+	}
+	
+	click(objOrdRecObjects.clksub);
+	
+	if(objOrdRecObjects.ConfPopup.getText().contains("Do you want to apply"))
+	{
+		click(objOrdRecObjects.ClkContinue1);
+		waitForJSandJQueryToLoad(driver);;
+	}
+	
+	String successmsg1 = objOrdRecObjects.successmsg.getText();
+	if(successmsg1.contains("Receiving Details Posted Successfully"))
+	{
+		click(objOrdRecObjects.StatusPopup);
+		htmlToExtent(cName,mName,extLogger,driver,""+successmsg1+";;;Pass");
+	}
+	
+	click(objOrdRecObjects.Clgrp);
+	
+	scrollUp(driver);
+	
+}
+
+public void ReceivedArticlesPage(OrderingAndReceivingObject objOrdRecObjects, List<List<Object>> applnlist,
+		List<List<Object>> applnlist2, List random,WebDriver driver) throws IOException
+{
+	List<List<Object>> applist=getValuesFromTable(objOrdRecObjects.tab1);
+	removeIndex(applist, "4");
+	removeIndex(applist, "2");
+	removeIndex(applist, "0");
+	replacenullToZero(applist);
+	
+	List<List<Object>> applist1=getValuesFromTable(objOrdRecObjects.tab2);
+	removeIndex(applist1, "5");
+	removeIndex(applist1, "4");
+	removeIndex(applist1, "2");
+	removeIndex(applist1, "0");
+	replacenullToZero(applist1);
+	
+	List<List<Object>> applist2=getValuesFromTable(objOrdRecObjects.tab3);
+	removeIndex(applist2, "5");
+	removeIndex(applist2, "4");
+	removeIndex(applist2, "2");
+	removeIndex(applist2, "0");
+	replacenullToZero(applist2);
+	
+	List<List<Object>> applist3=getValuesFromTable(objOrdRecObjects.tab4);
+	removeIndex(applist3, "2");
+	removeIndex(applist3, "0");
+	replacenullToZero(applist3);
+	
+	List<List<Object>> DBList= new ArrayList<List<Object>>();
+	List<List<Object>> DB= new ArrayList<List<Object>>();
+	List<List<Object>> DB1= new ArrayList<List<Object>>();
+	List<List<Object>> DB2= new ArrayList<List<Object>>();
+	
+	String distotunits2 = " ";
+	String rectotunits2 =" ";
+	
+	for(int a=1;a<=objOrdRecObjects.receivedartlist.size();a++)
+	{
+		WebElement Artno =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartno,a,driver); 
+		String Artno1 = Artno.getText();
+		
+		WebElement Ordqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartordqty,a,driver); 
+		String Ordqty1 = Ordqty.getText();
+		
+		WebElement disqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartdisqty,a,driver);
+		String disqty1 = disqty.getText();
+		
+		WebElement recqty =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartrecqty,a,driver);
+		String recqty1 = recqty.getText();
+		
+		if(random.contains(Artno1))
+		{
+			WebElement distotunits =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartdistot,a,driver);
+			String distotunits1 = distotunits.getText();
+			distotunits2 = distotunits1.replace("\n", " ").replace("\r", " ");
+			String[] distot = splitString(distotunits2, " ");
+			distotunits2 = distot[0];
+			
+			WebElement rectotunits =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartTotunits,a,driver);
+			String rectotunits1 = rectotunits.getText();
+			rectotunits2 = rectotunits1.replace("\n", " ").replace("\r", " ");
+			String[] rectot = splitString(rectotunits2, " ");
+			rectotunits2 = rectot[0];
+			
+			String str1 = ""+Artno1+":"+Ordqty1+":"+disqty1+":"+distotunits2+":"+recqty1+":"+rectotunits2;
+			DB2.addAll(StringToListCreation(str1));
+			
+		}
+		else
+		{
+			WebElement distotunits =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartdistot,a,driver);
+			String distotunits1 = distotunits.getText();
+			distotunits2 = distotunits1.replace("\n", " ").replace("\r", " ");
+				
+			WebElement rectotunits =  prepareWebElementWithDynamicXpathWithInt(objOrdRecObjects.receivedartTotunits,a,driver);
+			String rectotunits1 = rectotunits.getText();
+			rectotunits2 = rectotunits1.replace("\n", " ").replace("\r", " ");
+			
+			String str1 = ""+Artno1+":"+Ordqty1+":"+disqty1+":"+distotunits2+":"+recqty1+":"+rectotunits2;
+			DB1.addAll(StringToListCreation(str1));
+		}
+		
+	}
+	
+	DBList.addAll(DB1);
+	DBList.addAll(DB2);
+	
+	System.out.println("DBList" +DBList);
+	
+	Integer TotCarOrd1 = 0;
+	Integer TotDisQty1 = 0;
+	Integer TotCarRec1 = 0;
+	
+	Integer TotArt = objOrdRecObjects.receivedartlist.size();
+
+	for(int i=0;i<DBList.size();i++)
+	{
+		String TotCarOrd = DBList.get(i).get(1).toString();
+		String[] TotCarOrd_1 = splitString(TotCarOrd, " ");
+		TotCarOrd = TotCarOrd_1[0];
+		TotCarOrd1 = TotCarOrd1 + (Integer.parseInt(TotCarOrd));
+		
+		String TotDisQty = DBList.get(i).get(2).toString();
+		String[] TotDisQty_1 = splitString(TotDisQty, " ");
+		TotDisQty = TotDisQty_1[0];
+		TotDisQty1 = TotDisQty1 + (Integer.parseInt(TotDisQty));
+		
+		String TotCarRec = DBList.get(i).get(4).toString();
+		String[] TotCarRec_1 = splitString(TotCarRec, " ");
+		TotCarRec = TotCarRec_1[0];
+		TotCarRec1 = TotCarRec1 + (Integer.parseInt(TotCarRec));
+	}
+	
+	Integer TotWtRec1 = 0;
+	Double TotWtDis_1 = 0.000;
+	String TotWtDis1 = " ";
+	for(int i=0;i<DB2.size();i++)
+	{
+		String TotWtRec = DB2.get(i).get(5).toString();
+		TotWtRec1 = TotWtRec1 + (Integer.parseInt(TotWtRec));
+		
+		String TotWtDis = DB2.get(i).get(3).toString();
+		TotWtDis_1 = TotWtDis_1 + (Double.parseDouble(TotWtDis));
+		
+		
+		TotWtDis1 = TotWtDis_1.toString().replaceAll("\\.?0+$","");
+		
+		}
+	
+	String str = ""+TotCarOrd1+":"+TotDisQty1+":"+TotCarRec1+":"+TotArt+":"+TotWtRec1+":"+TotWtDis1;
+	DB.addAll(StringToListCreation(str));
+	
+	System.out.println("TotCarOrd ,TotDisQty, TotCarRec " +TotCarOrd1 +TotDisQty1 +TotCarRec1);
+	
+	scrolldown(driver);
+	
+	if(applist.get(0).get(0).toString().equals("NA") && applist.get(0).get(1).toString().equals("0") && applist.get(0).get(2).toString().equals(DB.get(0).get(3).toString()))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets and Total articles;["+applist.get(0).get(0).toString()+","+applist.get(0).get(1).toString()+","+applist.get(0).get(2).toString()+"];[NA,0,"+DB.get(0).get(3).toString()+"];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets and Total articles;["+applist.get(0).get(0).toString()+","+applist.get(0).get(1).toString()+","+applist.get(0).get(2).toString()+"];[NA,0,"+DB.get(0).get(3).toString()+"];Fail");
+	}
+	
+	if(applist.get(1).get(0).toString().equals(DB.get(0).get(2).toString()) && applist.get(1).get(1).toString().equals(DB.get(0).get(1).toString()) && applist.get(1).get(2).toString().equals(DB.get(0).get(0).toString()))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Cartons Received, Total Dispatched Qty and Total Cartons Ordered;["+applist.get(1).get(0).toString()+","+applist.get(1).get(1).toString()+","+applist.get(1).get(2).toString()+"];["+DB.get(0).get(2).toString()+","+DB.get(0).get(1).toString()+","+DB.get(0).get(0).toString()+"];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Cartons Received, Total Dispatched Qty and Total Cartons Ordered;["+applist.get(1).get(0).toString()+","+applist.get(1).get(1).toString()+","+applist.get(1).get(2).toString()+"];["+DB.get(0).get(2).toString()+","+DB.get(0).get(1).toString()+","+DB.get(0).get(0).toString()+"];Fail");
+	}	
+	
+	String TotDispWt = applist.get(2).get(1).toString();
+	
+	if(TotDispWt.equals("0"))
+	{
+		TotDispWt = applist.get(2).get(1).toString();
+	}
+	else
+	{
+		TotDispWt = applist.get(2).get(1).toString().replaceAll("\\.?0+$","");
+	}
+	
+	if(applist.get(2).get(0).toString().equals(DB.get(0).get(4).toString()) && TotDispWt.equals(DB.get(0).get(5).toString()))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Random weight and  Total Dispatched Weight;["+applist.get(2).get(0).toString()+","+TotDispWt+"];["+DB.get(0).get(4).toString()+","+DB.get(0).get(5).toString()+"];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total Random weight and  Total Dispatched Weight;["+applist.get(2).get(0).toString()+","+TotDispWt+"];["+DB.get(0).get(4).toString()+","+DB.get(0).get(5).toString()+"];Fail");
+	}
+	
+	if(applist.get(3).get(0).toString().equals("NA"))
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total pallets Returned;["+applist.get(3).get(0).toString()+"];[NA];Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Total pallets Returned;["+applist.get(3).get(0).toString()+"];[NA];Fail");
+	}
+
+}
+
+public void ArticleLookUp(OrderingAndReceivingObject objOrdRecObjects, List<List<Object>> DBList9,WebDriver driver) throws IOException
+{
+	
+	List<List<Object>> applist= new ArrayList<List<Object>>();
+	
+	click(objOrdRecObjects.ClkLookUp);
+	click(objOrdRecObjects.ClkArtLookup);
+	
+	for(int i=0;i<DBList9.size();i++)
+	{
+	String Artno = DBList9.get(i).get(0).toString();
+	
+	enterText(objOrdRecObjects.ArtSearch, Artno,driver);
+	click(objOrdRecObjects.ClkArtGo);
+	waitForJSandJQueryToLoad(driver);;
+	
+	if(i==0)
+	{
+	enterText(objOrdRecObjects.ArtSearch, Artno);
+	//click(objOrdRecObjects.ClkArtGo);
+	}
+	else
+	{	
+		waitFor(1);
+		click(objOrdRecObjects.ClkBackbtn);
+		objOrdRecObjects.ArtSearch.clear();
+		enterText(objOrdRecObjects.ArtSearch, Artno);
+		click(objOrdRecObjects.ClkArtGo);
+	}
+	
+	
+	String SohVal = objOrdRecObjects.ArtSoh.getText();
+	
+	if(SohVal.contains(" ("))
+	{
+		waitFor(0.5);
+		String myRegex="[(]";
+		String[] l = splitString(SohVal, myRegex);
+		SohVal=l[0].trim();
+		waitFor(0.5);
+	}
+	else if(SohVal.contains(" & "))
+	{
+		waitFor(0.5);
+		String[] l = splitString(SohVal, " & ");
+		String[] p = splitString(l[1], " ");
+		if(p[0].contains(".")){
+		p[0] = p[0].replaceAll("\\.?0+$","");}
+		SohVal=p[0]+" "+p[1]+" ("+l[0]+")";
+		waitFor(0.5);
+	}
+	
+	String str = ""+Artno+":"+SohVal;
+	applist.addAll(StringToListCreation(str)); 
+	
+	click(objOrdRecObjects.ClkBackbtn);
+	waitFor(1);
+	
+	}
+	
+	System.out.println("applist values" +applist);
+
+	ElementContains1(cName, mName,extLogger,driver, applist, DBList9);
+	
+
+}
+
+public void ArtLookUp(OrderingAndReceivingObject objOrdRecObjects, List<List<Object>> DB2,WebDriver driver) throws IOException
+{
+	
+	List<List<Object>> applist= new ArrayList<List<Object>>();
+	
+	click(objOrdRecObjects.ClkLookUp);
+	click(objOrdRecObjects.ClkArtLookup);
+	
+	for(int i=0;i<DB2.size();i++)
+	{
+	String Artno = DB2.get(i).get(0).toString();
+	
+	enterText(objOrdRecObjects.ArtSearch, Artno,driver);
+	click(objOrdRecObjects.ClkArtGo);
+	waitForJSandJQueryToLoad(driver);;
+	
+	String SohVal = objOrdRecObjects.ArtSoh.getText();
+	
+	if(SohVal.contains(" ("))
+	{
+		waitFor(0.5);
+		String myRegex="[(]";
+		String[] l = splitString(SohVal, myRegex);
+		SohVal=l[0].trim();
+		String[] l1 = splitString(SohVal, " ");
+		SohVal = l1[0];
+		if(SohVal.contains("."))
+		{
+			SohVal = l1[0].replaceAll("\\.?0+$","");
+			String Soh1 = l1[1];
+			SohVal=SohVal+" "+l1[1];
+		}
+		else
+		{
+			SohVal=l[0].trim();
+		}
+		waitFor(0.5);
+	}
+	else if(SohVal.contains(" & "))
+	{
+		waitFor(0.5);
+		String[] l = splitString(SohVal, " & ");
+		String[] p = splitString(l[1], " ");
+		if(p[0].contains(".")){
+		p[0] = p[0].replaceAll("\\.?0+$","");}
+		SohVal=p[0]+" "+p[1]+" ("+l[0]+")";
+		waitFor(0.5);
+	}
+	
+	String str = ""+Artno+":"+SohVal;
+	applist.addAll(StringToListCreation(str)); 
+	
+	click(objOrdRecObjects.ClkBackbtn);
+	waitFor(1);
+	
+	}
+	
+	System.out.println("applist values" +applist);
+	
+	ElementContains1(cName, mName,extLogger,driver, applist, DB2);
+
+}
+
+
+}
+*/

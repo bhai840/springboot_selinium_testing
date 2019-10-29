@@ -1,0 +1,483 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+
+
+import java.awt.Robot;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
+
+
+
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbomain.objects.ArticleLookUpObjects;
+import au.wow.ngbomain.objects.EnhancedArticleLookUpObjects;
+import au.wow.ngbomain.objects.OrderEnquiryObjects;
+import au.wow.ngbomain.objects.StockTakeObjects;
+import au.wow.ngbomain.tests.AdjustmentLogReportTests;
+import au.wow.ngbomain.tests.EnhancedArticleLookUpTests;
+import au.wow.ngbomain.tests.StockTakeTests;
+
+public class StockTakePage extends BasePage {
+	
+	WebDriver driver;
+    public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+	CommonFunctions common = PageFactory.initElements(driver,
+			CommonFunctions.class);
+	private Logger log = LogManager.getLogger(StockTakeTests.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	
+	public void createStocktake(StockTakeObjects objStockTakeObjects,WebDriver driver) throws AWTException{
+//		waitForJSandJQueryToLoad();
+		waitFor(1);
+		Point coordinates = objStockTakeObjects.stockManagement.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(objStockTakeObjects.stockManagement).click().build().perform();	
+		
+		waitFor(1);
+		
+		Point coordinates1 = objStockTakeObjects.stocktake.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(),coordinates1.getY()+100);
+		
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objStockTakeObjects.stocktake).click().build().perform();
+		waitFor(1);
+		
+
+}
+	
+	public WebElement prepareWebElementWithDynamicXpathWithInt(String xpathValue, int i,WebDriver driver) { 
+		return driver.findElement(By.xpath(xpathValue.replace("dynamic", ""+i)));		
+	}
+	
+	
+	public void verticalinternalscroll(WebElement element,WebDriver driver){ 
+		((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", element);
+		}
+
+
+	public void msg(StockTakeObjects objStockTakeObjects,WebDriver driver) throws IOException
+	{
+		if (objStockTakeObjects.Status.size()!=0)
+		{
+			String n =getText(objStockTakeObjects.Message);
+			if(n.equals("Stocktake created successfully."))
+			{
+				stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake Created  Successfully!!!;;;Pass");
+				//Report_AddStep("testcase", "Stocktake Created  Successfully!!!", "", "", "Pass");
+			}
+			else
+			{
+				stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake not Created  Successfully!!!;;;Fail");
+				//Report_AddStep("testcase", "Stocktake not Created  Successfully!!!", "", "", "Fail");
+			}
+			waitFor(1);
+			objStockTakeObjects.close.click();
+		}
+	}
+	
+	public void Mandatorymsg(StockTakeObjects objStockTakeObjects,WebDriver driver) throws IOException
+	{
+		if (objStockTakeObjects.Status.size()!=0)
+		{
+			String m =getText(objStockTakeObjects.Message);
+			if(m.equals("Department or Include Articles is mandatory."))
+			{
+				stockTakeArtScenarios.put(stockTakeArttestname, "Expected Error message.Please provide the valid details;;;Pass");
+				
+				//Report_AddStep("testcase", "Expected Error message.Please provide the valid details", "", "", "Pass");
+			}
+			else
+			{
+				stockTakeArtScenarios.put(stockTakeArttestname, "Not Expected Error message.Please provide the valid details;;;Fail");
+				//Report_AddStep("testcase", " Not Expected Error message.Please provide the valid details", "", "", "Fail");
+			}
+			waitFor(1);
+			//objStockTakeObjects.close.click();
+		}
+	}
+	
+	
+	public int duenow(StockTakeObjects objStockTakeObjects,WebDriver driver)
+	{
+		click(objStockTakeObjects.Duenowtab);
+		waitFor(4);		
+		String value = objStockTakeObjects.Duenowtab.getText();
+		value = value.replaceAll("(", "");
+		value = value.replaceAll(")", "");		
+		String[] val = splitString(value," ");
+		int due_no = Integer.parseInt(val[2]);
+		return due_no;		
+	}
+	
+	public String randart(List<List<Object>> results, int num) 
+	{		
+		String first = results.get(num).get(0).toString();
+		return first;		
+	}
+	
+	public void scrolldown(WebDriver driver)
+	{
+		verticalScroll(driver);
+	}
+	
+	public void scrollup(WebDriver driver)
+	{
+		scrollUp(driver);
+	}
+	
+	public String randDep(List<List<Object>> results, int num) 
+	{		
+		String first = results.get(num).get(0).toString();
+		return first;		
+	}
+	
+	public WebElement DynamicXpath(String xpath, int a,WebDriver driver) {
+		return driver.findElement(By.xpath(xpath.replace("dynamic", ""+a)));
+	}
+	
+	
+	public void frequencyselection(StockTakeObjects objStockTakeObjects,WebDriver driver) throws IOException
+	{
+		click(objStockTakeObjects.Frequency);
+		waitFor(1);	
+		List<List<Object>> list_frequency = StringToListCreation("Weekly:Annually:Half Yearly:Quarterly:Monthly:Just Once");
+		int listCnt = list_frequency.get(0).size();
+		int index = (int)(Math.random() * listCnt);
+		String freq = list_frequency.get(0).get(index).toString();
+	    selectByVisibleText(objStockTakeObjects.Frequency, freq);
+	    stockTakeArtScenarios.put(stockTakeArttestname, "Frequency can be selected from dropdown and the selected Frequency is "+freq+";;;Pass");
+		//Report_AddStep("testcase","Frequency can be selected from dropdown and the selected Frequency is "+freq+"" , "", "", "Pass");
+		waitFor(4);
+	
+	}
+	
+	
+
+	
+	public void selectDepartment(String dep,List<List<Object>> results,StockTakeObjects objStockTakeObjects, String frstdate, String formattedDate,WebDriver driver ) throws SQLException, IOException
+	{
+		results = sql.executeQuery(getContext(), dep);
+		int num = common.RandomFromDB(results);
+		String dep1 =randDep(results, num);
+		System.out.println(dep1);
+		int k = 2;
+		for (int i = 2; i< objStockTakeObjects.elementobj.size(); i++){
+			
+			WebElement val = prepareWebElementWithDynamicXpathWithInt(objStockTakeObjects.deptlistfromdropdown, i,driver);
+			WebElement clckdep = prepareWebElementWithDynamicXpathWithInt(objStockTakeObjects.ClickDept, k-1,driver);
+			k=k+1;
+			String dep2 = val.getText();
+			System.out.println(dep2);
+			System.out.println(dep1);
+			if(dep1.equals(dep2)){
+				clckdep.click();
+				break;
+			}
+			
+		}
+		stockTakeArtScenarios.put(stockTakeArttestname, "Creating Stocktake with Name "+formattedDate+" and Start Date as "+frstdate+", with Department - "+dep1+";;;Pass");
+
+		//Report_AddStep("testcase", "Creating Stocktake with Name "+formattedDate+" and Start Date as "+frstdate+", with Department - "+dep1+""+"", "", "", "Pass");
+		
+	}
+	
+	
+	public WebElement prepareWebElementWithDynamicXpath(String xpathValue, int i,WebDriver driver) {
+		return driver.findElement(By.xpath(xpathValue.replace("dynamic", ""+i)));
+	}
+	
+	
+	public void clickDept(List<WebElement> deptlst, String departmentlist, String nodeName,WebDriver driver) throws IOException {
+		for (int j = 1; j <= deptlst.size(); j++) {
+			WebElement element= prepareWebElementWithDynamicXpath(departmentlist, j,driver);
+			String depAppln = getText(element);
+			 if(nodeName.equalsIgnoreCase(depAppln)){
+
+				 scrolltoElement(element,driver);
+				//click(element);
+				 element.click();
+        	   System.out.println("Record Found on clicking Department : "+ depAppln);
+        	  // Report_AddStep("testcase", "Record Clicked :" + depAppln, "", "", "Pass");
+        	 //break;
+		      }
+		    }
+		}
+	
+	
+	public void SelectHierarchy(StockTakeObjects objStockTakeObjects,String dept_name,String cat_name,String subcat_name,WebDriver driver)
+	{
+		
+	System.out.println("Selection Entered :");
+		int deptsize=objStockTakeObjects.department.size();
+		for(int i=1;i<=deptsize;i++)
+		{
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(objStockTakeObjects.departmentList,i,driver);
+			WebElement element1 = prepareWebElementWithDynamicXpathWithInt(objStockTakeObjects.DtList,i,driver);
+			String dept_name_appl = element.getText();
+			if(dept_name.equals(dept_name_appl))
+			{
+				verticalinternalscroll(element,driver);
+				element1.click();
+				
+				
+				System.out.println("Department Selected : "+element1);
+				break;
+			}
+
+		}
+		
+		click(objStockTakeObjects.UnselectCategory);
+		waitFor(1.5);
+		
+		int catsize=objStockTakeObjects.category.size();
+		for(int i=2;i<=catsize+1;i++)
+		{
+			WebElement Cat = prepareWebElementWithDynamicXpathWithInt(objStockTakeObjects.categoryList,i,driver);
+			WebElement Cat1 = prepareWebElementWithDynamicXpathWithInt(objStockTakeObjects.CtList,i,driver);
+			String cat_name_appl = Cat.getText();
+			if(cat_name.equals(cat_name_appl))
+			{
+				verticalinternalscroll(Cat,driver);
+				Cat1.click();
+			
+				System.out.println("Category Selected : "+Cat1);
+				break;
+			}
+		}
+		
+		click(objStockTakeObjects.UnselectSubCategory);
+		waitFor(1.5);
+	
+		
+		int subcatsize=objStockTakeObjects.subCat1.size();
+		for(int i=2;i<=subcatsize+1;i++)
+		{
+			WebElement SubCat = prepareWebElementWithDynamicXpathWithInt(objStockTakeObjects.subCategoryLst,i,driver);
+			WebElement SubCat1 = prepareWebElementWithDynamicXpathWithInt(objStockTakeObjects.SubCatList,i,driver);
+			String subcat_name_appl = SubCat.getText();
+			if(subcat_name.equals(subcat_name_appl))
+			{
+				verticalinternalscroll(SubCat,driver);
+				SubCat1.click();
+				
+
+				System.out.println("Subcategory Selected : "+SubCat1);
+				break;
+			}
+		}
+		
+		click(objStockTakeObjects.UnselectSegment);
+		waitFor(1.5);
+		
+		System.out.println("Selection Completed :");
+		
+		}
+
+
+	public  List<Object> Pagination (StockTakeObjects objStockTakeObjects,WebDriver driver) throws IOException  
+	{
+		List<Object>value=null;
+		int u = objStockTakeObjects.PagesBase.size();
+		System.out.println("Page Size here"+ u);//To calc how many pages are there
+		u=u-2; //As Prev & next are included we are subtracting it by 2
+		System.out.println("Page Size"+ u);
+	    if(u!=0)
+		{
+		for(int i=1;i<=u;i++)
+		{
+		if(i!=1)
+		{
+		WebElement elements =  prepareWebElementWithDynamicXpathWithInt(objStockTakeObjects.Pages, i+1,driver);//Click on the respective page
+		elements.click();
+		System.out.println("Navigating the Possible pages" + i);
+		
+		waitFor(2);
+		
+		}
+//		scrolldown();
+//		scrollup();
+		}
+		}
+	   
+		return value;
+	}
+
+	public  List<Object> Pagination1 (StockTakeObjects objStockTakeObjects,WebDriver driver) throws IOException  
+	{
+		List<Object>value=null;
+		driver.findElement(By.xpath(" //*[@id='Article_Count_Report_head_page']"));
+		
+		int u = objStockTakeObjects.PagesBaseTotal.size();
+		System.out.println("Page Size here"+ u);//To calc how many pages are there
+		u=u-2; //As Prev & next are included we are subtracting it by 2
+		System.out.println("Page Size"+ u);
+	    if(u!=0)
+		{
+		for(int i=1;i<=u;i++)
+		{
+		if(i!=1)
+		{
+		WebElement elements =  prepareWebElementWithDynamicXpathWithInt(objStockTakeObjects.Pages, i+1,driver);//Click on the respective page
+		elements.click();
+		System.out.println("Navigating the Possible pages" + i);
+		
+		waitFor(2);
+		
+		}
+//		scrolldown();
+//		scrollup();
+		}
+		}
+	   
+		return value;
+	}
+	
+	
+	public List<List<Object>> Backend(StockTakeObjects objStockTakeObjects,List mydblist,WebDriver driver) throws IOException  
+	{	
+
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	
+	 String Art_Num=objStockTakeObjects.Article_Number.getText();
+	 System.out.println("Article Number is " +Art_Num);
+	 String Art_uom=objStockTakeObjects.Article_UOM.getText();
+	 System.out.println("Article UOM is " +Art_uom);
+
+	firstvalue.add(Art_Num);
+	firstvalue.add(Art_uom);
+	temp.add(firstvalue);
+	return temp;
+	}
+	
+	public void Filters (StockTakeObjects objStockTakeObjects,WebDriver driver) throws IOException 
+	{
+		/*click(objStockTakeObjects.DueNow);
+		waitForJSandJQueryToLoad();
+		click(objStockTakeObjects.DueNowAllDepts);
+		click(objStockTakeObjects.open);
+		waitForJSandJQueryToLoad();
+		scrolldown();*/
+		
+	        click(objStockTakeObjects.Filter);
+	       waitForJSandJQueryToLoad(driver);
+	        click(objStockTakeObjects.Aisleclick);
+	        waitForJSandJQueryToLoad(driver);
+			click(objStockTakeObjects.AllAislesclick);
+			waitFor(1.5);
+			
+			/*click(objStockTakeObjects.Otherclick);
+			waitFor(1.5);
+			click(objStockTakeObjects.AllOtherclick);
+			waitFor(1.5);
+			click(objStockTakeObjects.OthersDone);
+			waitFor(1.5);
+			click(objStockTakeObjects.Departmentclick);
+			waitFor(1.5);
+			click(objStockTakeObjects.AllDepartmentsClick);
+			waitFor(1.5);
+			click(objStockTakeObjects.AllDepartmentsDone);
+			waitFor(1.5);
+		
+			click(objStockTakeObjects.UsersClick);
+			waitFor(1.5);
+			click(objStockTakeObjects.AllUsersClick);
+			waitFor(1.5);
+			click(objStockTakeObjects.AllUsersDone);
+			waitFor(1.5);
+			click(objStockTakeObjects.ApplyFilters);
+			waitFor(1.5);
+		click(objStockTakeObjects.ApplyFilters);
+			waitFor(1.5);
+			
+			
+			if (objStockTakeObjects.Status.size()!=0)
+			{
+				String n =getText(objStockTakeObjects.Message);
+				if(n.equals("Sorry, No records found."))
+				{
+					Report_AddStep("testcase", "There were no articles filtered", "", "", "Pass");
+				}
+				
+				
+				String Ais=objStockTakeObjects.PlanoCounted.getText();
+				System.out.println("Counted Aisles is " +Ais);
+				String[] Aisles = Ais.split(",");
+				List<Object> PlanoList = new ArrayList<Object>(Arrays.asList(Aisles));
+			    System.out.println(PlanoList);
+			    */
+				
+		
+				
+				//objStockTakeObjects.close.click();
+			}
+	
+	public void ReasonSelection(StockTakeObjects objStockTakeObjects,WebDriver driver) throws IOException
+	{
+		click(objStockTakeObjects.Reason);
+		waitFor(1);	
+		List<List<Object>> list_reason = StringToListCreation("National Stocktake Team:Technical Issues:Natural Disaster:Refurb");
+		int listCnt = list_reason.get(0).size();
+		int index = (int)(Math.random() * listCnt);
+		String rea = list_reason.get(0).get(index).toString();
+	    selectByVisibleText(objStockTakeObjects.Reason, rea);
+	    stockTakeArtScenarios.put(stockTakeArttestname, "Frequency can be selected from dropdown and the selected Frequency is "+rea+";;;Pass");
+		//Report_AddStep("testcase","Frequency can be selected from dropdown and the selected Frequency is "+rea+"" , "", "", "Pass");
+		waitFor(4);
+	
+	}
+	
+	
+	public void message(StockTakeObjects objStockTakeObjects,WebDriver driver) throws IOException
+	{
+		if (objStockTakeObjects.Status.size()!=0)
+		{
+			String n =getText(objStockTakeObjects.Message);
+			if(n.equals("StockTake is Updated Successfully"))
+			{
+				stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake is Deleted  Successfully!!!;;;Pass");
+				//Report_AddStep("testcase", "Stocktake is Deleted  Successfully!!!", "", "", "Pass");
+			}
+			else
+			{
+				stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake is not Deleted  Successfully!!!;;;Fail");
+				//Report_AddStep("testcase", "Stocktake is not Deleted Successfully!!!", "", "", "Fail");
+			}
+			waitFor(1);
+			objStockTakeObjects.close.click();
+		}
+	}
+	
+	
+	public void waitFn() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+}

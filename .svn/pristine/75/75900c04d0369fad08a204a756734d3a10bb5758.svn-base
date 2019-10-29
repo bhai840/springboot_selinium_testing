@@ -1,0 +1,1514 @@
+package au.wow.ngbomain.tests;
+
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+
+
+
+
+
+
+
+
+//import au.wow.ngbomain.objects.RoutineObjects;
+//import au.wow.ngbomain.objects.RoutineObjects;
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.GapscanReportObjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+//import au.wow.ngbomain.pages.OrderEnquiryPage;
+import au.wow.ngbomain.pages.GapscanReportPage;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+//import au.wow.ngbomain.pages.OrderEnquiryPage;
+
+public class GapscanReportTests extends TestBase {
+//Reason type Both, PM ,all dept ,all emp
+	//##private Logger log = LogManager.getLogger(OrderEnquiryTests.class);
+	private Logger log = LogManager.getLogger(GapscanReportTests.class);
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	GapscanReportPage gsrPage;
+	GapscanReportObjects gsrobject;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;			
+	List<List<Object>> result;
+	List<List<Object>> result_temp;
+	public static WebDriver driver;
+	public static XMLDataReader data;
+
+	public static boolean isFirstTest=true;
+	public GapscanReportTests(){
+		super.log=log;
+		
+
+	}
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+    int count=0;		
+	int MCcount=0;
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department Verification")
+	public void alldepartment()// throws SQLException, IOException, AWTException, ParseException  //
+	{
+
+		if(gapScanArtpreCount2==-1)
+		{
+		MCcount =MCcount+3;
+		}
+		TestStatus status = getTestStatus();
+		waitFor(1);
+		try{
+		navToGapscan(status);
+
+		gsrobject.acationRequiredRadioButton.click();//click action required radio button
+		//gsrPage.dynamicreasonclick(gsrobject);
+		String convdate= common.ConvertdateFormatWithoutHiphen();
+		//##String date = common.addDaystoCurrentDate(-6);//Date
+		String date = common.addDaystoCurrentDate(0);
+		gsrobject.date.clear();
+		waitFor(1);
+		gsrobject.date.sendKeys(date);
+		waitFor(1);
+		click(gsrobject.chummadate);
+		waitFor(1);
+
+		gsrobject.time.click();//time click,click both radio button for time
+		//gsrPage.dynamictimeclick(gsrobject);
+		waitFor(1);
+
+		String indiv_UomArticle_sql = data.getText("alldept");// Action
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("todaysdate", convdate);
+		// today
+		// tab
+		List<List<Object>> results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		//System.out.println(results);
+		replacenullToZero(results);//For results
+	    removeExtraSpaces(results,1);
+	    //System.out.println(results);
+	    replacenullToZero(results);//For results
+	    removeExtraSpaces(results,1);
+		gsrPage.removesixzero(results,8);// removes 6 extra zeros
+		gsrPage.removetriplezero(results,15);// removes three extra zeros
+		gsrPage.removetriplezero(results,16);
+		gsrPage.replaceonetostar(results,13);//Promotion indicator is changed from 1 to * in DB
+		gsrPage.replaceNo(results,14);// Actioned results for No
+		gsrPage.replaceYes(results,14);// Actioned results for Yes
+		//System.out.println(results);
+		
+		int size_deptdropdown = gsrobject.innerDD.size();//All dept dropdown size
+		gsrPage.random_no(size_deptdropdown);//random number from dept dropdown size 
+		gsrPage.gapscan(gsrobject, size_deptdropdown, results,driver);//function to fetch data and compare it with SQLA
+
+
+		waitFor(1);
+		log.info("-----------------Logout from Application------------------");
+		
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(gapScanArtScenarios, gapScanArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+		}
+		
+	
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Partial-Department-Verification")
+	public void partialdepartmentonly() //throws SQLException, IOException, AWTException, ParseException //
+	{
+		
+			if(gapScanArtpreCount2==-1)
+			{
+			MCcount =MCcount+2;
+			}
+			TestStatus status = getTestStatus();
+			try{
+		waitFor(1);
+		navToGapscan(status);
+		List<String> dropdownList = gsrPage.gapscanactionrequiredpartial1(gsrobject,driver);
+		System.out.println(dropdownList);
+		String dept1 = dropdownList.get(0);
+		String dept2 = dropdownList.get(1);
+		String dept3 = dropdownList.get(2);
+		
+		String convdate= common.ConvertdateFormatWithoutHiphen();// Action
+		
+		String deptCode = data.getText("deptcode");
+		deptCode= deptCode.replace("dept1", dept1);
+		deptCode= deptCode.replace("dept2", dept2);
+		deptCode= deptCode.replace("dept3", dept3);
+		List<String> deptcodes = sql.executeQueryList(getContext(),deptCode);
+		String deptLists1 = String.join(",", deptcodes);
+		System.out.println(deptLists1);
+		/*String dept11 = deptcodes.get(0);
+		String dept12 = deptcodes.get(1);
+		String dept13 = deptcodes.get(2);*/
+		
+		String indiv_UomArticle_sql = data.getText("alldeptboth");
+		indiv_UomArticle_sql= indiv_UomArticle_sql.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql= indiv_UomArticle_sql.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultsboth = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		
+		String indiv_UomArticle_sql1 = data.getText("alldeptam");
+		indiv_UomArticle_sql1= indiv_UomArticle_sql1.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql1= indiv_UomArticle_sql1.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultsam = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+		
+		String indiv_UomArticle_sql2 = data.getText("alldeptpm");
+		indiv_UomArticle_sql2= indiv_UomArticle_sql2.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql2= indiv_UomArticle_sql2.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultspm = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+		
+		replacenullToZero(resultsboth);
+		removeExtraSpaces(resultsboth,1);
+		removeExtraSpaces(resultsboth,4);
+		gsrPage.removesixzero(resultsboth,8);
+		gsrPage.removetriplezero(resultsboth,15);
+		gsrPage.removetriplezero(resultsboth,16);
+		gsrPage.replaceonetostar(resultsboth,13);
+		gsrPage.replaceNo(resultsboth,14);
+		gsrPage.replaceYes(resultsboth,14);
+		
+		replacenullToZero(resultsam);
+		removeExtraSpaces(resultsam,1);
+		removeExtraSpaces(resultsam,4);
+		gsrPage.removesixzero(resultsam,8);
+		gsrPage.removetriplezero(resultsam,15);
+		gsrPage.removetriplezero(resultsam,16);
+		gsrPage.replaceonetostar(resultsam,13);
+		gsrPage.replaceNo(resultsam,14);
+		gsrPage.replaceYes(resultsam,14);
+		
+		
+		replacenullToZero(resultspm);
+		removeExtraSpaces(resultspm,1);
+		removeExtraSpaces(resultspm,4);
+		gsrPage.removesixzero(resultspm,8);
+		gsrPage.removetriplezero(resultspm,15);
+		gsrPage.removetriplezero(resultspm,16);
+		gsrPage.replaceonetostar(resultspm,13);
+		gsrPage.replaceNo(resultspm,14);
+		gsrPage.replaceYes(resultspm,14);
+
+
+		gsrPage.gapscannewprimarydepartmentactionrequired(gsrobject,resultsboth,resultsam,resultspm,driver);
+	
+	
+	
+	
+	
+	/*gsrobject.bothreason.click();
+	//gsrPage.dynamicreasonclick(gsrobject);
+
+	String date = common.addDaystoCurrentDate(-1);
+	gsrobject.date.clear();
+	waitFor(1);
+	gsrobject.date.sendKeys(date);
+	waitFor(1);
+	click(gsrobject.chummadate);
+	waitFor(1);
+
+	gsrobject.time.click();
+	//gsrPage.dynamictimeclick(gsrobject);
+	waitFor(1);
+
+	gsrPage.PartialDepartment(gsrobject,driver);//Program for validating partial dept scenarios##3 dept are selected
+	waitFor(1);
+	gsrobject.done.click();
+	waitFor(1);
+	gsrPage.PartialEmployees(gsrobject,driver);//Program for validating Partial employee scenario##3 employees are selected
+	waitFor(1);
+	gsrobject.edone.click();
+	waitFor(1);
+	htmlToExtent(cName,mName,extLogger,driver, "The below details is for Reason type - both, Date - "+date+", Department - All department, Employees - All Employess;;;Pass");
+	//Report_AddStep("testcase","The below details is for Reason type - both, Date - "+date+", Department - All department, Employees - All Employess","","","");
+	gsrobject.generatereport.click();
+	waitForJSandJQueryToLoad(driver);;
+
+	waitFor(1);
+try
+{
+	
+
+	if(gsrobject.close.isDisplayed())
+	{
+		String errmsg = getText(gsrobject.norecords);
+		if(errmsg.equals("Sorry, No records found."))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, ""+errmsg+";;;Pass");
+			
+			//Report_AddStep("testcase",errmsg,"","","Fail");
+			gsrobject.close.click();
+
+
+		}
+	}
+	else
+	{
+
+		click(gsrobject.printrep);	
+		gsrPage.paginationhandling(gsrobject,driver);
+		gsrPage.gapscantabs(gsrobject,results,driver);
+
+	}
+}
+
+catch(WebDriverException c)
+{
+	
+}*/
+
+	waitFor(1);
+	log.info("-----------------Logout from Application------------------");
+	loginPage.logoutFromAppl(gapScanArtScenarios, gapScanArttestname,driver);
+	htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}
+			status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Partial Department Reivewonly Verification")
+	public void partialdepartmentreviewonly() //throws SQLException, IOException, AWTException, ParseException //
+	{
+		
+			if(gapScanArtpreCount2==-1)
+			{
+			MCcount =MCcount+2;
+			}
+			TestStatus status = getTestStatus();
+			try{
+		
+		waitFor(1);
+		navToGapscan(status);
+		List<String> dropdownList = gsrPage.gapscanactionrequiredpartial1(gsrobject,driver);
+		
+		String dept1 = dropdownList.get(0);
+		String dept2 = dropdownList.get(1);
+		String dept3 = dropdownList.get(2);
+		
+		String convdate= common.ConvertdateFormatWithoutHiphen();// Action
+		
+		String deptCode = data.getText("deptcode");
+		deptCode= deptCode.replace("dept1", dept1);
+		deptCode= deptCode.replace("dept2", dept2);
+		deptCode= deptCode.replace("dept3", dept3);
+		List<String> deptcodes = sql.executeQueryList(getContext(),deptCode);
+		String deptLists1 = String.join(",", deptcodes);
+		/*String dept11 = deptcodes.get(0);
+		String dept12 = deptcodes.get(1);
+		String dept13 = deptcodes.get(2);*/
+		
+		String indiv_UomArticle_sql = data.getText("alldeptboth");
+		indiv_UomArticle_sql= indiv_UomArticle_sql.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql= indiv_UomArticle_sql.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultsboth = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		
+		String indiv_UomArticle_sql1 = data.getText("alldeptam");
+		indiv_UomArticle_sql1= indiv_UomArticle_sql1.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql1= indiv_UomArticle_sql1.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultsam = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+		
+		String indiv_UomArticle_sql2 = data.getText("alldeptpm");
+		indiv_UomArticle_sql2= indiv_UomArticle_sql2.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql2= indiv_UomArticle_sql2.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultspm = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+		//System.out.println(resultspm);
+		
+		replacenullToZero(resultsboth);
+		removeExtraSpaces(resultsboth,1);
+		removeExtraSpaces(resultsboth,4);
+		gsrPage.removesixzero(resultsboth,8);
+		gsrPage.removetriplezero(resultsboth,15);
+		gsrPage.removetriplezero(resultsboth,16);
+		gsrPage.replaceonetostar(resultsboth,13);
+		gsrPage.replaceNo(resultsboth,14);
+		gsrPage.replaceYes(resultsboth,14);
+		
+		replacenullToZero(resultsam);
+		removeExtraSpaces(resultsam,1);
+		removeExtraSpaces(resultsam,4);
+		gsrPage.removesixzero(resultsam,8);
+		gsrPage.removetriplezero(resultsam,15);
+		gsrPage.removetriplezero(resultsam,16);
+		gsrPage.replaceonetostar(resultsam,13);
+		gsrPage.replaceNo(resultsam,14);
+		gsrPage.replaceYes(resultsam,14);
+		
+		
+		replacenullToZero(resultspm);
+		removeExtraSpaces(resultspm,1);
+		removeExtraSpaces(resultspm,4);
+		gsrPage.removesixzero(resultspm,8);
+		gsrPage.removetriplezero(resultspm,15);
+		gsrPage.removetriplezero(resultspm,16);
+		gsrPage.replaceonetostar(resultspm,13);
+		gsrPage.replaceNo(resultspm,14);
+		gsrPage.replaceYes(resultspm,14);
+
+
+		gsrPage.gapscannewprimarydepartmentreviewonly(gsrobject,resultsboth,resultsam,resultspm,driver);
+	
+		
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(gapScanArtScenarios, gapScanArttestname,driver));
+
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}
+			status.assertAll();
+	}
+
+   @Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "primary Department Verification")
+	public void primarydepartment() // throws SQLException, IOException, AWTException, ParseException //
+
+	{
+			if(gapScanArtpreCount2==-1)
+			{
+			MCcount =MCcount+2;
+			}
+			TestStatus status = getTestStatus();
+	try{
+		List<List<Object>> results = null;
+		List<List<Object>> results1 = null;
+		List<List<Object>> resultspm = null;
+		
+		waitFor(1);
+		navToGapscan(status);
+		String convdate= common.ConvertdateFormatWithoutHiphen();
+		List<String>departmentLists = gsrPage.primarydepartment(gsrobject,driver);
+		String deptLists = String.join(",", departmentLists);
+	    
+	    if(deptLists.contains("All")){
+	    	
+			String indiv_UomArticle_sql = data.getText("alldept");// Action
+			indiv_UomArticle_sql= indiv_UomArticle_sql.replace("departmentsfromlist","ALL");
+			indiv_UomArticle_sql= indiv_UomArticle_sql.replaceFirst("todaysdate",convdate);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			//System.out.println(results);
+			String indiv_UomArticle_sql1 = data.getText("alldeptam");// Action
+			indiv_UomArticle_sql1= indiv_UomArticle_sql1.replace("departmentsfromlist","ALL");
+			indiv_UomArticle_sql1= indiv_UomArticle_sql1.replaceFirst("todaysdate",convdate);
+			results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			
+			String indiv_UomArticle_sql2 = data.getText("alldeptpm");// Action
+			indiv_UomArticle_sql2= indiv_UomArticle_sql2.replace("departmentsfromlist","ALL");
+			indiv_UomArticle_sql2= indiv_UomArticle_sql2.replaceFirst("todaysdate",convdate);
+			resultspm = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+	    }
+	    else{
+	    	int count=0;
+			StringBuilder deptLists1=new StringBuilder();
+			for(String splitValue:departmentLists){
+				deptLists1.append("'");
+				deptLists1.append(splitValue);
+				deptLists1.append("'");
+			count++;
+			if(count!=departmentLists.size()){
+				deptLists1.append(",");
+			}
+			}
+			deptLists1.toString();
+			
+	    	String deptCode = data.getText("deptcode");
+	    	deptCode = deptCode.replace("departmentsfromlist",deptLists1);
+			List<String> deptcodes = sql.executeQueryList(getContext(),deptCode);
+			String deptLists2 = String.join(",", deptcodes);
+	    	
+	    	
+	    	String indiv_UomArticle_sql = data.getText("alldept");// Action
+	    	indiv_UomArticle_sql= indiv_UomArticle_sql.replace("departmentsfromlist",deptLists2);
+			indiv_UomArticle_sql= indiv_UomArticle_sql.replaceFirst("todaysdate",convdate);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			
+			String indiv_UomArticle_sql1 = data.getText("alldeptam");// Action
+			indiv_UomArticle_sql1= indiv_UomArticle_sql1.replace("departmentsfromlist",deptLists2);
+			indiv_UomArticle_sql1= indiv_UomArticle_sql1.replaceFirst("todaysdate",convdate);
+			results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			
+			String indiv_UomArticle_sql2 = data.getText("alldeptpm");// Action
+			indiv_UomArticle_sql2= indiv_UomArticle_sql2.replace("departmentsfromlist",deptLists2);
+			indiv_UomArticle_sql2= indiv_UomArticle_sql2.replaceFirst("todaysdate",convdate);
+			resultspm = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+	    	
+	    }
+		
+		//AllDept
+		replacenullToZero(results);
+		removeExtraSpaces(results,1);
+		removeExtraSpaces(results,4);
+		gsrPage.removesixzero(results,8);
+		gsrPage.removetriplezero(results,15);
+		gsrPage.removetriplezero(results,16);
+		gsrPage.replaceonetostar(results,13);
+		gsrPage.replaceNo(results,14);
+		gsrPage.replaceYes(results,14);
+		
+		replacenullToZero(results1);
+		removeExtraSpaces(results1,1);
+		removeExtraSpaces(results1,4);
+		gsrPage.removesixzero(results1,8);
+		gsrPage.removetriplezero(results1,15);
+		gsrPage.removetriplezero(results1,16);
+		gsrPage.replaceonetostar(results1,13);
+		gsrPage.replaceNo(results1,14);
+		gsrPage.replaceYes(results1,14);
+
+		replacenullToZero(resultspm);
+		removeExtraSpaces(resultspm,1);
+		removeExtraSpaces(resultspm,4);
+		gsrPage.removesixzero(resultspm,8);
+		gsrPage.removetriplezero(resultspm,15);
+		gsrPage.removetriplezero(resultspm,16);
+		gsrPage.replaceonetostar(resultspm,13);
+		gsrPage.replaceNo(resultspm,14);
+		gsrPage.replaceYes(resultspm,14);
+		
+		gsrPage.gapscannewprimarydepartmentactionrequired(gsrobject,results,results1,resultspm,driver);
+		
+		/*gsrobject.bothreason.click();
+		//gsrPage.dynamicreasonclick(gsrobject);
+
+		String date = common.addDaystoCurrentDate(-2);
+		gsrobject.date.clear();
+		waitFor(1);
+		gsrobject.date.sendKeys(date);
+		waitFor(1);
+		click(gsrobject.chummadate);
+		waitFor(1);
+
+		gsrobject.time.click();
+		//gsrPage.dynamictimeclick(gsrobject);
+		waitFor(1);
+
+		gsrPage.primarydepartment(gsrobject,driver);//PrimaryDeptvalidationincludingDB
+		click(gsrobject.generatereport);
+		waitFor(1);
+//		WebElement element = driver.findElement(By.xpath("//*[@value='revOnly']"));
+//		element.click();
+		
+		gsrPage.gapscantabs(gsrobject,results,driver);*/
+		
+		waitFor(1);
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(gapScanArtScenarios, gapScanArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify Print report")
+	public void printreport() //throws SQLException, IOException, AWTException, ParseException //
+
+	{
+		
+		if(gapScanArtpreCount2==-1)
+		{
+		MCcount =MCcount+3;
+		}
+		TestStatus status = getTestStatus();
+	try{
+		waitFor(1);
+		navToGapscan(status);
+
+		gsrobject.bothreason.click();
+		//gsrPage.dynamicreasonclick(gsrobject);
+
+		String date = common.addDaystoCurrentDate(0);
+		gsrobject.date.clear();
+		waitFor(1);
+		gsrobject.date.sendKeys(date);
+		waitFor(1);
+		click(gsrobject.chummadate);
+		waitFor(1);
+
+		gsrobject.time.click();
+		//gsrPage.dynamictimeclick(gsrobject);
+		waitFor(1);
+
+//		gsrPage.PartialDepartment(gsrobject,driver);//Program for validating partial dept scenarios
+//		waitFor(1);
+//		gsrobject.done.click();
+//		waitFor(1);
+//		gsrPage.PartialEmployees(gsrobject,driver);//Program for validating Partial employee scenario
+//		waitFor(1);
+//		gsrobject.edone.click();
+		waitFor(1);
+		htmlToExtent(cName,mName,extLogger,driver, "The below details is for Reason type - both, Date - "+date+";;;Pass");
+		//Report_AddStep("testcase","The below details is for Reason type - both, Date - "+date+", Department - All department, Employees - All Employess","","","");
+		gsrobject.generatereport.click();
+		waitForJSandJQueryToLoad(driver);;
+	try
+	{
+		if(gsrobject.close2.size()!=0)
+		{
+			String errmsg = getText(gsrobject.norecords);
+			if(errmsg.equals("Sorry, No records found."))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, ""+errmsg+";;;Pass");
+				//Report_AddStep("testcase",errmsg,"","","Fail");
+				gsrobject.close.click();
+			}
+		}
+		else
+		{
+
+//			click(gsrobject.printrep);	
+//			//gsrPage.gapscantabs(gsrobject);//For Pagination	
+			gsrPage.printPage(gsrobject,driver);
+
+		}
+}
+catch(WebDriverException close)
+{
+		
+
+	}
+waitFor(1);
+log.info("-----------------Logout from Application------------------");
+loginPage.logoutFromAppl(gapScanArtScenarios, gapScanArttestname,driver);
+status.assertAll();
+htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+	}catch(Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+	}
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Action Required-All Department Verification")
+	public void ActionrequiredAlldepartment() // throws SQLException, IOException, AWTException, ParseException  //
+	{
+		if(gapScanArtpreCount2==-1)
+		{
+		MCcount =MCcount+3;
+		}
+		TestStatus status = getTestStatus();
+		try{
+			
+			waitFor(1);
+			navToGapscan(status);
+			String convdate= common.ConvertdateFormatWithoutHiphen();
+			
+			String indiv_UomArticle_sql = data.getText("alldept");// Action today articles query
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceFirst("todaysdate",convdate);// today
+			List<List<Object>> results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			System.out.println(results);
+			
+			String indiv_UomArticle_sql1 = data.getText("alldeptam");// Action required AM articles
+			indiv_UomArticle_sql1 = indiv_UomArticle_sql1.replaceFirst("todaysdate",convdate);
+			List<List<Object>> results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);//##passes
+			System.out.println(results1);
+			
+			String indiv_UomArticle_sql2 = data.getText("alldeptpm");// Action required AM articles
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replaceFirst("todaysdate",convdate);
+			List<List<Object>> resultspm = sql.executeQuery(getContext(),indiv_UomArticle_sql2);//##passes
+			System.out.println(resultspm);
+			
+			replacenullToZero(results);//For results
+		    removeExtraSpaces(results,1);
+			gsrPage.removesixzero(results,8);// removes 6 extra zeros
+			gsrPage.removetriplezero(results,15);// removes three extra zeros
+			gsrPage.removetriplezero(results,16);
+			gsrPage.replaceonetostar(results,13);//Promotion indicator is changed from 1 to * in DB
+			gsrPage.replaceNo(results,14);// Actioned results for No
+			gsrPage.replaceYes(results,14);// Actioned results for Yes
+			System.out.println(results);
+			
+			
+			replacenullToZero(results1);//For Results1
+			removeExtraSpaces(results1,1);
+			gsrPage.removesixzero(results1,8);
+			gsrPage.removetriplezero(results1,15);
+			gsrPage.removetriplezero(results1,16);
+			gsrPage.replaceonetostar(results1,13);
+			gsrPage.replaceNo(results1,14);
+			gsrPage.replaceYes(results1,14);
+			System.out.println(results1);
+			
+			replacenullToZero(resultspm);//For Results1
+			removeExtraSpaces(resultspm,1);
+			gsrPage.removesixzero(resultspm,8);
+			gsrPage.removetriplezero(resultspm,15);
+			gsrPage.removetriplezero(resultspm,16);
+			gsrPage.replaceonetostar(resultspm,13);
+			gsrPage.replaceNo(resultspm,14);
+			gsrPage.replaceYes(resultspm,14);
+			System.out.println(resultspm);
+		
+		
+			gsrPage.gapscannew(gsrobject,results,results1,resultspm,driver);// Function to compare browser and DB values
+			waitFor(5);
+			//gsrPage.dbvalidationalldept(gsrobject, results);
+			waitFor(1);
+			
+			htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(gapScanArtScenarios, gapScanArttestname,driver));
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Review Only-All Department Verification")
+	public void reviewonlyalldepartment() //throws SQLException, IOException, AWTException, ParseException  //
+	{
+		
+		if(gapScanArtpreCount2==-1)
+		{
+		MCcount =MCcount+3;
+		}
+		TestStatus status = getTestStatus();
+	try{
+		waitFor(1);
+		navToGapscan(status);
+		String convdate= common.ConvertdateFormatWithoutHiphen();
+		
+		
+		String indiv_UomArticle_sql = data.getText("alldept");// Action
+		indiv_UomArticle_sql= indiv_UomArticle_sql.replaceFirst("todaysdate",convdate);
+		List<List<Object>> results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+
+		String indiv_UomArticle_sql1 = data.getText("alldeptam");// Action
+		indiv_UomArticle_sql1= indiv_UomArticle_sql1.replaceFirst("todaysdate",convdate);
+		List<List<Object>> results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+
+		String indiv_UomArticle_sql2 = data.getText("alldeptpm");// Action
+		indiv_UomArticle_sql2= indiv_UomArticle_sql2.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultspm = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+
+		//AllDept
+		replacenullToZero(results);
+		removeExtraSpaces(results,1);
+		removeExtraSpaces(results,4);
+		gsrPage.removesixzero(results,8);
+		gsrPage.removetriplezero(results,15);
+		gsrPage.removetriplezero(results,16);
+		gsrPage.replaceonetostar(results,13);
+		gsrPage.replaceNo(results,14);
+		gsrPage.replaceYes(results,14);
+		
+		//AllDeptAm
+		replacenullToZero(results1);
+		removeExtraSpaces(results1,1);
+		removeExtraSpaces(results1,4);
+		gsrPage.removesixzero(results1,8);
+		gsrPage.removetriplezero(results1,15);
+		gsrPage.removetriplezero(results1,16);
+		gsrPage.replaceonetostar(results1,13);
+		gsrPage.replaceNo(results1,14);
+		gsrPage.replaceYes(results1,14);
+
+		//AllDeptPm
+		replacenullToZero(resultspm);
+		removeExtraSpaces(resultspm,1);
+		removeExtraSpaces(resultspm,4);
+		gsrPage.removesixzero(resultspm,8);
+		gsrPage.removetriplezero(resultspm,15);
+		gsrPage.removetriplezero(resultspm,16);
+		gsrPage.replaceonetostar(resultspm,13);
+		gsrPage.replaceNo(resultspm,14);
+		gsrPage.replaceYes(resultspm,14);
+		
+		gsrPage.gapscannewreviewonly(gsrobject,results,results1,resultspm,driver);//##fail
+
+		waitFor(1);
+		verticalinternalscroll(gsrobject.backbutton, driver);
+		click(gsrobject.backbutton);
+		waitFor(5);
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(gapScanArtScenarios, gapScanArttestname,driver));
+
+	}catch(Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+	}
+	status.assertAll();
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Both-All Department Verification")
+	public void bothalldepartment() //throws SQLException, IOException, AWTException, ParseException  //
+	{
+		
+			if(gapScanArtpreCount2==-1)
+			{
+			MCcount =MCcount+3;
+			}
+			TestStatus status = getTestStatus();
+	try{
+		
+		waitFor(1);
+		navToGapscan(status);
+		
+		String convdate= common.ConvertdateFormatWithoutHiphen();
+		
+		//gsrPage.gapscanactionreviewboth(gsrobject);
+		
+		String indiv_UomArticle_sql = data.getText("alldept");
+		indiv_UomArticle_sql= indiv_UomArticle_sql.replaceFirst("todaysdate",convdate);
+		List<List<Object>> results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		String indiv_UomArticle_sql1 = data.getText("alldeptam");// Action
+		
+		indiv_UomArticle_sql1= indiv_UomArticle_sql1.replaceFirst("todaysdate",convdate);
+		List<List<Object>> results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+		String indiv_UomArticle_sql2 = data.getText("alldeptpm");// Action
+		
+		indiv_UomArticle_sql2= indiv_UomArticle_sql2.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultspm = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+		
+		replacenullToZero(results);
+		removeExtraSpaces(results,1);
+		removeExtraSpaces(results,4);
+		gsrPage.removesixzero(results,8);
+		gsrPage.removetriplezero(results,15);
+		gsrPage.removetriplezero(results,16);
+		gsrPage.replaceonetostar(results,13);
+		gsrPage.replaceNo(results,14);
+		gsrPage.replaceYes(results,14);
+		//results->[[337153, Bread Roll Cheese 4pk, 1, NON PI ITEM, ITEM IS NOT PERPETUAL ITEM, A, 0, 0, 0, 0, 0, 0, 0, *, No, 0, 0, 0, 0, 0, EA, Non PI Article - Not an AutoStockR line, verify and remove ticket if required, 0]
+		replacenullToZero(results1);
+		removeExtraSpaces(results1,1);
+		removeExtraSpaces(results1,4);
+		gsrPage.removesixzero(results1,8);
+		gsrPage.removetriplezero(results1,15);
+		gsrPage.removetriplezero(results1,16);
+		gsrPage.replaceonetostar(results1,13);
+		gsrPage.replaceNo(results1,14);
+		gsrPage.replaceYes(results1,14);
+		//results1->[]
+		
+		replacenullToZero(resultspm);
+		removeExtraSpaces(resultspm,1);
+		removeExtraSpaces(resultspm,4);
+		gsrPage.removesixzero(resultspm,8);
+		gsrPage.removetriplezero(resultspm,15);
+		gsrPage.removetriplezero(resultspm,16);
+		gsrPage.replaceonetostar(resultspm,13);
+		gsrPage.replaceNo(resultspm,14);
+		gsrPage.replaceYes(resultspm,14);
+		
+		gsrPage.gapscanactionreviewboth(gsrobject,results,resultspm,results1,driver);
+		waitFor(1);
+		
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(gapScanArtScenarios, gapScanArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Action Required-Partial Department Verification")
+	public void actionrequiredpartialdepartment() // throws SQLException, IOException, AWTException, ParseException  //
+	{
+			if(gapScanArtpreCount2==-1)
+			{
+			MCcount =MCcount+2;
+			}
+			TestStatus status = getTestStatus();
+	try{
+		
+		waitFor(1);
+		navToGapscan(status);
+		
+		List<String> dropdownList = gsrPage.gapscanactionrequiredpartial1(gsrobject,driver);
+		
+		int count=0;
+		StringBuilder deptLists=new StringBuilder();
+		for(String splitValue:dropdownList){
+			deptLists.append("'");
+			deptLists.append(splitValue);
+			deptLists.append("'");
+		count++;
+		if(count!=dropdownList.size()){
+			deptLists.append(",");
+		}
+		}
+		deptLists.toString();
+		/*String dept1 = dropdownList.get(0);
+		String dept2 = dropdownList.get(1);
+		String dept3 = dropdownList.get(2);*/
+		
+		String convdate= common.ConvertdateFormatWithoutHiphen();
+		
+		String deptCode = data.getText("deptcode");
+		deptCode= deptCode.replace("departmentFromList", deptLists);
+	/*	deptCode= deptCode.replace("dept2", dept2);
+		deptCode= deptCode.replace("dept3", dept3);*/
+		List<String> deptcodes = sql.executeQueryList(getContext(),deptCode);
+		String deptLists1 = String.join(",", deptcodes);
+		/*String dept11 = deptcodes.get(0);
+		String dept12 = deptcodes.get(1);
+		String dept13 = deptcodes.get(2);*/
+		
+		String indiv_UomArticle_sql = data.getText("alldeptboth");// Action
+		indiv_UomArticle_sql= indiv_UomArticle_sql.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql= indiv_UomArticle_sql.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultsboth = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		
+		String indiv_UomArticle_sql1 = data.getText("alldeptam");// Action
+		indiv_UomArticle_sql1= indiv_UomArticle_sql1.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql1= indiv_UomArticle_sql1.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultsam = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+		
+		String indiv_UomArticle_sql2 = data.getText("alldeptpm");// Action
+		indiv_UomArticle_sql2= indiv_UomArticle_sql2.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql2= indiv_UomArticle_sql2.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultspm = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+		
+		
+		replacenullToZero(resultsboth);
+		removeExtraSpaces(resultsboth,1);
+		removeExtraSpaces(resultsboth,4);
+		gsrPage.removesixzero(resultsboth,8);
+		gsrPage.removetriplezero(resultsboth,15);
+		gsrPage.removetriplezero(resultsboth,16);
+		gsrPage.replaceonetostar(resultsboth,13);
+		gsrPage.replaceNo(resultsboth,14);
+		gsrPage.replaceYes(resultsboth,14);
+
+		replacenullToZero(resultsam);
+		removeExtraSpaces(resultsam,1);
+		removeExtraSpaces(resultsam,4);
+		gsrPage.removesixzero(resultsam,8);
+		gsrPage.removetriplezero(resultsam,15);
+		gsrPage.removetriplezero(resultsam,16);
+		gsrPage.replaceonetostar(resultsam,13);
+		gsrPage.replaceNo(resultsam,14);
+		gsrPage.replaceYes(resultsam,14);
+		
+		
+		replacenullToZero(resultspm);
+		removeExtraSpaces(resultspm,1);
+		removeExtraSpaces(resultspm,4);
+		gsrPage.removesixzero(resultspm,8);
+		gsrPage.removetriplezero(resultspm,15);
+		gsrPage.removetriplezero(resultspm,16);
+		gsrPage.replaceonetostar(resultspm,13);
+		gsrPage.replaceNo(resultspm,14);
+		gsrPage.replaceYes(resultspm,14);
+
+		gsrPage.gapscanactionrequiredpartial(gsrobject,resultsboth,resultsam,resultspm,driver);
+
+//		click(gsrobject.backbutton);
+		log.info("-----------------Logout from Application------------------");
+		//loginPage.logoutFromAppl(gapScanArtScenarios, gapScanArttestname,driver);
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(gapScanArtScenarios, gapScanArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Review only-Partial Department Verification")
+	public void reviewonlypartialdepartment() //throws SQLException, IOException, AWTException, ParseException  //
+	{
+			if(gapScanArtpreCount2==-1)
+			{
+			MCcount =MCcount+2;
+			}
+			TestStatus status = getTestStatus();
+	try{
+		waitFor(1);
+		navToGapscan(status);
+		List<String> dropdownList = gsrPage.gapscanactionrequiredpartial1(gsrobject,driver);
+		
+		String dept1 = dropdownList.get(0);
+		String dept2 = dropdownList.get(1);
+		String dept3 = dropdownList.get(2);
+		
+		String convdate= common.ConvertdateFormatWithoutHiphen();// Action
+		
+		String deptCode = data.getText("deptcode");
+		deptCode= deptCode.replace("dept1", dept1);
+		deptCode= deptCode.replace("dept2", dept2);
+		deptCode= deptCode.replace("dept3", dept3);
+		List<String> deptcodes = sql.executeQueryList(getContext(),deptCode);
+		String deptLists1 = String.join(",", deptcodes);
+		/*String dept11 = deptcodes.get(0);
+		String dept12 = deptcodes.get(1);
+		String dept13 = deptcodes.get(2);*/
+		
+		String indiv_UomArticle_sql = data.getText("alldeptboth");
+		indiv_UomArticle_sql= indiv_UomArticle_sql.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql= indiv_UomArticle_sql.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultsboth = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		
+		String indiv_UomArticle_sql1 = data.getText("alldeptam");// Action\
+		indiv_UomArticle_sql1= indiv_UomArticle_sql1.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql1= indiv_UomArticle_sql1.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultsam = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+		
+		String indiv_UomArticle_sql2 = data.getText("alldeptpm");// Action
+		indiv_UomArticle_sql2= indiv_UomArticle_sql2.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql2= indiv_UomArticle_sql2.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultspm = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+		
+		
+		replacenullToZero(resultsboth);
+		removeExtraSpaces(resultsboth,1);
+		removeExtraSpaces(resultsboth,4);
+		gsrPage.removesixzero(resultsboth,8);
+		gsrPage.removetriplezero(resultsboth,15);
+		gsrPage.removetriplezero(resultsboth,16);
+		gsrPage.replaceonetostar(resultsboth,13);
+		gsrPage.replaceNo(resultsboth,14);
+		gsrPage.replaceYes(resultsboth,14);
+		
+		replacenullToZero(resultsam);
+		removeExtraSpaces(resultsam,1);
+		removeExtraSpaces(resultsam,4);
+		gsrPage.removesixzero(resultsam,8);
+		gsrPage.removetriplezero(resultsam,15);
+		gsrPage.removetriplezero(resultsam,16);
+		gsrPage.replaceonetostar(resultsam,13);
+		gsrPage.replaceNo(resultsam,14);
+		gsrPage.replaceYes(resultsam,14);
+		
+		
+		replacenullToZero(resultspm);
+		removeExtraSpaces(resultspm,1);
+		removeExtraSpaces(resultspm,4);
+		gsrPage.removesixzero(resultspm,8);
+		gsrPage.removetriplezero(resultspm,15);
+		gsrPage.removetriplezero(resultspm,16);
+		gsrPage.replaceonetostar(resultspm,13);
+		gsrPage.replaceNo(resultspm,14);
+		gsrPage.replaceYes(resultspm,14);
+
+
+		gsrPage.gapscanreviewonlypartial(gsrobject,resultsboth,resultsam,resultspm,driver);
+		waitFor(1);
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(gapScanArtScenarios, gapScanArttestname,driver));
+		htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}
+	status.assertAll();
+
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Both-Partial Department Verification")//##1
+	public void bothpartialdepartment() // throws SQLException, IOException, AWTException, ParseException  //
+	{
+			if(gapScanArtpreCount2==-1)
+			{
+			MCcount =MCcount+2;
+			}
+			TestStatus status = getTestStatus();
+	try{
+		
+		waitFor(1);
+		navToGapscan(status);
+		List<String> dropdownList = gsrPage.gapscanactionrequiredpartial1(gsrobject,driver);
+		
+		String dept1 = dropdownList.get(0);
+		String dept2 = dropdownList.get(1);
+		String dept3 = dropdownList.get(2);
+		
+		String convdate= common.ConvertdateFormatWithoutHiphen();
+		System.out.println(convdate);
+		
+		String deptCode = data.getText("deptcode");
+		deptCode= deptCode.replace("dept1", dept1);
+		deptCode= deptCode.replace("dept2", dept2);
+		deptCode= deptCode.replace("dept3", dept3);
+		List<String> deptcodes = sql.executeQueryList(getContext(),deptCode);
+		String deptLists1 = String.join(",", deptcodes);
+		/*String dept11 = deptcodes.get(0);
+		String dept12 = deptcodes.get(1);
+		String dept13 = deptcodes.get(2);*/
+		
+        String indiv_UomArticle_sql = data.getText("alldeptboth");
+        indiv_UomArticle_sql= indiv_UomArticle_sql.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql= indiv_UomArticle_sql.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultsboth = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		
+		String indiv_UomArticle_sql1 = data.getText("alldeptam");// Action\
+		indiv_UomArticle_sql1= indiv_UomArticle_sql1.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql1= indiv_UomArticle_sql1.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultsam = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+		
+		
+		String indiv_UomArticle_sql2 = data.getText("alldeptpm");// Action
+		indiv_UomArticle_sql2= indiv_UomArticle_sql2.replace("departmentsfromlist",deptLists1);
+		indiv_UomArticle_sql2= indiv_UomArticle_sql2.replaceFirst("todaysdate",convdate);
+		List<List<Object>> resultspm = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+		
+		
+		replacenullToZero(resultsboth);
+		removeExtraSpaces(resultsboth,1);
+		removeExtraSpaces(resultsboth,4);
+		gsrPage.removesixzero(resultsboth,8);
+		gsrPage.removetriplezero(resultsboth,15);
+		gsrPage.removetriplezero(resultsboth,16);
+		gsrPage.replaceonetostar(resultsboth,13);
+		gsrPage.replaceNo(resultsboth,14);
+		gsrPage.replaceYes(resultsboth,14);
+		System.out.println(resultsboth);
+		gsrPage.removetriplezero(resultsboth,7);
+		System.out.println(resultsboth);
+		roundOff(resultsboth, 7, 1);
+		
+		
+		replacenullToZero(resultsam);
+		removeExtraSpaces(resultsam,1);
+		removeExtraSpaces(resultsam,4);
+		gsrPage.removesixzero(resultsam,8);
+		gsrPage.removetriplezero(resultsam,15);
+		gsrPage.removetriplezero(resultsam,16);
+		gsrPage.replaceonetostar(resultsam,13);
+		gsrPage.replaceNo(resultsam,14);
+		gsrPage.replaceYes(resultsam,14);
+//		gsrPage.removetriplezero(resultsam,7);
+		roundOff(resultsam, 7, 1);
+		
+		replacenullToZero(resultspm);
+		removeExtraSpaces(resultspm,1);
+		removeExtraSpaces(resultspm,4);
+		gsrPage.removesixzero(resultspm,8);
+		gsrPage.removetriplezero(resultspm,15);
+		gsrPage.removetriplezero(resultspm,16);
+		gsrPage.replaceonetostar(resultspm,13);
+		gsrPage.replaceNo(resultspm,14);
+		gsrPage.replaceYes(resultspm,14);
+//		gsrPage.removetriplezero(resultspm,7);
+		roundOff(resultspm, 7, 1);
+		
+		gsrPage.gapscanbothpartial(gsrobject, resultsam, resultspm, resultsboth,driver);
+
+		waitFor(1);
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(gapScanArtScenarios, gapScanArttestname,driver));
+		
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}
+	status.assertAll();
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Both-Primary Department Verification")
+	public void bothprimarydepartment() //throws SQLException, IOException, AWTException, ParseException  //
+	{
+		
+			if(gapScanArtpreCount2==-1)
+			{
+			MCcount =MCcount+2;
+			}
+			TestStatus status = getTestStatus();
+	try{
+		
+		waitFor(1);
+		navToGapscan(status);
+		
+		//Srivinith
+		
+		List<List<Object>> results = null;
+		List<List<Object>> results1 = null;
+		List<List<Object>> resultspm = null;
+		String convdate= common.ConvertdateFormatWithoutHiphen();
+		List<String>departmentLists = gsrPage.primarydepartment(gsrobject,driver);
+		String deptLists = String.join(",", departmentLists);
+	    
+	    if(deptLists.contains("All")){
+	    	
+			String indiv_UomArticle_sql = data.getText("alldept");// Action
+			indiv_UomArticle_sql= indiv_UomArticle_sql.replace("departmentsfromlist","ALL");
+			indiv_UomArticle_sql= indiv_UomArticle_sql.replaceFirst("todaysdate",convdate);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			
+			String indiv_UomArticle_sql1 = data.getText("alldeptam");// Action
+			indiv_UomArticle_sql1= indiv_UomArticle_sql1.replace("departmentsfromlist","ALL");
+			indiv_UomArticle_sql1= indiv_UomArticle_sql1.replaceFirst("todaysdate",convdate);
+			results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			
+			String indiv_UomArticle_sql2 = data.getText("alldeptpm");// Action
+			indiv_UomArticle_sql2= indiv_UomArticle_sql2.replace("departmentsfromlist","ALL");
+			indiv_UomArticle_sql2= indiv_UomArticle_sql2.replaceFirst("todaysdate",convdate);
+			resultspm = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+	    }
+	    else{
+	    	int count=0;
+			StringBuilder deptLists1=new StringBuilder();
+			for(String splitValue:departmentLists){
+				deptLists1.append("'");
+				deptLists1.append(splitValue);
+				deptLists1.append("'");
+			count++;
+			if(count!=departmentLists.size()){
+				deptLists1.append(",");
+			}
+			}
+			deptLists1.toString();
+			
+	    	String deptCode = data.getText("deptcode");
+	    	deptCode = deptCode.replace("departmentsfromlist",deptLists1);
+			List<String> deptcodes = sql.executeQueryList(getContext(),deptCode);
+			String deptLists2 = String.join(",", deptcodes);
+	    	
+	    	String indiv_UomArticle_sql = data.getText("alldept");// Action
+	    	indiv_UomArticle_sql= indiv_UomArticle_sql.replace("departmentsfromlist",deptLists2);
+			indiv_UomArticle_sql= indiv_UomArticle_sql.replaceFirst("todaysdate",convdate);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			
+			String indiv_UomArticle_sql1 = data.getText("alldeptam");// Action
+			indiv_UomArticle_sql1= indiv_UomArticle_sql1.replace("departmentsfromlist",deptLists2);
+			indiv_UomArticle_sql1= indiv_UomArticle_sql1.replaceFirst("todaysdate",convdate);
+			results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			
+			String indiv_UomArticle_sql2 = data.getText("alldeptpm");// Action
+			indiv_UomArticle_sql2= indiv_UomArticle_sql2.replace("departmentsfromlist",deptLists2);
+			indiv_UomArticle_sql2= indiv_UomArticle_sql2.replaceFirst("todaysdate",convdate);
+			resultspm = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+	    	
+	    }
+		
+		//AllDept
+		replacenullToZero(results);
+		removeExtraSpaces(results,1);
+		removeExtraSpaces(results,4);
+		gsrPage.removesixzero(results,8);
+		gsrPage.removetriplezero(results,15);
+		gsrPage.removetriplezero(results,16);
+		gsrPage.replaceonetostar(results,13);
+		gsrPage.replaceNo(results,14);
+		gsrPage.replaceYes(results,14);
+		
+		replacenullToZero(results1);
+		removeExtraSpaces(results1,1);
+		removeExtraSpaces(results1,4);
+		gsrPage.removesixzero(results1,8);
+		gsrPage.removetriplezero(results1,15);
+		gsrPage.removetriplezero(results1,16);
+		gsrPage.replaceonetostar(results1,13);
+		gsrPage.replaceNo(results1,14);
+		gsrPage.replaceYes(results1,14);
+
+		replacenullToZero(resultspm);
+		removeExtraSpaces(resultspm,1);
+		removeExtraSpaces(resultspm,4);
+		gsrPage.removesixzero(resultspm,8);
+		gsrPage.removetriplezero(resultspm,15);
+		gsrPage.removetriplezero(resultspm,16);
+		gsrPage.replaceonetostar(resultspm,13);
+		gsrPage.replaceNo(resultspm,14);
+		gsrPage.replaceYes(resultspm,14);
+		
+		gsrPage.gapscannewbothprimarydepartmentactionrequired(gsrobject,results,results1,resultspm,driver);
+
+		/*gsrPage.gapscanprimary(gsrobject,driver);
+		//gsrPage.gapscanbothpartial(gsrobject);
+*/
+		waitFor(1);
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(gapScanArtScenarios, gapScanArttestname,driver));
+
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	public void navToGapscan(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		if(System.getProperty("store")==null){
+			StoreNo = getContext().getStringProperty("store");//store=3064
+
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : " + getContext().getStringProperty("store"),"","", "Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			gsrPage = loginPage.navToGapscan(getContext().getStringProperty("store"),driver);
+		}else{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store :  + store;;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : " + store,"","", "Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store);
+			gsrPage = loginPage.navToGapscan(store,driver);
+		}
+
+		log.info("-------------Navigate to Routines Page------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to Routines Page--------------------;;;Pass");
+
+		//Report_AddStep("testcase", "----------------Navigate to Routines Page--------------------","","", "Pass");
+		gsrPage.clickOnGapscanReport(gsrobject,driver);
+	}
+
+
+	/*@BeforeMethod
+||||||| .r10687
+	
+	@BeforeMethod
+=======
+	
+	/*@BeforeMethod
+>>>>est(m9.getName().toString().trim());
+     			}
+
+
+			if(TestContext.getStringProperty("isDocketRun").equalsIgnoreCase("true")){
+				 driver.remove();
+				}
+
+		log.info("Loading Testdata for the test case: " + m.getName().toString());
+		data.getTCNameFromChildren(m.getName().toString().trim());
+		createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser"));
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		moduledesc = m.getName().toString().trim();
+		dtmoduledesc = m.getAnnotation(Test.class).description();
+		testcasesttime = new Date();
+		//objArticleLookup = PageFactory.initElements(this.driver, ArticleLookUpObjects.class);
+		gsrobject  = PageFactory.initElements(this.driver, GapscanReportObjects.class);
+		gsrPage = PageFactory.initElements(this.driver, GapscanReportPage.class);
+		//objArticleDetail = PageFactory.initElements(this.driver, ArticleDetailsObjects.class);	
+
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+
+
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy_hmmss");
+		String formattedDate = sdf.format(date);
+		//System.out.println(formattedDate); // 12/01/2011 4:48:16 PM
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String formattedDate1 = dateFormat.format(date);
+		//System.out.println(formattedDate1); // 12/01/2011 4:48:16 PM
+		String dat = formattedDate1;
+		Report_Header("testcase", reportPath , moduledesc, dat);
+
+	}
+
+	@BeforeClass
+	public void loadXMLFile(){	
+		//initializeTestcontext();
+		//System.out.println("test1 - Beforeclass");
+cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\GAPSCANREPORT.xml");
+		customreport.createExtentReport();
+<<<<<<< .mine
+	}*/
+
+	
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		waitFor(2);
+		initializeTestcontext();
+		System.out.println("test1 - beforemethod");
+mName=m9.getName().toString().trim();			
+     			if(!methodList.contains(m9.getName().toString().trim())){
+     			methodList.add(m9.getName().toString().trim());
+     			extLogger = extReport.startTest(m9.getName().toString().trim());
+     			}
+
+
+     		
+
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		}else{
+			String title = driver.getCurrentUrl();
+			if(title.contains("logginOut"))
+			{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+			}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+						WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+						scrolltoElement(home,driver);
+						home.click();
+						TimeUnit.SECONDS.sleep(5);
+						loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+						driver.navigate().refresh();
+						TimeUnit.SECONDS.sleep(5);}
+				}
+			}
+		}
+			isFirstTest=false;
+			//driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+						
+		setDriver(driver);
+		
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		gapScanArttestname = m9.getName().toString().trim();
+		gapScanArttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		gsrobject  = PageFactory.initElements(this.driver, GapscanReportObjects.class);
+		gsrPage = PageFactory.initElements(this.driver, GapscanReportPage.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+	}
+
+	@BeforeClass
+	public void loadXMLFile(){	
+		
+		//initializeTestcontext();
+		System.out.println("test1 - Beforeclass");
+cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\GAPSCANREPORT.xml");
+		customreport.createExtentReport();
+	}
+
+
+
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitFor(1);
+		System.out.println("afterclass");
+sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(), MCcount);
+		//System.out.println(extentList);
+		//System.out.println(methodList);
+        extReport.endTest(extLogger);
+		extReport.flush();
+		removeDriver();
+		closeDriver(driver);		
+		waitFor(1);
+		moduleName.put("Modules", gapScanArtModules);
+		waitFor(1);
+		int OEArtM=MCcount;
+		gapScanArtMC=""+OEArtM;
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+		System.out.println("AffterMethod");
+extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				//System.out.println();
+			
+			}
+		waitFor(1);
+		/*Date ppMEndDate1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		gapScanArtMEndDate = dateFormat.format(ppMEndDate1);
+		//System.out.println(gapScanArtMEndDate); // 12/01/2011 4:48:16 PM
+		String EnhancedArtTime = gapScanArttestdesc +";"+ gapScanArtStartdat +";" + gapScanArtMEndDate;
+
+		gapScanArtTime.put(gapScanArttestname, EnhancedArtTime);
+		//Report_AddStep("testcase", "Running Completed Status","","", getResultStatusName(result.getStatus()));
+		waitFor(4);
+		closeDriver(driver);*/
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")){
+			int cnt = gapScanArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			gapScanArtpreCount2++;
+		}
+	/*	waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail") && gapScanArtpreCount2!=reCount){
+			waitFor(1);
+			gapScanArtTime.removeAll(gapScanArttestname);
+			waitFor(1);
+			gapScanArtScenarios.removeAll(gapScanArttestname);
+		}
+		waitFor(1);*/
+		if(gapScanArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+			gapScanArtpreCount2=-1;
+		}
+		
+
+	}
+}//##
+

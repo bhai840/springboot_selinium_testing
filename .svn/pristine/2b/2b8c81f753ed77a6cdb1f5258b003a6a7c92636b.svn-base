@@ -1,0 +1,2339 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.OrderCreationObjects;
+import au.wow.ngbomain.objects.OrderUpdationObject;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.OrderCreationPage;
+import au.wow.ngbomain.pages.OrderUpdationPage;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+public class OrderCreationTests extends TestBase{
+
+	private Logger log = LogManager.getLogger(OrderCreationTests.class);
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	OrderCreationPage objOrderCreatePage;
+	OrderCreationObjects objOrderCreateObject;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;			
+	List<List<Object>> result;
+	List<List<Object>> result_comp;
+	List<List<Object>> result_temp;
+	public static WebDriver driver;
+	public static XMLDataReader data;
+	
+	
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+	public static boolean isFirstTest=true;
+	
+	int count=0;		
+	int MCcount=0;
+		
+	public OrderCreationTests(){
+		super.log=log;
+	}
+	
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Emergeny PREQ Creation for Vendor Supplied articles")
+	public void emergencyPREQ_VendorArticle()
+	{
+		
+		ArrayList<String> articleNumber = new ArrayList<String>();
+		
+		if(orderCreateArtpreCount2==-1)
+		{
+			MCcount =MCcount+10;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = new Date();
+			String deliverydate = dateFormat.format(date);
+			System.out.println(dateFormat.format(date));
+			
+			
+			objOrderCreateObject.createOrder.click();		
+			objOrderCreateObject.addArticleBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "*****Deleting articles from draft if any added to todays date*****;;;Info");
+			objOrderCreatePage.delCreatedOrderOfSameDate(objOrderCreateObject, dateFormat.format(date), driver);
+			
+//			String supplierFROMdb = data.getText("supplier");
+//			result = sql.executeQuery(getContext(), supplierFROMdb);
+//			String supplier = result.get(ThreadLocalRandom.current().nextInt(0,result.size())).get(0).toString();
+			
+			String supplier = data.getText("suppliers");
+			
+			String rosterCheck = data.getText("rosterdate").replace("supplier", supplier);
+			result = sql.executeQuery(getContext(), rosterCheck);
+			
+			if(result.size()>0){
+				htmlToExtent(cName,mName,extLogger,driver, "Roster is available for the given supplier "+supplier+";;;Fail");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "No Roster date is available for the given supplier "+supplier+";;;Pass");
+			}
+			
+			result.clear();
+			
+//			String articlenum = data.getText("article").replace("isPBD", "N").replace("supplier", supplier);
+//			result = sql.executeQuery(getContext(), articlenum);
+//			
+//			if(result.size()>0){
+//				int rand = randGenerator(result.size());
+//				articleNumber.add(result.get(rand).get(0).toString());
+//				int rand1 = randGenerator(result.size());
+//				articleNumber.add(result.get(rand1).get(0).toString());
+//			}
+//			
+//			result.clear();
+//			
+	/*		String PBDarticlenum = data.getText("article").replace("isPBD", "Y").replace("supplier", supplier);
+			result = sql.executeQuery(getContext(), PBDarticlenum);
+			
+			if(result.size()>0){
+				int rand3 = randGenerator(result.size());
+				articleNumber.add(result.get(rand3).get(0).toString());
+			}
+			result.clear();
+			
+			String randarticlenum = data.getText("randArticle").replace("supplier", supplier);
+			result = sql.executeQuery(getContext(), randarticlenum);
+			
+			if(result.size()>0){
+				int rand4 = randGenerator(result.size());
+				articleNumber.add(result.get(rand4).get(0).toString());
+			}
+		*/	
+			
+			String articlenum = data.getText("articles");
+			
+			String art[] = articlenum.split(",");
+
+			for(String s : art){
+
+				articleNumber.add(s);
+				System.out.println("::::"+s);
+			}
+			
+			
+			List<List<Object>> artQuantity = new ArrayList<List<Object>>();
+			htmlToExtent(cName,mName,extLogger,driver, "*****Adding articles to draft*****;;;Info");
+			for(int i=0;i<articleNumber.size();i++){
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.articleSend.sendKeys(articleNumber.get(i));
+				String randQty = Integer.toString(ThreadLocalRandom.current().nextInt(1,7)+1);
+				objOrderCreateObject.orderQty.sendKeys(randQty);
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Article #"+articleNumber.get(i)+" of quantity "+randQty+" is added to draft;;;Pass");
+				
+				String temp = articleNumber.get(i)+":"+randQty;
+				artQuantity.addAll(StringToListCreation(temp));
+												
+				objOrderCreateObject.delDate.sendKeys(dateFormat.format(date));
+				objOrderCreateObject.createOrder.click();
+				waitFor(1);
+				objOrderCreateObject.searchBtn.click();
+				
+				
+				try{
+					waitForElement(objOrderCreateObject.createOrderPopUp, driver);
+					objOrderCreateObject.createOrderPopUp.isDisplayed();
+					objOrderCreateObject.noBtn.click();
+				}
+				catch(Exception e){
+					
+				}
+				
+				objOrderCreateObject.articleSend.clear();
+			}
+			
+			System.out.println(articleNumber);
+			
+			objOrderCreatePage.openingOrderDraft(objOrderCreateObject,  dateFormat.format(date),artQuantity,articleNumber,false, driver);
+			htmlToExtent(cName,mName,extLogger,driver, "*****Verifing the Draft Order*****;;;Info");
+			
+			try{
+				objOrderCreateObject.rosterpopup.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, ""+objOrderCreateObject.rosterMessage.getText()+";;;Pass");
+				//htmlToExtent(cName,mName,extLogger,driver, "Selecting emergency from the No Roster PopUp Message;;;Pass");
+				//objOrderCreateObject.emergencyRadio.click();
+				if(objOrderCreateObject.emergencyCheckBox.isSelected()){
+					htmlToExtent(cName,mName,extLogger,driver, "Emergency check box is selected by default;;;Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Emergency check box is not selected by default;;;Fail");
+				}
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.proceedToCreateRoster.click();
+				waitForJSandJQueryToLoad(driver);
+				if(objOrderCreateObject.status.getText().trim().equals("Verified")){
+					htmlToExtent(cName,mName,extLogger,driver, "After verifing the draft status been updated as verified;;;Pass");
+					
+					htmlToExtent(cName,mName,extLogger,driver, "*****Checking delivery date for each article in draft*****;;;Info");
+					objOrderCreatePage.checkDeliveryDate(objOrderCreateObject,deliverydate.replace("/", ""), deliverydate, "current",driver);
+					
+					objOrderCreatePage.createBtn(objOrderCreateObject, driver);
+					waitForJSandJQueryToLoad(driver);
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Status not been updated as verified;;;Fail");
+				}
+				
+				
+			try{
+				waitForElement(objOrderCreateObject.successMsg, driver);
+				objOrderCreateObject.successMsg.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, objOrderCreateObject.successMsg.getText()+";;;Pass");
+				String ordNum =  objOrderCreateObject.successMsg.getText().replaceAll("[^\\d]", "");
+				objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+				objOrderCreateObject.orderNoSend.sendKeys(ordNum);
+				objOrderCreateObject.goBtn.click();
+				waitForJSandJQueryToLoad(driver);
+				if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+					htmlToExtent(cName,mName,extLogger,driver, "Order is in submitted status;;;Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Order status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+				}
+				
+			}
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "Order Created Success Message is not displayed;;;Fail");
+			}
+				
+
+			}
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "No popup has been displayed when no roster is available;;;Fail");
+			}
+			
+	
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderCreateArtScenarios,orderCreateArttestname,driver));
+			status.assertAll();
+			
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Manual PREQ Creation for Vendor Supplied articles With Roster")
+	public void manualPREQVendorArticle_WithRoster()
+	{
+		
+		ArrayList<String> articleNumber = new ArrayList<String>();
+		//ArrayList<String> articlelist = new ArrayList<String>();
+		
+		if(orderCreateArtpreCount2==-1)
+		{
+			MCcount =MCcount+10;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = new Date();
+			String deliverydate = dateFormat.format(date);
+			System.out.println(dateFormat.format(date));
+			
+			
+			objOrderCreateObject.createOrder.click();		
+			objOrderCreateObject.addArticleBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "*****Deleting articles from draft if any added to todays date*****;;;Info");
+			objOrderCreatePage.delCreatedOrderOfSameDate(objOrderCreateObject, dateFormat.format(date), driver);
+			
+//			String supplierfromDB = data.getText("supplier");
+//			result = sql.executeQuery(getContext(), supplierfromDB);
+//			String supplier = result.get(ThreadLocalRandom.current().nextInt(0,result.size())).get(4).toString();
+			String supplier = data.getText("suppliers");
+			htmlToExtent(cName,mName,extLogger,driver, "Supplier selected as "+supplier+";;;Pass");
+
+	
+			//Article from DB
+//			String articlenum = data.getText("article").replace("supplier",supplier);
+//			result = sql.executeQuery(getContext(), articlenum);
+			List<List<Object>> artResult = new ArrayList<List<Object>>();
+			String articlenum = data.getText("articles");
+			
+			String art[] = articlenum.split(",");
+
+			for(String s : art){
+
+				articleNumber.add(s);
+				artResult.addAll(StringToListCreation(s));
+				System.out.println("::::"+s);
+			}
+//			
+			
+			
+//			for(int i=0;i<5;i++){
+//				int rand = randGenerator(result.size());
+//				articleNumber.add(result.get(rand).get(0).toString());
+//			}
+			
+			List<List<Object>> artQuantity = new ArrayList<List<Object>>();
+			htmlToExtent(cName,mName,extLogger,driver, "*****Adding articles to draft*****;;;Info");
+			for(int i=0;i<articleNumber.size();i++){
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.articleSend.sendKeys(articleNumber.get(i));
+				String randQty = Integer.toString(ThreadLocalRandom.current().nextInt(1,7)+1);
+				objOrderCreateObject.orderQty.sendKeys(randQty);
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Article #"+articleNumber.get(i)+" of quantity "+randQty+" is added to draft;;;Pass");
+				
+				String temp = articleNumber.get(i)+":"+randQty;
+				artQuantity.addAll(StringToListCreation(temp));
+												
+				objOrderCreateObject.delDate.sendKeys(dateFormat.format(date));
+				objOrderCreateObject.createOrder.click();
+				waitFor(1);
+				objOrderCreateObject.searchBtn.click();
+				objOrderCreatePage.pbdArticleSelection(objOrderCreateObject, driver);
+				
+				try{
+					waitForElement(objOrderCreateObject.createOrderPopUp, driver);
+					objOrderCreateObject.createOrderPopUp.isDisplayed();
+					objOrderCreateObject.noBtn.click();
+				}
+				catch(Exception e){
+					
+				}
+				
+				objOrderCreateObject.articleSend.clear();
+			}
+			
+			System.out.println(articleNumber);
+			
+			objOrderCreatePage.openingOrderDraft(objOrderCreateObject,  dateFormat.format(date),artQuantity,articleNumber,false, driver);
+			htmlToExtent(cName,mName,extLogger,driver, "*****Verifing the Draft Order*****;;;Info");
+			
+			objOrderCreatePage.errorArticleDelete(objOrderCreateObject, supplier, driver);
+			
+			try{
+				objOrderCreateObject.rosterMessageManualPreq.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, ""+objOrderCreateObject.rosterMessageManualPreq.getText()+";;;Pass");
+				waitForJSandJQueryToLoad(driver);
+				if(objOrderCreateObject.availableRadio.isSelected()){
+					htmlToExtent(cName,mName,extLogger,driver, "Available radio button is selected by default;;;Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Available radio button is not selected by default,Selecting the option;;;Pass");
+					objOrderCreateObject.availableRadio.click();
+				}
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.proceedToCreateRoster.click();
+				waitForJSandJQueryToLoad(driver);
+				
+				objOrderCreatePage.articleDetailsCheck(objOrderCreateObject, deliverydate,artQuantity,artResult, driver);
+				
+				if(objOrderCreateObject.status.getText().trim().equals("Verified")){
+					htmlToExtent(cName,mName,extLogger,driver, "After verifing the draft status been updated as verified;;;Pass");
+					objOrderCreatePage.createBtn(objOrderCreateObject, driver);
+					waitForJSandJQueryToLoad(driver);
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Status not been updated as verified;;;Fail");
+				}
+
+			}
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "No popup has been displayed when no roster is available;;;Fail");
+			}
+			
+			try{
+				waitForElement(objOrderCreateObject.successMsg, driver);
+				objOrderCreateObject.successMsg.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, objOrderCreateObject.successMsg.getText()+";;;Pass");
+				String ordNum =  objOrderCreateObject.successMsg.getText().replaceAll("[^\\d,]", "");
+				objOrderCreateObject.successMsg.click();
+				//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+				if(ordNum.contains(",")){
+					//ArrayList<String> ordNumber = new ArrayList<String>();
+					String[] orderNumber = ordNum.split(",");
+					for(int i=0;i<orderNumber.length;i++){
+						objOrderCreateObject.orderNoSend.sendKeys(orderNumber[i]);
+						objOrderCreateObject.goBtn.click();
+						waitForJSandJQueryToLoad(driver);
+						if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" is in submitted status;;;Pass");
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+						}
+						//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+					}
+				}
+				else{
+					objOrderCreateObject.orderNoSend.sendKeys(ordNum);
+					objOrderCreateObject.goBtn.click();
+					waitForJSandJQueryToLoad(driver);
+					if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+						htmlToExtent(cName,mName,extLogger,driver, "Order is in submitted status;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, "Order status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+					}
+				}
+			}
+
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "Order Created Success Message is not displayed;;;Fail");
+			}
+	
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderCreateArtScenarios,orderCreateArttestname,driver));
+			status.assertAll();
+			
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Manual PREQ Creation for DC Supplied articles With Roster")
+	public void manualPREQDCArticle_WithRoster()
+	{
+		
+		ArrayList<String> articleNumber = new ArrayList<String>();
+		//ArrayList<String> articlelist = new ArrayList<String>();
+		
+		if(orderCreateArtpreCount2==-1)
+		{
+			MCcount =MCcount+12;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = new Date();
+			String deliverydate = dateFormat.format(date);
+			System.out.println(dateFormat.format(date));
+			
+			
+			objOrderCreateObject.createOrder.click();		
+			objOrderCreateObject.addArticleBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "*****Deleting articles from draft if any added to todays date*****;;;Info");
+			objOrderCreatePage.delCreatedOrderOfSameDate(objOrderCreateObject, dateFormat.format(date), driver);
+			
+//			String supplierfromDB = data.getText("supplier");
+//			result = sql.executeQuery(getContext(), supplierfromDB);
+//			String supplier = result.get(ThreadLocalRandom.current().nextInt(0,result.size())).get(4).toString();
+			String supplier = data.getText("suppliers");
+			htmlToExtent(cName,mName,extLogger,driver, "Supplier selected as "+supplier+";;;Pass");
+
+	
+			//Article from DB
+//			String articlenum = data.getText("article").replace("supplier",supplier);
+//			result = sql.executeQuery(getContext(), articlenum);
+			List<List<Object>> artResult = new ArrayList<List<Object>>();
+			String articlenum = data.getText("articles");
+			
+			String art[] = articlenum.split(",");
+
+			for(String s : art){
+
+				articleNumber.add(s);
+				artResult.addAll(StringToListCreation(s));
+				System.out.println("::::"+s);
+			}
+//			
+			
+			
+//			for(int i=0;i<5;i++){
+//				int rand = randGenerator(result.size());
+//				articleNumber.add(result.get(rand).get(0).toString());
+//			}
+			
+			int totalQty=0;
+			
+			List<List<Object>> artQuantity = new ArrayList<List<Object>>();
+			htmlToExtent(cName,mName,extLogger,driver, "*****Adding articles to draft*****;;;Info");
+			for(int i=0;i<articleNumber.size();i++){
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.articleSend.sendKeys(articleNumber.get(i));
+				String randQty = Integer.toString(ThreadLocalRandom.current().nextInt(1,7)+1);
+				totalQty = totalQty + Integer.parseInt(randQty);
+				objOrderCreateObject.orderQty.sendKeys(randQty);
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Article #"+articleNumber.get(i)+" of quantity "+randQty+" is added to draft;;;Pass");
+				
+				String temp = articleNumber.get(i)+":"+randQty;
+				artQuantity.addAll(StringToListCreation(temp));
+												
+				objOrderCreateObject.delDate.sendKeys(dateFormat.format(date));
+				objOrderCreateObject.createOrder.click();
+				waitFor(1);
+				objOrderCreateObject.searchBtn.click();
+				objOrderCreatePage.pbdArticleSelection(objOrderCreateObject, driver);
+				
+				try{
+					waitForElement(objOrderCreateObject.createOrderPopUp, driver);
+					objOrderCreateObject.createOrderPopUp.isDisplayed();
+					objOrderCreateObject.noBtn.click();
+				}
+				catch(Exception e){
+					
+				}
+				
+				objOrderCreateObject.articleSend.clear();
+			}
+			
+			System.out.println(articleNumber);
+			
+			objOrderCreatePage.openingOrderDraft(objOrderCreateObject,  dateFormat.format(date),artQuantity,articleNumber,false, driver);
+			htmlToExtent(cName,mName,extLogger,driver, "*****Verifing the Draft Order*****;;;Info");
+			
+			objOrderCreatePage.errorArticleDelete(objOrderCreateObject, supplier, driver);
+			String availableRosterDate="";
+			
+			try{
+				objOrderCreateObject.rosterMessageManualPreqDC.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, ""+objOrderCreateObject.rosterMessageManualPreqDC.getText()+";;;Pass");
+				waitForJSandJQueryToLoad(driver);
+				availableRosterDate = objOrderCreateObject.availableRosterDate.getText();
+				if(objOrderCreateObject.selectRoster.isSelected()){
+					htmlToExtent(cName,mName,extLogger,driver, "Available roster radio button is selected by default;;;Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Available roster radio button is not selected by default,Selecting the option;;;Pass");
+					objOrderCreateObject.selectRoster.click();
+				}
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.proceedToCreateRoster.click();
+				waitForJSandJQueryToLoad(driver);
+				
+				objOrderCreatePage.articleDetailsCheck(objOrderCreateObject, deliverydate,artQuantity,artResult, driver);
+				
+				if(objOrderCreateObject.status.getText().trim().equals("Verified")){
+					htmlToExtent(cName,mName,extLogger,driver, "After verifing the draft status been updated as verified;;;Pass");
+					
+					htmlToExtent(cName,mName,extLogger,driver, "*****Checking delivery date for each article in draft*****;;;Info");
+					objOrderCreatePage.checkDeliveryDate(objOrderCreateObject,deliverydate.replace("/", ""), availableRosterDate,"available", driver);
+					
+					objOrderCreatePage.createBtn(objOrderCreateObject, driver);
+					waitForJSandJQueryToLoad(driver);
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Status not been updated as verified;;;Fail");
+				}
+
+			}
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "No popup has been displayed when no roster is available;;;Fail");
+			}
+
+			String ordNum = "";
+			try{
+				waitForElement(objOrderCreateObject.successMsg, driver);
+				objOrderCreateObject.successMsg.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, objOrderCreateObject.successMsg.getText()+";;;Pass");
+				ordNum =  objOrderCreateObject.successMsg.getText().replaceAll("[^\\d,]", "");
+				objOrderCreateObject.successMsg.click();
+				//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+				if(ordNum.contains(",")){
+					//ArrayList<String> ordNumber = new ArrayList<String>();
+					String[] orderNumber = ordNum.split(",");
+					for(int i=0;i<orderNumber.length;i++){
+						objOrderCreateObject.orderNoSend.clear();
+						objOrderCreateObject.orderNoSend.sendKeys(orderNumber[i]);
+						objOrderCreateObject.goBtn.click();
+						waitForJSandJQueryToLoad(driver);
+						if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" is in submitted status;;;Pass");
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+						}
+						//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+					}
+				}
+				else{
+					objOrderCreateObject.orderNoSend.clear();
+					objOrderCreateObject.orderNoSend.sendKeys(ordNum);
+					objOrderCreateObject.goBtn.click();
+					waitForJSandJQueryToLoad(driver);
+					if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+						htmlToExtent(cName,mName,extLogger,driver, "Order is in submitted status;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, "Order status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+					}
+				}
+			}
+
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "Order Created Success Message is not displayed;;;Fail");
+			}
+			
+			/*htmlToExtent(cName,mName,extLogger,driver, "*****Checking order details between Application and DB(Expected) values;;;Pass");
+			List<List<Object>> orderdetail = getValuesFromTable(objOrderCreateObject.openOrderDetail);
+			
+			String temp = ordNum+":"+availableRosterDate+":"+"SUBMITTED"+":"+"Melbourne NDC (3911)"+":"+"WAREHOUSE"+":"+"STORE"+":"+totalQty+":"+"0"+":"+"";
+			List<List<Object>> orderdetailExp = new ArrayList<List<Object>>();
+			orderdetailExp.addAll(StringToListCreation(temp));
+			
+			ElementContains1(cName,mName,extLogger,driver,orderdetail,orderdetailExp);*/
+			
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderCreateArtScenarios,orderCreateArttestname,driver));
+			status.assertAll();
+			
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Error Message when Emergency PREQ for DC Supplied articles is created")
+	public void manualPREQDCErrorMessage_noRoster()
+	{
+		
+		ArrayList<String> articleNumber = new ArrayList<String>();
+		//ArrayList<String> articlelist = new ArrayList<String>();
+		
+		if(orderCreateArtpreCount2==-1)
+		{
+			MCcount =MCcount+9;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = new Date();
+			String deliverydate = dateFormat.format(date);
+			System.out.println(dateFormat.format(date));
+			
+			
+			objOrderCreateObject.createOrder.click();		
+			objOrderCreateObject.addArticleBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "*****Deleting articles from draft if any added to todays date*****;;;Info");
+			objOrderCreatePage.delCreatedOrderOfSameDate(objOrderCreateObject, dateFormat.format(date), driver);
+			
+			String supplier = data.getText("suppliers");
+			htmlToExtent(cName,mName,extLogger,driver, "Supplier selected as "+supplier+";;;Pass");
+			
+			String rosterCheck = data.getText("rosterdate").replace("supplier", supplier);
+			result = sql.executeQuery(getContext(), rosterCheck);
+			
+			if(result.size()>0){
+				htmlToExtent(cName,mName,extLogger,driver, "Roster is available for the given supplier "+supplier+";;;Fail");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "No Roster date is available for the given supplier "+supplier+";;;Pass");
+			}
+			
+			String articlenum = data.getText("articles");
+			
+			String art[] = articlenum.split(",");
+
+			for(String s : art){
+
+				articleNumber.add(s);
+				System.out.println("::::"+s);
+			}
+			
+		/*	String supplierfromDB = data.getText("supplier");
+			result = sql.executeQuery(getContext(), supplierfromDB);
+			String supplier = result.get(ThreadLocalRandom.current().nextInt(0,result.size())).get(0).toString();
+			
+			result.clear();
+			String article = data.getText("article").replace("supplier",supplier);
+			result = sql.executeQuery(getContext(), article);
+
+			int rand = ThreadLocalRandom.current().nextInt(0,result.size())+1;
+			articleNumber.add(result.get(rand).get(0).toString());
+			for(int i=0;i<4;i++){
+				int rand1 = ThreadLocalRandom.current().nextInt(0,result.size())+1;
+				if(rand!=rand1){
+					articleNumber.add(result.get(rand1).get(0).toString());
+					break;
+				}
+				else{
+					continue;
+				}
+			}
+		 */
+			List<List<Object>> artQuantity = new ArrayList<List<Object>>();
+			htmlToExtent(cName,mName,extLogger,driver, "*****Adding articles to draft*****;;;Info");
+			for(int i=0;i<articleNumber.size();i++){
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.articleSend.sendKeys(articleNumber.get(i));
+				String randQty = Integer.toString(ThreadLocalRandom.current().nextInt(1,7)+1);
+				objOrderCreateObject.orderQty.sendKeys(randQty);
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Article #"+articleNumber.get(i)+" of quantity "+randQty+" is added to draft;;;Pass");
+				
+				String temp = articleNumber.get(i)+":"+randQty;
+				artQuantity.addAll(StringToListCreation(temp));
+												
+				objOrderCreateObject.delDate.sendKeys(dateFormat.format(date));
+				objOrderCreateObject.createOrder.click();
+				waitFor(1);
+				objOrderCreateObject.searchBtn.click();
+				objOrderCreatePage.pbdArticleSelection(objOrderCreateObject, driver);
+				
+				try{
+					//waitForElement(objOrderCreateObject.createOrderPopUp, driver);
+					objOrderCreateObject.createOrderPopUp.isDisplayed();
+					objOrderCreateObject.noBtn.click();
+				}
+				catch(Exception e){
+					
+				}
+				
+				objOrderCreateObject.articleSend.clear();
+			}
+			
+			objOrderCreatePage.openingOrderDraft(objOrderCreateObject,  dateFormat.format(date),artQuantity,articleNumber,false, driver);
+			htmlToExtent(cName,mName,extLogger,driver, "*****Verifing the Draft Order*****;;;Info");
+			
+			if(objOrderCreateObject.errorArticleList.size()!=0){
+				for(int i=1;i<=objOrderCreateObject.errorArticleList.size();i++){
+					WebElement errorArtNumber = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.errorArticle, i, driver);
+					if(errorArtNumber.getText().contains("No roster")){
+						htmlToExtent(cName,mName,extLogger,driver, errorArtNumber.getText()+";;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, errorArtNumber.getText()+";;;Fail");
+					}
+				}
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "No error Message is displayed when warehouse article with no roster is added;;;Fail");
+			}
+									
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderCreateArtScenarios,orderCreateArttestname,driver));
+			status.assertAll();
+			
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Manual PREQ Creation for Warehouse Supplied Produce articles")
+	public void manualPREQWarehouse_ProduceArticle()
+	{
+		
+		ArrayList<String> articleNumber = new ArrayList<String>();
+		//ArrayList<String> articlelist = new ArrayList<String>();
+		
+		if(orderCreateArtpreCount2==-1)
+		{
+			MCcount =MCcount+10;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = new Date();
+			String deliverydate = dateFormat.format(date);
+			System.out.println(dateFormat.format(date));
+			
+			
+			objOrderCreateObject.createOrder.click();		
+			objOrderCreateObject.addArticleBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "*****Deleting articles from draft if any added to todays date*****;;;Info");
+			objOrderCreatePage.delCreatedOrderOfSameDate(objOrderCreateObject, dateFormat.format(date), driver);
+			
+//			String supplierfromDB = data.getText("supplier");
+//			result = sql.executeQuery(getContext(), supplierfromDB);
+//			String supplier = result.get(ThreadLocalRandom.current().nextInt(0,result.size())).get(4).toString();
+			String supplier = data.getText("suppliers");
+			htmlToExtent(cName,mName,extLogger,driver, "Supplier selected as "+supplier+";;;Pass");
+
+			List<List<Object>>artResult = new ArrayList<List<Object>>();
+			String articlenum = data.getText("articles");
+			
+			String art[] = articlenum.split(",");
+
+			for(String s : art){
+
+				articleNumber.add(s);
+				artResult.addAll(StringToListCreation(s));
+				System.out.println("::::"+s);
+			}
+			
+			int totalQty=0;
+			
+			//-------------
+			
+	    /*	List<List<Object>> articleresult = new ArrayList<List<Object>>();
+	    	String article = data.getText("getArticle");
+	    	articleresult = sql.executeQuery(getContext(), article);
+	    	
+	    	objOrderCreatePage.addingArticles(objOrderCreateObject,5, articleresult, deliverydate,supplier, driver);
+			*/
+			List<List<Object>> artQuantity = new ArrayList<List<Object>>();
+			htmlToExtent(cName,mName,extLogger,driver, "*****Adding articles to draft*****;;;Info");
+			for(int i=0;i<articleNumber.size();i++){
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.articleSend.sendKeys(articleNumber.get(i));
+				String randQty = Integer.toString(ThreadLocalRandom.current().nextInt(1,7)+1);
+				totalQty = totalQty + Integer.parseInt(randQty);
+				objOrderCreateObject.orderQty.sendKeys(randQty);
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Article #"+articleNumber.get(i)+" of quantity "+randQty+" is added to draft;;;Pass");
+				
+				String temp = articleNumber.get(i)+":"+randQty;
+				artQuantity.addAll(StringToListCreation(temp));
+												
+				objOrderCreateObject.delDate.sendKeys(dateFormat.format(date));
+				objOrderCreateObject.createOrder.click();
+				waitFor(1);
+				objOrderCreateObject.searchBtn.click();
+				objOrderCreatePage.pbdArticleSelection(objOrderCreateObject, driver);
+				
+				try{
+					waitForElement(objOrderCreateObject.createOrderPopUp, driver);
+					objOrderCreateObject.createOrderPopUp.isDisplayed();
+					objOrderCreateObject.noBtn.click();
+				}
+				catch(Exception e){
+					
+				}
+				
+				objOrderCreateObject.articleSend.clear();
+			}
+			
+			System.out.println(articleNumber);
+			
+			objOrderCreatePage.openingOrderDraft(objOrderCreateObject,  dateFormat.format(date),artQuantity,articleNumber,false, driver);
+			htmlToExtent(cName,mName,extLogger,driver, "*****Verifing the Draft Order*****;;;Info");
+			
+			objOrderCreatePage.errorArticleDelete(objOrderCreateObject, supplier,driver);
+			String availableRosterDate="";
+			
+			try{
+				objOrderCreateObject.rosterMessageManualPreqDC.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, ""+objOrderCreateObject.rosterMessageManualPreqDC.getText()+";;;Pass");
+				waitForJSandJQueryToLoad(driver);
+				availableRosterDate = objOrderCreateObject.availableRosterDate.getText();
+				if(objOrderCreateObject.selectRoster.isSelected()){
+					htmlToExtent(cName,mName,extLogger,driver, "Available roster radio button is selected by default;;;Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Available roster radio button is not selected by default,Selecting the option;;;Pass");
+					objOrderCreateObject.selectRoster.click();
+				}
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.proceedToCreateRoster.click();
+				waitForJSandJQueryToLoad(driver);
+				
+				objOrderCreatePage.articleDetailsCheck(objOrderCreateObject, deliverydate,artQuantity,artResult, driver);
+				
+				if(objOrderCreateObject.status.getText().trim().equals("Verified")){
+					htmlToExtent(cName,mName,extLogger,driver, "After verifing the draft status been updated as verified;;;Pass");
+					
+					htmlToExtent(cName,mName,extLogger,driver, "*****Checking delivery date for each article in draft*****;;;Info");
+					objOrderCreatePage.checkDeliveryDate(objOrderCreateObject,deliverydate.replace("/", ""), availableRosterDate,"available", driver);
+					
+					objOrderCreatePage.createBtn(objOrderCreateObject, driver);
+					waitForJSandJQueryToLoad(driver);
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Status not been updated as verified;;;Fail");
+				}
+
+			}
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "No popup has been displayed when no roster is available;;;Fail");
+			}
+
+			String ordNum = "";
+			try{
+				waitForElement(objOrderCreateObject.successMsg, driver);
+				objOrderCreateObject.successMsg.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, objOrderCreateObject.successMsg.getText()+";;;Pass");
+				ordNum =  objOrderCreateObject.successMsg.getText().replaceAll("[^\\d,]", "");
+				objOrderCreateObject.successMsg.click();
+				//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+				if(ordNum.contains(",")){
+					//ArrayList<String> ordNumber = new ArrayList<String>();
+					String[] orderNumber = ordNum.split(",");
+					for(int i=0;i<orderNumber.length;i++){
+						objOrderCreateObject.orderNoSend.clear();
+						objOrderCreateObject.orderNoSend.sendKeys(orderNumber[i]);
+						objOrderCreateObject.goBtn.click();
+						waitForJSandJQueryToLoad(driver);
+						if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" is in submitted status;;;Pass");
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+						}
+						//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+					}
+				}
+				else{
+					objOrderCreateObject.orderNoSend.clear();
+					objOrderCreateObject.orderNoSend.sendKeys(ordNum);
+					objOrderCreateObject.goBtn.click();
+					waitForJSandJQueryToLoad(driver);
+					if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+						htmlToExtent(cName,mName,extLogger,driver, "Order is in submitted status;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, "Order status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+					}
+				}
+			}
+
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "Order Created Success Message is not displayed;;;Fail");
+			}
+			
+			/*htmlToExtent(cName,mName,extLogger,driver, "*****Checking order details between Application and DB(Expected) values;;;Pass");
+			List<List<Object>> orderdetail = getValuesFromTable(objOrderCreateObject.openOrderDetail);
+			
+			String temp = ordNum+":"+availableRosterDate+":"+"SUBMITTED"+":"+"Melbourne NDC (3911)"+":"+"WAREHOUSE"+":"+"STORE"+":"+totalQty+":"+"0"+":"+"";
+			List<List<Object>> orderdetailExp = new ArrayList<List<Object>>();
+			orderdetailExp.addAll(StringToListCreation(temp));
+			
+			ElementContains1(cName,mName,extLogger,driver,orderdetail,orderdetailExp);*/
+			
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderCreateArtScenarios,orderCreateArttestname,driver));
+			status.assertAll();
+			
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Manual PREQ Creation for Vendor Supplied Produce articles")
+	public void manualPREQVendor_ProduceArticle()
+	{
+		
+		ArrayList<String> articleNumber = new ArrayList<String>();
+		//ArrayList<String> articlelist = new ArrayList<String>();
+		
+		if(orderCreateArtpreCount2==-1)
+		{
+			MCcount =MCcount+12;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = new Date();
+			String deliverydate = dateFormat.format(date);
+			System.out.println(dateFormat.format(date));
+			
+			
+			objOrderCreateObject.createOrder.click();		
+			objOrderCreateObject.addArticleBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "*****Deleting articles from draft if any added to todays date*****;;;Info");
+			objOrderCreatePage.delCreatedOrderOfSameDate(objOrderCreateObject, dateFormat.format(date), driver);
+			
+//			String supplierfromDB = data.getText("supplier");
+//			result = sql.executeQuery(getContext(), supplierfromDB);
+//			String supplier = result.get(ThreadLocalRandom.current().nextInt(0,result.size())).get(4).toString();
+			String supplier = data.getText("suppliers");
+			htmlToExtent(cName,mName,extLogger,driver, "Supplier selected as "+supplier+";;;Pass");
+			List<List<Object>> artResult = new ArrayList<List<Object>>();
+			
+			String articlenum = data.getText("articles");
+			
+			String art[] = articlenum.split(",");
+
+			for(String s : art){
+
+				articleNumber.add(s);
+				artResult.addAll(StringToListCreation(s));
+				System.out.println("::::"+s);
+			}
+			
+			int totalQty=0;
+			
+			//-------------
+			
+	    /*	List<List<Object>> articleresult = new ArrayList<List<Object>>();
+	    	String article = data.getText("getArticle");
+	    	articleresult = sql.executeQuery(getContext(), article);
+	    	
+	    	objOrderCreatePage.addingArticles(objOrderCreateObject,5, articleresult, deliverydate,supplier, driver);
+			*/
+			List<List<Object>> artQuantity  = new ArrayList<List<Object>>();
+			htmlToExtent(cName,mName,extLogger,driver, "*****Adding articles to draft*****;;;Info");
+			for(int i=0;i<articleNumber.size();i++){
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.articleSend.sendKeys(articleNumber.get(i));
+				String randQty = Integer.toString(ThreadLocalRandom.current().nextInt(1,7)+1);
+				totalQty = totalQty + Integer.parseInt(randQty);
+				objOrderCreateObject.orderQty.sendKeys(randQty);
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Article #"+articleNumber.get(i)+" of quantity "+randQty+" is added to draft;;;Pass");
+												
+				String temp = articleNumber.get(i)+":"+randQty;
+				artQuantity.addAll(StringToListCreation(temp));
+				
+				objOrderCreateObject.delDate.sendKeys(dateFormat.format(date));
+				objOrderCreateObject.createOrder.click();
+				waitFor(1);
+				objOrderCreateObject.searchBtn.click();
+				objOrderCreatePage.pbdArticleSelection(objOrderCreateObject, driver);
+				
+				try{
+					waitForElement(objOrderCreateObject.createOrderPopUp, driver);
+					objOrderCreateObject.createOrderPopUp.isDisplayed();
+					objOrderCreateObject.noBtn.click();
+				}
+				catch(Exception e){
+					
+				}
+				
+				objOrderCreateObject.articleSend.clear();
+			}
+			
+			System.out.println(articleNumber);
+			
+			objOrderCreatePage.openingOrderDraft(objOrderCreateObject,  dateFormat.format(date),artQuantity,articleNumber,false, driver);
+			htmlToExtent(cName,mName,extLogger,driver, "*****Verifing the Draft Order*****;;;Info");
+			
+			objOrderCreatePage.errorArticleDelete(objOrderCreateObject, supplier,driver);
+			String availableRosterDate="";
+			
+			try{
+				objOrderCreateObject.rosterMessageManualPreqDC.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, ""+objOrderCreateObject.rosterMessageManualPreqDC.getText()+";;;Pass");
+				waitForJSandJQueryToLoad(driver);
+				availableRosterDate = objOrderCreateObject.availableRosterDate.getText();
+				if(objOrderCreateObject.selectRoster.isSelected()){
+					htmlToExtent(cName,mName,extLogger,driver, "Available roster date is selected by default;;;Fail");
+				}
+				else{
+					objOrderCreateObject.selectRoster.click();
+					htmlToExtent(cName,mName,extLogger,driver, "Available roster date is selected;;;Pass");
+				}
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.proceedToCreateRoster.click();
+				waitForJSandJQueryToLoad(driver);
+			}catch(Exception e){
+				availableRosterDate = deliverydate;
+			}
+			
+			objOrderCreatePage.articleDetailsCheck(objOrderCreateObject, deliverydate,artQuantity,artResult, driver);
+			
+				if(objOrderCreateObject.status.getText().trim().equals("Verified")){
+					htmlToExtent(cName,mName,extLogger,driver, "After verifing the draft status been updated as verified;;;Pass");
+					
+					htmlToExtent(cName,mName,extLogger,driver, "*****Checking delivery date for each article in draft*****;;;Info");
+					objOrderCreatePage.checkDeliveryDate(objOrderCreateObject,deliverydate.replace("/", ""), availableRosterDate,"available", driver);
+					
+					objOrderCreatePage.createBtn(objOrderCreateObject, driver);
+					waitForJSandJQueryToLoad(driver);
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Status not been updated as verified;;;Fail");
+				}
+			
+			String ordNum = "";
+			try{
+				waitForElement(objOrderCreateObject.successMsg, driver);
+				objOrderCreateObject.successMsg.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, objOrderCreateObject.successMsg.getText()+";;;Pass");
+				ordNum =  objOrderCreateObject.successMsg.getText().replaceAll("[^\\d,]", "");
+				objOrderCreateObject.successMsg.click();
+				//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+				if(ordNum.contains(",")){
+					//ArrayList<String> ordNumber = new ArrayList<String>();
+					String[] orderNumber = ordNum.split(",");
+					for(int i=0;i<orderNumber.length;i++){
+						objOrderCreateObject.orderNoSend.clear();
+						objOrderCreateObject.orderNoSend.sendKeys(orderNumber[i]);
+						objOrderCreateObject.goBtn.click();
+						waitForJSandJQueryToLoad(driver);
+						if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" is in submitted status;;;Pass");
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+						}
+						//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+					}
+				}
+				else{
+					objOrderCreateObject.orderNoSend.clear();
+					objOrderCreateObject.orderNoSend.sendKeys(ordNum);
+					objOrderCreateObject.goBtn.click();
+					waitForJSandJQueryToLoad(driver);
+					if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+						htmlToExtent(cName,mName,extLogger,driver, "Order is in submitted status;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, "Order status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+					}
+				}
+			}
+
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "Order Created Success Message is not displayed;;;Fail");
+			}
+					
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderCreateArtScenarios,orderCreateArttestname,driver));
+			status.assertAll();
+			
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Manual PREQ Creation for GN Vendor articlw with single VN Vendor")
+	public void manualPREQGNVendor_withSingleVN()
+	{
+		
+		ArrayList<String> articleNumber = new ArrayList<String>();
+		//ArrayList<String> articlelist = new ArrayList<String>();
+		
+		if(orderCreateArtpreCount2==-1)
+		{
+			MCcount =MCcount+12;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = new Date();
+			String deliverydate = dateFormat.format(date);
+			System.out.println(dateFormat.format(date));
+			
+			
+			objOrderCreateObject.createOrder.click();		
+			objOrderCreateObject.addArticleBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "*****Deleting articles from draft if any added to todays date*****;;;Info");
+			objOrderCreatePage.delCreatedOrderOfSameDate(objOrderCreateObject, dateFormat.format(date), driver);
+			
+//			String supplierfromDB = data.getText("supplier");
+//			result = sql.executeQuery(getContext(), supplierfromDB);
+//			String supplier = result.get(ThreadLocalRandom.current().nextInt(0,result.size())).get(4).toString();
+			String supplier = data.getText("suppliers");
+			htmlToExtent(cName,mName,extLogger,driver, "Supplier selected as "+supplier+";;;Pass");
+
+	
+			//Article from DB
+			List<List<Object>> artResult = new ArrayList<List<Object>>();
+			String articlenum = data.getText("article").replace("supplier",supplier);
+			result = sql.executeQuery(getContext(), articlenum);
+			
+			int totalQty=0,loopTill;
+			
+			if(result.size() > 5){
+				loopTill = 5;
+			}
+			else{
+				loopTill = result.size();
+			}
+			
+			
+			List<List<Object>> artQuantity  = new ArrayList<List<Object>>();
+			htmlToExtent(cName,mName,extLogger,driver, "*****Adding articles to draft*****;;;Info");
+			for(int i=0;i<loopTill;i++){
+				
+				waitForJSandJQueryToLoad(driver);
+				//Deliverydate Not valida message check
+				try{
+					objOrderCreateObject.deliverDateNotValidMessage.isDisplayed();
+					objOrderCreateObject.deliverDateNotValidMessage.click();
+				}catch(Exception e){
+					System.out.println("Deliverydate Not valid message is displayed");
+				}
+				objOrderCreateObject.articleSend.sendKeys(result.get(i).get(0).toString());
+				String randQty = Integer.toString(ThreadLocalRandom.current().nextInt(1,7)+1);
+				totalQty = totalQty + Integer.parseInt(randQty);
+				objOrderCreateObject.orderQty.sendKeys(randQty);
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Article #"+result.get(i).get(0).toString()+" of quantity "+randQty+" is added to draft;;;Pass");
+				articleNumber.add(result.get(i).get(0).toString());
+				artResult.addAll(StringToListCreation(result.get(i).get(0).toString()));
+				
+				String temp = result.get(i).get(0).toString()+":"+randQty;
+				artQuantity.addAll(StringToListCreation(temp));
+				
+												
+				objOrderCreateObject.delDate.sendKeys(dateFormat.format(date));
+				objOrderCreateObject.createOrder.click();
+				waitFor(1);
+				objOrderCreateObject.searchBtn.click();
+				objOrderCreatePage.pbdArticleSelection(objOrderCreateObject, driver);
+				
+				try{
+					waitForElement(objOrderCreateObject.createOrderPopUp, driver);
+					objOrderCreateObject.createOrderPopUp.isDisplayed();
+					objOrderCreateObject.noBtn.click();
+				}
+				catch(Exception e){
+					
+				}
+				
+				objOrderCreateObject.articleSend.clear();
+			}
+			
+			System.out.println(articleNumber);
+			
+			objOrderCreatePage.openingOrderDraft(objOrderCreateObject,  dateFormat.format(date),artQuantity,articleNumber,false, driver);
+			htmlToExtent(cName,mName,extLogger,driver, "*****Verifing the Draft Order*****;;;Info");
+			
+			objOrderCreatePage.errorArticleDelete(objOrderCreateObject, supplier, driver);
+			String availableRosterDate="";
+			
+			try{
+				objOrderCreateObject.rosterMessageManualPreqDC.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, ""+objOrderCreateObject.rosterMessageManualPreqDC.getText()+";;;Pass");
+				waitForJSandJQueryToLoad(driver);
+				availableRosterDate = objOrderCreateObject.availableRosterDate.getText();
+				if(objOrderCreateObject.selectRoster.isSelected()){
+					htmlToExtent(cName,mName,extLogger,driver, "Available roster radio button is selected by default;;;Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Available roster radio button is not selected by default,Selecting the option;;;Pass");
+					objOrderCreateObject.selectRoster.click();
+				}
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.proceedToCreateRoster.click();
+			}
+			catch(Exception e){
+				availableRosterDate = deliverydate;
+				//htmlToExtent(cName,mName,extLogger,driver, "No popup has been displayed when no roster is available;;;Fail");
+			}
+			
+			objOrderCreatePage.articleDetailsCheck(objOrderCreateObject, deliverydate,artQuantity,artResult, driver);
+			
+				waitForJSandJQueryToLoad(driver);
+				if(objOrderCreateObject.status.getText().trim().equals("Verified")){
+					htmlToExtent(cName,mName,extLogger,driver, "After verifing the draft status been updated as verified;;;Pass");
+					
+					htmlToExtent(cName,mName,extLogger,driver, "*****Checking delivery date for each article in draft*****;;;Info");
+					objOrderCreatePage.checkDeliveryDate(objOrderCreateObject,deliverydate.replace("/", ""), availableRosterDate,"available", driver);
+					
+					objOrderCreatePage.createBtn(objOrderCreateObject, driver);
+					waitForJSandJQueryToLoad(driver);
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Status not been updated as verified;;;Fail");
+				}
+
+	
+			
+
+			String ordNum = "";
+			try{
+				waitForElement(objOrderCreateObject.successMsg, driver);
+				objOrderCreateObject.successMsg.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, objOrderCreateObject.successMsg.getText()+";;;Pass");
+				ordNum =  objOrderCreateObject.successMsg.getText().replaceAll("[^\\d,]", "");
+				objOrderCreateObject.successMsg.click();
+				//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+				if(ordNum.contains(",")){
+					//ArrayList<String> ordNumber = new ArrayList<String>();
+					String[] orderNumber = ordNum.split(",");
+					for(int i=0;i<orderNumber.length;i++){
+						objOrderCreateObject.orderNoSend.clear();
+						objOrderCreateObject.orderNoSend.sendKeys(orderNumber[i]);
+						objOrderCreateObject.goBtn.click();
+						waitForJSandJQueryToLoad(driver);
+						if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" is in submitted status;;;Pass");
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+						}
+						//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+					}
+				}
+				else{
+					objOrderCreateObject.orderNoSend.clear();
+					objOrderCreateObject.orderNoSend.sendKeys(ordNum);
+					objOrderCreateObject.goBtn.click();
+					waitForJSandJQueryToLoad(driver);
+					if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+						htmlToExtent(cName,mName,extLogger,driver, "Order is in submitted status;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, "Order status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+					}
+				}
+			}
+
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "Order Created Success Message is not displayed;;;Fail");
+			}
+			
+			/*htmlToExtent(cName,mName,extLogger,driver, "*****Checking order details between Application and DB(Expected) values;;;Pass");
+			List<List<Object>> orderdetail = getValuesFromTable(objOrderCreateObject.openOrderDetail);
+			
+			String temp = ordNum+":"+availableRosterDate+":"+"SUBMITTED"+":"+"Melbourne NDC (3911)"+":"+"WAREHOUSE"+":"+"STORE"+":"+totalQty+":"+"0"+":"+"";
+			List<List<Object>> orderdetailExp = new ArrayList<List<Object>>();
+			orderdetailExp.addAll(StringToListCreation(temp));
+			
+			ElementContains1(cName,mName,extLogger,driver,orderdetail,orderdetailExp);*/
+			
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderCreateArtScenarios,orderCreateArttestname,driver));
+			status.assertAll();
+			
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Manual PREQ Creation article with alternate vendor")
+	public void manualPREQ_AlternateVendor()
+	{
+		
+		ArrayList<String> articleNumber = new ArrayList<String>();
+		//ArrayList<String> articlelist = new ArrayList<String>();
+		
+		if(orderCreateArtpreCount2==-1)
+		{
+			MCcount =MCcount+12;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = new Date();
+			String deliverydate = dateFormat.format(date);
+			System.out.println(dateFormat.format(date));
+			
+			
+			objOrderCreateObject.createOrder.click();		
+			objOrderCreateObject.addArticleBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "*****Deleting articles from draft if any added to todays date*****;;;Info");
+			objOrderCreatePage.delCreatedOrderOfSameDate(objOrderCreateObject, dateFormat.format(date), driver);
+			
+//			String supplierfromDB = data.getText("supplier");
+//			result = sql.executeQuery(getContext(), supplierfromDB);
+//			String supplier = result.get(ThreadLocalRandom.current().nextInt(0,result.size())).get(4).toString();
+			String supplier = data.getText("suppliers");
+			htmlToExtent(cName,mName,extLogger,driver, "Supplier selected as "+supplier+";;;Pass");
+			List<List<Object>> artResult = new ArrayList<List<Object>>();
+			
+			String articlenum = data.getText("articles");
+			
+			String art[] = articlenum.split(",");
+
+			for(String s : art){
+
+				articleNumber.add(s);
+				artResult.addAll(StringToListCreation(s));
+				System.out.println("::::"+s);
+			}
+			
+			int totalQty=0;
+			
+			//-------------
+			
+	    /*	List<List<Object>> articleresult = new ArrayList<List<Object>>();
+	    	String article = data.getText("getArticle");
+	    	articleresult = sql.executeQuery(getContext(), article);
+	    	
+	    	objOrderCreatePage.addingArticles(objOrderCreateObject,5, articleresult, deliverydate,supplier, driver);
+			*/
+			List<List<Object>> artQuantity  = new ArrayList<List<Object>>();
+			htmlToExtent(cName,mName,extLogger,driver, "*****Adding articles to draft*****;;;Info");
+			for(int i=0;i<articleNumber.size();i++){
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.articleSend.sendKeys(articleNumber.get(i));
+				String randQty = Integer.toString(ThreadLocalRandom.current().nextInt(1,7)+1);
+				totalQty = totalQty + Integer.parseInt(randQty);
+				objOrderCreateObject.orderQty.sendKeys(randQty);
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Article #"+articleNumber.get(i)+" of quantity "+randQty+" is added to draft;;;Pass");
+												
+				String temp = articleNumber.get(i)+":"+randQty;
+				artQuantity.addAll(StringToListCreation(temp));
+				
+				objOrderCreateObject.delDate.sendKeys(dateFormat.format(date));
+				objOrderCreateObject.createOrder.click();
+				waitFor(1);
+				objOrderCreateObject.searchBtn.click();
+				objOrderCreatePage.pbdArticleSelection(objOrderCreateObject, driver);
+				
+				try{
+					waitForElement(objOrderCreateObject.createOrderPopUp, driver);
+					objOrderCreateObject.createOrderPopUp.isDisplayed();
+					objOrderCreateObject.noBtn.click();
+				}
+				catch(Exception e){
+					
+				}
+				
+				objOrderCreateObject.articleSend.clear();
+			}
+			
+			System.out.println(articleNumber);
+			
+			String deliverydate1 = objOrderCreatePage.openingOrderDraft(objOrderCreateObject,  dateFormat.format(date),artQuantity,articleNumber,true, driver);
+			htmlToExtent(cName,mName,extLogger,driver, "*****Verifing the Draft Order*****;;;Info");
+			
+			objOrderCreatePage.errorArticleDelete(objOrderCreateObject, supplier,driver);
+			String availableRosterDate="";
+			
+			try{
+				objOrderCreateObject.rosterMessageManualPreqDC.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, ""+objOrderCreateObject.rosterMessageManualPreqDC.getText()+";;;Pass");
+				waitForJSandJQueryToLoad(driver);
+				availableRosterDate = objOrderCreateObject.availableRosterDate.getText();
+				if(objOrderCreateObject.selectRoster.isSelected()){
+					htmlToExtent(cName,mName,extLogger,driver, "Available roster radio button is selected by default;;;Pass");
+				}
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.proceedToCreateRoster.click();
+				waitForJSandJQueryToLoad(driver);
+			}catch(Exception e){
+				availableRosterDate = deliverydate;
+			}
+			
+			String altDelDate = objOrderCreateObject.alternateVendeorExp.getText().replace("Delivery By: ", "").trim();
+			
+			objOrderCreatePage.articleDetailsCheck(objOrderCreateObject, altDelDate,artQuantity,artResult, driver);
+			
+				if(objOrderCreateObject.status.getText().trim().equals("Verified")){
+					htmlToExtent(cName,mName,extLogger,driver, "After verifing the draft status been updated as verified;;;Pass");
+					
+					htmlToExtent(cName,mName,extLogger,driver, "*****Checking delivery date for each article in draft*****;;;Info");
+					objOrderCreatePage.checkDeliveryDate(objOrderCreateObject,deliverydate1.replace("/", ""), availableRosterDate,"available", driver);//del-23 ava-22
+					
+					objOrderCreatePage.createBtn(objOrderCreateObject, driver);
+					waitForJSandJQueryToLoad(driver);
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Status not been updated as verified;;;Fail");
+				}
+			
+			String ordNum = "";
+			try{
+				waitForElement(objOrderCreateObject.successMsg, driver);
+				objOrderCreateObject.successMsg.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, objOrderCreateObject.successMsg.getText()+";;;Pass");
+				ordNum =  objOrderCreateObject.successMsg.getText().replaceAll("[^\\d,]", "");
+				objOrderCreateObject.successMsg.click();
+				//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+				if(ordNum.contains(",")){
+					//ArrayList<String> ordNumber = new ArrayList<String>();
+					String[] orderNumber = ordNum.split(",");
+					for(int i=0;i<orderNumber.length;i++){
+						objOrderCreateObject.orderNoSend.clear();
+						objOrderCreateObject.orderNoSend.sendKeys(orderNumber[i]);
+						objOrderCreateObject.goBtn.click();
+						waitForJSandJQueryToLoad(driver);
+						if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" is in submitted status;;;Pass");
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+						}
+						//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+					}
+				}
+				else{
+					objOrderCreateObject.orderNoSend.clear();
+					objOrderCreateObject.orderNoSend.sendKeys(ordNum);
+					objOrderCreateObject.goBtn.click();
+					waitForJSandJQueryToLoad(driver);
+					if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+						htmlToExtent(cName,mName,extLogger,driver, "Order is in submitted status;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, "Order status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+					}
+				}
+			}
+
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "Order Created Success Message is not displayed;;;Fail");
+			}
+					
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderCreateArtScenarios,orderCreateArttestname,driver));
+			status.assertAll();
+			
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether the user is able to create order for Unscheduled vendor")
+	public void manualPREQ_UnscheduledVendor()
+	{
+		
+		ArrayList<String> articleNumber = new ArrayList<String>();
+		//ArrayList<String> articlelist = new ArrayList<String>();
+		
+		if(orderCreateArtpreCount2==-1)
+		{
+			MCcount =MCcount+10;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = new Date();
+			String deliverydate = dateFormat.format(date);
+			System.out.println(dateFormat.format(date));
+			
+			
+			objOrderCreateObject.createOrder.click();		
+			objOrderCreateObject.addArticleBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "*****Deleting articles from draft if any added to todays date*****;;;Info");
+			objOrderCreatePage.delCreatedOrderOfSameDate(objOrderCreateObject, dateFormat.format(date), driver);
+			
+//			String supplierfromDB = data.getText("supplier");
+//			result = sql.executeQuery(getContext(), supplierfromDB);
+//			String supplier = result.get(ThreadLocalRandom.current().nextInt(0,result.size())).get(4).toString();
+			String supplier = data.getText("suppliers");
+			htmlToExtent(cName,mName,extLogger,driver, "Supplier selected as "+supplier+";;;Pass");
+
+			List<List<Object>> artResult  = new ArrayList<List<Object>>();
+			//Article from DB
+			String articlenum = data.getText("article");//.replace("supplier",supplier);
+			String art[] = articlenum.split(",");
+			//result = sql.executeQuery(getContext(), articlenum);
+			artResult.addAll(StringToListCreation(art[0]));
+			artResult.addAll(StringToListCreation(art[1]));
+			//String temp1 = art[0]+":"+art[1];
+			//artResult.addAll(StringToListCreation(temp1));
+			
+			int totalQty=0,loopTill;
+			
+			if(artResult.size() > 5){
+				loopTill = 5;
+			}
+			else{
+				loopTill = artResult.size();
+			}
+			
+			
+			List<List<Object>> artQuantity  = new ArrayList<List<Object>>();
+			htmlToExtent(cName,mName,extLogger,driver, "*****Adding articles to draft*****;;;Info");
+			for(int i=0;i<loopTill;i++){
+				
+				waitForJSandJQueryToLoad(driver);
+				//Deliverydate Not valida message check
+				try{
+					objOrderCreateObject.deliverDateNotValidMessage.isDisplayed();
+					objOrderCreateObject.deliverDateNotValidMessage.click();
+				}catch(Exception e){
+					System.out.println("Deliverydate Not valid message is displayed");
+				}
+				objOrderCreateObject.articleSend.sendKeys(artResult.get(i).get(0).toString());
+				String randQty = Integer.toString(ThreadLocalRandom.current().nextInt(1,7)+1);
+				totalQty = totalQty + Integer.parseInt(randQty);
+				objOrderCreateObject.orderQty.sendKeys(randQty);
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Article #"+artResult.get(i).get(0).toString()+" of quantity "+randQty+" is added to draft;;;Pass");
+				articleNumber.add(artResult.get(i).get(0).toString());
+				
+				String temp = artResult.get(i).get(0).toString()+":"+randQty;
+				artQuantity.addAll(StringToListCreation(temp));
+												
+				objOrderCreateObject.delDate.sendKeys(dateFormat.format(date));
+				objOrderCreateObject.createOrder.click();
+				waitFor(1);
+				objOrderCreateObject.searchBtn.click();
+				objOrderCreatePage.pbdArticleSelection(objOrderCreateObject, driver);
+				
+				try{
+					waitForElement(objOrderCreateObject.createOrderPopUp, driver);
+					objOrderCreateObject.createOrderPopUp.isDisplayed();
+					objOrderCreateObject.noBtn.click();
+				}
+				catch(Exception e){
+					
+				}
+				
+				objOrderCreateObject.articleSend.clear();
+			}
+			
+			System.out.println(articleNumber);
+			
+			objOrderCreatePage.openingOrderDraft(objOrderCreateObject,  dateFormat.format(date),artQuantity,articleNumber,false, driver);
+			htmlToExtent(cName,mName,extLogger,driver, "*****Verifing the Draft Order*****;;;Info");
+			
+			objOrderCreatePage.errorArticleDelete(objOrderCreateObject, supplier, driver);
+			String availableRosterDate="";
+			
+			try{
+				objOrderCreateObject.rosterMessageManualPreqDC.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, ""+objOrderCreateObject.rosterMessageManualPreqDC.getText()+";;;Pass");
+				waitForJSandJQueryToLoad(driver);
+				availableRosterDate = objOrderCreateObject.availableRosterDate.getText();
+				if(objOrderCreateObject.selectRoster.isSelected()){
+					htmlToExtent(cName,mName,extLogger,driver, "Available roster radio button is selected by default;;;Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Available roster radio button is not selected by default,Selecting the option;;;Pass");
+					objOrderCreateObject.selectRoster.click();
+				}
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.proceedToCreateRoster.click();
+			}
+			catch(Exception e){
+				availableRosterDate = deliverydate;
+				//htmlToExtent(cName,mName,extLogger,driver, "No popup has been displayed when no roster is available;;;Fail");
+			}
+			
+			objOrderCreatePage.articleDetailsCheck(objOrderCreateObject, deliverydate,artQuantity,artResult, driver);
+			
+				waitForJSandJQueryToLoad(driver);
+				if(objOrderCreateObject.status.getText().trim().equals("Verified")){
+					htmlToExtent(cName,mName,extLogger,driver, "After verifing the draft status been updated as verified;;;Pass");
+					
+					htmlToExtent(cName,mName,extLogger,driver, "*****Checking delivery date for each article in draft*****;;;Info");
+					objOrderCreatePage.checkDeliveryDate(objOrderCreateObject,deliverydate.replace("/", ""), availableRosterDate,"available", driver);
+					
+					objOrderCreatePage.createBtn(objOrderCreateObject, driver);
+					waitForJSandJQueryToLoad(driver);
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Status not been updated as verified;;;Fail");
+				}
+
+	
+			
+
+			String ordNum = "";
+			try{
+				waitForElement(objOrderCreateObject.successMsg, driver);
+				objOrderCreateObject.successMsg.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, objOrderCreateObject.successMsg.getText()+";;;Pass");
+				ordNum =  objOrderCreateObject.successMsg.getText().replaceAll("[^\\d,]", "");
+				objOrderCreateObject.successMsg.click();
+				//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+				if(ordNum.contains(",")){
+					//ArrayList<String> ordNumber = new ArrayList<String>();
+					String[] orderNumber = ordNum.split(",");
+					for(int i=0;i<orderNumber.length;i++){
+						objOrderCreateObject.orderNoSend.clear();
+						objOrderCreateObject.orderNoSend.sendKeys(orderNumber[i]);
+						objOrderCreateObject.goBtn.click();
+						waitForJSandJQueryToLoad(driver);
+						if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" is in submitted status;;;Pass");
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+						}
+						//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+					}
+				}
+				else{
+					objOrderCreateObject.orderNoSend.clear();
+					objOrderCreateObject.orderNoSend.sendKeys(ordNum);
+					objOrderCreateObject.goBtn.click();
+					waitForJSandJQueryToLoad(driver);
+					if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+						htmlToExtent(cName,mName,extLogger,driver, "Order is in submitted status;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, "Order status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+					}
+				}
+			}
+
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "Order Created Success Message is not displayed;;;Fail");
+			}
+			
+			/*htmlToExtent(cName,mName,extLogger,driver, "*****Checking order details between Application and DB(Expected) values;;;Pass");
+			List<List<Object>> orderdetail = getValuesFromTable(objOrderCreateObject.openOrderDetail);
+			
+			String temp = ordNum+":"+availableRosterDate+":"+"SUBMITTED"+":"+"Melbourne NDC (3911)"+":"+"WAREHOUSE"+":"+"STORE"+":"+totalQty+":"+"0"+":"+"";
+			List<List<Object>> orderdetailExp = new ArrayList<List<Object>>();
+			orderdetailExp.addAll(StringToListCreation(temp));
+			
+			ElementContains1(cName,mName,extLogger,driver,orderdetail,orderdetailExp);*/
+			
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderCreateArtScenarios,orderCreateArttestname,driver));
+			status.assertAll();
+			
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether user is able to create order for 1 GS Vendor having multiple VN Vendors")
+	public void manualPREQ_1GSHavingMultipleVNVendor()
+	{
+		
+		ArrayList<String> articleNumber = new ArrayList<String>();
+		//ArrayList<String> articlelist = new ArrayList<String>();
+		
+		if(orderCreateArtpreCount2==-1)
+		{
+			MCcount =MCcount+10;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = new Date();
+			String deliverydate = dateFormat.format(date);
+			System.out.println(dateFormat.format(date));
+			
+			
+			objOrderCreateObject.createOrder.click();		
+			objOrderCreateObject.addArticleBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "*****Deleting articles from draft if any added to todays date*****;;;Info");
+			objOrderCreatePage.delCreatedOrderOfSameDate(objOrderCreateObject, dateFormat.format(date), driver);
+			
+//			String supplierfromDB = data.getText("supplier");
+//			result = sql.executeQuery(getContext(), supplierfromDB);
+//			String supplier = result.get(ThreadLocalRandom.current().nextInt(0,result.size())).get(4).toString();
+			String supplier = data.getText("suppliers");
+			htmlToExtent(cName,mName,extLogger,driver, "Supplier selected as "+supplier+";;;Pass");
+
+			List<List<Object>> artResult  = new ArrayList<List<Object>>();
+			//Article from DB
+			String articlenum = data.getText("article");//.replace("supplier",supplier);
+			String art[] = articlenum.split(",");
+			//result = sql.executeQuery(getContext(), articlenum);
+			artResult.addAll(StringToListCreation(art[0]));
+			artResult.addAll(StringToListCreation(art[1]));
+			//String temp1 = art[0]+":"+art[1];
+			//artResult.addAll(StringToListCreation(temp1));
+			
+			int totalQty=0,loopTill;
+			
+			if(artResult.size() > 5){
+				loopTill = 5;
+			}
+			else{
+				loopTill = artResult.size();
+			}
+			
+			
+			List<List<Object>> artQuantity  = new ArrayList<List<Object>>();
+			htmlToExtent(cName,mName,extLogger,driver, "*****Adding articles to draft*****;;;Info");
+			for(int i=0;i<loopTill;i++){
+				
+				waitForJSandJQueryToLoad(driver);
+				//Deliverydate Not valida message check
+				try{
+					objOrderCreateObject.deliverDateNotValidMessage.isDisplayed();
+					objOrderCreateObject.deliverDateNotValidMessage.click();
+				}catch(Exception e){
+					System.out.println("Deliverydate Not valid message is displayed");
+				}
+				objOrderCreateObject.articleSend.sendKeys(artResult.get(i).get(0).toString());
+				String randQty = Integer.toString(ThreadLocalRandom.current().nextInt(1,7)+1);
+				totalQty = totalQty + Integer.parseInt(randQty);
+				objOrderCreateObject.orderQty.sendKeys(randQty);
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Article #"+artResult.get(i).get(0).toString()+" of quantity "+randQty+" is added to draft;;;Pass");
+				articleNumber.add(artResult.get(i).get(0).toString());
+				
+				String temp = artResult.get(i).get(0).toString()+":"+randQty;
+				artQuantity.addAll(StringToListCreation(temp));
+												
+				objOrderCreateObject.delDate.sendKeys(dateFormat.format(date));
+				objOrderCreateObject.createOrder.click();
+				waitFor(1);
+				objOrderCreateObject.searchBtn.click();
+				objOrderCreatePage.pbdArticleSelection(objOrderCreateObject, driver);
+				
+				try{
+					waitForElement(objOrderCreateObject.createOrderPopUp, driver);
+					objOrderCreateObject.createOrderPopUp.isDisplayed();
+					objOrderCreateObject.noBtn.click();
+				}
+				catch(Exception e){
+					
+				}
+				
+				objOrderCreateObject.articleSend.clear();
+			}
+			
+			System.out.println(articleNumber);
+			
+			objOrderCreatePage.openingOrderDraft(objOrderCreateObject,  dateFormat.format(date),artQuantity,articleNumber,false, driver);
+			htmlToExtent(cName,mName,extLogger,driver, "*****Verifing the Draft Order*****;;;Info");
+			
+			objOrderCreatePage.errorArticleDelete(objOrderCreateObject, supplier, driver);
+			String availableRosterDate="";
+			
+			try{
+				objOrderCreateObject.rosterMessageManualPreq.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, ""+objOrderCreateObject.rosterMessageManualPreq.getText()+";;;Pass");
+				waitForJSandJQueryToLoad(driver);
+				availableRosterDate = objOrderCreateObject.availableRosterDate.getText();
+				if(objOrderCreateObject.availableRadio.isSelected()){
+					htmlToExtent(cName,mName,extLogger,driver, "Available radio button is selected by default;;;Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Available radio button is not selected by default,Selecting the option;;;Pass");
+					objOrderCreateObject.availableRadio.click();
+				}
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.proceedToCreateRoster.click();
+			}
+			catch(Exception e){
+				availableRosterDate = deliverydate;
+				//htmlToExtent(cName,mName,extLogger,driver, "No popup has been displayed when no roster is available;;;Fail");
+			}
+			
+			objOrderCreatePage.articleDetailsCheck(objOrderCreateObject, deliverydate,artQuantity,artResult, driver);
+			
+				waitForJSandJQueryToLoad(driver);
+				if(objOrderCreateObject.status.getText().trim().equals("Verified")){
+					htmlToExtent(cName,mName,extLogger,driver, "After verifing the draft status been updated as verified;;;Pass");
+					
+					htmlToExtent(cName,mName,extLogger,driver, "*****Checking delivery date for each article in draft*****;;;Info");
+					objOrderCreatePage.checkDeliveryDate(objOrderCreateObject,deliverydate.replace("/", ""), availableRosterDate,"available", driver);
+					
+					objOrderCreatePage.createBtn(objOrderCreateObject, driver);
+					waitForJSandJQueryToLoad(driver);
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Status not been updated as verified;;;Fail");
+				}
+
+	
+			
+
+			String ordNum = "";
+			try{
+				waitForElement(objOrderCreateObject.successMsg, driver);
+				objOrderCreateObject.successMsg.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, objOrderCreateObject.successMsg.getText()+";;;Pass");
+				ordNum =  objOrderCreateObject.successMsg.getText().replaceAll("[^\\d,]", "");
+				objOrderCreateObject.successMsg.click();
+				//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+				if(ordNum.contains(",")){
+					//ArrayList<String> ordNumber = new ArrayList<String>();
+					String[] orderNumber = ordNum.split(",");
+					for(int i=0;i<orderNumber.length;i++){
+						objOrderCreateObject.orderNoSend.clear();
+						objOrderCreateObject.orderNoSend.sendKeys(orderNumber[i]);
+						objOrderCreateObject.goBtn.click();
+						waitForJSandJQueryToLoad(driver);
+						if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" is in submitted status;;;Pass");
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+						}
+						//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+					}
+				}
+				else{
+					objOrderCreateObject.orderNoSend.clear();
+					objOrderCreateObject.orderNoSend.sendKeys(ordNum);
+					objOrderCreateObject.goBtn.click();
+					waitForJSandJQueryToLoad(driver);
+					if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+						htmlToExtent(cName,mName,extLogger,driver, "Order is in submitted status;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, "Order status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+					}
+				}
+			}
+
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "Order Created Success Message is not displayed;;;Fail");
+			}
+			
+			/*htmlToExtent(cName,mName,extLogger,driver, "*****Checking order details between Application and DB(Expected) values;;;Pass");
+			List<List<Object>> orderdetail = getValuesFromTable(objOrderCreateObject.openOrderDetail);
+			
+			String temp = ordNum+":"+availableRosterDate+":"+"SUBMITTED"+":"+"Melbourne NDC (3911)"+":"+"WAREHOUSE"+":"+"STORE"+":"+totalQty+":"+"0"+":"+"";
+			List<List<Object>> orderdetailExp = new ArrayList<List<Object>>();
+			orderdetailExp.addAll(StringToListCreation(temp));
+			
+			ElementContains1(cName,mName,extLogger,driver,orderdetail,orderdetailExp);*/
+			
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderCreateArtScenarios,orderCreateArttestname,driver));
+			status.assertAll();
+			
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether user is able to create order for multiple GS Vendors having single VN Vendor")
+	public void manualPREQVendor_multipleGSSingleVN()
+	{
+		
+		ArrayList<String> articleNumber = new ArrayList<String>();
+		//ArrayList<String> articlelist = new ArrayList<String>();
+		
+		if(orderCreateArtpreCount2==-1)
+		{
+			MCcount =MCcount+12;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = new Date();
+			String deliverydate = dateFormat.format(date);
+			System.out.println(dateFormat.format(date));
+			
+			
+			objOrderCreateObject.createOrder.click();		
+			objOrderCreateObject.addArticleBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "*****Deleting articles from draft if any added to todays date*****;;;Info");
+			objOrderCreatePage.delCreatedOrderOfSameDate(objOrderCreateObject, dateFormat.format(date), driver);
+			
+			//String supplierfromDB = data.getText("supplier");
+			//result = sql.executeQuery(getContext(), supplierfromDB);
+			String supplier =data.getText("suppliers"); //result.get(ThreadLocalRandom.current().nextInt(0,result.size())).get(0).toString();
+			
+			List<List<Object>> artResult = new ArrayList<List<Object>>();
+			
+			String articlenum = data.getText("article").replace("supplier", supplier);
+			result = sql.executeQuery(getContext(), articlenum);
+			
+			for(int i=0;i<4;i++){
+				int rand1 = randGenerator(result.size());
+				articleNumber.add(result.get(rand1).get(0).toString());
+				artResult.addAll(StringToListCreation(result.get(rand1).get(0).toString()));
+				int rand2 = randGenerator(result.size());
+				if(rand1 != rand2){
+					articleNumber.add(result.get(rand2).get(0).toString());
+					artResult.addAll(StringToListCreation(result.get(rand2).get(0).toString()));
+					break;
+				}
+				else{
+					continue;
+				}
+				
+				
+			}	
+				
+			int totalQty=0;
+			
+			//-------------
+			
+	    /*	List<List<Object>> articleresult = new ArrayList<List<Object>>();
+	    	String article = data.getText("getArticle");
+	    	articleresult = sql.executeQuery(getContext(), article);
+	    	
+	    	objOrderCreatePage.addingArticles(objOrderCreateObject,5, articleresult, deliverydate,supplier, driver);
+			*/
+			List<List<Object>> artQuantity  = new ArrayList<List<Object>>();
+			htmlToExtent(cName,mName,extLogger,driver, "*****Adding articles to draft*****;;;Info");
+			for(int i=0;i<articleNumber.size();i++){
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.articleSend.sendKeys(articleNumber.get(i));
+				String randQty = Integer.toString(ThreadLocalRandom.current().nextInt(12,20)+1);
+				totalQty = totalQty + Integer.parseInt(randQty);
+				objOrderCreateObject.orderQty.sendKeys(randQty);
+				
+				htmlToExtent(cName,mName,extLogger,driver, "Article #"+articleNumber.get(i)+" of quantity "+randQty+" is added to draft;;;Pass");
+												
+				String temp = articleNumber.get(i)+":"+randQty;
+				artQuantity.addAll(StringToListCreation(temp));
+				
+				objOrderCreateObject.delDate.sendKeys(dateFormat.format(date));
+				objOrderCreateObject.createOrder.click();
+				waitFor(1);
+				objOrderCreateObject.searchBtn.click();
+				objOrderCreatePage.pbdArticleSelection(objOrderCreateObject, driver);
+				
+				try{
+					waitForElement(objOrderCreateObject.createOrderPopUp, driver);
+					objOrderCreateObject.createOrderPopUp.isDisplayed();
+					objOrderCreateObject.noBtn.click();
+				}
+				catch(Exception e){
+					
+				}
+				
+				objOrderCreateObject.articleSend.clear();
+			}
+			
+			
+			objOrderCreatePage.openingOrderDraft(objOrderCreateObject,  dateFormat.format(date),artQuantity,articleNumber,false, driver);
+			htmlToExtent(cName,mName,extLogger,driver, "*****Verifing the Draft Order*****;;;Info");
+			
+			objOrderCreatePage.errorArticleDelete(objOrderCreateObject, supplier,driver);
+			String availableRosterDate="";
+			
+			try{
+				objOrderCreateObject.rosterMessageManualPreqDC.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, ""+objOrderCreateObject.rosterMessageManualPreqDC.getText()+";;;Pass");
+				waitForJSandJQueryToLoad(driver);
+				availableRosterDate = objOrderCreateObject.availableRosterDate.getText();
+				if(objOrderCreateObject.selectRoster.isSelected()){
+					htmlToExtent(cName,mName,extLogger,driver, "Available roster date is selected by default;;;Fail");
+				}
+				else{
+					objOrderCreateObject.selectRoster.click();
+					htmlToExtent(cName,mName,extLogger,driver, "Available roster date is selected;;;Pass");
+				}
+				
+				waitForJSandJQueryToLoad(driver);
+				objOrderCreateObject.proceedToCreateRoster.click();
+				waitForJSandJQueryToLoad(driver);
+			}catch(Exception e){
+				availableRosterDate = deliverydate;
+			}
+			
+			objOrderCreatePage.articleDetailsCheck(objOrderCreateObject, deliverydate,artQuantity,artResult, driver);
+			
+				if(objOrderCreateObject.status.getText().trim().equals("Verified")){
+					htmlToExtent(cName,mName,extLogger,driver, "After verifing the draft status been updated as verified;;;Pass");
+					
+					htmlToExtent(cName,mName,extLogger,driver, "*****Checking delivery date for each article in draft*****;;;Info");
+					objOrderCreatePage.checkDeliveryDate(objOrderCreateObject,deliverydate.replace("/", ""), availableRosterDate,"available", driver);
+					
+					objOrderCreatePage.createBtn(objOrderCreateObject, driver);
+					waitForJSandJQueryToLoad(driver);
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Status not been updated as verified;;;Fail");
+				}
+			
+			String ordNum = "";
+			try{
+				waitForElement(objOrderCreateObject.successMsg, driver);
+				objOrderCreateObject.successMsg.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, objOrderCreateObject.successMsg.getText()+";;;Pass");
+				ordNum =  objOrderCreateObject.successMsg.getText().replaceAll("[^\\d,]", "");
+				objOrderCreateObject.successMsg.click();
+				//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+				if(ordNum.contains(",")){
+					//ArrayList<String> ordNumber = new ArrayList<String>();
+					String[] orderNumber = ordNum.split(",");
+					for(int i=0;i<orderNumber.length;i++){
+						objOrderCreateObject.orderNoSend.clear();
+						objOrderCreateObject.orderNoSend.sendKeys(orderNumber[i]);
+						objOrderCreateObject.goBtn.click();
+						waitForJSandJQueryToLoad(driver);
+						if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" is in submitted status;;;Pass");
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver, "Order #"+orderNumber[i]+" status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+						}
+						//objOrderCreatePage.toOrderEnqPage(objOrderCreateObject, driver);
+					}
+				}
+				else{
+					objOrderCreateObject.orderNoSend.clear();
+					objOrderCreateObject.orderNoSend.sendKeys(ordNum);
+					objOrderCreateObject.goBtn.click();
+					waitForJSandJQueryToLoad(driver);
+					if(objOrderCreateObject.orderStatus.getText().trim().equals("SUBMITTED")){
+						htmlToExtent(cName,mName,extLogger,driver, "Order is in submitted status;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver, "Order status "+objOrderCreateObject.orderStatus.getText()+";;;Fail");
+					}
+				}
+			}
+
+			catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver, "Order Created Success Message is not displayed;;;Fail");
+			}
+					
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderCreateArtScenarios,orderCreateArttestname,driver));
+			status.assertAll();
+			
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	
+	
+	
+	public int randGenerator(int maxLimit){
+		
+		int rand = ThreadLocalRandom.current().nextInt(1,maxLimit);
+		return rand;
+		
+	}
+	
+	
+	
+	//Login Function
+	public void navToOrders(TestStatus status) throws IOException, AWTException {
+		log.info("*****Login into Application*****");
+		htmlToExtent(cName,mName,extLogger,driver, "*****Login into Application*****;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objOrderCreatePage = loginPage.navToOrderEnqForCreation(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objOrderCreatePage = loginPage.navToOrderEnqForCreation(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "*****Navigate To Order Enquiry Page*****;;;Pass");
+			objOrderCreatePage.toOrderEnqPage(objOrderCreateObject,driver);
+			
+	}
+	
+	
+
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		
+		 mName=m9.getName().toString().trim();			
+ 			if(!methodList.contains(m9.getName().toString().trim())){
+ 			methodList.add(m9.getName().toString().trim());
+ 			extLogger = extReport.startTest(m9.getName().toString().trim());
+ 			}
+		initializeTestcontext();
+		System.out.println("test1 - beforemethod");
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		}else{
+			String title = driver.getCurrentUrl();
+			if(title.contains("logginOut"))
+			{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+			}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+						WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+						scrolltoElement(home,driver);
+						home.click();
+						TimeUnit.SECONDS.sleep(5);
+						loginPage.Logout(orderCreateArtScenarios, orderCreateArttestname, driver);
+						driver.navigate().refresh();
+						TimeUnit.SECONDS.sleep(5);}
+				}
+			}
+		}
+			isFirstTest=false;
+			//driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser")); 
+			setDriver(driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		orderCreateArttestname = m9.getName().toString().trim();
+		orderCreateArttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		objOrderCreateObject = PageFactory.initElements(this.driver, OrderCreationObjects.class);
+		objOrderCreatePage = PageFactory.initElements(this.driver, OrderCreationPage.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+	}
+	
+	@BeforeClass
+	public void loadXMLFile(){				
+		System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\orderCreation.xml");
+		customreport.createExtentReport();
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());				
+	}
+	
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitForJSandJQueryToLoad(driver);
+		System.out.println("afterclass");
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(),MCcount);
+        extReport.endTest(extLogger);
+		extReport.flush();				
+		removeDriver();
+		closeDriver(driver);
+		moduleName.put("Modules", orderCreateArtModules);
+		waitFor(1);
+		int ArtMC=MCcount;
+		orderCreateArtMC=""+MCcount;
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {				
+		System.out.println("AffterMethod");
+		
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				//System.out.println();
+			
+			}
+		waitFor(1);
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info"))
+		{
+			int cnt = orderCreateArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			orderCreateArtpreCount2++;
+		}
+		if(orderCreateArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass"))
+		{
+			orderCreateArtpreCount2=-1;
+		}
+		waitFor(1);
+}
+
+	
+	
+	
+}

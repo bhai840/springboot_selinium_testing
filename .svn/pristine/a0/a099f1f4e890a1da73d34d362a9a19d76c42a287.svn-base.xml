@@ -1,0 +1,723 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+<TCName name = "IBTCreationfromStoretoStore">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>313838,25500,891961</articles_3064>
+<articles_1786>545775,892628</articles_1786>
+<articleqty>15</articleqty>
+<siteTo>3064</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationforCPBDfromStoretoStore">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>344474</articles_3064>
+<articles_1786>36636</articles_1786>
+<articleqty>13</articleqty>
+<siteTo>3064</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<CPBD>
+<![CDATA[select matnr, article_om from ZWOWC_ARTICLE_LISTING where COMPLEX_PACK_BRK_ARTICLE = 'art_no' and COMPLEX_PACK_BRK_BASE_QTY = '1']]>
+</CPBD>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationforCPBDfromStoretoALH">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>36636</articles_3064>
+<articles_1786>10462</articles_1786>
+<articleqty>13</articleqty>
+<siteTo>8022</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<CPBD>
+<![CDATA[select matnr, article_om from ZWOWC_ARTICLE_LISTING where matnr = 'art_no']]>
+</CPBD>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationforCPBDfromStoretoCC">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>36636</articles_3064>
+<articles_1786>10462</articles_1786>
+<articleqty>14</articleqty>
+<siteTo>8261</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<CPBD>
+<![CDATA[select matnr, article_om from ZWOWC_ARTICLE_LISTING where matnr = 'art_no']]>
+</CPBD>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "ALHReturns">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<OrderNo_3064>6098284780</OrderNo_3064>
+<OrderNo_1786>6023609147</OrderNo_1786>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+</TCName>
+
+<TCName name = "IBTCreationfromNGBOStoretoISIS">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>891961,25500</articles_3064>
+<articles_1786>545775,892628</articles_1786>
+<articleqty>11</articleqty>
+<siteTo>7055</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationfromSMKTtoBWSstore">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>25500,43580</articles_3064>
+<articles_1786>519451,363230</articles_1786>
+<articleqty>16</articleqty>
+<siteTo>5796</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationfromStoretoCostCenter">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>352197,507906,891961,25500,120044,130935</articles_3064>
+<articles_1786>545775,892628</articles_1786>
+<articleqty>15</articleqty>
+<siteTo>8261</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationfromStoretoALH">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>25500,43580</articles_3064>
+<articles_1786>545775,892628</articles_1786>
+<articleqty>18</articleqty>
+<siteTo>8022</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationfromStoretoALHforVERP">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>398199,124178</articles_3064>
+<articles_1786>398199,124178</articles_1786>
+<articleqty>19</articleqty>
+<siteTo>8022</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr ='art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+</TCName>
+
+<TCName name = "IBTCreationfromStoretoStoreforVERP">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>398199,124178</articles_3064>
+<articles_1786>398199,124178</articles_1786>
+<articleqty>20</articleqty>
+<siteTo>3200</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr ='art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationfromStoretoCCforVERP">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>398199,124178</articles_3064>
+<articles_1786>398199,124178</articles_1786>
+<articleqty>21</articleqty>
+<siteTo>8261</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr='store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr ='art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationfromStoretoCCforConsignment">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>756894,299947</articles_3064>
+<articles_1786>100043,100049</articles_1786>
+<articleqty>22</articleqty>
+<siteTo>8261</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr='store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationfromStoretoALHforConsignment">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>756894,299947</articles_3064>
+<articles_1786>100043,100049</articles_1786>
+<articleqty>23</articleqty>
+<siteTo>8022</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr='store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationfromStoretoStoreforConsignment">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>756894,299947</articles_3064>
+<articles_1786>100043,100049</articles_1786>
+<articleqty>24</articleqty>
+<siteTo>3200</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr='store_no']]>
+</Store>
+
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationfromStoretoDC">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>148103,47554</articles_3064>
+<articles_1786>363230,465065</articles_1786>
+<articleqty>25</articleqty>
+<siteTo>1954</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr='store_no']]>
+</Store>
+<ContactName>Aswini</ContactName>
+<AuthNo>wer345457</AuthNo>
+<IssueUOM>
+<![CDATA[select MEINH from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and ISSUE_UOM_IND = 'Y']]>
+</IssueUOM>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no,contact_name,auth_number from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH,contact_name,auth_number from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationforCPBDfromStoretoDC">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>344474</articles_3064>
+<articles_1786>36636</articles_1786>
+<articleqty>25</articleqty>
+<siteTo>1954</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<CPBD>
+<![CDATA[select matnr, article_om from ZWOWC_ARTICLE_LISTING where COMPLEX_PACK_BRK_ARTICLE = 'art_no' and COMPLEX_PACK_BRK_BASE_QTY = '1']]>
+</CPBD>
+<ContactName>Aswini</ContactName>
+<AuthNo>wer345457</AuthNo>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no,contact_name,auth_number from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH,contact_name,auth_number from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationfromStoretoStoreforZBAK">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles>575763,337153</articles>
+<articleqty>5</articleqty>
+<siteTo>3200</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<ZBAK>
+<![CDATA[select matnr, child_article,child_article_qty,child_article_uom  from ZWOWC_ARTICLE_CHILD where matnr = 'art_no']]>
+</ZBAK>
+<ZBAK1>
+<![CDATA[select child_article from ZWOWC_ARTICLE_CHILD where matnr = 'art_no']]>
+</ZBAK1>
+<NumDem>
+<![CDATA[select numerator, denominator from zwowc_article_uom where matnr = 'art_no']]>
+</NumDem>
+</TCName>
+
+<TCName name = "IBTCreationfromStoretoStoreforItmLnk">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles>135006,134932</articles>
+<articleqty>5</articleqty>
+<siteTo>3200</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<ITMLNK>
+<![CDATA[select matnr,child_article,child_article_qty,child_article_uom  from ZWOWC_ARTICLE_CHILD where matnr = 'art_no']]>
+</ITMLNK>
+
+</TCName>
+
+<TCName name = "CheckingSITSOOwhilecreatingIBT">
+<SOOSSIT>
+<![CDATA[select matnr,SOO,SIT from local_wow_stock_info where matnr = 'art_no']]>
+</SOOSSIT>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>120044,313838,25500,891961,135029</articles_3064>
+<articles_1786>545775,892628</articles_1786>
+<articleqty>5</articleqty>
+<siteTo>3200</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<ITMLNK>
+<![CDATA[select matnr,child_article,child_article_qty,child_article_uom  from ZWOWC_ARTICLE_CHILD where matnr = 'art_no']]>
+</ITMLNK>
+
+</TCName>
+
+<TCName name = "IBTCreationfromStoretoStorebyselectingNearbystore">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles_3064>313838,25500,891961</articles_3064>
+<articles_1786>545775,892628</articles_1786>
+<articleqty>29</articleqty>
+<siteTo>3200</siteTo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+
+<TCName name = "IBTCreationfromStoretoStorebyselectingWarehouse">
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<OM>
+<![CDATA[select article_om from saap.zwowc_article_listing where matnr='art_no']]>
+</OM>
+<FrozenTemp>-50.34</FrozenTemp>
+<ChilledTemp>4.23</ChilledTemp>
+<SOHCALCULATION>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</SOHCALCULATION>
+<articles>148103,47554</articles>
+<articleqty>24</articleqty>
+<siteTo>1944</siteTo>
+<ContactName>Aswini</ContactName>
+<AuthNo>wer345457</AuthNo>
+<Store>
+<![CDATA[select KDGRP from saap.zwowc_cust_master where kunnr = 'store_no']]>
+</Store>
+<BaseUOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</BaseUOM>
+<DraftOrder>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date,auth_date,chilled_temperature,frozen_temperature,order_no from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder>
+<DraftOrder_error>
+<![CDATA[select supplier,create_user,status,order_type, pickup_date from LOCAL_WOW_DRAFT_IBT_ORDER where supplier = 'site_no']]>
+</DraftOrder_error>
+<IBTComments>
+<![CDATA[select supplier,site,create_user,pickup_date,auth_date,chilled_temperature,frozen_temperature,ebeln,matnr,MEINH from LOCAL_WOW_IBT_ORDER_COMMENTS where ebeln = 'ord_no']]>
+</IBTComments>
+</TCName>
+
+<TCName name = "IBTCreationforDisplayArticles">
+
+<articles_3064>790824</articles_3064>
+<articles_1786>425952</articles_1786>
+<articleqty>1</articleqty>
+<siteTo>1616</siteTo>
+<CostCenter>8261</CostCenter>
+<ALH>8022</ALH>
+
+</TCName>
+
+<TCName name = "IBTCancellation">
+<IBTOrderNumber>7010131753</IBTOrderNumber>
+<articles>select a.matnr from saap.zwowc_article_listing a, saap.ZWOWC_ARTICLE_master b WHERE a.matnr = b.matnr and b.online_desc like '%Chocolate%' and a.lifnr = '3908'</articles>
+</TCName>
+
+
+<TCName name = "CancelVendorOrder">
+<VendorOrderNumber>50247287</VendorOrderNumber>
+</TCName>
+</configuration>

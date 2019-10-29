@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="1" passed="1">
+  <reporter-output>
+  </reporter-output>
+  <suite name="StoresCentral_TestSuite" duration-ms="542668" started-at="2019-09-11T01:10:04Z" finished-at="2019-09-11T01:19:07Z">
+    <groups>
+    </groups>
+    <test name="POC_tests" duration-ms="542668" started-at="2019-09-11T01:10:04Z" finished-at="2019-09-11T01:19:07Z">
+      <class name="au.wow.ngbomain.tests.LaybyProducts">
+        <test-method status="PASS" signature="onStart()[pri:0, instance:au.wow.ngbomain.tests.LaybyProducts@6c5945a7]" name="onStart" is-config="true" duration-ms="1018" started-at="2019-09-11T11:10:03Z" finished-at="2019-09-11T11:10:04Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- onStart -->
+        <test-method status="PASS" signature="loadXMLFile()[pri:0, instance:au.wow.ngbomain.tests.LaybyProducts@6c5945a7]" name="loadXMLFile" is-config="true" duration-ms="172" started-at="2019-09-11T11:10:04Z" finished-at="2019-09-11T11:10:04Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- loadXMLFile -->
+        <test-method status="PASS" signature="setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.LaybyProducts@6c5945a7]" name="setUp" is-config="true" duration-ms="7550" started-at="2019-09-11T11:10:04Z" finished-at="2019-09-11T11:10:12Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void au.wow.ngbomain.tests.LaybyProducts.LaybyProducts_FDNewProduct() throws java.lang.InterruptedException,java.io.IOException]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[org.testng.TestRunner@5b7ea70d]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setUp -->
+        <test-method status="PASS" signature="LaybyProducts_FDNewProduct()[pri:0, instance:au.wow.ngbomain.tests.LaybyProducts@6c5945a7]" name="LaybyProducts_FDNewProduct" duration-ms="529284" started-at="2019-09-11T11:10:12Z" description="Creating a product" finished-at="2019-09-11T11:19:01Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- LaybyProducts_FDNewProduct -->
+        <test-method status="PASS" signature="flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.LaybyProducts@6c5945a7]" name="flushReports" is-config="true" duration-ms="3560" started-at="2019-09-11T11:19:01Z" finished-at="2019-09-11T11:19:05Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=LaybyProducts_FDNewProduct status=SUCCESS method=LaybyProducts.LaybyProducts_FDNewProduct()[pri:0, instance:au.wow.ngbomain.tests.LaybyProducts@6c5945a7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void au.wow.ngbomain.tests.LaybyProducts.LaybyProducts_FDNewProduct() throws java.lang.InterruptedException,java.io.IOException]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- flushReports -->
+        <test-method status="PASS" signature="tearDown()[pri:0, instance:au.wow.ngbomain.tests.LaybyProducts@6c5945a7]" name="tearDown" is-config="true" duration-ms="2099" started-at="2019-09-11T11:19:05Z" finished-at="2019-09-11T11:19:07Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method status="PASS" signature="flushReports1()[pri:0, instance:au.wow.ngbomain.tests.LaybyProducts@6c5945a7]" name="flushReports1" is-config="true" duration-ms="17" started-at="2019-09-11T11:19:07Z" finished-at="2019-09-11T11:19:07Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- flushReports1 -->
+      </class> <!-- au.wow.ngbomain.tests.LaybyProducts -->
+    </test> <!-- POC_tests -->
+  </suite> <!-- StoresCentral_TestSuite -->
+</testng-results>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite configfailurepolicy="continue" name="Failed suite [StoresCentral_TestSuite]">
+  <test name="POC_tests(failed)" parallel="classes">
+    <classes>
+      <class name="au.wow.ngbomain.tests.LaybyProducts">
+        <methods>
+          <include name="onStart"/>
+          <include name="tearDown"/>
+          <include name="loadXMLFile"/>
+          <include name="setUp"/>
+          <include name="flushReports"/>
+          <include name="flushReports1"/>
+          <include name="LaybyProducts_FDNewProduct"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.LaybyProducts -->
+    </classes>
+  </test> <!-- POC_tests(failed) -->
+</suite> <!-- Failed suite [StoresCentral_TestSuite] -->

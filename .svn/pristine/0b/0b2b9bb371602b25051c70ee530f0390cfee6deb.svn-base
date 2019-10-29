@@ -1,0 +1,702 @@
+package au.wow.ngbomain.pages;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.LTOAddOrEditObjects;
+import au.wow.ngbomain.tests.LTOAddOrEditTest;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+
+
+public class LTOAddOrEditPage extends BasePage{
+	private static Logger log = LogManager.getLogger(LTOAddOrEditTest.class);
+	static SQLWrapper sql = new SQLWrapper(log);
+	public static int actInUsect=0;
+	public static int actNotInUsect=0;
+	ExtentTest extLogger=LTOAddOrEditTest.extLogger;
+	String cName= LTOAddOrEditTest.cName;
+	String mName=LTOAddOrEditTest.mName;
+	public static XMLDataReader data=LTOAddOrEditTest.data;
+   	public static WebDriver driver;
+    public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+	int ctA=1;
+	public void navigateToLTOAdd(WebDriver driver){
+		 WebDriverWait wait = new WebDriverWait(driver, 60); 
+		 driver.switchTo().defaultContent();		
+		wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.stMgmt));
+		int i=0;
+		do{
+		try{
+			if(i>15){
+				throw new Exception();				
+			}
+			
+			LTOAddOrEditObjects.stMgmt.click();	
+			TimeUnit.SECONDS.sleep(2);
+			////System.out.println();
+			LTOAddOrEditObjects.LTO.click();
+			if(LTOAddOrEditObjects.addLTO.isDisplayed()){
+				break;
+			}
+		
+		}catch(Exception e){
+			i++;
+		}
+		}
+		while(true);
+		
+		 htmlToExtent(cName,mName,extLogger,driver,"Click Stock management;;;PASS"); 
+		 //wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.LTO));
+		
+		 htmlToExtent(cName,mName,extLogger,driver,"Click LTO management;;;PASS");
+		
+	}
+	
+	public void createLTOSM(WebDriver driver) {
+		try{
+			
+		 WebDriverWait wait = new WebDriverWait(driver, 60);
+		 wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.addLTO));
+		 TimeUnit.SECONDS.sleep(3);
+			LTOAddOrEditObjects.addLTO.click();
+			 htmlToExtent(cName,mName,extLogger,driver,"Click Add LTO Locations;;;PASS"); 
+		 Select dropdown = new Select(LTOAddOrEditObjects.selectFixture);
+		// wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.BWSdropDown));
+		 int ddIndex= ThreadLocalRandom.current().nextInt(1, 8);
+		 dropdown.selectByIndex(ddIndex);
+		 String fixture= LTOAddOrEditObjects.selectFixture.getText().split("\\r?\\n")[ddIndex];
+		 htmlToExtent(cName,mName,extLogger,driver,"Verify the user can able to select Fixture;;;PASS"); 
+		 int aisle= ThreadLocalRandom.current().nextInt(1, 10);
+		 Actions actions = new Actions(driver);
+		 actions.moveToElement(driver.findElement(By.xpath("//*[@id='ltoAisleDetails']/input["+aisle+"]")));
+		 driver.findElement(By.xpath("//*[@id='ltoAisleDetails']/input["+aisle+"]")).click();
+		 aisle= ThreadLocalRandom.current().nextInt(1, 15);
+		 actions.moveToElement(driver.findElement(By.xpath("//*[@id='ltoAisleDetails']/span/input["+aisle+"]")));
+		 driver.findElement(By.xpath("//*[@id='ltoAisleDetails']/span/input["+aisle+"]")).click();
+		 aisle= ThreadLocalRandom.current().nextInt(16,30);
+		 actions.moveToElement(driver.findElement(By.xpath("//*[@id='ltoAisleDetails']/span/input["+aisle+"]")));
+		 driver.findElement(By.xpath("//*[@id='ltoAisleDetails']/span/input["+aisle+"]")).click();
+		 TimeUnit.SECONDS.sleep(5);
+		 htmlToExtent(cName,mName,extLogger,driver,"Verify the user can able to select one or multile Aisle;;;PASS"); 
+		 wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.saveAndAdd));
+		LTOAddOrEditObjects.saveAndAdd.click();
+		htmlToExtent(cName,mName,extLogger,driver,"Click Save button and validate the navigation;;;PASS"); 
+		//Validate the Success message is getting displayed and location name
+
+		retrieveMessage(driver,"Success");
+		String successMesg=LTOAddOrEditObjects.message.getText();
+		
+		String lName=successMesg.split("-")[1].trim();
+		// Verify the location type should be changed as N after delete ZWOWT_C_LTO_LOCATION.
+		   
+        List<List<Object>> locTypeList = getDbResults("getlocationType","ValidateLTOLocationsSM",lName);	
+        String locType=null;
+		 if(locTypeList.size()!=0){
+			locType = locTypeList.get(0).get(0).toString().trim();
+		 }
+		 
+		if(locType.equalsIgnoreCase("I")){
+			htmlToExtent(cName,mName,extLogger,driver,"Verify the location type should be I for active location and N for incative location,;;;PASS"); 
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver,"Verify the location type should be I for active location and N for incative location,;;;FAIL"); 
+			
+		}
+		
+		}catch(Exception e){
+			htmlToExtent(cName,mName,extLogger,driver,"Exception Occured :" +e.getClass().getSimpleName()+";;;FAIL");
+					
+			e.printStackTrace();
+		}
+	}
+	
+	public  void retrieveMessage(WebDriver driver,String text){
+		try{
+			WebDriverWait wait = new WebDriverWait(driver, 120);
+			wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.message));
+			String successMesg=LTOAddOrEditObjects.message.getText();
+			////System.out.println("Mesg:" + successMesg);
+			htmlToExtent(cName,mName,extLogger,driver,"Validate the success message is getting displayed.;;;PASS"); 
+			if(successMesg.contains(text)){
+				htmlToExtent(cName,mName,extLogger,driver,"Validate the location name is getting displayed alone with success message.;;;PASS"); 
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"Validate the location name is getting displayed alone with success message.;;;Fail"); 
+			}
+			}catch(Exception e){
+				////System.out.println("Success Mesg is not displayed");
+				htmlToExtent(cName,mName,extLogger,driver,"Validate the success message is getting displayed.;;;Fail"); 
+			}	
+	}
+	
+	public void createLTOBWS(WebDriver driver) throws InterruptedException{
+		
+		 WebDriverWait wait = new WebDriverWait(driver, 60);
+		 wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.addLTO));
+		 TimeUnit.SECONDS.sleep(20);
+		 int i=0;
+		 do{
+			 try{
+			LTOAddOrEditObjects.addLTO.click();
+			break;
+			 }catch(Exception e){
+				 i++;
+				 if(i>5){
+					 break;
+				 }
+			 }
+		 }while(true);
+			 htmlToExtent(cName,mName,extLogger,driver,"Click Add LTO Locations;;;PASS"); 
+		 Select dropdown = new Select(LTOAddOrEditObjects.selectFixture);
+		// wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.BWSdropDown));
+		 int ddIndex= ThreadLocalRandom.current().nextInt(1, 8);
+		 wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.addLTO));
+		 int k=0;
+		 do{
+		 try{
+		 dropdown.selectByIndex(ddIndex);
+		 break;
+		 }catch(Exception e){
+			k++; 
+			TimeUnit.SECONDS.sleep(3);
+			if(k>14){
+				 break;	
+			}
+		 }
+		 }while(true);
+		 String fixture= LTOAddOrEditObjects.selectFixture.getText().split("\\r?\\n")[ddIndex];
+		 htmlToExtent(cName,mName,extLogger,driver,"Verify the user can able to select Fixture;;;PASS"); 
+		 Actions actions = new Actions(driver);
+		 LTOAddOrEditObjects.BWSDept.click();
+		 
+		 LTOAddOrEditObjects.BWSdeptValue.click();
+		 LTOAddOrEditObjects.BWSdeptValue.click();
+		 int deptIndex= ThreadLocalRandom.current().nextInt(3, 10);
+		 actions.moveToElement(driver.findElement(By.xpath("//*[@tabindex='"+deptIndex+"' and @class='pointerFix']")));
+		 driver.findElement(By.xpath("//*[@tabindex='"+deptIndex+"' and @class='pointerFix']")).click();
+		 deptIndex= ThreadLocalRandom.current().nextInt(11, 16);
+		 actions.moveToElement(driver.findElement(By.xpath("//*[@tabindex='"+deptIndex+"' and @class='pointerFix']")));
+		 driver.findElement(By.xpath("//*[@tabindex='"+deptIndex+"' and @class='pointerFix']")).click();
+		 LTOAddOrEditObjects.deptDoneButton.click();
+		 TimeUnit.SECONDS.sleep(2);
+		 htmlToExtent(cName,mName,extLogger,driver,"Verify the user can able to select one or multile Aisle;;;PASS"); 
+		 wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.saveAndAdd));
+		LTOAddOrEditObjects.saveAndAdd.click();
+		htmlToExtent(cName,mName,extLogger,driver,"Click Save button and validate the navigation;;;PASS"); 
+		//Validate the Success message is getting displayed and location name
+
+		retrieveMessage(driver,fixture);
+		
+		
+		// Edit BWS Location
+	}
+	
+	public void createLTOBWStores(WebDriver driver) throws Exception{
+		
+		 WebDriverWait wait = new WebDriverWait(driver, 60);
+		 
+		 wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.addLTO));
+		 TimeUnit.SECONDS.sleep(3);
+		 int i=0;
+		 do{
+			 try{
+			LTOAddOrEditObjects.addLTO.click();
+			break;
+			 }catch(Exception e){
+				 i++;
+				 if(i>5){
+					 break;
+				 }
+			 }
+		 }while(true);
+			 htmlToExtent(cName,mName,extLogger,driver,"Click Add LTO Locations;;;PASS");
+		 Select dropdown = new Select(LTOAddOrEditObjects.selectFixture);
+		// wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.BWSdropDown));
+		 int ddIndex= ThreadLocalRandom.current().nextInt(1, 8);
+		 dropdown.selectByIndex(ddIndex);
+		 String fixture= LTOAddOrEditObjects.selectFixture.getText().split("\\r?\\n")[ddIndex];
+		 htmlToExtent(cName,mName,extLogger,driver,"Verify the user can able to select Fixture;;;PASS");
+		 Actions actions = new Actions(driver);
+		 LTOAddOrEditObjects.BWStoredept.click();
+		 List<WebElement> lstDrp = LTOAddOrEditObjects.BWStoredeptValue;
+		 lstDrp.get(1).click();
+		 lstDrp.get(1).click();
+		 int deptIndex= ThreadLocalRandom.current().nextInt(3, 150);
+		 actions.moveToElement(driver.findElement(By.xpath("//*[@tabindex='"+deptIndex+"' and @class='pointerFix']")));
+		 driver.findElement(By.xpath("//*[@tabindex='"+deptIndex+"' and @class='pointerFix']")).click();
+		 deptIndex= ThreadLocalRandom.current().nextInt(151, 350);
+		 actions.moveToElement(driver.findElement(By.xpath("//*[@tabindex='"+deptIndex+"' and @class='pointerFix']")));
+		 driver.findElement(By.xpath("//*[@tabindex='"+deptIndex+"' and @class='pointerFix']")).click();
+		 LTOAddOrEditObjects.BWStoredept.click();
+		 TimeUnit.SECONDS.sleep(2);
+		 htmlToExtent(cName,mName,extLogger,driver,"Verify the user can able to select one or multile Aisle;;;PASS"); 
+		 wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.saveAndAdd));
+		LTOAddOrEditObjects.saveAndAdd.click();
+		htmlToExtent(cName,mName,extLogger,driver,"Click Save button and validate the navigation;;;PASS"); 
+		//Validate the Success message is getting displayed and location name
+
+		retrieveMessage(driver,fixture);	
+		
+	}
+	
+	 public  List<List<Object>> getDbResults(String qName, String mName, String replace) throws SQLException{
+			data = new XMLDataReader(log);
+			TestBase.log.info("Loading data for the class: " );
+			data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\LTOAddOrEdit.xml");
+			data.getTCNameFromChildren(mName);
+			String query=null;
+			if(null==replace){
+			query =data.getText(qName);
+			}else{
+				query =data.getText(qName).replace("TEST", replace);	
+			}
+			
+			List<List<Object>> results = sql.executeQuery(getContext(), query);
+			return results;
+	   }
+  
+	 
+	public void validateLocCt(WebDriver driver) throws SQLException{
+		try{
+		String inUse=null;
+		String notinUse=null;
+		 Actions actions = new Actions(driver);
+		 WebDriverWait wait = new WebDriverWait(driver, 60); 
+		
+		 driver.navigate().refresh();
+		 //Verify the sorting and next page location details 
+		/* actions.moveToElement(LTOAddOrEditObjects.headerStatus);
+		 wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.headerStatus));
+		 LTOAddOrEditObjects.headerStatus.click();*/
+		 List<List<Object>> inUseList = getDbResults("getinUseCt","VerifyLTOLocationsSM",null);	
+		 if(inUseList.size()!=0){
+			inUse = inUseList.get(0).get(0).toString().trim();
+		 }
+		 List<List<Object>> notinUseList = getDbResults("getnotinUseCt","VerifyLTOLocationsSM",null);	
+		 if(notinUseList.size()!=0){
+			notinUse = notinUseList.get(0).get(0).toString().trim();
+		 }
+		
+		 int inUseCt=Integer.valueOf(inUse);		
+		 int totaliUse=0,totalniUse=0;
+		 if(LTOAddOrEditObjects.inUsestatus.size()>1){
+		 totaliUse=LTOAddOrEditObjects.inUsestatus.size()-1;
+		 }
+		 if(LTOAddOrEditObjects.notinUsestatus.size()>1){
+		 totalniUse=LTOAddOrEditObjects.notinUsestatus.size()-1;
+		 }
+		 if(ctA==1){
+		 
+		 /*if(inUseCt>10&&totaliUse==10){
+			 htmlToExtent(cName,mName,extLogger,driver,"Click on the header and validate the sorting;;;PASS"); 
+			 }else 
+	     if(inUseCt<=10&&totaliUse==inUseCt){
+	    	 htmlToExtent(cName,mName,extLogger,driver,"Click on the header and validate the sorting;;;PASS"); 
+		 }else{
+			 htmlToExtent(cName,mName,extLogger,driver,"Click on the header and validate the sorting;;;FAIL"); 
+		 }*/
+		 ctA++;
+		 }
+		 for(int i=1;i<=500;i++){
+			 try{
+			
+			 actions.moveToElement(LTOAddOrEditObjects.next.get(1));
+			 LTOAddOrEditObjects.next.get(1).click();
+			 TimeUnit.SECONDS.sleep(2);
+			 totaliUse=totaliUse+LTOAddOrEditObjects.inUsestatus.size()-1;
+			 totalniUse=totalniUse+LTOAddOrEditObjects.notinUsestatus.size()-1;
+			 }catch(Exception e){
+				 break;
+			 }
+		 }
+			 
+			if(totaliUse==inUseCt){				
+				htmlToExtent(cName,mName,extLogger,driver,"Validate the in Use count matching with DB.  Application Value : "+totaliUse+" DB Value : "+inUseCt+";;;PASS"); 
+				////System.out.println("Validate the in Use count matching with DB.  Application Value : "+totaliUse+" DB Value : "+inUseCt);
+		 }else{
+			 htmlToExtent(cName,mName,extLogger,driver,"Validate the in Use count matching with DB.  Application Value : "+totaliUse+" DB Value : "+inUseCt+";;;FAIL"); 
+					
+			 ////System.out.println("Validate the in Use count matching with DB.  Application Value : "+totaliUse+" DB Value : "+inUseCt);
+		 }
+			int notinUseCt=Integer.valueOf(notinUse);
+			/* int notinUsePages=notinUseCt/10;
+			 			
+			 for(int i=1;i<=notinUsePages;i++){
+				 actions.moveToElement(LTOAddOrEditObjects.next.get(1));
+				 LTOAddOrEditObjects.next.get(1).click();
+				 totalniUse=totalniUse+LTOAddOrEditObjects.notinUsestatus.size()-1; 
+			 }*/
+			 
+				if(totalniUse==notinUseCt){				
+					htmlToExtent(cName,mName,extLogger,driver,"Validate the in Use count matching with DB.  Application Value : "+totalniUse+" DB Value : "+notinUseCt+";;;PASS"); 
+							
+					////System.out.println("Validate the in Use count matching with DB.  Application Value : "+totalniUse+" DB Value : "+notinUseCt);
+			 }else{
+				 htmlToExtent(cName,mName,extLogger,driver,"Validate the in Use count matching with DB.  Application Value : "+totalniUse+" DB Value : "+notinUseCt+";;;FAIL"); 
+				 ////System.out.println("Validate the in Use count matching with DB.  Application Value : "+totalniUse+" DB Value : "+notinUseCt);
+		}
+				actInUsect=Integer.valueOf(totaliUse);
+				actNotInUsect=Integer.valueOf(totalniUse);
+
+		}catch(Exception e){
+			htmlToExtent(cName,mName,extLogger,driver,"Exception Occured :" +e.getClass().getSimpleName()+";;;FAIL"); 
+			e.printStackTrace();
+		}
+	}
+	
+   public void validatePrint(WebDriver driver) {
+	   try{
+	   List<List<Object>> inUseList = getDbResults("getLocCt","VerifyLTOLocationsSM",null);	
+	   String inUse=null;
+	   WebDriverWait wait = new WebDriverWait(driver, 60);
+	   Actions actions = new Actions(driver);
+	   driver.navigate().refresh();
+	   int locCt=0;
+		 if(inUseList.size()!=0){
+			inUse = inUseList.get(0).get(0).toString().trim();
+		 }
+		 locCt=Integer.valueOf(inUse);
+		 int index=0;
+		 if(LTOAddOrEditObjects.checkBoxList.size()>2){
+		 index= ThreadLocalRandom.current().nextInt(0, LTOAddOrEditObjects.checkBoxList.size()-1);
+		 }
+		 for(int i=1;i<=(locCt/10);i++){
+			 if(i>4){
+				 break;
+			 }
+			 //driver.navigate().refresh();
+			 wait.until(ExpectedConditions
+						.elementToBeClickable(LTOAddOrEditObjects.checkBoxList.get(index)));
+			 actions.moveToElement(LTOAddOrEditObjects.checkBoxList.get(index));
+			 LTOAddOrEditObjects.checkBoxList.get(index).click();
+			 try{
+			 actions.moveToElement(LTOAddOrEditObjects.next.get(1));
+			 LTOAddOrEditObjects.next.get(1).click();
+			 }catch(Exception e){
+				 
+			 }
+			 
+		 }
+		 htmlToExtent(cName,mName,extLogger,driver,"Verify the user can able to select one or multiple lto locations check box;;;PASS"); 
+		
+		LTOAddOrEditObjects.printButton.click();
+		wait.until(ExpectedConditions
+				.elementToBeClickable(LTOAddOrEditObjects.printNo));
+		LTOAddOrEditObjects.printNo.click();
+
+		htmlToExtent(cName,mName,extLogger,driver,"Validate the popup is getitng displayed;;;PASS"); 
+			
+		htmlToExtent(cName,mName,extLogger,driver,"Validate the no is redirecting to list of lto location screen.;;;PASS"); 
+		
+		wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.printButton));
+		LTOAddOrEditObjects.printButton.click();
+	   	wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.printYes));
+	   	LTOAddOrEditObjects.printYes.click();
+	   	////System.out.println(driver.getCurrentUrl());
+	   }catch(Exception e){
+			htmlToExtent(cName,mName,extLogger,driver,"Exception Occured :" +e.getClass().getSimpleName()+";;;FAIL"); 
+			e.printStackTrace();
+		}
+	   /*	Set<String> handles= driver.getWindowHandles();
+	   	for(String name:handles)
+	   	{
+	   		driver.switchTo().window(name);	 
+	   	}
+	   	if(driver.getCurrentUrl().contains("pdf")){
+	   		
+	   	}else{
+	   		
+	   	}
+	   	driver.close();
+	   	driver.switchTo().window(winName);*/
+	   	
+   }
+   
+   public void createNotInUseLoc(WebDriver driver) {
+	   try{
+	   List<List<Object>> results = getDbResults("getnotInuseLoc","VerifyLTONonInUSeLocSM",null);
+	   	validateLocCt(driver);
+		int beforeInUseCt=actInUsect;
+		int beforeNotInUseCt=actNotInUsect;
+		if(results.size()!=0)
+		{		
+			int randomNum = ThreadLocalRandom.current().nextInt(1, results.size());			
+			 String locName = results.get(randomNum).get(0).toString().trim();
+			 String[] locations= locName.split("\\.");
+	           String location =locations[0].replaceAll("[0-9]", "").trim();
+			 List<List<Object>> aisleResults = getDbResults("getAisle","VerifyLTONonInUSeLocSM",locName.trim());
+			 WebDriverWait wait = new WebDriverWait(driver, 60);
+			 wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.addLTO));
+			 int i=0;
+			 do{
+				 try{
+				LTOAddOrEditObjects.addLTO.click();
+				break;
+				 }catch(Exception e){
+					 i++;
+					 if(i>5){
+						 break;
+					 }
+				 }
+			 }while(true);
+				 htmlToExtent(cName,mName,extLogger,driver,"Click Add LTO Locations;;;PASS"); 
+			 Select dropdown = new Select(LTOAddOrEditObjects.selectFixture);
+			 wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//*[contains(text(),'Chiller')]"))));
+			 List<WebElement> options = dropdown.getOptions();
+			 for(WebElement option : options)
+			 {
+			     if( option.getAttribute("value").equals(location) )
+			     {
+			         option.click();
+			         break;
+			     }
+			 }
+			 //dropdown.selectByValue(location);
+			 htmlToExtent(cName,mName,extLogger,driver,"Verify the user can able to select Fixture;;;PASS"); 
+			 for(List<Object> aisle:aisleResults ){
+					String al= String.valueOf(aisle).replaceAll("\\[", "").replaceAll("\\]","").trim();
+				 if(Integer.valueOf(al)<=10){				
+					wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//*[@id='ltoAisleDetails']/input["+al+"]"))));
+					driver.findElement(By.xpath("//*[@id='ltoAisleDetails']/input["+al+"]")).click();
+				 }else{
+					 wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//*[@id='ltoAisleDetails']/span/input["+(Integer.valueOf(al)-10)+"]"))));
+					 driver.findElement(By.xpath("//*[@id='ltoAisleDetails']/span/input["+(Integer.valueOf(al)-10)+"]")).click(); 
+				 }
+				}	
+			 
+			 TimeUnit.SECONDS.sleep(2);
+			 htmlToExtent(cName,mName,extLogger,driver,"Select the fixture and aisle from not in use location tab;;;PASS");
+			 wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.saveAndAdd));
+			LTOAddOrEditObjects.saveAndAdd.click();
+			htmlToExtent(cName,mName,extLogger,driver,"clcik create new location and select the fixture and aisle captured from not in use;;;PASS"); 
+			//Validate the Success message is getting displayed and location name
+			retrieveMessage(driver,location);
+			
+            validateLocCt(driver);
+            if(beforeInUseCt<actInUsect && beforeNotInUseCt>actNotInUsect){
+            	htmlToExtent(cName,mName,extLogger,driver,"verify the not in use count reduced and same location changed as in use;;;PASS");
+            	
+            	
+            }else{
+            	htmlToExtent(cName,mName,extLogger,driver,"verify the not in use count reduced and same location changed as in use;;;Fail"); 
+            }
+			
+		}
+   }catch(Exception e){
+		htmlToExtent(cName,mName,extLogger,driver,"Exception Occured :" +e.getClass().getSimpleName()+";;;FAIL"); 
+		e.printStackTrace();
+	}
+   }
+   
+   public void deleteLTOLoc(WebDriver driver) {
+	   try{
+	   	 Actions actions = new Actions(driver);
+		 validateLocCt(driver);
+		 int beforeInUseCt=actInUsect;
+		 int beforeNotInUseCt=actNotInUsect;
+		 String locType=null;
+		 String locName;	
+		 driver.navigate().refresh();
+		 TimeUnit.SECONDS.sleep(4);
+		 actions.moveToElement(LTOAddOrEditObjects.headerStatus.get(0));
+		 LTOAddOrEditObjects.headerStatus.get(0).click();
+		 int ddIndex= ThreadLocalRandom.current().nextInt(0, LTOAddOrEditObjects.editButton.size()-1);
+		 actions.moveToElement(LTOAddOrEditObjects.editButton.get(ddIndex));
+		 locName=LTOAddOrEditObjects.firstLocName.get(ddIndex).getText().trim();
+		 String status= LTOAddOrEditObjects.status.getText();
+		 LTOAddOrEditObjects.editButton.get(ddIndex).click();
+			htmlToExtent(cName,mName,extLogger,driver,"Select the location from inuse location;;;PASS"); 
+		 actions.moveToElement(LTOAddOrEditObjects.deleteButton);
+		 LTOAddOrEditObjects.deleteButton.click();
+		 htmlToExtent(cName,mName,extLogger,driver,"select delete button and save it;;;PASS"); 
+		 actions.moveToElement(LTOAddOrEditObjects.editSaveButton);
+		 LTOAddOrEditObjects.editSaveButton.click();
+		 TimeUnit.SECONDS.sleep(4);
+		 retrieveMessage(driver, "Success");
+		  validateLocCt(driver);
+		  if(status.equalsIgnoreCase("In use")){
+			  if(beforeInUseCt>actInUsect && beforeNotInUseCt<actNotInUsect){
+		          	htmlToExtent(cName,mName,extLogger,driver,"Verify the location changed as Not in Use by checking  in UI;;;PASS"); 
+		          	
+		          }else{
+		          	htmlToExtent(cName,mName,extLogger,driver,"Verify the location changed as Not in Use by checking  in UI;;;Fail"); 
+		          }  
+		  }else{
+			  if(beforeInUseCt==actInUsect && beforeNotInUseCt<actNotInUsect){
+		          	htmlToExtent(cName,mName,extLogger,driver,"Verify the location changed as Not in Use by checking  in UI;;;PASS"); 
+		          	
+		          }else{
+		          	htmlToExtent(cName,mName,extLogger,driver,"Verify the location changed as Not in Use by checking  in UI;;;Fail"); 
+		          }   
+		  }
+          
+          
+          // Verify the location type should be changed as N after delete ZWOWT_C_LTO_LOCATION.
+			   
+          List<List<Object>> locTypeList = getDbResults("getlocationType","ValidateLTOLocationsSM",locName);	
+          
+ 		 if(locTypeList.size()!=0){
+ 			locType = locTypeList.get(0).get(0).toString().trim();
+ 		 }
+ 		 
+ 		if(locType.equalsIgnoreCase("N")){
+ 			htmlToExtent(cName,mName,extLogger,driver," Verify the location type should be changed as N after delete ZWOWT_C_LTO_LOCATION;;;PASS"); 
+ 		}else{
+ 			htmlToExtent(cName,mName,extLogger,driver," Verify the location type should be changed as N after delete ZWOWT_C_LTO_LOCATION;;;FAIL"); 
+ 		}
+ 		
+ 		//Verify the user can able to delete the LTO location from not in use
+
+ 		beforeInUseCt=actInUsect;
+		beforeNotInUseCt=actNotInUsect;
+		
+		driver.navigate().refresh();
+		WebDriverWait wait = new WebDriverWait(driver, 60); 
+		 wait.until(ExpectedConditions.elementToBeClickable(LTOAddOrEditObjects.headerStatus.get(0)));
+		 actions.moveToElement(LTOAddOrEditObjects.headerStatus.get(0));		 
+		 LTOAddOrEditObjects.headerStatus.get(0).click();
+		 LTOAddOrEditObjects.headerStatus.get(0).click();
+		 ddIndex= ThreadLocalRandom.current().nextInt(0, LTOAddOrEditObjects.editButton.size()-1);
+		 actions.moveToElement(LTOAddOrEditObjects.editButton.get(ddIndex));
+		 locName=LTOAddOrEditObjects.firstLocName.get(ddIndex).getText().trim();
+		 LTOAddOrEditObjects.editButton.get(ddIndex).click();		 
+			htmlToExtent(cName,mName,extLogger,driver,"Select the location from inuse location;;;PASS"); 
+			actions.moveToElement(LTOAddOrEditObjects.deleteButton);
+		 LTOAddOrEditObjects.deleteButton.click();
+		 htmlToExtent(cName,mName,extLogger,driver," select delete button and save it;;;PASS"); 
+		 actions.moveToElement(LTOAddOrEditObjects.editSaveButton);
+		 LTOAddOrEditObjects.editSaveButton.click();
+		 retrieveMessage(driver, "LTO Removed Successfully");
+		  validateLocCt(driver);
+         if(beforeInUseCt==actInUsect && beforeNotInUseCt>actNotInUsect){
+         	htmlToExtent(cName,mName,extLogger,driver,"Verify the location changed as Not in Use by checking  in UI;;;PASS"); 
+         	
+         }else{
+         	htmlToExtent(cName,mName,extLogger,driver,"Verify the location changed as Not in Use by checking  in UI;;;Fail"); 
+         }
+         
+         // Verify the location type should be changed as N after delete ZWOWT_C_LTO_LOCATION.
+			   
+         List<List<Object>> locType1 = getDbResults("getlocationType","ValidateLTOLocationsSM",locName);	
+         
+				 
+		if(locType1.size()==0){
+			htmlToExtent(cName,mName,extLogger,driver," Verify the location type should be changed as N after delete ZWOWT_C_LTO_LOCATION;;;PASS"); 
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver," Verify the location type should be changed as N after delete ZWOWT_C_LTO_LOCATION;;;FAIL");
+		}
+   }catch(Exception e){
+		htmlToExtent(cName,mName,extLogger,driver,"Exception Occured :" +e.getClass().getSimpleName()+";;;FAIL");				
+		e.printStackTrace();
+	}
+   }
+
+   
+   public void editLTOLoc(WebDriver driver) throws SQLException{
+	   try{
+	     Actions actions = new Actions(driver);
+	     validateLocCt(driver);
+		 int beforeInUseCt=actInUsect;
+		 int beforeNotInUseCt=actNotInUsect;
+		 String locName;
+		
+		
+		 //driver.navigate().refresh();
+		 actions.moveToElement(LTOAddOrEditObjects.headerStatus.get(0));
+		 LTOAddOrEditObjects.headerStatus.get(0).click();
+		 int ddIndex=0;
+		 if(LTOAddOrEditObjects.editButton.size()>1){
+		 ddIndex= ThreadLocalRandom.current().nextInt(0, LTOAddOrEditObjects.editButton.size()-1);
+		 }
+		 actions.moveToElement(LTOAddOrEditObjects.editButton.get(ddIndex));
+		 locName=LTOAddOrEditObjects.firstLocName.get(ddIndex).getText().trim();
+		 LTOAddOrEditObjects.editButton.get(ddIndex).click();				
+		 
+		 Select dropdown = new Select(LTOAddOrEditObjects.selectFixture);
+		 List<WebElement> options = dropdown.getOptions();
+		 String tabId=null;
+		 for(WebElement option : options)
+		 {
+		     if( option.getAttribute("value").equals(locName.split("\\.")[0].replaceAll("[0-9]", "").trim()) )
+		     {
+		    	 tabId=option.getAttribute("fixture_id").trim(); 	
+		    	 LTOAddOrEditObjects.fixtureDropDown.click();
+		    	 if(null!=tabId && tabId.equals("19"))	{
+		    		
+		    		 driver.findElements(By.xpath("//*[@fixture_id='"+(Integer.valueOf(tabId)+1)+"']")).get(1).click();
+		    		 break;
+		    	 }else{
+		    		 
+		    		 driver.findElements(By.xpath("//*[@fixture_id='"+(Integer.valueOf(tabId)-1)+"']")).get(1).click(); 
+		    		 break;
+		    	 }
+		     }
+		    	 
+		        
+		    
+		 }
+		
+		 List<List<Object>> aisleResults = getDbResults("getAisle","VerifyLTONonInUSeLocSM",locName.trim());
+		 for(List<Object> aisleValues:aisleResults ){
+				if(aisleResults.size()>1){
+				String al= String.valueOf(aisleValues).replaceAll("\\[", "").replaceAll("\\]","").trim();
+				if((Integer.valueOf(al)==1)){
+					driver.findElement(By.xpath("//*[contains(@name,'editAisle') and @value="+(Integer.valueOf(al)+1)+"]")).click();
+					}else{
+						driver.findElement(By.xpath("//*[contains(@name,'editAisle') and @value="+(Integer.valueOf(al)-1)+"]")).click();
+					}
+		
+				break;
+				}else{
+					String al= String.valueOf(aisleValues).replaceAll("\\[", "").replaceAll("\\]","").trim();					
+					if((Integer.valueOf(al)==1)){
+					driver.findElement(By.xpath("//*[contains(@name,'editAisle') and @value="+(Integer.valueOf(al)+1)+"]")).click();
+					}else{
+						driver.findElement(By.xpath("//*[contains(@name,'editAisle') and @value="+(Integer.valueOf(al)-1)+"]")).click();
+					}
+				}
+			}
+			
+			htmlToExtent(cName,mName,extLogger,driver,"Verify the user can able to select one or multile Aisle;;;PASS");
+			 actions.moveToElement(LTOAddOrEditObjects.editSaveButton);
+			 LTOAddOrEditObjects.editSaveButton.click();
+			
+			htmlToExtent(cName,mName,extLogger,driver,"Click Save button and validate the navigation;;;PASS"); 
+					
+			
+			 retrieveMessage(driver, "Success");
+			  validateLocCt(driver);
+	         if(beforeInUseCt==actInUsect && beforeNotInUseCt<actNotInUsect){
+	         	htmlToExtent(cName,mName,extLogger,driver,"Validate the inUse and Not in Use Count;;;PASS");
+	         	
+	         }else{
+	         	//htmlToExtent(cName,mName,extLogger,driver,"Validate the inUse and Not in Use Count;;;Fail"); 
+	 					
+	         }
+   }catch(Exception e){
+		htmlToExtent(cName,mName,extLogger,driver,"Exception Occured :" +e.getClass().getSimpleName()+";;;FAIL"); 
+		e.printStackTrace();
+	}     
+   }
+   
+
+
+}

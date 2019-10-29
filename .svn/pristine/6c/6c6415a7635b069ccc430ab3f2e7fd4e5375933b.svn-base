@@ -1,0 +1,1253 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.sql.SQLException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+
+import com.relevantcodes.extentreports.ExtentTest;
+import com.sybase.jdbc3.a.b.af;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.ReceivingSegmentObjects;
+import au.wow.ngbomain.tests.ReceivingSegmentsTest;
+
+public class ReceivingSegmentPage extends BasePage{
+	
+	
+	CommonFunctions common = PageFactory.initElements(ReceivingSegmentsTest.driver, CommonFunctions.class);
+	private Logger log = LogManager.getLogger(ReceivingSegmentsTest.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	public static XMLDataReader data;
+	
+	String retString;
+	String hightempcheck;
+	//String isAllCancelled;
+	List<String> segmentStatus = new ArrayList<>();
+	List<String> segmentStatusEnq = new ArrayList<>();
+	List<String> segmentStatusOvTab = new ArrayList<>();
+	List<String> seg_number = new ArrayList<>();
+	ReceivingSegmentsTest objRxSegmentTest;
+	int palletRx=0,Pallet=0,article=0,cartRx=0,DispQty=0,cartOrd=0,palletReturned=0;//c=0
+	double DispWght=0,WghtRx=0;
+	int palletRx_2=0,Pallet_2=0,article_2=0,cartRx_2=0,DispQty_2=0,cartOrd_2=0,palletReturned_2=0;
+	float DispWght_2=0,WghtRx_2=0;
+	
+	ExtentTest extLogger=ReceivingSegmentsTest.extLogger;
+	String cName= ReceivingSegmentsTest.cName;
+	String mName=ReceivingSegmentsTest.mName;
+    WebDriver driver;
+    public String returnedString;
+    public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+    
+    List<List<Object>> rxSummary = new ArrayList<List<Object>>();
+    List<List<Object>> segDetails = new ArrayList<List<Object>>();
+    List<List<Object>> rxDiscrepancy  = new ArrayList<List<Object>>();
+    List<List<Object>> rxValueUpadte  = new ArrayList<List<Object>>();
+    List<List<Object>> afterSegRecv  = new ArrayList<List<Object>>();
+    List<List<Object>> calculatedSoh = new ArrayList<List<Object>>();
+    
+    public boolean toOrderEnqPage(ReceivingSegmentObjects objRxSegmentObjects,WebDriver driver) throws AWTException{
+		//waitForJSandJQueryToLoad(driver);; 
+		waitFor(5);
+		Point coordinates = objRxSegmentObjects.orders.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(objRxSegmentObjects.orders).click().build().perform();	
+		waitFor(5);
+		
+		Point coordinates2 = objRxSegmentObjects.orderEnquiry.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates2.getX(),coordinates2.getY()+100);
+		
+	
+		action.moveToElement(objRxSegmentObjects.orderEnquiry).click().build().perform();
+		waitFor(5);
+		
+		waitForJSandJQueryToLoad(driver);
+		
+		try{
+			
+			if(objRxSegmentObjects.overDueTable.isDisplayed()){
+				
+				//htmlToExtent(cName,mName,extLogger,driver,"Order enquiry page has been loaded;;;Pass");
+			}
+		}
+		catch(Exception e){
+				
+				if(objRxSegmentObjects.errorMessage.isDisplayed()){
+					
+					htmlToExtent(cName,mName,extLogger,driver,""+objRxSegmentObjects.errorMessage.getText()+";;;Info");
+					return false;
+				}
+				
+				else{
+					
+					htmlToExtent(cName,mName,extLogger,driver,"Order enquiry page is not loaded;;;Fail");
+					return false;
+				}
+		}
+			
+			return true;
+				
+	}
+    
+    public List<String> deliveryTabCheck(ReceivingSegmentObjects objRxSegmentObjects,String orderNo,List<List<Object>> result_seg,WebDriver driver) throws AWTException, SQLException, IOException{
+    	
+    	List<List<Object>> segNo = new ArrayList<List<Object>>();
+    	List<String> deliveryAndSegmentNumber = new ArrayList();
+    	String totaldelivery = objRxSegmentObjects.totalDelivery.getText();
+    	int count=0;
+    	
+    	for(int i=2;i<=objRxSegmentObjects.deliveryTabs.size();i++){
+    		
+    		WebElement deliverydetails =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.deliverydync, i,driver);
+    		String deliveryAppln = deliverydetails.getText().replace("Delivery ", "").substring(0,deliverydetails.getText().indexOf("S")-1).replace("Segment", "").trim();
+    		System.out.println(deliveryAppln);
+    		deliveryAndSegmentNumber.add(deliveryAppln);
+    		segNo.addAll(StringToListCreation(deliveryAppln));
+    	    		    		
+    	}
+    	
+    	htmlToExtent(cName,mName,extLogger,driver, "Total of "+totaldelivery+" deliveries available which are "+deliveryAndSegmentNumber+";;;Pass"); 
+    	htmlToExtent(cName,mName,extLogger,driver, "*****Checking delivery number from Application and DB*****;;;Info");
+    	
+    	if(deliveryAndSegmentNumber.size() == result_seg.size()){  		
+    		ElementContains1(cName,mName,extLogger,driver,result_seg,segNo); 
+    	}
+    	else{ 		
+    		htmlToExtent(cName,mName,extLogger,driver, "Delivery Number from Application DOES NOT matches with DB;"+deliveryAndSegmentNumber+";"+result_seg+";Fail");
+    	}
+    	return deliveryAndSegmentNumber;  	
+    } 
+    
+    public List<List<Object>> onShowAndDeliveryDate(ReceivingSegmentObjects objRxSegmentObjects,WebDriver driver) throws AWTException, SQLException{
+    	
+    	List<List<Object>> dates = new ArrayList<List<Object>>();
+    	String totaldelivery = objRxSegmentObjects.totalDelivery.getText();
+    	
+    	for(int i=2;i<=objRxSegmentObjects.deliveryTabs.size();i++){
+    		WebElement deliverydetails =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.deliverydync, i,driver);
+    		String deliveryAppln = deliverydetails.getText().replace("Delivery ", "").substring(0,deliverydetails.getText().indexOf("S")-1).replace("Segment", "").trim();
+    		deliverydetails.click();
+    		waitForJSandJQueryToLoad(driver);
+    		WebElement deliveryDate =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.deliveryDates, i,driver);
+    		WebElement onShowDate =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.onshowDateDync, i,driver);
+    		String temp = ""+deliveryAppln+":"+deliveryDate.getText()+":"+onShowDate.getText();
+    		dates.addAll(StringToListCreation(temp));
+    		
+    	}
+    	    	
+    	return dates;
+    }
+    
+    
+    public String segmentOrderedDetails(ReceivingSegmentObjects objRxSegmentObjects,List<List<Object>> segmentDetailsDB,int i,WebDriver driver) throws AWTException, IOException{
+    	
+    	List<List<Object>> applnValue = new ArrayList<List<Object>>();
+    	List<List<Object>> segmentDetailsAppln = new ArrayList<List<Object>>();
+    	List<List<Object>> dispchild = new ArrayList<List<Object>>();
+    	String totaldelivery = objRxSegmentObjects.totalDelivery.getText();
+    	//segmentStatus = null;
+    	
+    	if(true){
+    		WebElement deliverydetails =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.deliverydync, i,driver);
+    		String deliveryAppln = deliverydetails.getText().replace("Delivery ", "").substring(0,deliverydetails.getText().indexOf("S")-1).replace("Segment", "").trim();
+    		deliverydetails.click();
+    		waitForJSandJQueryToLoad(driver);
+    		verticalScroll(driver);
+    		WebElement clearGroup =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.clearGroupDync, i,driver);
+    		WebElement status =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.status, i,driver);
+    		String seg_status = status.getText();
+			clearGroup.click(); waitFor(1);
+    		List<WebElement> segTable =  prepareWebElementWithDynamicXpathWithIntList(objRxSegmentObjects.segmentTable, i,driver);
+    		List<List<Object>> segmentDetails = getValuesFromTable(segTable);
+    		//segDetails = getValuesFromTable(segTable);
+    		//String[] splittedString;
+    		for(int j=0;j<segmentDetails.size();j++){	
+    			displayCheck(objRxSegmentObjects, segmentDetailsAppln, i, j, driver);
+    			String articleAppln = segmentDetails.get(j).get(0).toString();
+				String omAppln = segmentDetails.get(j).get(3).toString().replaceAll("\\s+"," ").trim();
+				segDetails.addAll(StringToListCreation(omAppln));
+				System.out.println(segmentDetails);
+				String OrderedQtyAppln = segmentDetails.get(j).get(4).toString();
+				String orderedUnitAppln = segmentDetails.get(j).get(5).toString().replaceAll("\\s+"," ").trim();
+				String dispatchedQtyAppln = null;
+				String dispatchedUnitAppln  = null;
+				if(status.getText().equals("Dispatched")){
+				
+					dispatchedQtyAppln = segmentDetails.get(j).get(6).toString();
+					dispatchedUnitAppln = segmentDetails.get(j).get(7).toString().replaceAll("\\s+"," ").trim();
+					if(!dispatchedUnitAppln.contains("(")){
+						dispatchedUnitAppln = dispatchedUnitAppln+" "+"(0 EA)";
+					}
+				}	
+				else if(status.getText().equals("Cancelled")){
+					String[] splittedString1 = OrderedQtyAppln.split("\\s");
+					dispatchedQtyAppln = "0"+" "+splittedString1[1].trim();
+					dispatchedUnitAppln = "0 EA (0 EA)";
+				}
+				
+				//if(!omAppln.contains("(")){
+					if(omAppln.contains("KG")){
+						String[] base = omAppln.split("\\s");
+						if(base.length>2){
+							omAppln = String.format("%.03f", Float.parseFloat(base[0]))+" "+base[1]+" "+base[2]+" "+base[3];
+						}
+						else {
+							omAppln = omAppln+" "+"0 (EA)";
+						}
+					}
+					else {
+						omAppln = omAppln+" "+"0 (EA)";
+					}
+				//}
+								
+				if(!orderedUnitAppln.contains("(")){
+					orderedUnitAppln = orderedUnitAppln+" "+"(0 EA)";
+				}
+				
+				
+				String[] tempA = dispatchedUnitAppln.split("\\s"); //[240, EA, (0, EA)]
+				String decWght="";
+				//if(dispatchTotalWght.contains(".")){
+				if(tempA[1].contains("KG")){
+					decWght = String.format("%.03f", Float.parseFloat(tempA[0].trim()));//df.format(Float.parseFloat(tempA));
+				}else{
+					decWght = tempA[0]; //240
+				}
+				//String totalUnitDispatch = decWght+" "+tempA[1]+" "+dispatchTotalQty;
+				//240 EA (0 EA)
+				dispatchedUnitAppln = decWght+" "+dispatchedUnitAppln.substring(dispatchedUnitAppln.indexOf(" ")+1);
+				String addStringAppln = ""+articleAppln.trim()+":"+omAppln.trim()+":"+OrderedQtyAppln.trim()+":"+orderedUnitAppln.trim()+":"+dispatchedQtyAppln+":"+dispatchedUnitAppln;
+				segmentDetailsAppln.addAll(StringToListCreation(addStringAppln));				
+				}
+    		
+    		segmentStatus.add(status.getText().trim());
+    		System.out.println(segmentStatus);
+			seg_number.add(deliveryAppln);
+			System.out.println(seg_number);
+    		}
+    		ElementContains1(cName,mName,extLogger,driver,segmentDetailsDB,segmentDetailsAppln);   	
+    		return "null"; 
+    }
+    
+    public List<List<Object>> segmentTotalValueDetails(ReceivingSegmentObjects objRxSegmentObjects,List<String>segmentNumber,WebDriver driver) throws AWTException{
+    	
+    	String totaldelivery = objRxSegmentObjects.totalDelivery.getText();
+    	List<List<Object>> applnValue = new ArrayList<List<Object>>();
+    	for(int i=2;i<=Integer.parseInt(totaldelivery)+1;i++){
+    		WebElement deliverydetails =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.deliverydync, i,driver);
+    		deliverydetails.click();
+    		waitForJSandJQueryToLoad(driver);
+    		WebElement totalDispatch =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.totalDispatchedQty, i,driver);
+    		WebElement totalWeight =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.totalDispatchedWeight, i,driver);
+    		WebElement totalCart =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.totalCartons, i,driver);
+    		WebElement totalArt =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.totalArticle, i,driver);
+    		WebElement deliveryDate =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.deliveryDates, i,driver);
+    		WebElement onShowDate =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.onshowDateDync, i,driver);
+    		WebElement orderStatus =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.status, i,driver);
+    		String totalWeightString = totalWeight.getText();
+    		if(totalWeightString.contains("NA")){
+    			totalWeightString = "0.000"; 
+    		}
+    		String temp = segmentNumber.get(i-2)+":"+totalDispatch.getText()+""+".000"+":"+String.format("%.03f", Float.parseFloat(totalWeightString))+":"+totalArt.getText()+":"+deliveryDate.getText()+":"+onShowDate.getText();
+    		applnValue.addAll(StringToListCreation(temp));	
+    		
+    		String tempRx = segmentNumber.get(i-2)+":"+totalArt.getText()+":"+totalCart.getText()+":"+totalDispatch.getText()+":"+orderStatus.getText();
+    		rxSummary.addAll(StringToListCreation(tempRx));
+    		
+    	}
+    	return applnValue;
+    }
+    
+    public void receivingSegments(ReceivingSegmentObjects objRxSegmentObjects,String recvType,int i,int c,List<String>segmentNumber,String chilledTemp,String frozenTemp,String orderNo,WebDriver driver) throws AWTException, IOException{
+    	
+    	
+    	String totaldelivery = objRxSegmentObjects.totalDelivery.getText();
+    	hightempcheck="false";
+    	    	
+    	
+    		
+    		int count=0;
+    		if(recvType.equalsIgnoreCase("fullhightemp") || recvType.equalsIgnoreCase("fullhightemplater")){
+	    		chilledTemp = "6";
+				frozenTemp = "-13";
+				hightempcheck = "true";
+			}
+    		WebElement deliverydetails =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.deliverydync, i,driver);
+    		//tableSegment =  prepareWebElementWithDynamicXpathWithIntList(objRxSegmentObjects.segmentTable, i,driver);
+    		deliverydetails.click();
+    		try{
+    			waitForJSandJQueryToLoad(driver);
+    		}catch(Exception e){
+    			waitForPageToLoad(driver);
+    		}
+    		WebElement tempFlag =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.tempFlag, i-1,driver);
+    		WebElement orderStatus =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.status, i,driver);	
+    		try{
+    			if(tempFlag.isDisplayed()){
+    				count = 1;
+    			}
+    		}catch(Exception e){
+    			
+    		}
+    		//WebElement rxButton =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.receviceBtn, i-1,driver);
+    		String oStatus = orderStatus.getText().trim();
+    		if(oStatus.equals("Dispatched")){
+    			objRxSegmentObjects.receiveBtn.click();
+    			waitForJSandJQueryToLoad(driver);
+    		}
+    		else if(oStatus.equals("Cancelled")){
+    			htmlToExtent(cName,mName,extLogger,driver,"Segment #"+segmentNumber.get(i-2)+" is cancelled,Continuing with next segment if any available;;;Pass");
+    			toOrderEnqPage(objRxSegmentObjects, driver);
+        		objRxSegmentObjects.orderNoSend.sendKeys(orderNo);
+    			objRxSegmentObjects.goBtn.click();
+    			waitForJSandJQueryToLoad(driver);
+    			String oStatusEnq = objRxSegmentObjects.statusOrderEnq.getText().replaceAll("\\s+"," ");
+    			segmentStatusEnq.add(oStatusEnq);
+    			
+    			objRxSegmentObjects.filteredOrder.click();
+    			waitForJSandJQueryToLoad(driver);
+    			WebElement orderStatus2 = prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.status, 1,driver);
+    			String oStatus2 = orderStatus2.getText().trim();
+    			segmentStatusOvTab.add(oStatus2);
+    			return;//continue;
+    		}
+    		
+    		try{
+    			if(objRxSegmentObjects.sessionPopUp.isDisplayed()){
+    				objRxSegmentObjects.resumeSession.click();
+    				waitForJSandJQueryToLoad(driver);
+    			}
+    			
+    		}catch(Exception e){
+    			
+    		}
+    		List<String> recvMethod = new ArrayList<>();
+    		for(int rM=1;rM<=objRxSegmentObjects.recvMethodsList.size();rM++){
+    			WebElement rMValue = prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvMethods, rM,driver);
+    			recvMethod.add(rMValue.getText());
+    		}
+    		
+    		htmlToExtent(cName,mName,extLogger,driver, "*****Following Receive Methods are available for the orders*****;;;Info");
+    		htmlToExtent(cName,mName,extLogger,driver, ""+recvMethod+";;;Pass");
+    		
+    		if(objRxSegmentObjects.fullRadio.isSelected()){
+    			System.out.println("Full Buttn Selected");
+    			htmlToExtent(cName,mName,extLogger,driver, "By default Receive in Full Method is selected;;;Pass");
+    		}else{
+    			htmlToExtent(cName,mName,extLogger,driver, "By default Receive in Full Method is NOT selected;;;Fail");
+    		}
+  		
+    		
+    		
+    		
+    		if(recvType.contains("full")){
+    			objRxSegmentObjects.rxFullBtn.click();
+    		}
+    		else if(recvType.contains("exception")){
+    			objRxSegmentObjects.rxExceptionBtn.click();
+    			objRxSegmentObjects.recvMethodChangeYes.click();
+    		}
+    		//objRxSegmentObjects.rxFullBtn.click();
+    		try{
+    			if(count == 1 && objRxSegmentObjects.tempDetail.isDisplayed()){
+    				if(objRxSegmentObjects.chilledTemp.isDisplayed()){
+    					objRxSegmentObjects.chilledTempBox.sendKeys(chilledTemp);
+    					htmlToExtent(cName,mName,extLogger,driver, "Chilled Temperature given as "+chilledTemp+";;;Pass");
+    				}
+    				if(objRxSegmentObjects.hardFrozenTemp.isDisplayed()){
+    					objRxSegmentObjects.hardFrozenTempBox.sendKeys(frozenTemp);
+    					htmlToExtent(cName,mName,extLogger,driver, "Hardfrozen Temperature given as "+frozenTemp+";;;Pass");
+    				}
+    			}else if(count == 1 || objRxSegmentObjects.tempDetail.isDisplayed()){
+    				if(count == 1){
+    					htmlToExtent(cName,mName,extLogger,driver, "Temperature check is displayed for segment but Temperature Box to send is not available;;;Fail");
+    				}
+    				if(objRxSegmentObjects.tempDetail.isDisplayed()){
+    					htmlToExtent(cName,mName,extLogger,driver, "Temperature Box to send is available for segment but Temperature check is not displayed;;;Fail");
+    				}
+    			}
+    		}catch(Exception e){
+    			htmlToExtent(cName,mName,extLogger,driver, "Temperature check is not available for the segment;;;Pass");
+    		}
+    		
+    		try{
+    			
+    			if(driver.findElement(By.xpath("//*[@id='invoice']")).isDisplayed()){
+    				driver.findElement(By.xpath("//*[@id='invoice']")).sendKeys("1234");
+    			}
+    			
+    		}catch(Exception e){
+    			
+    		}
+    		
+    		objRxSegmentObjects.nextBtn.click();
+    		waitForJSandJQueryToLoad(driver);
+    		
+    		if(count ==1 && recvType.equals("fullhightemp")  || recvType.equalsIgnoreCase("fullhightemplater")){
+				waitForElement(objRxSegmentObjects.tempOutOfRange, driver);
+				if(objRxSegmentObjects.tempOutOfRange.isDisplayed()){
+					htmlToExtent(cName,mName,extLogger,driver, ""+objRxSegmentObjects.tempOutOfRange.getText()+";;;Pass");
+					objRxSegmentObjects.rejectTemp.click();
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Temperature out of range popup not displayed when giving higher temperature;;;Fail");
+				}
+			}
+    		
+    		if(recvType.contains("exception")){
+	    		try{
+	    			if(objRxSegmentObjects.recvExceptionUpdateQuantityTab.isDisplayed()){
+	    				for(int p=1;p<=objRxSegmentObjects.recvBoxList.size();p++){
+	    					WebElement qtytextBox =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvExceptionQty, p,driver);
+	    					String initialQty = qtytextBox.getAttribute("value");
+	    					if(i!=3 && Integer.parseInt(initialQty) > 0){
+	    						qtytextBox.clear();
+	    						qtytextBox.sendKeys(Integer.toString(Integer.parseInt(initialQty)+5));
+	    					}
+	    					else if(i==3 && Integer.parseInt(initialQty) > 0){
+	    						qtytextBox.clear();
+	    						qtytextBox.sendKeys(Integer.toString(Integer.parseInt(initialQty)+5));
+	    					}
+	    					else if(i==3 && Integer.parseInt(initialQty) == 0){
+	    						continue;
+	    					}
+	    				}
+	    				for(int q=1;q<=objRxSegmentObjects.wtBoxList.size();q++){
+	    					WebElement wttextBox =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvExceptionWeight, q,driver);
+	    					String initialwt = wttextBox.getAttribute("value");
+	    					double wt = Float.parseFloat(initialwt);
+	    					wt = wt+2.235;
+	    					if(i!=3 && Float.parseFloat(initialwt) > 0){
+	    						wttextBox.clear();
+	    						wttextBox.sendKeys(Double.toString(wt));
+	    					}
+	    					else if(i==3 && Float.parseFloat(initialwt) > 0){
+	    						wttextBox.clear();
+	    						wttextBox.sendKeys(Double.toString(wt));
+	    					}
+	    					else if(i==3 && Float.parseFloat(initialwt) == 0){
+	    						continue;
+	    					}
+	    				}
+	    				for(int q=1;q<=objRxSegmentObjects.checkbox.size();q++){
+	    					WebElement checkbox =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.confirmCheckBox, q,driver);
+	    					checkbox.click();
+	    					waitForJSandJQueryToLoad(driver);
+	    				}
+	    			}
+	    		}
+	    		catch(Exception e){
+	    			System.out.println(e);
+	    			htmlToExtent(cName,mName,extLogger,driver, "Receive Article tab to Update/Change article qty is not displayed for exception receiving;;;Fail");
+	    		}
+    		}
+    		
+    		
+    	/*		if(i == 3){
+    				waitForElement(objRxSegmentObjects.tempOutOfRange, driver);
+    				if(objRxSegmentObjects.tempOutOfRange.isDisplayed()){
+    					htmlToExtent(cName,mName,extLogger,driver, ""+objRxSegmentObjects.tempOutOfRange.getText()+";;;Pass");
+    					objRxSegmentObjects.rejectTemp.click();
+    				}
+    				else{
+    					htmlToExtent(cName,mName,extLogger,driver, "Temperature out of range popup not displayed when giving higher temperature;;;Fail");
+    				}
+    			}
+    		*/
+    		waitForJSandJQueryToLoad(driver);
+    		
+    		if(recvType.contains("exception")){
+    			recvExceptionScreen(objRxSegmentObjects,i,"update",c, driver);
+    		}
+    		
+    		objRxSegmentObjects.nextStepBtn.click();
+    		waitForJSandJQueryToLoad(driver);
+    		
+    		if(recvType.contains("exception")){//htmlToExtent(cName,mName,extLogger,driver, "*****Checking values between Receive Value updation and Discrepancy screen for current segment*****;;;Info");
+    			recvExceptionScreen(objRxSegmentObjects,i,"disp",c, driver);
+    		}
+    		if(recvType.contains("exception")){
+	    		try{
+	    			if(objRxSegmentObjects.discrepancyTab.isDisplayed()){
+	    				for(int p=1;p<=objRxSegmentObjects.confirmCheckBoxDisp.size();p++){
+	    					WebElement qtyconfirmBox =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.confirmCheckBoxDispTab,p,driver);
+	    					qtyconfirmBox.click();
+	    					waitForJSandJQueryToLoad(driver);
+	    				}
+	    				objRxSegmentObjects.recvExceptionDispNextbtn.click();
+	    				waitForJSandJQueryToLoad(driver);
+	    				objRxSegmentObjects.nextStepBtn.click();
+	    			}
+	    		}
+	    		catch(Exception e){
+	    			htmlToExtent(cName,mName,extLogger,driver, "Discrepancies tab to check article qty is not displayed for exception receiving;;;Fail");
+	    		}
+    		}	
+    		
+    		receiveSummaryPage(objRxSegmentObjects,chilledTemp, frozenTemp,recvType,i, driver);
+    		waitForJSandJQueryToLoad(driver);
+    		
+    		if(recvType.contains("later")){
+    			try{
+    					objRxSegmentObjects.postLater.click();
+    				}catch(Exception e){
+    					htmlToExtent(cName,mName,extLogger,driver, "Post Later Option is not available for the given order;;;Fail");
+    			}
+    		}
+    		
+    		objRxSegmentObjects.submitBtn.click();
+    		//if( i != 3){
+    			//waitFor(15);
+    			try{
+    				waitForElement(objRxSegmentObjects.rxConfirmationPopUp, driver);
+    				objRxSegmentObjects.rxContinue.click();
+    			}catch(Exception e){
+    				
+    				
+    			}
+    		
+    		waitForJSandJQueryToLoad(driver);
+    		
+    		try{
+    			if(objRxSegmentObjects.rxConfirmationMessage.isDisplayed()){
+    				if(objRxSegmentObjects.message.getText().contains("Successfully")){
+    					htmlToExtent(cName,mName,extLogger,driver, ""+objRxSegmentObjects.message.getText()+" for segment #"+segmentNumber.get(i-2)+";;;Pass");
+    					objRxSegmentObjects.rxConfirmationMessage.click();
+    				}
+    			}
+    			
+    		}catch(Exception e){
+    			htmlToExtent(cName,mName,extLogger,driver, ""+objRxSegmentObjects.message.getText()+" for segment #"+segmentNumber.get(i-2)+";;;Fail");
+    		}
+    		
+    		
+    		if(recvType.contains("exception")){
+    			recvExceptionSeg_DiscrepancyCheck(objRxSegmentObjects, i, driver);
+    		}
+        	
+    		waitFor(2); 
+    		scrollUp(driver);
+    		toOrderEnqPage(objRxSegmentObjects, driver);
+    		objRxSegmentObjects.orderNoSend.sendKeys(orderNo);
+			objRxSegmentObjects.goBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			String oStatusEnq = objRxSegmentObjects.statusOrderEnq.getText().replaceAll("\\s+"," ");
+			segmentStatusEnq.add(oStatusEnq);
+			
+			objRxSegmentObjects.filteredOrder.click();
+			waitForJSandJQueryToLoad(driver);
+			WebElement orderStatus2 = prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.status, 1,driver);
+			String oStatus2 = orderStatus2.getText().trim();
+			segmentStatusOvTab.add(oStatus2);
+		
+    	}
+    
+    
+    public String checkingRxAndDispValues(ReceivingSegmentObjects objRxSegmentObjects,String recType,int i,boolean isCancelled,WebDriver driver) throws AWTException, IOException{
+    	
+    	if(i==2){
+    		totalValuesCheckAfterRecv(objRxSegmentObjects,"null", 1,false, driver);
+    	}
+    	//for(int i =2;i<=objRxSegmentObjects.deliveryTabs.size();i++){
+	    	
+	    	
+	    	WebElement deliverydetails =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.deliverydync, i,driver);
+			String deliveryAppln = deliverydetails.getText().replace("Delivery ", "").substring(0,deliverydetails.getText().indexOf("S")-1).replace("Segment", "").trim();
+			htmlToExtent(cName,mName,extLogger,driver, "*****Checking values for Segment #"+deliveryAppln+"*****;;;Info");
+			deliverydetails.click();
+			waitForPageToLoad(driver);
+			
+			//waitForElement(oStatus, driver);
+			//try{
+			//waitForJSandJQueryToLoad(driver);}catch(Exception e){}
+			
+				    	
+			WebElement oStatus =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.status, i,driver);
+			if(oStatus.getText().equals("Cancelled")){
+				htmlToExtent(cName,mName,extLogger,driver, "Received Quantity and Dispatched Quantity for Segment #"+deliveryAppln+" not checked as it is cancelled status;;;Pass");
+				totalValuesCheckAfterRecv(objRxSegmentObjects,"cancel", i,false, driver);
+				//return "null";
+			}else{
+				totalValuesCheckAfterRecv(objRxSegmentObjects,"null", i,false, driver);
+				verticalScroll(driver);
+				WebElement clearGroup =null;
+				if(isCancelled){
+					 clearGroup =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.clearGroupDync, i+1,driver);
+				}else{
+					 clearGroup =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.clearGroupDync, i,driver);
+				}
+				clearGroup.click(); waitFor(1);
+				List<WebElement> segTable =  prepareWebElementWithDynamicXpathWithIntList(objRxSegmentObjects.segmentTable, i,driver);
+		    	List<List<Object>> rxdetails = getValuesFromTable(segTable);
+		    	//htmlToExtent(cName,mName,extLogger,driver, "*****Checking values for Segment #"+deliveryAppln+"*****;;;Info");
+		    	for(int j=0;j<rxdetails.size();j++){
+		    		String article = rxdetails.get(j).get(0).toString();
+		    		String dispQty = rxdetails.get(j).get(6).toString();
+		    		String dispWght = rxdetails.get(j).get(7).toString().replaceAll("\\s+"," ");
+		    		String rxQty = rxdetails.get(j).get(8).toString();
+		    		String rxWght = rxdetails.get(j).get(9).toString().replaceAll("\\s+"," ");
+		    		String[] om = rxdetails.get(j).get(3).toString().split("\\s");;
+		    		
+		    		if(!rxWght.contains("(")){
+		    			rxWght = rxWght+" "+"(0 EA)";
+					}
+		    		if(!dispWght.contains("(")){
+		    			dispWght = dispWght+" "+"(0 EA)";
+					}
+		    		    		
+		    		if(recType.equalsIgnoreCase("Full") || recType.equalsIgnoreCase("fullhightemp") || recType.equalsIgnoreCase("fulllater")  || recType.equalsIgnoreCase("fullhightemplater")){
+			    		if(dispQty.equals(rxQty) && dispWght.equals(rxWght)){
+			    			htmlToExtent(cName,mName,extLogger,driver, "For Article #"+article+" dispatched Quantity "+dispQty+" dispatched Weight "+dispWght+" and is same as the received Quantity "+rxQty+" and received Weight "+rxWght+";;;Pass");
+			    			//htmlToExtent(cName,mName,extLogger,driver, "For Article #"+article+" dispatched Weight "+dispWght+" is same as the received Weight "+rxWght+";;;Pass");
+			    		}else if(dispQty.equals(rxQty) || dispWght.equals(rxWght)){
+			    			if(!dispQty.equals(rxQty)){
+			    				htmlToExtent(cName,mName,extLogger,driver, "For Article #"+article+" dispatched Quantity "+dispQty+" is NOT same as the received Quantity "+rxQty+";;;Fail");
+			    			}
+			    			if(!dispWght.equals(rxWght)){
+			    				htmlToExtent(cName,mName,extLogger,driver, "For Article #"+article+" dispatched Weight "+dispWght+" is NOT same as the received Weight "+rxWght+";;;Fail");
+			    			}
+			    		}
+			    		if(recType.equalsIgnoreCase("fullhightemp") || recType.equalsIgnoreCase("fullhightemplater")){
+			    			String rxQtySubString = rxQty.replaceAll("[^\\d]","").trim();
+			    			String[] splittedRx = rxWght.split("\\s");
+			    			if(rxQtySubString.equals("0") && splittedRx[0].replaceAll("[^\\d]","").trim().equals("0")){
+			    				htmlToExtent(cName,mName,extLogger,driver, "For Article #"+article+" dispatched Quantity "+dispQty+" dispatched Weight "+dispWght+" and received Quantity "+rxQty+" and received Weight "+rxWght+" since it is cancelled;;;Pass");
+			    			}
+			    		}
+		    		}
+		    		if(recType.contains("exception")){
+		    			//String rxQtySubString = rxQty.replaceAll("[^\\d]","").trim();
+		    			String rxQtySubString = rxQty.substring(0,rxQty.indexOf(" "));
+		    			String dispQtySubString = dispQty.substring(0,dispQty.indexOf(" "));//dispQty.replaceAll("[^\\d]","").trim();
+		    			String[] splittedRx = dispWght.split("\\s");//Need to check
+		    			//double a  = 2.235;
+		    			
+		    			if(rxdetails.get(j).get(5).toString().contains("(")){
+		    				String d = Integer.toString((5*Integer.parseInt(om[2]))+Integer.parseInt(splittedRx[2].replace("(","")));
+		    				dispWght = (String.format("%.03f",(Float.parseFloat(splittedRx[0])+((float)2.235))))+" "+splittedRx[1]+" ("+d+" "+splittedRx[3];
+						}
+		    			else{
+		    				dispWght = Integer.toString((Integer.parseInt(splittedRx[0])+(5*Integer.parseInt(om[0]))))+" "+splittedRx[1]+" "+"(0 EA)"; //45.345 KG/n(40 EA)
+		    			}
+		    			
+		    			if(dispQtySubString.equals(Integer.toString(Integer.parseInt(rxQtySubString)-5)) && dispWght.equals(rxWght)){ //if(rxQ == 0)
+			    			htmlToExtent(cName,mName,extLogger,driver, "For Article #"+article+" received Quantity "+rxQty+" and received Weight "+rxWght+" are same after updating the dispatched Quantity by 5 and Weight by 2.235 if any available;;;Pass");
+			    			//htmlToExtent(cName,mName,extLogger,driver, "For Article #"+article+" dispatched Weight "+dispWght+" is same as the received Weight "+rxWght+";;;Pass");
+			    		}else if(rxQtySubString.equals("0") && i==3){
+			    			htmlToExtent(cName,mName,extLogger,driver, "Article #"+article+" has been rejected by giving high temperature having received Quantity as 0;;;Pass");
+			    		}else if(dispQtySubString.equals(Integer.toString(Integer.parseInt(rxQtySubString)-5)) || dispWght.equals(rxWght)){
+			    			if(!dispQtySubString.equals(Integer.toString(Integer.parseInt(rxQtySubString)-5))){
+			    				htmlToExtent(cName,mName,extLogger,driver, "For Article #"+article+" received Quantity "+rxQty+" is NOT same after updating the dispatched quantity by 5;;;Fail");
+			    			}
+			    			if(!dispWght.equals(rxWght)){
+			    				htmlToExtent(cName,mName,extLogger,driver, "For Article #"+article+" received weight "+rxQty+" is NOT same after updating the dispatched weight by 2.235;;;Fail");
+			    			}
+			    		}
+		    		}
+		      	
+		    	}
+		    	
+    	}
+	    if(i==objRxSegmentObjects.deliveryTabs.size()){
+	    totalValuesCheckAfterRecv(objRxSegmentObjects,"null", 5, true, driver);}	
+    	return "null";
+    	  	
+    }
+    
+    public List<List<Object>> gettingArticleFromSegment(ReceivingSegmentObjects objRxSegmentObjects,boolean isCancelled,WebDriver driver) throws AWTException{
+    	
+    	List<List<Object>> artAppln = new ArrayList<List<Object>>();
+    	List<List<Object>> rxdetails = new ArrayList<List<Object>>();
+    	waitFor(5);
+    	objRxSegmentObjects.overallTab.click();
+		waitForPageToLoad(driver);
+    	//waitForJSandJQueryToLoad(driver);
+		verticalScroll(driver);
+		
+		try{
+			if(objRxSegmentObjects.clearGroup.isDisplayed()){
+				objRxSegmentObjects.clearGroup.click(); waitFor(1);
+			}
+		}catch(Exception e){
+			
+		}
+		
+		if(isCancelled){
+			objRxSegmentObjects.receivedArticleTab.click();
+			try{
+				if(driver.findElement(By.xpath("(//*[text()='Clear Group By'])[2]")).isDisplayed()){
+					driver.findElement(By.xpath("(//*[text()='Clear Group By'])[2]")).click(); waitFor(1);
+				}
+			}catch(Exception e){
+				
+			}
+			rxdetails = getValuesFromTable(objRxSegmentObjects.rcvdTabTable);	
+		}else{
+			rxdetails = getValuesFromTable(objRxSegmentObjects.overallTabTable);			
+		}
+    	for(int j=0;j<rxdetails.size();j++){
+    		String article = rxdetails.get(j).get(0).toString();
+    		artAppln.addAll(StringToListCreation(article));
+    	}
+    	return artAppln;
+    }
+    
+    public List<List<Object>> sohCalculation(ReceivingSegmentObjects objRxSegmentObjects,List<List<Object>> fromDB,boolean isCancelled,WebDriver driver) throws AWTException{
+    	
+     	objRxSegmentObjects.overallTab.click();
+		//waitForJSandJQueryToLoad(driver);
+		waitForPageToLoad(driver);
+		verticalScroll(driver);
+		//List<List<Object>> calculatedSoh = new ArrayList<List<Object>>();
+		List<List<Object>> rxdetails = new ArrayList<List<Object>>();
+		List<List<Object>> compdetails = new ArrayList<List<Object>>();
+		if(isCancelled){
+			rxdetails = getValuesFromTable(objRxSegmentObjects.rcvdTabTable);
+		}else{
+			rxdetails = getValuesFromTable(objRxSegmentObjects.overallTabTable);
+		}
+		int loopTill = rxdetails.size();
+/*		for(int i=0;i<loopTill;i++){
+			try{
+				WebElement isdisp =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.dispafterRX,i+1,driver);
+				isdisp.click();
+				waitFor(5);
+				compdetails = getValuesFromTable(objRxSegmentObjects.dispchilddetails);
+				rxdetails.addAll(compdetails);
+				//fromDB.addAll(compdetails);
+				driver.findElement(By.xpath("//*[contains(@class,'displayComponentOk')]")).click();
+				//waitForPageToLoad(driver);
+				waitForJSandJQueryToLoad(driver);
+				
+				
+			}
+			catch(Exception e){
+			
+				//System.out.println(Time.);
+				System.out.println("Catch Block");
+				
+				
+			}
+			
+			
+		}
+		
+	*/
+		
+    	String[] splittedRx;
+    	String rndWght,rndQty;
+    	float sohWght,sohQty;
+    	for(int j=0;j<rxdetails.size();j++){
+    		for(int k=0;k<fromDB.size();k++){
+	    		if(rxdetails.get(j).get(0).toString().equals(fromDB.get(k).get(6))){
+		    		if(rxdetails.get(j).get(7).toString().contains("(")){
+			    		String rxWght = rxdetails.get(j).get(9).toString().replaceAll("[^\\d.]"," ").replaceAll("\\s+"," ");
+			   			splittedRx = rxWght.split("\\s");
+			   			if(splittedRx.length == 2){
+			   			rndWght = splittedRx[0];
+			   			rndQty = splittedRx[1];
+			   			}else{
+			   				rndWght = splittedRx[0];
+			   				rndQty = "0";
+			   			}
+			    		//sohWght = Float.parseFloat(fromDB.get(j).get(0).toString()) + (Float.parseFloat(rndWght) * Float.parseFloat(fromDB.get(j).get(1).toString()));
+			   			sohWght = Float.parseFloat(fromDB.get(k).get(0).toString()) + Float.parseFloat(rndWght);
+			    		//sohQty =  Float.parseFloat(fromDB.get(j).get(2).toString()) + (Float.parseFloat(rndQty) * Float.parseFloat(fromDB.get(j).get(3).toString()));
+			   			sohQty =  Float.parseFloat(fromDB.get(k).get(2).toString()) + Float.parseFloat(rndQty);
+			    		String temp = fromDB.get(k).get(6)+":"+String.format("%.03f", sohWght)+" "+fromDB.get(k).get(4)+" ("+String.format("%.3f", sohQty)+" "+fromDB.get(k).get(5)+")";
+			    		calculatedSoh.addAll(StringToListCreation(temp));
+						}
+		    		else{
+		    			String rxWght = rxdetails.get(j).get(9).toString().replaceAll("[^\\d.]"," ").replaceAll("\\s+"," ");
+		    			//sohWght = Float.parseFloat(fromDB.get(j).get(0).toString()) + (Float.parseFloat(rxWght) * Float.parseFloat(fromDB.get(j).get(1).toString()));
+		    			sohWght = Float.parseFloat(fromDB.get(k).get(0).toString()) + (Float.parseFloat(rxWght));
+		    			String temp = fromDB.get(k).get(6)+":"+String.format("%.03f", sohWght)+" "+fromDB.get(k).get(4)+" (0 EA)";
+			    		calculatedSoh.addAll(StringToListCreation(temp));
+		    		}
+		    	}
+	    		else{
+	    			continue;
+	    		}
+	    	}
+    	}
+    	
+    	//try{
+    	//	if(driver.findElement(By.xpath("//*[@id='received_item_table_table']/tbody/tr[4]/td[9]/a")).isDisplayed()){
+    	//		String art = driver
+    	//	}
+    	//}
+    	
+    	return calculatedSoh;
+    }
+    
+    public void displayCheck(ReceivingSegmentObjects objRxSegmentObjects,List<List<Object>> segmentDetailsAppln,int i,int j,WebDriver driver) throws AWTException{
+    	List<List<Object>> dispchild = new ArrayList<List<Object>>();
+    	
+    	try{
+			WebElement isdisp =  prepareWebElementWithDynamicXpathWithIntInt(objRxSegmentObjects.dispBox,i,j+1,driver);
+			//WebElement dispart =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.disparticle, i,driver);
+ 			isdisp.click();
+			waitForJSandJQueryToLoad(driver);
+			dispchild = getValuesFromTable(objRxSegmentObjects.dispchilddetails);
+			//dispchild = removeIndex(dispchild, Integer.toString(2));
+			//dispchild = removeIndex(dispchild, Integer.toString(1));
+			System.out.println("disp "+dispchild);
+			for(int s=0;s<dispchild.size();s++){
+				String articledispchild = dispchild.get(s).get(0).toString();
+				String orderedQtydispchild = dispchild.get(s).get(3).toString();
+				String orderedUnitsdispchild = dispchild.get(s).get(4).toString();
+				String omAppln = "1 EA 0 (EA)";
+				String dispatchedQtydispchild =null;
+				String dispatchedUnitsdispchild = null;
+				
+				//if(status.getText().equals("Dispatched")){
+					
+					dispatchedQtydispchild = dispchild.get(s).get(5).toString();
+    				dispatchedUnitsdispchild = dispchild.get(s).get(6).toString().replaceAll("\\s+"," ").trim();;
+					if(!dispatchedUnitsdispchild.contains("(")){
+						dispatchedUnitsdispchild = dispatchedUnitsdispchild+" "+"(0 EA)";
+					}
+								
+				if(!orderedUnitsdispchild.contains("(")){
+					orderedUnitsdispchild = orderedUnitsdispchild+" "+"(0 EA)";
+				}
+				
+				String[] tempA = dispatchedUnitsdispchild.split("\\s"); //[240, EA, (0, EA)]
+				String decWght="";
+				//if(dispatchTotalWght.contains(".")){
+				if(tempA[1].contains("KG")){
+					decWght = String.format("%.03f", Float.parseFloat(tempA[0].trim()));//df.format(Float.parseFloat(tempA));
+				}else{
+					decWght = tempA[0]; //240
+				}
+				
+				dispatchedUnitsdispchild = decWght+" "+dispatchedUnitsdispchild.substring(dispatchedUnitsdispchild.indexOf(" ")+1);
+				String addStringAppln = ""+articledispchild.trim()+":"+omAppln.trim()+":"+orderedQtydispchild.trim()+":"+orderedUnitsdispchild.trim()+":"+dispatchedQtydispchild+":"+dispatchedUnitsdispchild;
+				segmentDetailsAppln.addAll(StringToListCreation(addStringAppln));
+				System.out.println("segmentDetailsAppln "+segmentDetailsAppln);
+			}
+			
+			driver.findElement(By.xpath("//*[contains(@class,'displayComponentOk')]")).click();
+			waitForJSandJQueryToLoad(driver);
+			
+		}catch(Exception e){
+			
+		}
+
+    }
+    
+    public String moveAlongSegments(ReceivingSegmentObjects objRxSegmentObjects,int i,WebDriver driver) throws AWTException{
+	    
+	    WebElement deliverydetails =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.deliverydync, i,driver);
+		deliverydetails.click();
+		waitForPageToLoad(driver);
+		//waitForJSandJQueryToLoad(driver);
+		WebElement orderStatus =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.status, i,driver);
+		String isCancelled;
+		if(orderStatus.getText().equals("Cancelled")){
+			isCancelled = "true";	
+		}
+		else{
+			isCancelled = "false"; 
+		}
+		return isCancelled;
+    }
+    
+    public void totalValuesCheckAfterRecv(ReceivingSegmentObjects objRxSegmentObjects,String recv,int i,boolean toCheck,WebDriver driver) throws AWTException, IOException{
+    	
+
+		List<List<Object>>overallTemp = new ArrayList<List<Object>>();
+		List<List<Object>>segTemp = new ArrayList<List<Object>>();
+		WebElement totalPalletRecvdofSeg=null,totalPalletofSeg=null,totalArtofSeg=null,totalCartRecvdOfSeg=null,totalDispQtyOfSeg=null,totalCartOrdOfSeg=null,totalWghtRecvdOfSeg=null,totalDispWghtOfSeg=null,totalPalletReturnOfSeg = null;
+		//try{waitForJSandJQueryToLoad(driver);}catch(Exception e){waitForPageToLoad(driver);}
+		waitFor(10);
+		System.out.println("i : "+i);	
+    		if(!toCheck){
+    			if(recv.equals("cancel")){
+    				totalPalletofSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalPallets, i,driver);
+    				totalArtofSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalArticles, i,driver);
+    				totalDispQtyOfSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalDispQty, i,driver);
+    				totalCartOrdOfSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalCartonsOrdered, i,driver);
+    				totalDispWghtOfSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalDispWght, i,driver);//Can be NA
+    			}else{
+		    	   	totalPalletRecvdofSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalPalletRx, i,driver);//Can be NA
+					totalPalletofSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalPallets, i,driver);
+					totalArtofSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalArticles, i,driver);
+					totalCartRecvdOfSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalCartonsRecvd, i,driver);
+					totalDispQtyOfSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalDispQty, i,driver);
+					totalCartOrdOfSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalCartonsOrdered, i,driver);
+					totalWghtRecvdOfSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalWeight, i,driver);
+					totalDispWghtOfSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalDispWght, i,driver);//Can be NA
+					totalPalletReturnOfSeg =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.recvedTotalPalletsReturned, i,driver);//Can be NA
+    			}
+				if(i==1 && recv.equalsIgnoreCase("null")){
+					
+					if(totalPalletRecvdofSeg.getText().contains("NA")){
+						palletRx = 0; }
+					else{
+						palletRx = Integer.parseInt(totalPalletRecvdofSeg.getText()); }
+					Pallet = Integer.parseInt(totalPalletofSeg.getText());
+					article = Integer.parseInt(totalArtofSeg.getText());
+					cartRx = Integer.parseInt(totalCartRecvdOfSeg.getText());
+					cartOrd = Integer.parseInt(totalCartOrdOfSeg.getText());
+					DispQty = Integer.parseInt(totalDispQtyOfSeg.getText());
+					WghtRx = Double.parseDouble(totalWghtRecvdOfSeg.getText());
+					if(totalDispWghtOfSeg.getText().contains("NA") || totalDispWghtOfSeg.getText().equals("0")){
+						DispWght = 0.000; }
+					else{
+						DispWght = Double.parseDouble(totalDispWghtOfSeg.getText()); }
+					if(totalPalletReturnOfSeg.getText().contains("NA")){
+						palletReturned = 0; }
+					else{
+						palletReturned = Integer.parseInt(totalPalletReturnOfSeg.getText());	}
+		
+				}else if(recv.equals("cancel")){
+					Pallet_2 += Integer.parseInt(totalPalletofSeg.getText());
+					article_2 += Integer.parseInt(totalArtofSeg.getText());
+					cartOrd_2 += Integer.parseInt(totalCartOrdOfSeg.getText());
+					DispQty_2 += Integer.parseInt(totalDispQtyOfSeg.getText());
+					if(totalDispWghtOfSeg.getText().contains("NA") || totalDispWghtOfSeg.getText().equals("0")){
+						DispWght_2 += 0; }
+					else{
+						DispWght_2 += Float.parseFloat(totalDispWghtOfSeg.getText()); }
+				}
+				
+				else{
+					
+					if(totalPalletRecvdofSeg.getText().contains("NA")){
+						palletRx_2 += 0; }
+					else{
+						palletRx_2 += Integer.parseInt(totalPalletRecvdofSeg.getText()); }
+					Pallet_2 += Integer.parseInt(totalPalletofSeg.getText());
+					article_2 += Integer.parseInt(totalArtofSeg.getText());
+					cartRx_2 += Integer.parseInt(totalCartRecvdOfSeg.getText());
+					cartOrd_2 += Integer.parseInt(totalCartOrdOfSeg.getText());
+					DispQty_2 += Integer.parseInt(totalDispQtyOfSeg.getText());
+					WghtRx_2 += Float.parseFloat(totalWghtRecvdOfSeg.getText());
+					if(totalDispWghtOfSeg.getText().contains("NA")){
+						DispWght_2 += 0.000; }
+					else{
+						DispWght_2 += Float.parseFloat(totalDispWghtOfSeg.getText()); }
+					if(totalPalletReturnOfSeg.getText().contains("NA")){
+						palletReturned_2 += 0; }
+					else{
+						palletReturned_2 += Integer.parseInt(totalPalletReturnOfSeg.getText());}
+					
+				}
+    		}
+    		else{
+    			htmlToExtent(cName,mName,extLogger,driver, "*****Comparing the total values in overall tab with the sum of values under each segment*****;;;Info");
+    			if(WghtRx == 0 || WghtRx == 0.0){ WghtRx = 0.000;}
+    			if(DispWght == 0 || DispWght == 0.0){ DispWght = 0.000;}
+    			//WghtRx = Double.parseDouble(ThreedecimalFormat(Double.toString(WghtRx)));
+    			//DispWght = Double.parseDouble(ThreedecimalFormat(Double.toString(DispWght)));
+    			String totalTemp = palletRx+":"+Pallet+":"+article+":"+cartRx+":"+cartOrd+":"+DispQty+":"+String.format("%.03f", WghtRx)+":"+String.format("%.03f", DispWght)+":"+palletReturned;
+    			//if(palletRx_2 == 0){ palletRx_2 = Integer.parseInt("NA");}
+    			//if(DispWght_2 == 0){ DispWght_2 = Integer.parseInt("NA");}
+    			//if(palletReturned_2 == 0){ palletReturned_2 = Integer.parseInt("NA");}
+    			String totalSegTemp = palletRx_2+":"+Pallet_2+":"+article_2+":"+cartRx_2+":"+cartOrd_2+":"+DispQty_2+":"+String.format("%.03f", WghtRx_2)+":"+String.format("%.03f",DispWght_2)+":"+palletReturned_2;
+    			//[[0, 0, 9, 85, 90, 90, 123.145004, 144.909, 0]]
+    			overallTemp.addAll(StringToListCreation(totalTemp));
+    			segTemp.addAll(StringToListCreation(totalSegTemp));
+    			ElementContains1(cName,mName,extLogger,driver,overallTemp,segTemp); 
+    		}
+			
+			
+    }
+    
+    
+    public void oStatusCheck(ReceivingSegmentObjects objRxSegmentObjects,WebDriver driver) throws AWTException{
+    	
+    	for(int i=0;i<segmentStatus.size();i++){
+    		if(segmentStatus.get(i).equalsIgnoreCase("Dispatched") && i!=(segmentStatus.size()-1)){
+    			if(!segmentStatus.get(i+1).equalsIgnoreCase("Cancelled")){
+    				if(segmentStatusEnq.get(i).equalsIgnoreCase("Partially Received") && segmentStatusOvTab.get(i).equalsIgnoreCase("Partially Received")){
+    					htmlToExtent(cName,mName,extLogger,driver, "After #"+(i+1)+" Segment #"+seg_number.get(i)+" is received,status available as "+segmentStatusEnq.get(i)+" in enquiry page and status as "+segmentStatusOvTab.get(i)+" in overall tab;;;Pass");
+    				}
+    				else{
+    					htmlToExtent(cName,mName,extLogger,driver, "After #"+(i+1)+" Segment #"+seg_number.get(i)+" is received,status available as "+segmentStatusEnq.get(i)+" in enquiry page and status as "+segmentStatusOvTab.get(i)+" in overall tab;;;Fail");
+    				}
+    			}
+    			else if(segmentStatus.get(i+1).equalsIgnoreCase("Cancelled")){
+    				if(segmentStatusEnq.get(i).equalsIgnoreCase("Received") && segmentStatusOvTab.get(i).equalsIgnoreCase("Received")){
+    					htmlToExtent(cName,mName,extLogger,driver, "After #"+(i+1)+" Segment #"+seg_number.get(i)+" is received,status available as "+segmentStatusEnq.get(i)+" in enquiry page and status as "+segmentStatusOvTab.get(i)+" in overall tab as next segment is cancelled;;;Pass");
+    				}
+    				else{
+    					htmlToExtent(cName,mName,extLogger,driver, "After #"+(i+1)+" Segment #"+seg_number.get(i)+" is received,status available as "+segmentStatusEnq.get(i)+" in enquiry page and status as "+segmentStatusOvTab.get(i)+" in overall tab as next segment is cancelled;;;Fail");
+    				}
+    			}
+    		}
+    		else if(i==(segmentStatus.size()-1)){
+    			if(segmentStatus.get(i).equalsIgnoreCase("Cancelled")){
+    				if(segmentStatusEnq.get(i).equalsIgnoreCase("Received") && segmentStatusOvTab.get(i).equalsIgnoreCase("Received")){
+    					htmlToExtent(cName,mName,extLogger,driver, "Last Segment is Cancelled,Segment #"+seg_number.get(i)+" status available as "+segmentStatusEnq.get(i)+" in enquiry page and status as "+segmentStatusOvTab.get(i)+" in overall tab;;;Pass");
+    				}
+    				else{
+    					htmlToExtent(cName,mName,extLogger,driver, "Last Segment is Cancelled,Segment #"+seg_number.get(i)+" status available as "+segmentStatusEnq.get(i)+" in enquiry page and status as "+segmentStatusOvTab.get(i)+" in overall tab;;;Fail");
+    				}
+    			}
+				else if(!segmentStatus.get(i).equalsIgnoreCase("Cancelled") && segmentStatusEnq.get(i).equalsIgnoreCase("Received") && segmentStatusOvTab.get(i).equalsIgnoreCase("Received")){
+					htmlToExtent(cName,mName,extLogger,driver, "After Last Segment #"+seg_number.get(i)+" is received,status available as "+segmentStatusEnq.get(i)+" in enquiry page and status as "+segmentStatusOvTab.get(i)+" in overall tab;;;Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "After Last Segment #"+seg_number.get(i)+" is received,status available as "+segmentStatusEnq.get(i)+" in enquiry page and status as "+segmentStatusOvTab.get(i)+" in overall tab;;;Fail");
+				}
+    	
+    		}
+    		
+    	}
+    	
+    }
+    
+    public void recvExceptionScreen(ReceivingSegmentObjects objRxSegmentObjects,int j,String tabName,int c,WebDriver driver) throws AWTException, IOException{
+    	
+    	if(tabName.equals("update")){
+    		rxValueUpadte = getValuesFromTable(objRxSegmentObjects.recvExceptionUpdateQty);
+    	}
+    	else if(tabName.equals("disp")){
+    		rxDiscrepancy = getValuesFromTable(objRxSegmentObjects.recvExceptionDispTab);
+    		rxDiscrepancy = removeIndex(rxDiscrepancy,Integer.toString(11));
+    		rxDiscrepancy = removeIndex(rxDiscrepancy,Integer.toString(10));
+    		
+    		for(int i =0;i<rxDiscrepancy.size();i++){
+	    		String[] dispTotalUnits = rxDiscrepancy.get(i).get(6).toString().split("\\s"); //[45.345, KG, (40, EA)]
+	    		String[] recvdTotalUnits = rxDiscrepancy.get(i).get(8).toString().split("\\s");  //[47.58, KG, (80, EA)]
+	    		String difference = rxDiscrepancy.get(i).get(9).toString();
+	    		System.out.println("segDetails :: "+segDetails);
+	    		String[] om = segDetails.get(c).get(0).toString().split("\\s");
+	    		c++;
+	    	//	if(rxDiscrepancy.get(i).get(4).toString().equals(rxDiscrepancy.get(i).get(6).toString()) && rxDiscrepancy.get(i).get(5).toString().equals(rxDiscrepancy.get(i).get(7).toString()){
+	    			
+	    	//	}
+	    		String diff;
+	    		if(recvdTotalUnits[0].equals("0")){
+	    			diff = Integer.toString(Integer.parseInt(om[0])*(Integer.parseInt(rxDiscrepancy.get(i).get(5).toString().replaceAll("[^\\d.]",""))));
+	    		}
+	    		else if(rxDiscrepancy.get(i).get(6).toString().contains("(") && rxDiscrepancy.get(i).get(8).toString().contains("(")){
+	    			//String recvd = recvdTotalUnits[2].replace("(", "").trim();
+	    			String recvd = rxDiscrepancy.get(i).get(5).toString().replaceAll("[^\\d]","").trim();
+		    		//String dispd = dispTotalUnits[2].replace("(", "").trim();
+	    			String dispd =  rxDiscrepancy.get(i).get(7).toString().replaceAll("[^\\d]","").trim();
+		    		diff = Integer.toString((Integer.parseInt(om[0])*(Integer.parseInt(recvd)) - (Integer.parseInt(om[0])*Integer.parseInt(dispd))));
+		    		//diff = Integer.toString((Integer.parseInt(recvd) - Integer.parseInt(dispd))*7);
+	    		}
+	    		
+	    		else if(recvdTotalUnits[0].contains(".") || dispTotalUnits[0].contains("."))
+		    	{
+	    			String recvd = String.format("%.03f", Float.parseFloat(recvdTotalUnits[0]));
+		    		String dispd = String.format("%.03f", Float.parseFloat(dispTotalUnits[0]));
+		    		diff = String.format("%.03f",(Float.parseFloat(recvd) - Float.parseFloat(dispd)));
+	    		}
+	    		else{
+	    			String recvd = recvdTotalUnits[0];
+		    		String dispd = dispTotalUnits[0];
+		    		diff = Integer.toString(Integer.parseInt(recvd) - (Integer.parseInt(dispd)));
+	    		}
+	    		
+	    		
+	    		if(difference.equals(diff.replace("-",""))){
+	    			htmlToExtent(cName,mName,extLogger,driver, "For Article #"+rxDiscrepancy.get(i).get(0)+" the differenct coulmn in discrepancies is calculated properly;;;Pass");
+	    		}
+	    		else{
+	    			htmlToExtent(cName,mName,extLogger,driver, "For Article #"+rxDiscrepancy.get(i).get(0)+" actual difference "+difference+" in discrepancies but expected difference is "+diff+";;;Fail");
+	    		}
+    		}
+    		
+    		
+    		rxDiscrepancy = removeIndex(rxDiscrepancy,Integer.toString(9));//Difference
+    		rxDiscrepancy = removeIndex(rxDiscrepancy,Integer.toString(1));
+    		rxDiscrepancy = removeNewLines(rxDiscrepancy);
+    		rxDiscrepancy = decimalRound(rxDiscrepancy);
+    		    		
+    	}
+    	
+    }
+    
+    public void sohFromLookUp(ReceivingSegmentObjects objRxSegmentObjects,List<List<Object>>sohLukup,WebDriver driver) throws AWTException, IOException{
+    	
+    	List<List<Object>> lookUpSOH = new ArrayList<List<Object>>();
+    	
+    	objRxSegmentObjects.lookup.click();
+    	objRxSegmentObjects.articles.click();
+    	waitForJSandJQueryToLoad(driver);
+    	if(calculatedSoh.size() == 0){
+    		calculatedSoh = sohLukup;
+    	}
+    	for(int i=0;i<calculatedSoh.size();i++){
+	    	objRxSegmentObjects.searchArticle.clear();
+	    	objRxSegmentObjects.searchArticle.sendKeys(calculatedSoh.get(i).get(0).toString());
+	    	objRxSegmentObjects.articleGoBtn.click();
+	    	waitForJSandJQueryToLoad(driver);
+	    	String soh="",temp="";
+	    	if(objRxSegmentObjects.sohFromLookUp.getText().contains("(")){
+	    		String[] t1 = objRxSegmentObjects.sohFromLookUp.getText().split("\\s");
+	    		soh = String.format("%.03f",Float.parseFloat(t1[0]))+" "+t1[1]+" (0 EA)";
+	    		//soh = String.format("%.03f",Float.parseFloat(objRxSegmentObjects.sohFromLookUp.getText().substring(0,objRxSegmentObjects.sohFromLookUp.getText().indexOf("("))));
+	    		temp = calculatedSoh.get(i).get(0)+":"+soh;
+	    	}else if(objRxSegmentObjects.sohFromLookUp.getText().contains("&") && objRxSegmentObjects.sohFromLookUp.getText().contains("KG")){
+	    		String[] t1 = objRxSegmentObjects.sohFromLookUp.getText().split("\\s"); //-242 EA & -53.702 KG
+	    		soh = String.format("%.03f", Float.parseFloat(t1[3]))+" "+t1[4]+" "+"("+String.format("%.03f",Float.parseFloat(t1[0]))+" "+t1[1]+")";
+	    		temp = calculatedSoh.get(i).get(0)+":"+soh;
+	    	}
+	    	else{
+	    		String[] t1 = objRxSegmentObjects.sohFromLookUp.getText().split("\\s"); //-242 EA & -53.702 KG
+	    		soh = String.format("%.03f", Float.parseFloat(t1[3]))+" "+t1[4]+"("+t1[0]+" "+t1[1]+")";
+	    		temp = calculatedSoh.get(i).get(0)+":"+soh;
+	    	}
+	    	//temp = calculatedSoh.get(i).get(0)+":"+soh+" (0 EA)";
+	    	lookUpSOH.addAll(StringToListCreation(temp));
+	    	objRxSegmentObjects.backLookUp.click();
+	    	waitForJSandJQueryToLoad(driver);
+    	}
+    	ElementContains1(cName, mName, extLogger, driver, lookUpSOH, calculatedSoh);
+    }
+    
+    
+    
+    public void recvExceptionSeg_DiscrepancyCheck(ReceivingSegmentObjects objRxSegmentObjects,int i,WebDriver driver) throws AWTException, IOException{
+	   
+    	WebElement deliverydetails2 =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.deliverydync, i,driver);
+		deliverydetails2.click();
+		try{
+		WebElement clearGroup =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.clearGroupDync, 3,driver);
+		clearGroup.click();
+		}catch(Exception e){
+			WebElement clearGroup =  prepareWebElementWithDynamicXpathWithInt(objRxSegmentObjects.clearGroupDync, 2,driver);
+			clearGroup.click();
+		}
+		//clearGroup.click();
+		verticalScroll(driver);
+		List<WebElement> segAfterRecvTable =  prepareWebElementWithDynamicXpathWithIntList(objRxSegmentObjects.segmentTable, 2,driver);//i
+		afterSegRecv =  getValuesFromTable(segAfterRecvTable);
+	//	for(int j=0;j<afterSegRecv.size();j++){
+			afterSegRecv = removeIndex(afterSegRecv,Integer.toString(11));
+			afterSegRecv = removeIndex(afterSegRecv,Integer.toString(10));
+			afterSegRecv = removeIndex(afterSegRecv,Integer.toString(3));
+			afterSegRecv = removeIndex(afterSegRecv,Integer.toString(1));
+			afterSegRecv = removeNewLines(afterSegRecv);
+	//	}
+			htmlToExtent(cName,mName,extLogger,driver, "*****Comparing Ordered,Dispatched,Received Quantity and Units between Segment details page and Discrepancy Page*****;;;Info");
+			ElementContains1(cName,mName,extLogger,driver,rxDiscrepancy,afterSegRecv); 
+		
+	}
+    
+    public void receiveSummaryPage(ReceivingSegmentObjects objRxSegmentObjects,String chillTemp,String hardFrozenTemp,String recvType,int i,WebDriver driver) throws AWTException{
+    	hardFrozenTemp = hardFrozenTemp + ".00";
+    	List<String> rxSummaryCheck = new ArrayList<String>();
+    	htmlToExtent(cName,mName,extLogger,driver, "*****Checking Values under received summary page for segment*****;;;Info");
+    	if(getContext().getStringProperty("username").equals(objRxSegmentObjects.rxByReceiveSummary.getText().trim())){
+    		htmlToExtent(cName,mName,extLogger,driver, "Segment Received by "+objRxSegmentObjects.rxByReceiveSummary.getText()+" does matches with logged in user;;;Pass");
+    	}
+    	else{
+    		htmlToExtent(cName,mName,extLogger,driver, "Segment Received by "+objRxSegmentObjects.rxByReceiveSummary.getText()+" doesnot matches with logged in user "+getContext().getStringProperty("username")+";;;Fail");
+    	}
+    	if(String.format("%.02f",Float.parseFloat(hardFrozenTemp)).equals(objRxSegmentObjects.hfTempReceiveSummary.getText().trim()) && String.format("%.02f",Float.parseFloat(chillTemp)).equals(objRxSegmentObjects.chTempReceiveSummary.getText().trim())){
+    		htmlToExtent(cName,mName,extLogger,driver, "Hard Frozen temperature displayed as "+objRxSegmentObjects.hfTempReceiveSummary.getText().trim()+" does matches with given temperature;;;Pass");
+    		htmlToExtent(cName,mName,extLogger,driver, "Chilled temperature displayed as "+objRxSegmentObjects.chTempReceiveSummary.getText().trim()+" does matches with given temperature;;;Pass");
+    	}
+    	else if(String.format("%.02f",Float.parseFloat(hardFrozenTemp)).equals(objRxSegmentObjects.hfTempReceiveSummary.getText().trim()) || String.format("%.02f",Float.parseFloat(chillTemp)).equals(objRxSegmentObjects.chTempReceiveSummary.getText().trim())){
+    		if(hardFrozenTemp.equals(objRxSegmentObjects.hfTempReceiveSummary.getText().trim())){
+    			htmlToExtent(cName,mName,extLogger,driver, "Hard Frozen temperature displayed as "+objRxSegmentObjects.hfTempReceiveSummary.getText().trim()+" does matches with given temperature;;;Pass");
+    		}
+    		if(chillTemp.equals(objRxSegmentObjects.chTempReceiveSummary.getText().trim())){
+    			htmlToExtent(cName,mName,extLogger,driver, "Chilled temperature displayed as "+objRxSegmentObjects.chTempReceiveSummary.getText().trim()+" does matches with given temperature;;;Pass");
+    		}
+    	}
+    	else{
+    		htmlToExtent(cName,mName,extLogger,driver, "Hard Frozen temperature displayed as "+objRxSegmentObjects.hfTempReceiveSummary.getText()+" doesnot matches with given temperature;;;Fail");
+    	}
+    	//for(int i=0;i<rxSummary.size();i++){
+    		//String str1 = rxSummary.get(0).get(0)+":"+rxSummary.get(0).get(1)+":"+ rxSummary.get(0).get(2)+":"+rxSummary.get(0).get(3)+":"+ rxSummary.get(0).get(4);
+    		rxSummaryCheck.add(rxSummary.get(i-2).get(0).toString());
+    		rxSummaryCheck.add(rxSummary.get(i-2).get(1).toString());
+    		rxSummaryCheck.add(rxSummary.get(i-2).get(2).toString());
+    		rxSummaryCheck.add(rxSummary.get(i-2).get(3).toString());
+    		rxSummaryCheck.add(rxSummary.get(i-2).get(4).toString());
+    		if(!rxSummaryCheck.get(4).toString().equals("Cancelled")){
+	    		if(rxSummaryCheck.get(1).toString().equals(objRxSegmentObjects.totOrdArticleReceiveSummary.getText())){
+	    			htmlToExtent(cName,mName,extLogger,driver, "Total article ordered "+rxSummaryCheck.get(1).toString()+" is same as that of in receive summary page;;;Pass");
+	    		}
+	    		else{
+	    			htmlToExtent(cName,mName,extLogger,driver, "Total article ordered "+rxSummaryCheck.get(1).toString()+" is not same as that of in receive summary page;;;Fail");
+	    		}
+	    		if(rxSummaryCheck.get(2).toString().equals(objRxSegmentObjects.totOrdCartonReceiveSummary.getText())){
+	    			htmlToExtent(cName,mName,extLogger,driver, "Total cartons ordered "+rxSummaryCheck.get(2).toString()+" is same as that of in receive summary page;;;Pass");
+	    		}
+	    		else{
+	    			htmlToExtent(cName,mName,extLogger,driver, "Total cartons ordered "+rxSummaryCheck.get(2).toString()+" is not same as that of in receive summary page;;;Fail");
+	    		}
+	    	/*	if(rxSummaryCheck.get(3).toString().equals(objRxSegmentObjects.totRcvCartonReceiveSummary.getText()) || recvType.equals("fullhightemp")){
+	    			htmlToExtent(cName,mName,extLogger,driver, "Total cartons received "+rxSummaryCheck.get(3).toString()+" is same as that of in receive summary page;;;Pass");
+	    		}
+	    		else{
+	    			htmlToExtent(cName,mName,extLogger,driver, "Total cartons received "+rxSummaryCheck.get(3).toString()+" is not same as that of in receive summary page "+objRxSegmentObjects.totRcvCartonReceiveSummary.getText()+";;;Fail");
+	    		}
+	    		/*if(Integer.parseInt(objRxSegmentObjects.zeroQtyReceiveSummary.getText()) == 0){
+	    			htmlToExtent(cName,mName,extLogger,driver, "No Article has been rejected while receiving order by "+recvType+";;;Pass");
+	    		}
+	    		else{
+	    			htmlToExtent(cName,mName,extLogger,driver, "Total of Article #"+Integer.parseInt(objRxSegmentObjects.zeroQtyReceiveSummary.getText())+" has been rejected while receiving order by "+recvType+";;;Fail");
+	    		}
+	    		*/if(objRxSegmentObjects.packSizeReceiveSummary.getText().equals("0")){
+	    			htmlToExtent(cName,mName,extLogger,driver, "Total pack size is displayed as 0 in receive summary page;;;Pass");
+	    		}
+	    		else{
+	    			htmlToExtent(cName,mName,extLogger,driver, "Total pack size is displayed as "+objRxSegmentObjects.packSizeReceiveSummary.getText()+" in receive summary page;;;Fail");
+	    		}
+	    		if(objRxSegmentObjects.otherQtyReceiveSummary.getText().equals(objRxSegmentObjects.totOrdArticleReceiveSummary.getText()) && recvType.contains("exception")){
+	    			htmlToExtent(cName,mName,extLogger,driver, "Other Qty field is displayed as "+objRxSegmentObjects.otherQtyReceiveSummary.getText()+" since the order is received by exception;;;Pass");
+	    		}
+	    		else if (objRxSegmentObjects.otherQtyReceiveSummary.getText().equals("0")){
+	    			htmlToExtent(cName,mName,extLogger,driver, "Other Qty field is displayed as "+objRxSegmentObjects.otherQtyReceiveSummary.getText()+";;;Pass");
+	    		}
+	    		else{
+	    			htmlToExtent(cName,mName,extLogger,driver, "Other Qty field is displayed as "+objRxSegmentObjects.otherQtyReceiveSummary.getText()+";;;Fail");
+	    		}
+	    		if(recvType.equals("full")){
+	    			if(rxSummaryCheck.get(1).toString().equals(objRxSegmentObjects.totRcvArticleReceiveSummary.getText())){
+	        			htmlToExtent(cName,mName,extLogger,driver, "Total article received "+rxSummaryCheck.get(1).toString()+" is same as that of in receive summary page;;;Pass");
+	        		}
+	        		else{
+	        			htmlToExtent(cName,mName,extLogger,driver, "Total article received "+rxSummaryCheck.get(1).toString()+" is not same as that of in receive summary page;;;Fail");
+	        		}
+	    		}
+	    		if(hightempcheck.equals("true")){
+	    			if(Integer.parseInt(objRxSegmentObjects.zeroQtyReceiveSummary.getText()) >= 1 ){
+	    				htmlToExtent(cName,mName,extLogger,driver, "Article has been rejected and zero qty field is updated as "+objRxSegmentObjects.zeroQtyReceiveSummary.getText()+";;;Pass");
+	    			}
+	    			else if(Integer.parseInt(objRxSegmentObjects.zeroQtyReceiveSummary.getText())== 0){
+	    				htmlToExtent(cName,mName,extLogger,driver, "There is no temperature check and article has not been rejected and zero qty field is updated as "+objRxSegmentObjects.zeroQtyReceiveSummary.getText()+";;;Pass");
+	    			}
+	    			else{
+	    				htmlToExtent(cName,mName,extLogger,driver, "Article has been rejected but zero qty field is updated as "+objRxSegmentObjects.zeroQtyReceiveSummary.getText()+";;;Fail");
+	    			}
+	    		}
+	    		
+	    	}
+    		else{
+    			return;
+    		}
+    	}
+
+
+}

@@ -1,0 +1,568 @@
+/*package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.SkipException;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.yaml.snakeyaml.emitter.ScalarAnalysis;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
+
+import au.wow.ngbo.utils.Retry;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.OrderEnquiryObjects;
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbomain.pages.OrderEnquiryPage;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+public class OrderEnquiryTests extends TestBase {
+	
+	
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+	public static WebDriver driver;
+	public static XMLDataReader data;
+	int IBTcount=0;
+	
+	
+	//Declare and initialize the logger, status, sql and page objects
+			private Logger log = LogManager.getLogger(OrderEnquiryTests.class);
+			List<List<Object>> orderResult;
+			List<List<Object>> results;
+			List<List<Object>> results1;
+			List<List<Object>> result_temp;
+			TestStatus status;
+			SQLWrapper sql = new SQLWrapper(log);
+			WoWLoginPage loginPage;
+			OrderEnquiryPage objOrderEnquiryPage;
+			OrderEnquiryObjects objOrderEnquiryObject;
+			BasePage BaseObj;
+			CommonFunctions common;
+			StoreProperties storeprop;
+			int ORcount=0;
+			public OrderEnquiryTests(){
+				super.log=log;
+			}
+				
+			*//**
+			 * AL_1
+			 * Verifying Department Hierarchy and Paginations
+			 * @throws IOException 
+			 * @throws ParseException 
+			 * *//*
+			
+			
+			@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Order Creation using Order On Receipt")
+			public void orderOnReceipt() throws SQLException, IOException, AWTException, ParseException
+			{
+				if(orderEnqArtpreCount2==-1){
+				ORcount=ORcount+15;}
+				TestStatus status = getTestStatus();
+				navToOrderEnquiry(status);
+				objOrderEnquiryPage.waitFn();
+				objOrderEnquiryObject.createOrder.click();
+				waitFor(2);				
+				objOrderEnquiryPage.delOrder(objOrderEnquiryObject);	
+				waitFor(1);
+				objOrderEnquiryPage.clickOnOrderEnquiry(objOrderEnquiryObject,driver);
+				objOrderEnquiryPage.waitFn();
+				htmlToExtent(cName,mName,extLogger,driver, "Order Enquiry Page loaded succesfully;;;Pass");
+				//Report_AddStep("testcase","Order Enquiry Page loaded succesfully" , "", "", "Pass");
+				objOrderEnquiryObject.createOrder.click();
+				htmlToExtent(cName,mName,extLogger,driver, "Create ORDER page loaded successfully;;;Pass");
+				//Report_AddStep("testcase","Create ORDER page loaded successfully" , "", "", "");
+				objOrderEnquiryObject.orderonreceipt.click();
+				htmlToExtent(cName,mName,extLogger,driver, "ORDER on receipt page loaded successfully;;;Pass");
+				//Report_AddStep("testcase","ORDER on receipt page loaded successfully" , "", "", "");
+				//objOrderEnquiryPage.scrolldown(driver);
+				
+				List articlelist = new ArrayList();				
+				List<List<Object>> DBList = new ArrayList<List<Object>>();
+				List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+				if(StoreNo.equals("3064"))
+				{
+					articlelist.add(data.getText("SM1"));
+					articlelist.add(data.getText("SM2"));
+				}
+				else
+				{
+					articlelist.add(data.getText("BWS1"));
+					articlelist.add(data.getText("BWS2"));
+					articlelist.add(data.getText("BWS3"));
+				}
+				List app = new ArrayList();
+				for(int i=0;i<=1;i++)
+				{
+					String soh=null;
+					String om=null;
+					List DB = new ArrayList();
+					int art = (int) articlelist.get(i);
+					String art1=""+art;
+					String art1=(String) articlelist.get(i);
+					art1=art1.trim();
+					if(i==0)
+					{
+						String SOH_sql = data.getText("SOH").replace("art_no",art1);
+						results = sql.executeQuery(getContext(), SOH_sql);	
+						if(StoreNo.equals("3064"))
+						{
+							soh = results.get(0).get(5).toString();
+						}
+						else
+						{
+							soh = results.get(0).get(4).toString();
+						}
+						soh = decimalFormat(soh);
+						String OM_sql = data.getText("OM").replace("art_no",art1);					
+						result_temp = sql.executeQuery(getContext(), OM_sql);
+						if(StoreNo.equals("3064"))
+						{
+							om = result_temp.get(0).get(45).toString();
+						}
+						else
+						{
+							om = result_temp.get(0).get(64).toString();
+						}
+						om = decimalFormat(om);
+					}
+					if(i==1)
+					{
+						String SOH_sql = data.getText("SOH1").replace("art_no",art1);
+						results = sql.executeQuery(getContext(), SOH_sql);	
+						soh = results.get(0).get(0).toString();
+						soh = decimalFormat(soh);
+						String OM_sql = data.getText("OM1").replace("art_no",art1);					
+						result_temp = sql.executeQuery(getContext(), OM_sql);
+						om = result_temp.get(0).get(0).toString();
+						om = decimalFormat(om);
+					}	
+					String a = (String) articlelist.get(i);
+					DB.add(a.trim());
+					DB.add(soh);
+					DB.add(om);
+					DBList.add(DB);						
+					app = objOrderEnquiryPage.orderOnCreationDetail(objOrderEnquiryObject, i, art1,app,driver);				
+				}
+				List<List<Object>> applnlist = objOrderEnquiryPage.orderOnCreationCompare(objOrderEnquiryObject,driver);	
+				htmlToExtent(cName,mName,extLogger,driver, "***** Comparing application value with DB - article no,SOH,OM *****;;;Pass");
+				//Report_AddStep("testcase", "***** Comparing application value with DB - article no,SOH,OM *****","","", "");
+				ElementContains1(cName, mName,extLogger,driver, applnlist, DBList);
+				BaseObj.verticalScroll(driver);
+				objOrderEnquiryObject.submitOrder.click();
+				htmlToExtent(cName,mName,extLogger,driver, "***Clicking on Submit Order***;;;Pass");
+				//Report_AddStep("testcase","***Clicking on Submit Order***" , "", "", "Pass");				
+				objOrderEnquiryPage.orderOnCreationOrderNo(objOrderEnquiryObject,StoreNo,driver);
+				
+				int k=0;
+				for (Iterator<List<Object>> it = applnlist.iterator(); it.hasNext();) 
+				{
+					List<Object> elem = it.next(); 					
+					for(int i =0;i<elem.size();i++) 
+					{
+						if(elem.get(1)!=null)
+						{
+							elem.set(1, app.get(k).toString());								
+						}
+					}
+					k++;
+				}
+				for(int i=0;i<=1;i++)
+				{
+					String soh=null;
+					String om=null;
+					List DB1 = new ArrayList();
+					int art = (int) articlelist.get(i);
+					String art1=""+art;
+					String art1=(String) articlelist.get(i);
+					art1=art1.trim();
+					if(i==0)
+					{
+						String SOH_sql = data.getText("SOH").replace("art_no",art1);
+						results = sql.executeQuery(getContext(), SOH_sql);	
+						if(StoreNo.equals("3064"))
+						{
+							soh = results.get(0).get(5).toString();
+						}
+						else
+						{
+							soh = results.get(0).get(4).toString();
+						}
+						soh = decimalFormat(soh);
+						String OM_sql = data.getText("OM").replace("art_no",art1);					
+						result_temp = sql.executeQuery(getContext(), OM_sql);
+						if(StoreNo.equals("3064"))
+						{
+							om = result_temp.get(0).get(45).toString();
+						}
+						else
+						{
+							om = result_temp.get(0).get(64).toString();
+						}
+						om = decimalFormat(om);
+					}
+					if(i==1)
+					{
+						String SOH_sql = data.getText("SOH1").replace("art_no",art1);
+						results = sql.executeQuery(getContext(), SOH_sql);	
+						soh = results.get(0).get(0).toString();
+						soh = decimalFormat(soh);
+						String OM_sql = data.getText("OM1").replace("art_no",art1);					
+						result_temp = sql.executeQuery(getContext(), OM_sql);
+						om = result_temp.get(0).get(0).toString();
+						om = decimalFormat(om);
+					}
+					String a = (String) articlelist.get(i);
+					DB1.add(a.trim());
+					//DB1.add(articlelist.get(i));
+					DB1.add(soh);
+					DB1.add(om);
+					DBList1.add(DB1);				
+				}
+				htmlToExtent(cName,mName,extLogger,driver, "***** Comparing application value with DB - article no,SOH,OM after entered received quantity is entered*****;;;Pass");
+				//Report_AddStep("testcase", "***** Comparing application value with DB - article no,SOH,OM after entered received quantity is entered*****","","", "");
+				ElementContains1(cName, mName,extLogger,driver, applnlist, DBList1);
+				
+				
+				objOrderEnquiryPage.clickOnOrderEnquiry(objOrderEnquiryObject,driver);
+				objOrderEnquiryPage.waitFn();
+				objOrderEnquiryObject.createOrder.click();
+				waitFor(2);				
+				objOrderEnquiryPage.delOrder(objOrderEnquiryObject);	
+				waitFor(1);
+				
+				waitFor(1);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderEnqArtScenarios, orderEnqArttestname,driver));
+				
+				status.assertAll();
+				
+			}
+		
+			
+			
+			
+			@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Add Article for creating Orders", priority = 1)
+			public void AddArticlesForOrderCreation() throws SQLException, IOException, AWTException, ParseException
+			{
+				if(ORArtpreCount2==-1){
+					ORcount=ORcount+1;}
+				TestStatus status = getTestStatus();
+				
+				try{
+					int i=173;
+					navToOrderEnquiry(status);
+					objOrderEnquiryPage.waitFn();
+					objOrderEnquiryObject.createOrder.click();
+					for(int j=1;j<=500;j++)
+					{
+						FileInputStream file = new FileInputStream(new File(System.getProperty("user.dir") + "\\TestData\\NGBO\\NGBOArticles.xls"));
+						Workbook workbook = new HSSFWorkbook(file);
+						Sheet sheet = workbook.getSheetAt(0);
+						String article = "";
+						if(!sheet.getRow(i+1).getCell(0).getStringCellValue().equals("") || !sheet.getRow(i+1).getCell(0).getStringCellValue().equals(null) || !sheet.getRow(i+1).getCell(0).getStringCellValue().isEmpty()){
+							article=sheet.getRow(i+1).getCell(0).getStringCellValue();
+							if(article.equals("")){break;}else{
+							i++;
+							objOrderEnquiryPage.orderDetails(objOrderEnquiryObject,article);}}
+					}
+					
+					log.info("-----------------Logout from Application------------------");
+					waitFor(1);
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderEnqArtScenarios, orderEnqArttestname,driver));
+				}catch(Exception e)
+				{
+					isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				}
+				status.assertAll();
+			}
+			
+			@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Add Article for creating IBT Orders", priority = 1)
+			public void AddArticlesForIBTOrder() throws SQLException, IOException, AWTException, ParseException
+			{
+				if(ORArtpreCount2==-1){
+					ORcount=ORcount+1;}
+				TestStatus status = getTestStatus();
+				
+				try{
+					int i=81;
+					navToOrderEnquiry(status);
+					objOrderEnquiryPage.waitFn();
+					objOrderEnquiryPage.clickOnstockTransfer(objOrderEnquiryObject);
+					objOrderEnquiryPage.waitFn();
+					if(objOrderEnquiryObject.check.size()>0){}else
+					{
+					objOrderEnquiryObject.enterStore.click();
+					objOrderEnquiryObject.enterStore.sendKeys("3200");
+					objOrderEnquiryObject.searchAdd.click();
+					objOrderEnquiryObject.searchAnddAdd.click();
+					objOrderEnquiryPage.waitFn();}
+					objOrderEnquiryObject.expandStore.click();
+					objOrderEnquiryPage.waitFn();
+					for(int j=1;j<=220;j++)
+					{
+						FileInputStream file = new FileInputStream(new File(System.getProperty("user.dir") + "\\TestData\\NGBO\\NGBOArticles.xls"));
+						Workbook workbook = new HSSFWorkbook(file);
+						Sheet sheet = workbook.getSheetAt(0);
+						String article = "";
+						if(!sheet.getRow(i+1).getCell(0).getStringCellValue().equals("") || !sheet.getRow(i+1).getCell(0).getStringCellValue().equals(null) || !sheet.getRow(i+1).getCell(0).getStringCellValue().isEmpty()){
+							article=sheet.getRow(i+1).getCell(0).getStringCellValue();
+							if(article.equals("")){break;}else{
+							i++;
+							IBTcount = objOrderEnquiryPage.IBTorderDetails(objOrderEnquiryObject,article);}}
+					}
+					
+					log.info("-----------------Logout from Application------------------");
+					waitFor(1);
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderEnqArtScenarios, orderEnqArttestname,driver));
+				}catch(Exception e)
+				{
+					isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				}
+				status.assertAll();
+			}
+			
+			@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Deleting existing Orders", priority = 1)
+			public void deletionOfOrders() throws SQLException, IOException, AWTException, ParseException
+			{
+				
+				TestStatus status = getTestStatus();
+				navToOrderEnquiry(status);
+				objOrderEnquiryPage.waitFn();
+				objOrderEnquiryObject.createOrder.click();
+				waitFor(2);				
+				objOrderEnquiryPage.delOrder(objOrderEnquiryObject);				
+				waitFor(1);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderEnqArtScenarios, orderEnqArttestname,driver));
+				status.assertAll();
+			}
+			
+			@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Deleting existing IBT Orders", priority = 1)
+			public void deletionOfIBTOrders() throws SQLException, IOException, AWTException, ParseException
+			{
+				
+				TestStatus status = getTestStatus();
+				navToOrderEnquiry(status);
+				objOrderEnquiryPage.waitFn();
+				objOrderEnquiryPage.clickOnstockTransfer(objOrderEnquiryObject);
+				objOrderEnquiryPage.waitFn();
+				objOrderEnquiryPage.delIBTOrder(objOrderEnquiryObject,IBTcount);				
+				waitFor(1);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderEnqArtScenarios, orderEnqArttestname,driver));
+				status.assertAll();
+			}
+			
+			public void navToOrderEnquiry(TestStatus status) throws IOException, AWTException 
+			{
+				log.info("---------------Login into Application--------------------");
+				htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+				//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+				loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+				if(System.getProperty("store")==null){
+					StoreNo = getContext().getStringProperty("store");
+					htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+					//Report_AddStep("testcase", "Login with the Store : " + getContext().getStringProperty("store"),"","", "Pass");
+					//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+					objOrderEnquiryPage = loginPage.navToOrderCreation(getContext().getStringProperty("store"),driver);
+				}else{
+					storeprop.getStoreDetails(System.getProperty("store"));
+					System.out.println(store);
+					StoreNo = store;
+					htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+					//Report_AddStep("testcase", "Login with the Store : " + store,"","", "Pass");
+					//articleLookUpPage = loginPage.navToArticlLookUp(store);
+					objOrderEnquiryPage = loginPage.navToOrderCreation(store,driver);
+				}
+					
+				log.info("-------------Navigate to Order Enquiry Page------------");
+				htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to Order Enquiry Page--------------------;;;Pass");
+				//Report_AddStep("testcase", "----------------Navigate to Order Enquiry Page--------------------","","", "Pass");
+				objOrderEnquiryPage.clickOnOrderEnquiry(objOrderEnquiryObject,driver);
+			}
+			
+			@BeforeMethod(alwaysRun=true)
+			public void setUp(Method m9,ITestContext testcontext) throws IOException{	
+				waitFor(2);
+				 mName=m9.getName().toString().trim();			
+	    			if(!methodList.contains(m9.getName().toString().trim())){
+	    			methodList.add(m9.getName().toString().trim());
+	    			extLogger = extReport.startTest(m9.getName().toString().trim());
+	    			}
+				initializeTestcontext();
+				System.out.println("test1 - beforemethod");
+				isExceptionCaptured=false;
+				log.info("Loading Testdata for the test case: " + m9.getName().toString());
+				data.getTCNameFromChildren(m9.getName().toString().trim());
+				driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser"));
+				testcontext.setAttribute("WebDriver", driver);
+				testcontext.setAttribute("Customreports", this.customreport);
+				customreport.startTest(m9.getName().toString());
+				initializeTestStatus();
+				reportPath = new File(getContext().getStringProperty("reportPath"));
+				orderEnqArttestname = m9.getName().toString().trim();
+				orderEnqArttestdesc = m9.getAnnotation(Test.class).description();
+				htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+				objOrderEnquiryObject = PageFactory.initElements(this.driver, OrderEnquiryObjects.class);
+				objOrderEnquiryPage = PageFactory.initElements(this.driver, OrderEnquiryPage.class);
+				//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+				BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+				common = PageFactory.initElements(this.driver, CommonFunctions.class);
+				storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+				
+				Date ppStartdat1 = new Date();
+				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				String formattedDatepp = dateFormat.format(ppStartdat1);
+				System.out.println(formattedDatepp); // 12/01/2011 4:48:16 PM
+				orderEnqArtStartdat = formattedDatepp;
+			}
+			
+			@BeforeClass
+			public void loadXMLFile(){	
+				System.out.println("test1 - Beforeclass");
+				data = new XMLDataReader(log);
+				customreport=new CustomExtentReports();
+				log.info("Loading data for the class: " );
+				data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\orderEnquiry.xml");
+				customreport.createExtentReport();
+				cName=this.getClass().getSimpleName();
+				reportPath = new File(TestContext.getStringProperty("reportPath"));			
+				extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+				classList.add(this.getClass().getSimpleName());
+			}
+			
+			
+			
+			@AfterClass(alwaysRun=true)
+			public void tearDown() throws IOException, ParseException{
+				waitFor(1);
+				System.out.println("afterclass");
+				sceCtMap.put(cName+"_totalCt", methodList.size());
+				sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+				sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+				tcCt.put(this.getClass().getSimpleName().toString(), ORcount);
+				System.out.println(extentList);
+				System.out.println(methodList);
+	            extReport.endTest(extLogger);
+				extReport.flush();
+				removeDriver();
+
+				
+				waitFor(1);
+				moduleName.put("Modules", orderEnqArtModules);
+				waitFor(1);
+				Date ppModEnd2 = new Date();
+				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				orderEnqArtenddateex = dateFormat.format(ppModEnd2);
+
+				System.out.println(orderEnqArtenddateex);
+				waitFor(2);
+				
+				int OEArtM=ORcount;
+				orderEnqArtMC=""+OEArtM;
+				waitFor(2);
+				System.out.println("orderEnq - " +orderEnqArtMC);
+				waitFor(2);
+			}
+			
+			@AfterMethod(alwaysRun=true)
+			protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+				System.out.println("AffterMethod");
+				extReport.endTest(extLogger);
+				extReport.flush();
+				try{
+					if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+						htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;FAIL");	
+						result9.removeAttribute("isFail");
+					}}catch(Exception e ){
+						System.out.println();
+					
+					}
+
+				waitFor(1);
+				Date ppMEndDate1 = new Date();
+				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				orderEnqArtMEndDate = dateFormat.format(ppMEndDate1);
+				System.out.println(orderEnqArtMEndDate); // 12/01/2011 4:48:16 PM
+				String EnhancedArtTime = orderEnqArttestdesc +";"+ orderEnqArtStartdat +";" + orderEnqArtMEndDate;
+
+				orderEnqArtTime.put(orderEnqArttestname, EnhancedArtTime);
+				//Report_AddStep("testcase", "Running Completed Status","","", getResultStatusName(result.getStatus()));
+				waitFor(4);
+				closeDriver(driver);
+				customreport.getExtentReport().endTest(customreport.getExtentTest());
+				customreport.getExtentReport().flush();
+				waitFor(1);
+				if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")){
+					int cnt = orderEnqArtpreCount2+1;
+					htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+					orderEnqArtpreCount2++;
+				}
+				
+				if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")){
+					int cnt = orderEnqArtpreCount2+1;
+					htmlToExtent(cName,mName,extLogger,driver,"Completed Status : Iteration - "+ cnt +";;;Fail");
+					orderEnqArtpreCount2++;
+				}
+				waitFor(1);
+				if((getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail") || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info"))&& orderEnqArtpreCount2!=reCount){
+					waitFor(1);
+					orderEnqArtTime.removeAll(orderEnqArttestname);
+					waitFor(1);
+					orderEnqArtScenarios.removeAll(orderEnqArttestname);
+				}
+				waitFor(1);
+				if(orderEnqArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+					orderEnqArtpreCount2=-1;
+				}
+				waitFor(2);
+				
+			}
+			
+}
+*/

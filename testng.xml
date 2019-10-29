@@ -1,0 +1,38 @@
+<suite name="StoresCentral_TestSuite" configfailurepolicy="continue">
+	<test name="POC_tests" parallel="classes" thread-count="1">
+	<classes>
+     	 <!--    <class name="au.wow.ngbomain.tests.LaybyProductRecall" />
+     	  <class name="au.wow.ngbomain.tests.LaybyLocation" />
+				<methods>
+				<include name ="LaybyProducts_FDNewProduct" />
+			</methods> 
+	
+	  <class name="au.wow.ngbomain.tests.LaybyLocation" />
+		<methods>
+				<include name ="LaybyDateStoreReport" />
+			</methods>  
+			
+	 <class name="au.wow.ngbomain.tests.LaybyProductRecall" />
+		<methods>
+				<include name ="ProductRecall" />
+			</methods>  
+		 
+		 <class name="au.wow.ngbomain.tests.LaybyLocation" />
+		<methods>
+				<include name ="LaybyLocation" />
+			</methods>  -->	
+			
+		<class name="au.wow.ngbomain.tests.LaybyProducts" />
+		 <methods>
+				<include name ="LaybyProducts_FDNewProduct" />
+			</methods> 
+				
+		</classes>
+	</test>
+</suite>
+
+
+
+
+
+

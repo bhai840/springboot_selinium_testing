@@ -1,0 +1,363 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class ReceivingSegmentObjects {
+	
+	@FindBy(xpath="//*[@id='orders']/a")
+	public WebElement orders;
+	
+	@FindBy(xpath="//*[@id='lookUp']/a")
+	public WebElement lookup;
+	
+	@FindBy(xpath="//*[@id='lookUp']/ul/li[2]/a")
+	public WebElement articles;
+	
+	@FindBy(xpath="//*[@id='searchBox']")
+	public WebElement searchArticle;
+	
+	@FindBy(xpath="//*[@id='orders']/ul/li[2]/a")
+	public WebElement orderEnquiry;
+	
+	@FindBy(xpath="//*[@id='over_due_tbl_table']")
+	public WebElement overDueTable;
+	
+	@FindBy(xpath="//*[@id='error_msg']")
+	public WebElement errorMessage;
+	
+	@FindBy(xpath="//*[@id='orderNo']")
+	public WebElement orderNoSend;
+	
+	@FindBy(xpath="//*[contains(@class,'actionRows')]/tbody")
+	public WebElement filteredOrder; 
+	
+	@FindBy(xpath="//*[contains(@class,'goButton')]")
+	public WebElement goBtn; 
+	
+	@FindBy(xpath="//*[@id='articleGO']")
+	public WebElement articleGoBtn;
+	
+	@FindBy(xpath="//*[@id='sohValue']")
+	public WebElement sohFromLookUp;
+	
+	@FindBy(xpath="//*[@id='backBtn']")
+	public WebElement backLookUp;
+	
+	@FindBy(xpath="//*[@id='order_detail']//div[3]//label[1]")
+	public WebElement supplierBrowser;
+	
+	@FindBy(xpath="//*[text()='Overall Info']/following::label/strong")
+	public WebElement totalDelivery;
+	
+	@FindBy(xpath="//*[@id='sections-tab']/ul/li")
+	public List<WebElement> deliveryTabs;
+	
+	@FindBy(xpath="//*[@id='sections-tab']/ul/li")
+	public WebElement totalDeliveryTab;
+	
+	public static final String deliverydync = "//*[@id='sections-tab']/ul/li[dynamic]";
+	
+	@FindBy(xpath="//*[@id='sections-tab']/ul/li[1]")
+	public WebElement overallTab;
+	
+	@FindBy(xpath="(//*[contains(@class,'itemContentTableWrap')])[1]//tbody/tr")
+	public List<WebElement> overallTabTable;
+	
+	@FindBy(xpath="//*[@id='received_item_table_table']/tbody/tr")
+	public List<WebElement> rcvdTabTable;
+	
+	@FindBy(xpath="//*[@id='section-overall']//p")
+	public WebElement deliveryDateAndSource;
+	
+	@FindBy(xpath="//*[contains(@class,'actionRows')]/tbody/tr")
+	public List<WebElement> orderDetails;
+	
+	@FindBy(xpath="//*[@id='yet_to_received_item_table_table']/tbody/tr")
+	public List<WebElement> totalArticleDetails;  
+	
+	@FindBy(xpath="//*[text()='Clear Group By']")
+	public WebElement clearGroup;
+	
+	@FindBy(xpath="(//*[text()='Total Articles:']/following::td)[1]")
+	public WebElement totalArticles;
+	
+	public static final String deliveryDates = "(//*[text()='Delivery Date: ']/strong)[dynamic]";
+	
+	public static final String onshowDateDync = "(//*[text()='On Show Date: ']/strong)[dynamic]";
+	
+	//public static final String segmentTable = "(//*[contains(@class,'itemContentTableWrap')])[dynamic]//tbody/tr";
+	
+	public static final String segmentTable = "(//*[contains(@class,'itemContentTableWrap')])//tbody/tr";
+	
+	public static final String clearGroupDync = "(//*[text()='Clear Group By'])[dynamic]";
+	
+	public static final String totalDispatchedQty = "((//*[text()='	Total Dispatched Qty.:'])[dynamic]/following::td)[1]";
+	
+	public static final String totalDispatchedWeight = "(//*[text()='Total Dispatched Weight:'])[dynamic]/following::td[1]";
+	
+	public static final String totalArticle = "(//*[text()='Total Articles:'])[dynamic]/following::td[1]";
+	
+	public static final String totalCartons = "(//*[text()='Total Cartons Ordered:'])[dynamic]/following::td[1]";
+	
+	public static final String status = "(//*[text()='Status: '])[dynamic]//strong";
+	
+	//public static final String receviceBtn = "(//*[text()='Receive Segment'])[dynamic]";
+	
+	@FindBy(xpath="(//*[text()='Receive Segment'])")
+	public WebElement receiveBtn;
+	
+	public static final String tempFlag = "//*[@id='tempCheckFlag']";
+	
+	@FindBy(xpath="//*[@class='methodRF']")
+	public WebElement rxFullBtn;
+	
+	@FindBy(xpath="//*[@class='methodRE']")
+	public WebElement rxExceptionBtn;
+	
+	@FindBy(xpath="//*[@id='dialog-alert-conf']//div//div//span[2]")
+	public WebElement recvMethodChangeYes;
+	
+	@FindBy(xpath="//*[@id='receiveMode']")
+	public WebElement recvExceptionUpdateQuantityTab;
+	
+	@FindBy(xpath="//*[@class='tempDtl']")
+	public WebElement tempDetail;
+	
+	@FindBy(xpath="//*[contains(@class,'chilled')]")
+	public WebElement chilledTemp;
+	
+	@FindBy(xpath="//*[contains(@class,'chilled')]/input")
+	public WebElement chilledTempBox;
+	
+	@FindBy(xpath="//*[contains(@class,'hardFrozen')]")
+	public WebElement hardFrozenTemp;
+	
+	@FindBy(xpath="//*[contains(@class,'hardFrozen')]/input")
+	public WebElement hardFrozenTempBox;
+	
+	@FindBy(xpath="//*[@id='dialog-sessionRCV']")
+	public WebElement sessionPopUp;
+	
+	@FindBy(xpath="//*[@id='resumeSessRCV']")
+	public WebElement resumeSession;
+	
+	@FindBy(xpath="//*[@id='nextbtn']")
+	public WebElement nextBtn;
+	
+	@FindBy(xpath="//*[@id='nextbtn']//label")
+	public WebElement nextStepBtn;
+	
+	@FindBy(xpath="//*[text()='Next Step']")
+	public WebElement recvExceptionDispNextbtn;
+	
+	@FindBy(xpath="//*[@id='discrepancyTable']")
+	public WebElement discrepancyTab;
+	
+	@FindBy(xpath="//*[@id='submitbtn']")
+	public WebElement submitBtn;
+	
+	@FindBy(xpath="//*[@id='dialog-recvConfirmation']")
+	public WebElement rxConfirmationPopUp;
+	
+	@FindBy(xpath="//*[@id='continue']")
+	public WebElement rxContinue;
+	
+	@FindBy(xpath="//*[@class='pageStatusWrapper']")
+	public WebElement rxConfirmationMessage;
+	
+	@FindBy(xpath="//*[@id='success_msg']")
+	public WebElement message;
+	
+	@FindBy(xpath="//*[contains(@class,'recvBy')]")
+	public WebElement rxByReceiveSummary;
+	
+	@FindBy(xpath="//*[contains(@class,'CHTemp')]")
+	public WebElement chTempReceiveSummary;
+	
+	@FindBy(xpath="//*[contains(@class,'HFTemp')]")
+	public WebElement hfTempReceiveSummary;
+	
+	@FindBy(xpath="//*[contains(@class,'totOrdArticles')]")
+	public WebElement totOrdArticleReceiveSummary;
+	
+	@FindBy(xpath="//*[contains(@class,'totRecvArticles')]")
+	public WebElement totRcvArticleReceiveSummary;
+	
+	@FindBy(xpath="//*[contains(@class,'totOrdCartons')]")
+	public WebElement totOrdCartonReceiveSummary;
+	
+	@FindBy(xpath="//*[contains(@class,'totRecvCartons')]")
+	public WebElement totRcvCartonReceiveSummary;
+	
+	@FindBy(xpath="//*[contains(@class,'zeroQty')]")
+	public WebElement zeroQtyReceiveSummary;
+	
+	@FindBy(xpath="//*[contains(text(),'Pack  Size')]/following::td")
+	public WebElement packSizeReceiveSummary;
+	
+	@FindBy(xpath="//*[contains(text(),'Other Qty')]/following::td")
+	public WebElement otherQtyReceiveSummary;
+	
+	@FindBy(xpath="//*[@href='#tabs-received']")
+	public WebElement receivedArticleTab;
+	
+	@FindBy(xpath="//*[text()='Temperature out of range!']/following::div//div//div")
+	public WebElement tempOutOfRange;
+	
+	@FindBy(xpath="//*[text()='Temperature out of range!']/following::div//div//div/span[2]")
+	public WebElement acceptTemp;
+	
+	@FindBy(xpath="//*[contains(@class,'actionRows')]/tbody/tr/td[3]")
+	public WebElement statusOrderEnq;
+	
+	@FindBy(xpath="(//*[contains(@class,'TextBox') and not(contains(@class,'hideBlock'))])")
+	public List<WebElement> recvExceptionChangeQtyBoxList;
+	
+	public static final String recvExceptionChangeQtyBox = "(//*[contains(@class,'TextBox') and not(contains(@class,'hideBlock'))])[dynamic]";
+	
+	@FindBy(xpath="(//*[contains(@class,'wtTextBox') and not(contains(@class,'hideBlock'))])")
+	public List<WebElement> wtBoxList;
+	
+	@FindBy(xpath="(//*[contains(@class,'recvTextBox')])")
+	public List<WebElement> recvBoxList;
+	
+	public static final String recvExceptionQty = "(//*[contains(@class,'recvTextBox')])[dynamic]";
+	
+	public static final String recvExceptionWeight = "(//*[contains(@class,'wtTextBox') and not(contains(@class,'hideBlock'))])[dynamic]";
+	
+	public static final String confirmCheckBox = "(//*[contains(@class,'confirmCheck')])[dynamic]";//"(//*[@class='confirmCheck'])[dynamic]";
+	
+	@FindBy(xpath="//*[contains(@class,'confirmCheck')]")
+	public List<WebElement> checkbox;
+	
+	@FindBy(xpath="//*[@id='discrepancyTable']/tbody/tr")
+	public List<WebElement> confirmCheckBoxDisp;
+	
+	public static final String confirmCheckBoxDispTab = "//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[12]//input";
+	
+	public static final String recvUnitsRecvException = "//*[contains(@class,'recvTotUnits')]/strong";
+	
+	public static final String recvExceptionArticle = "//*[@id='recvArticleTable']/tbody/tr[1]/td";
+	
+	@FindBy(xpath="//*[@id='recvArticleTable']/tbody/tr")
+	public List<WebElement> recvExceptionUpdateQty;
+	
+	@FindBy(xpath="//*[@id='discrepancyTable']/tbody/tr")
+	public List<WebElement> recvExceptionDispTab;
+	
+	@FindBy(xpath="//*[@id='discrepancyTable']/tbody/tr")
+	public WebElement recvExceptionDisp;
+	
+	//@FindBy(xpath="//*[text()='Total Cartons Received:']")
+	
+	public static final String recvedTotalCartonsRecvd = "(//*[text()='Total Cartons Received:'])[dynamic]/following::td";
+	
+	public static final String recvedTotalCartonsOrdered = "(//*[text()='Total Cartons Ordered:'])[dynamic]/following::td[1]";
+	
+	public static final String recvedTotalWeight = "(//*[text()='Total Weight Received:'])[dynamic]/following::td";
+	
+	public static final String recvedTotalDispQty = "(//*[text()='	Total Dispatched Qty.:'])[dynamic]/following::td[1]";
+	
+	public static final String recvedTotalDispWght = "(//*[text()='Total Dispatched Weight:'])[dynamic]/following::td[1]";//Can be NA
+	
+	public static final String recvedRecvMethod = "(//*[text()='Receiving Method:'])[dynamic]/following::td[1]";
+	
+	public static final String recvedTotalPalletRx = "(//*[text()='Total Pallets Received:'])[dynamic]/following::td[1]";//Can be NA
+	
+	public static final String recvedTotalPallets = "(//*[text()='Total Pallets:'])[dynamic]/following::td[1]";
+	
+	public static final String recvedTotalArticles = "(//*[text()='Total Articles:'])[dynamic]/following::td[1]";
+	
+	public static final String recvedTotalPalletsReturned = "(//*[text()='Total Pallets Returned:'])[dynamic]/following::td[1]";//Can be NA
+	
+	public static final String recvedRecvdDateTime = "(//*[text()='Received Date:'])[dynamic]/following::td[1]";
+	
+	public static final String recvedRecvdBy = "(//*[text()='Received By:'])[dynamic]/following::td[1]";
+	
+	//display
+	@FindBy(xpath="//*[@id='received_item_table_table']/tbody/tr/td[9]/a")
+	public List<WebElement> disparticlesbox;
+	
+	public static final String dispBox = "(//*[contains(@class,'itemContentTableWrap')])[dynamic]//tbody/tr[value]/td[7]/a";////*[@id='received_item_table_table']/tbody/tr[dynamic]/td[9]/a";
+	
+	public static final String disparticle = "//*[@id='received_item_table_table']/tbody/tr[dynamic]/td[1]";
+	
+	@FindBy(xpath="//*[@id='componentTable_table']/tbody/tr")
+	public List<WebElement> dispchilddetails;
+	
+	
+	public static final String dispafterRX = "(//*[contains(@class,'itemContentTableWrap')])[1]//tbody/tr[dynamic]/td[9]/a";
+	
+	@FindBy(xpath="//*[@id='PL']")
+	public WebElement postLater;
+	
+	//@FindBy(xpath="//*[@class='reportRadio']")
+	//public WebElement recvMethods;
+	public static final String recvMethods = "(//*[contains(@class,'method') and not(contains(@class,'hideBlock'))])[dynamic]" ;
+	
+			
+	@FindBy(xpath="//*[contains(@class,'method') and not(contains(@class,'hideBlock'))]")
+	public List<WebElement> recvMethodsList;
+	
+	@FindBy(xpath="//*[(@class='methodRF')]/input")
+	public WebElement fullRadio;
+	
+	@FindBy(xpath="//*[contains(@class,'PostUpdateSOH')]")
+	public static final String postUpdateSOH = "(//*[contains(@class,'PostUpdateSOH')])[dynamic]";
+	//public WebElement postUpdateSOH;
+	
+	@FindBy(xpath="//*[@id='success_msg']")
+	public WebElement postLaterStatus;
+	
+	//WarehouseLineByLine
+	
+	@FindBy(xpath="//*[@id='RM']")
+	public WebElement recvLineByLine;
+	
+	@FindBy(xpath="//*[@id='acceptbtn']/label")
+	public WebElement acceptNR;
+	
+	@FindBy(xpath="//*[@id='rejectbtn']/label")
+	public WebElement rejectNR;
+	
+	@FindBy(xpath="//*[@id='message']")
+	public WebElement notrangedArticlePopUp;
+	
+	@FindBy(xpath="(//*[@id='message'])[2]")
+	public WebElement acceptYesHighTempPopUp;
+	
+	@FindBy(xpath="//*[@id='yes']/label")
+	public WebElement acceptYesHighTemp;
+	
+	@FindBy(xpath="//*[@id='no']/label")
+	public WebElement acceptNoHighTemp;
+	
+	@FindBy(xpath="//*[@id='info_msg']")
+	public WebElement infoMessage;
+	
+	@FindBy(xpath="//*[text()='Frozen Temperature:']/following::td")
+	public WebElement frozenTemp;
+	
+	@FindBy(xpath="//*[text()='Chilled Temperature:']/following::td")
+	public WebElement chilTemp;
+	
+	@FindBy(xpath="//*[contains(@class,'header-icon')]")
+	public WebElement listOfArticlePlusBtn;
+	
+	public static final String listOfArticleDyn = "(//*[contains(@class,'header-icon')])[dynamic]";
+	
+	@FindBy(xpath="(//*[contains(@class,'header-icon')])")
+	public List<WebElement> listOfArticleList; 
+	
+	@FindBy(xpath="//*[contains(@class,'ui-state-active') and contains(@id,'listOfArtAccordion')]")
+	public WebElement listOfArticleExpand;
+	
+	@FindBy(xpath="//*[contains(@class,'ui-state-default') and contains(@id,'listOfArtAccordion')]")
+	public WebElement listOfArticleToBeExpand;
+	
+}
+
+

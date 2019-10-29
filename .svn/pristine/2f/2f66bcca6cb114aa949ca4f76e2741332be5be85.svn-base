@@ -1,0 +1,309 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+
+public class StockTransferObjects {
+	
+	@FindBy(xpath ="//*[@id='stockManage']/a")
+	public WebElement StockMange;
+	
+	@FindBy(xpath ="//*[@id='stockManage']/ul/li[4]/a")
+	public WebElement StockTransfr;
+	
+	@FindBy(linkText ="Orders")
+	public WebElement Orders;
+	
+	@FindBy(xpath ="//*[@id='orders']/ul/li[2]/a")
+	public WebElement orderEnquiry;
+	
+	@FindBy(xpath ="//*[@id='multiplePOS']/input")
+	public WebElement TargetSite;
+	
+	@FindBy(xpath ="//*[@id='multiplePOS']/label/label")
+	public WebElement SearchAndAdd;
+	
+	@FindBy(xpath ="//*[@id='tableCreateAction']/div/div[4]/label[1]")
+	public WebElement ClickCreate1;
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[1]/h4")
+	public List<WebElement> DisplayError;
+	
+	@FindBy(xpath ="//*[@id='error_msg']/li")
+	public WebElement DisplayErrormsg;
+	
+	@FindBy(xpath ="//*[@id='expandAll']")
+	public WebElement ClickExpand;
+	
+	@FindBy(xpath ="//*[@id='viewModeTable3']/tbody/tr[1]")
+	public List<WebElement> SiteName;
+	
+	@FindBy(xpath ="(//*[@id='searchBox'])[1]")
+	public WebElement enterArticle;
+	
+	@FindBy(xpath ="(//*[@id='qty'])[1]")
+	public WebElement enterQty;
+	
+	@FindBy(xpath ="(//*[@id='searchAndAdd']/a)[1]")
+	public WebElement ClickSearch;
+	
+	@FindBy(xpath ="//*[@id='acceptQty']")
+	public WebElement ClikAcceptQty;
+	
+	@FindBy(xpath ="//*[@id='acceptQty']")
+	public List<WebElement> ClickAcceptQty;
+	
+	@FindBy(xpath ="//*[@id='articleSearchTbody']/tr[2]/td[4]/input")
+	public WebElement clickArticleSearch;
+	
+	@FindBy(xpath ="//*[@id='addtolist']")
+	public WebElement clickAddtoList;
+	
+	@FindBy(xpath ="//*[@id='createOrder']/a/label")
+	public WebElement clickSubmit;
+	
+	@FindBy(xpath ="//*[@id='error_title']")
+	public WebElement clickHelp;
+	
+	@FindBy(xpath ="//*[@id='error_title']")
+	public List<WebElement> clickHelpsize;
+	
+	@FindBy(xpath ="(//*[@class='close'])[4]")
+	public WebElement clickNote;
+	
+	@FindBy(xpath ="//*[@id='ibtNextBtn']/a")
+	public List<WebElement> CheckclickNext;
+	
+	
+	@FindBy(xpath ="//*[@id='ibtNextBtn']/a")
+	public WebElement clickNext;
+	
+	@FindBy(xpath ="//*[@id='ibtNextBtn']")
+	public WebElement checkNextbutton;
+	
+	@FindBy(xpath ="//*[@id='ibtFinishBtn']/a/label")
+	public WebElement clickFinish;
+	
+	@FindBy(xpath ="//*[@id='error_title']")
+	public List<WebElement> CheckSuccessmsg;
+	
+	@FindBy(xpath ="//*[@id='success_msg']")
+	public WebElement clickMesg;
+	
+	@FindBy(xpath ="//*[@id='success_msg']")
+	public WebElement Ordernum;
+	
+	@FindBy(xpath ="(//*[@id='temperature2'])[2]")
+	public WebElement EnterFrozenTemp;
+	
+	
+	
+	@FindBy(xpath ="(//*[@id='temperature1'])[2]")
+	public WebElement EnterChilledTemp;
+	
+	@FindBy(xpath ="//*[@id='stockTempDiv']/div[3]")
+	public WebElement CheckFrozenTemp;
+	
+	@FindBy(xpath ="//*[@id='stockTempDiv']/div[2]")
+	public WebElement CheckChilledTemp;
+	
+	@FindBy(xpath ="//*[@id='orders']/a")
+	public WebElement ClckOrdrs;
+	
+	@FindBy(xpath ="//*[@id='orders']/ul/li[2]")
+	public WebElement ClckOrderEnquiry;
+	
+	@FindBy(xpath ="//*[@id='orderNo']")
+	public WebElement EnterOrderNo;
+	
+	@FindBy(xpath ="//*[@id='orderEnq']/label")
+	public WebElement clckGo;
+	
+	@FindBy(xpath ="//*[@id='supplier_name_tr_1_0']")
+	public WebElement clickStatus;
+	
+	@FindBy(xpath ="//*[@id='order_status_tr_1_0']")
+	public WebElement checkStatus;
+	
+	
+	@FindBy(xpath ="(//*[@class='close'])")
+	public WebElement clicksubmittedstatus;
+	
+	@FindBy(xpath ="//*[@id='ibtCancelBtn']/a/label")
+	public WebElement clickCancel;
+	
+	@FindBy(xpath ="//*[@id='yes']/label")
+	public WebElement clickYes;
+	
+	@FindBy(xpath ="//*[@id='order_type_tr_1_0']")
+	public WebElement CheckType;
+	
+	@FindBy(xpath ="//*[@id='commonCancelOrder']")
+	public WebElement CheckIBTCancelbutton;
+	
+	@FindBy(xpath ="//*[@id='commonCancelOrder']/a")
+	public WebElement ClickIBTCancelbutton;
+	
+	@FindBy(xpath ="//*[@id='cancelOrder']")
+	public WebElement CheckVendorCancelbutton;
+	
+	@FindBy(xpath ="//*[@id='cancelOrder']/a")
+	public WebElement ClickVendorCancelbutton;
+	
+	@FindBy(xpath ="//*[@id='message']")
+	public WebElement Checkpopup;
+	
+	@FindBy(xpath ="//*[@id='yes']/label")
+	public WebElement Clickpopup;
+	
+	@FindBy(xpath ="//*[@id='success_title']")
+	public WebElement CheckSuccessStatus;
+	
+	@FindBy(xpath ="//*[@id='success_msg']/li")
+	public WebElement Checksuccessmsg;
+	
+	@FindBy(xpath ="//*[@class='close']")
+	public WebElement Clickclose;
+	
+	@FindBy(xpath ="//*[@id='success_title']")
+	public WebElement CheckIBTSuccessStatus;
+	
+	@FindBy(xpath ="//*[@id='success_msg']/li")
+	public WebElement CheckIBTsuccessmsg;
+	
+	@FindBy(xpath ="(//*[@class='close'])[3]")
+	public WebElement ClickIBTclose;
+	
+	@FindBy(xpath ="//*[@class='title']")
+	public WebElement msg;
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[1]/h4")
+	public WebElement CheckError;
+	
+	@FindBy(xpath ="//*[@id='error_msg']")
+	public WebElement CaptureErrorMsg;
+	
+	@FindBy(xpath ="//*[@class = 'close']")
+	public WebElement clickClosebutton;
+	
+	@FindBy(xpath ="//*[@id='viewModeTable3']/tbody/tr[3]/th[2]")
+	public WebElement SortArticles;
+	
+	@FindBy(xpath ="(//*[@class='title'])")
+	public List<WebElement> CheckTitle;
+	
+	@FindBy(xpath ="(//*[@class = 'close'])[4]")
+	public WebElement ClicksiteTitle;
+	
+	@FindBy(xpath ="(//*[@class='title'])[5]")
+	public List<WebElement> Titlesize;
+	
+	@FindBy(xpath ="//*[@id='viewModeTable3']/tbody/tr[@class = 'collapsed groupByExpand2 expand-collapse']")
+	public List<WebElement> checkstoresize;
+	
+	@FindBy(xpath ="//*[@id='viewModeTable3']/tbody/tr[@class='groupByTr2 collapsed article-content-row']")
+	public List<WebElement> checkarticlessize;
+	
+	@FindBy(xpath ="//*[@id='viewModeTable3']/tbody/tr[@class='groupByTr2 collapsed article-content-row'][1]/td[9]/label")
+	public WebElement deletearticle;
+	
+	@FindBy(xpath ="//*[@id='dialog-modal-alertBox']")
+	public List<WebElement> checkAlert;
+	
+	@FindBy(xpath ="//*[@class = 'actionBtn yesBtn']")
+	public WebElement clckYES;
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[2]/ol/li")
+	public WebElement ErrorTxt;
+	
+	@FindBy(xpath ="//*[@id='articleSearchTbody']/tr[3]/td[4]/input")
+	public WebElement clickCPBD;
+	
+	@FindBy(xpath ="//*[@id='ui-id-30']")
+	public WebElement clickCreateOrdrs;
+	
+	@FindBy(xpath ="//*[@id='ui-id-32']")
+	public WebElement clickOrdrReceipt;
+	
+	@FindBy(xpath ="//*[@id='on_rece_store']")
+	public WebElement clickStore;
+	
+	@FindBy(xpath ="//*[@id='on_receipt_order_no']")
+	public WebElement EnterOrdNo;
+	
+	@FindBy(xpath ="//*[@id='oor_articleListTable']/tbody/tr")
+	public List<WebElement> GetArticlesize;
+	
+	@FindBy(xpath ="//*[@id='ok']/label")
+	public WebElement clickOK;
+	
+	@FindBy(xpath ="//*[@id='oor_createOrder']/a/label")
+	public WebElement SubmitOrder;
+	
+	@FindBy(xpath ="//*[@id='yes']/label")
+	public WebElement ClickYES;
+	
+	@FindBy(xpath ="//*[@id='success_title']")
+	public WebElement Checktitle;
+	
+	@FindBy(xpath ="//*[@id='success_msg']/li")
+	public WebElement GetMSG;
+	
+	@FindBy(xpath ="//*[@id='contactName']")
+	public WebElement Entercntct;
+	
+	@FindBy(xpath ="//*[@id='warehouseAuthNo']")
+	public WebElement EnterAuth;
+	
+	@FindBy(xpath ="//*[@id='nearby']")
+	public WebElement NearBy;
+	
+	@FindBy(xpath ="//*[@id='wh']")
+	public WebElement Warehuse;
+	
+	@FindBy(xpath ="//*[@id='warehouse']")
+	public WebElement SelectWarehuse;
+	
+	@FindBy(xpath ="//*[@id='warehouse']/option[@value = '1944']")
+	public WebElement Selecting1944;
+	
+	@FindBy(xpath ="//*[@id='dialog-siteSearchPop']/div/div[2]/div[2]/table/tbody/tr[1]/td[4]/label")
+	public WebElement ClickSel;
+	
+	@FindBy(xpath ="//*[@id='dialog-siteSearchPop']/div/div[2]/div[2]/table/tbody/tr[1]/td[1]")
+	public WebElement GetSite;
+	
+	public static final String deleteArticles= "//*[@id='oor_articleListTable']/tbody/tr[dynamic]/td[13]/label/a";
+	
+	public static final String getArt = "//*[@id='oor_articleListTable']/tbody/tr[dynamic]/td[2]";
+	public static final String getBaseUOM = "//*[@id='oor_articleListTable']/tbody/tr[dynamic]/td[4]";
+	public static final String getSOH = "//*[@id='oor_articleListTable']/tbody/tr[dynamic]/td[5]";
+	public static final String getQty = "//*[@id='oor_articleListTable']/tbody/tr[dynamic]/td[6]/input";
+	public static final String getOM = "//*[@id='oor_articleListTable']/tbody/tr[dynamic]/td[8]";
+	public static final String getRecvdUnits = "//*[@id='oor_articleListTable']/tbody/tr[dynamic]/td[10]/strong/i";
+	
+	public static final String checksite= "//*[@id='viewModeTable3']/tbody/tr[@class = 'collapsed groupByExpand2 expand-collapse'][dynamic]/td[2]";
+	public static final String clicksite= "//*[@id='viewModeTable3']/tbody/tr[@class = 'collapsed groupByExpand2 expand-collapse'][dynamic]/td[1]";
+	
+	public static final String checkTitle1= "(//*[@class='title'])[dynamic]";
+	public static final String ClckExpand= "//*[@id='viewModeTable3']/tbody/tr[dynamic]/td[1]";
+	public static final String checkArticle= "//*[@id='viewModeTable3']/tbody/tr[dynamic]/td[2]";
+	public static final String checkSOH= "//*[@id='viewModeTable3']/tbody/tr[dynamic]/td[5]";
+	public static final String enterWgt= "//*[@id='viewModeTable3']/tbody/tr[dynamic]/td[6]/input[2]";
+	public static final String checkOM= "//*[@id='viewModeTable3']/tbody/tr[dynamic]/td[7]";
+	public static final String checkUOM= "//*[@id='viewModeTable3']/tbody/tr[dynamic]/td[4]";
+	public static final String checkRecvdUnits= "//*[@id='viewModeTable3']/tbody/tr[dynamic]/td[8]/strong";
+	
+	public static final String checkSOO = "//*[@id='viewModeTable3']/tbody/tr[dynamic]/td[1]/table/tbody/tr[1]/td[2]";
+	public static final String checkSIT = "//*[@id='viewModeTable3']/tbody/tr[dynamic]/td[1]/table/tbody/tr[2]/td[2]";
+	
+	
+	@FindBy(xpath="//*[@id='dialog-mulipleArticles']/div/div[2]/table[@class = 'ContentTable']/tbody/tr")
+	public List<WebElement> CPBDArtList;
+	
+	public static final String POtablevalue11="//*[@id='dialog-mulipleArticles']/div/div[2]/table[@class = 'ContentTable']/tbody/tr[dynamic]/td[1]";
+	public static final String POtablevalue12= "//*[@id='dialog-mulipleArticles']/div/div[2]/table[@class = 'ContentTable']/tbody/tr[dynamic]/td[4]/input";
+	}

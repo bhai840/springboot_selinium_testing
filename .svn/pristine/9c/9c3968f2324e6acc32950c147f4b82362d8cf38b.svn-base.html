@@ -1,0 +1,867 @@
+<html>
+<head>
+<title>TestNG:  POC_tests3</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>POC_tests3</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>33/3/7</td>
+</tr><tr>
+<td>Started on:</td><td>Mon Nov 13 19:38:43 IST 2017</td>
+</tr>
+<tr><td>Total time:</td><td>1678 seconds (1678806 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-failed'>
+<tr><td colspan='4' align='center'><b>FAILED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.nonltoarticles()'><b>nonltoarticles</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Count- Non lto article<br/>
+<a href="#Output-28557948" onClick='toggleBox("Output-28557948", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-28557948" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-28557948">
+<a href='C:\Stores\NGBOProject\test-output\screenshots\nonltoarticles.jpg'><font color='red'>Link</font></a><br/>
+</div>
+</td>
+<td><div><pre>org.openqa.selenium.TimeoutException: Timed out after 30 seconds waiting for visibility of Proxy element for: DefaultElementLocator &apos;By.linkText: Logout&apos;
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir20704_20127}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 2aed177c02dcd923c6471254a8bc425c
+	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:80)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:261)
+	at au.wow.ngbo.utils.BasePage.waitForElement(BasePage.java:250)
+	at au.wow.ngbomain.pages.WoWLoginPage.logoutFromAppl(WoWLoginPage.java:394)
+	at au.wow.ngbomain.tests.ltoreporttest.nonltoarticles(ltoreporttest.java:1635)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Logout&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.01 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir20704_20127}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 2aed177c02dcd923c6471254a8bc425c
+*** Element info: {Using=link text, value=Logout}
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByLinkText(RemoteWebDriver.java:428)
+	at org.openqa.selenium.By$ByLinkText.findElement(By.java:246)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.isDisplayed(Unknown Source)
+	at org.openqa.selenium.support.ui.ExpectedConditions.elementIfVisible(ExpectedConditions.java:302)
+	at org.openqa.selenium.support.ui.ExpectedConditions.access$1(ExpectedConditions.java:301)
+	at org.openqa.selenium.support.ui.ExpectedConditions$10.apply(ExpectedConditions.java:288)
+	at org.openqa.selenium.support.ui.ExpectedConditions$10.apply(ExpectedConditions.java:1)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:238)
+	... 16 more
+... Removed 13 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace28557948", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace28557948'><pre>org.openqa.selenium.TimeoutException: Timed out after 30 seconds waiting for visibility of Proxy element for: DefaultElementLocator &apos;By.linkText: Logout&apos;
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir20704_20127}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 2aed177c02dcd923c6471254a8bc425c
+	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:80)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:261)
+	at au.wow.ngbo.utils.BasePage.waitForElement(BasePage.java:250)
+	at au.wow.ngbomain.pages.WoWLoginPage.logoutFromAppl(WoWLoginPage.java:394)
+	at au.wow.ngbomain.tests.ltoreporttest.nonltoarticles(ltoreporttest.java:1635)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Logout&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.01 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir20704_20127}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 2aed177c02dcd923c6471254a8bc425c
+*** Element info: {Using=link text, value=Logout}
+	at sun.reflect.GeneratedConstructorAccessor47.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByLinkText(RemoteWebDriver.java:428)
+	at org.openqa.selenium.By$ByLinkText.findElement(By.java:246)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.isDisplayed(Unknown Source)
+	at org.openqa.selenium.support.ui.ExpectedConditions.elementIfVisible(ExpectedConditions.java:302)
+	at org.openqa.selenium.support.ui.ExpectedConditions.access$1(ExpectedConditions.java:301)
+	at org.openqa.selenium.support.ui.ExpectedConditions$10.apply(ExpectedConditions.java:288)
+	at org.openqa.selenium.support.ui.ExpectedConditions$10.apply(ExpectedConditions.java:1)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:238)
+	... 16 more
+</pre></div></td>
+<td>65</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.RoutinesTest.primarydepartmentdaily()'><b>primarydepartmentdaily</b><br>Test class: au.wow.ngbomain.tests.RoutinesTest<br>Test method: Primary Department-daily<br/>
+<a href="#Output-646702633" onClick='toggleBox("Output-646702633", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-646702633" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-646702633">
+<a href='C:\Stores\NGBOProject\test-output\screenshots\primarydepartmentdaily.jpg'><font color='red'>Link</font></a><br/>
+</div>
+</td>
+<td><div><pre>org.openqa.selenium.WebDriverException: Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:65)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.click(BasePage.java:478)
+	at au.wow.ngbomain.pages.RoutinesPage.fordateprimary2(RoutinesPage.java:363)
+	at au.wow.ngbomain.tests.RoutinesTest.primarydepartmentdaily(RoutinesTest.java:189)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace646702633", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace646702633'><pre>org.openqa.selenium.WebDriverException: Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:65)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.click(BasePage.java:478)
+	at au.wow.ngbomain.pages.RoutinesPage.fordateprimary2(RoutinesPage.java:363)
+	at au.wow.ngbomain.tests.RoutinesTest.primarydepartmentdaily(RoutinesTest.java:189)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>20</td>
+<td>au.wow.ngbomain.tests.RoutinesTest@6db9f5a4</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.subcategory()'><b>subcategory</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Multiple departments or Sub-categories- Subcategory <br/>
+<a href="#Output-665802436" onClick='toggleBox("Output-665802436", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-665802436" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-665802436">
+<a href='C:\Stores\NGBOProject\test-output\screenshots\subcategory.jpg'><font color='red'>Link</font></a><br/>
+</div>
+</td>
+<td><div><pre>java.lang.IllegalArgumentException: bound must be greater than origin
+	at java.util.concurrent.ThreadLocalRandom.nextInt(Unknown Source)
+	at au.wow.ngbomain.pages.oocreportpages.subcateglevel(oocreportpages.java:836)
+	at au.wow.ngbomain.tests.oocreporttest.subcategory(oocreporttest.java:489)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace665802436", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace665802436'><pre>java.lang.IllegalArgumentException: bound must be greater than origin
+	at java.util.concurrent.ThreadLocalRandom.nextInt(Unknown Source)
+	at au.wow.ngbomain.pages.oocreportpages.subcateglevel(oocreportpages.java:836)
+	at au.wow.ngbomain.tests.oocreporttest.subcategory(oocreporttest.java:489)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>23</td>
+<td>au.wow.ngbomain.tests.oocreporttest@5f8edcc5</td></tr>
+</table><p>
+<table width='100%' border='1' class='invocation-passed'>
+<tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.category()'><b>category</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Multiple departments or Sub-categories- Category </td>
+<td></td>
+<td>22</td>
+<td>au.wow.ngbomain.tests.oocreporttest@5f8edcc5</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.datediscrepancy()'><b>datediscrepancy</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: Date Discrepancy</td>
+<td></td>
+<td>28</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.dateselectiondiscrepancy()'><b>dateselectiondiscrepancy</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Verifying Date Discrepancy Criteria</td>
+<td></td>
+<td>45</td>
+<td>au.wow.ngbomain.tests.oocreporttest@5f8edcc5</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.dbfilter()'><b>dbfilter</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: DB Filter</td>
+<td></td>
+<td>41</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltoauditdescription()'><b>ltoauditdescription</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Audit-Desc</td>
+<td></td>
+<td>25</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltoauditean()'><b>ltoauditean</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Audit- EAN</td>
+<td></td>
+<td>25</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltoauditmatnr()'><b>ltoauditmatnr</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Audit- matnr</td>
+<td></td>
+<td>21</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltoauditplu()'><b>ltoauditplu</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Audit-PLU</td>
+<td></td>
+<td>25</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltoaudittun()'><b>ltoaudittun</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Audit- TUN</td>
+<td></td>
+<td>25</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltocountdescription()'><b>ltocountdescription</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Count-desc</td>
+<td></td>
+<td>58</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltocountean()'><b>ltocountean</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Count- EAN</td>
+<td></td>
+<td>57</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltocountmatnr()'><b>ltocountmatnr</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Count-matnr</td>
+<td></td>
+<td>59</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltocountplu()'><b>ltocountplu</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Count-PLU</td>
+<td></td>
+<td>47</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltocounttun()'><b>ltocounttun</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Count- TUN</td>
+<td></td>
+<td>88</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltologsdescription()'><b>ltologsdescription</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Logs-desc</td>
+<td></td>
+<td>58</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltologsean()'><b>ltologsean</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Logs- EAN</td>
+<td></td>
+<td>56</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltologsmatnr()'><b>ltologsmatnr</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Logs-matnr</td>
+<td></td>
+<td>42</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltologsplu()'><b>ltologsplu</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Logs-PLU</td>
+<td></td>
+<td>73</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.ltologstun()'><b>ltologstun</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Logs- TUN</td>
+<td></td>
+<td>73</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.multdept()'><b>multdept</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Multiple departments or Sub-categories- Department </td>
+<td></td>
+<td>22</td>
+<td>au.wow.ngbomain.tests.oocreporttest@5f8edcc5</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.nodepartment()'><b>nodepartment</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: No Department selected</td>
+<td></td>
+<td>21</td>
+<td>au.wow.ngbomain.tests.oocreporttest@5f8edcc5</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.RoutinesTest.partialdepartmentdaily()'><b>partialdepartmentdaily</b><br>Test class: au.wow.ngbomain.tests.RoutinesTest<br>Test method: Partial Department-daily</td>
+<td></td>
+<td>23</td>
+<td>au.wow.ngbomain.tests.RoutinesTest@6db9f5a4</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.RoutinesTest.partialdepartmentweekly()'><b>partialdepartmentweekly</b><br>Test class: au.wow.ngbomain.tests.RoutinesTest<br>Test method: Partial Department-weekly</td>
+<td></td>
+<td>28</td>
+<td>au.wow.ngbomain.tests.RoutinesTest@6db9f5a4</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.primarydepartment1()'><b>primarydepartment1</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Verifying Primary Department</td>
+<td></td>
+<td>23</td>
+<td>au.wow.ngbomain.tests.oocreporttest@5f8edcc5</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.RoutinesTest.primarydepartmentweekly()'><b>primarydepartmentweekly</b><br>Test class: au.wow.ngbomain.tests.RoutinesTest<br>Test method: Primary Department-weekly</td>
+<td></td>
+<td>22</td>
+<td>au.wow.ngbomain.tests.RoutinesTest@6db9f5a4</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.segment()'><b>segment</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Multiple departments or Sub-categories- Segment </td>
+<td></td>
+<td>22</td>
+<td>au.wow.ngbomain.tests.oocreporttest@5f8edcc5</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.verifyltoaudit()'><b>verifyltoaudit</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Audit</td>
+<td></td>
+<td>37</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.verifyltologs()'><b>verifyltologs</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Logs</td>
+<td></td>
+<td>43</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.verifyreport()'><b>verifyreport</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Verifying Full Dept</td>
+<td></td>
+<td>46</td>
+<td>au.wow.ngbomain.tests.oocreporttest@5f8edcc5</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.verifyreport()'><b>verifyreport</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Count</td>
+<td></td>
+<td>42</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.RoutinesTest.verifyreportdaily()'><b>verifyreportdaily</b><br>Test class: au.wow.ngbomain.tests.RoutinesTest<br>Test method: All Department-Daily</td>
+<td></td>
+<td>29</td>
+<td>au.wow.ngbomain.tests.RoutinesTest@6db9f5a4</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.verifyreportpartial()'><b>verifyreportpartial</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Verifying Partial Dept</td>
+<td></td>
+<td>37</td>
+<td>au.wow.ngbomain.tests.oocreporttest@5f8edcc5</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.RoutinesTest.verifyreportweekly()'><b>verifyreportweekly</b><br>Test class: au.wow.ngbomain.tests.RoutinesTest<br>Test method: All Department-Weekly</td>
+<td></td>
+<td>28</td>
+<td>au.wow.ngbomain.tests.RoutinesTest@6db9f5a4</td></tr>
+</table><p>
+<table width='100%' border='1' class='invocation-skipped'>
+<tr><td colspan='4' align='center'><b>SKIPPED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.dbfilter()'><b>dbfilter</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: DB Filter</td>
+<td><div><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;xpath&quot;,&quot;selector&quot;:&quot;//*[@id=&apos;from&apos;]&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.06 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir5116_15381}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: d11c11ceefaab6c1a0df7c1fa65146eb
+*** Element info: {Using=xpath, value=//*[@id=&apos;from&apos;]}
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByXPath(RemoteWebDriver.java:500)
+	at org.openqa.selenium.By$ByXPath.findElement(By.java:361)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.clear(Unknown Source)
+	at au.wow.ngbomain.tests.ltoreporttest.dbfilter(ltoreporttest.java:1534)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 14 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1090971841", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1090971841'><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;xpath&quot;,&quot;selector&quot;:&quot;//*[@id=&apos;from&apos;]&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.06 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir5116_15381}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: d11c11ceefaab6c1a0df7c1fa65146eb
+*** Element info: {Using=xpath, value=//*[@id=&apos;from&apos;]}
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByXPath(RemoteWebDriver.java:500)
+	at org.openqa.selenium.By$ByXPath.findElement(By.java:361)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.clear(Unknown Source)
+	at au.wow.ngbomain.tests.ltoreporttest.dbfilter(ltoreporttest.java:1534)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>21</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.nonltoarticles()'><b>nonltoarticles</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Count- Non lto article</td>
+<td><div><pre>org.openqa.selenium.TimeoutException: Timed out after 30 seconds waiting for visibility of Proxy element for: DefaultElementLocator &apos;By.linkText: Logout&apos;
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir15660_28615}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 807de1864dfb372754ab196df2e95900
+	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:80)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:261)
+	at au.wow.ngbo.utils.BasePage.waitForElement(BasePage.java:250)
+	at au.wow.ngbomain.pages.WoWLoginPage.logoutFromAppl(WoWLoginPage.java:394)
+	at au.wow.ngbomain.tests.ltoreporttest.nonltoarticles(ltoreporttest.java:1635)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Logout&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.04 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir15660_28615}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 807de1864dfb372754ab196df2e95900
+*** Element info: {Using=link text, value=Logout}
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByLinkText(RemoteWebDriver.java:428)
+	at org.openqa.selenium.By$ByLinkText.findElement(By.java:246)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.isDisplayed(Unknown Source)
+	at org.openqa.selenium.support.ui.ExpectedConditions.elementIfVisible(ExpectedConditions.java:302)
+	at org.openqa.selenium.support.ui.ExpectedConditions.access$1(ExpectedConditions.java:301)
+	at org.openqa.selenium.support.ui.ExpectedConditions$10.apply(ExpectedConditions.java:288)
+	at org.openqa.selenium.support.ui.ExpectedConditions$10.apply(ExpectedConditions.java:1)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:238)
+	... 16 more
+... Removed 14 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace2030819024", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace2030819024'><pre>org.openqa.selenium.TimeoutException: Timed out after 30 seconds waiting for visibility of Proxy element for: DefaultElementLocator &apos;By.linkText: Logout&apos;
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir15660_28615}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 807de1864dfb372754ab196df2e95900
+	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:80)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:261)
+	at au.wow.ngbo.utils.BasePage.waitForElement(BasePage.java:250)
+	at au.wow.ngbomain.pages.WoWLoginPage.logoutFromAppl(WoWLoginPage.java:394)
+	at au.wow.ngbomain.tests.ltoreporttest.nonltoarticles(ltoreporttest.java:1635)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Logout&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.04 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir15660_28615}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 807de1864dfb372754ab196df2e95900
+*** Element info: {Using=link text, value=Logout}
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByLinkText(RemoteWebDriver.java:428)
+	at org.openqa.selenium.By$ByLinkText.findElement(By.java:246)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.isDisplayed(Unknown Source)
+	at org.openqa.selenium.support.ui.ExpectedConditions.elementIfVisible(ExpectedConditions.java:302)
+	at org.openqa.selenium.support.ui.ExpectedConditions.access$1(ExpectedConditions.java:301)
+	at org.openqa.selenium.support.ui.ExpectedConditions$10.apply(ExpectedConditions.java:288)
+	at org.openqa.selenium.support.ui.ExpectedConditions$10.apply(ExpectedConditions.java:1)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:238)
+	... 16 more
+</pre></div></td>
+<td>65</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ltoreporttest.nonltoarticles()'><b>nonltoarticles</b><br>Test class: au.wow.ngbomain.tests.ltoreporttest<br>Test method: LTO Count- Non lto article</td>
+<td><div><pre>org.openqa.selenium.TimeoutException: Timed out after 30 seconds waiting for visibility of Proxy element for: DefaultElementLocator &apos;By.linkText: Logout&apos;
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir8484_3725}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 1242d19bcadd6e67a5e91f31a698db03
+	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:80)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:261)
+	at au.wow.ngbo.utils.BasePage.waitForElement(BasePage.java:250)
+	at au.wow.ngbomain.pages.WoWLoginPage.logoutFromAppl(WoWLoginPage.java:394)
+	at au.wow.ngbomain.tests.ltoreporttest.nonltoarticles(ltoreporttest.java:1635)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Logout&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.06 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir8484_3725}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 1242d19bcadd6e67a5e91f31a698db03
+*** Element info: {Using=link text, value=Logout}
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByLinkText(RemoteWebDriver.java:428)
+	at org.openqa.selenium.By$ByLinkText.findElement(By.java:246)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.isDisplayed(Unknown Source)
+	at org.openqa.selenium.support.ui.ExpectedConditions.elementIfVisible(ExpectedConditions.java:302)
+	at org.openqa.selenium.support.ui.ExpectedConditions.access$1(ExpectedConditions.java:301)
+	at org.openqa.selenium.support.ui.ExpectedConditions$10.apply(ExpectedConditions.java:288)
+	at org.openqa.selenium.support.ui.ExpectedConditions$10.apply(ExpectedConditions.java:1)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:238)
+	... 16 more
+... Removed 13 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace188335105", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace188335105'><pre>org.openqa.selenium.TimeoutException: Timed out after 30 seconds waiting for visibility of Proxy element for: DefaultElementLocator &apos;By.linkText: Logout&apos;
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir8484_3725}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 1242d19bcadd6e67a5e91f31a698db03
+	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:80)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:261)
+	at au.wow.ngbo.utils.BasePage.waitForElement(BasePage.java:250)
+	at au.wow.ngbomain.pages.WoWLoginPage.logoutFromAppl(WoWLoginPage.java:394)
+	at au.wow.ngbomain.tests.ltoreporttest.nonltoarticles(ltoreporttest.java:1635)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+Caused by: org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Logout&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.06 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir8484_3725}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 1242d19bcadd6e67a5e91f31a698db03
+*** Element info: {Using=link text, value=Logout}
+	at sun.reflect.GeneratedConstructorAccessor47.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByLinkText(RemoteWebDriver.java:428)
+	at org.openqa.selenium.By$ByLinkText.findElement(By.java:246)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.isDisplayed(Unknown Source)
+	at org.openqa.selenium.support.ui.ExpectedConditions.elementIfVisible(ExpectedConditions.java:302)
+	at org.openqa.selenium.support.ui.ExpectedConditions.access$1(ExpectedConditions.java:301)
+	at org.openqa.selenium.support.ui.ExpectedConditions$10.apply(ExpectedConditions.java:288)
+	at org.openqa.selenium.support.ui.ExpectedConditions$10.apply(ExpectedConditions.java:1)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:238)
+	... 16 more
+</pre></div></td>
+<td>65</td>
+<td>au.wow.ngbomain.tests.ltoreporttest@117e949d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.RoutinesTest.primarydepartmentdaily()'><b>primarydepartmentdaily</b><br>Test class: au.wow.ngbomain.tests.RoutinesTest<br>Test method: Primary Department-daily</td>
+<td><div><pre>org.openqa.selenium.WebDriverException: Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:65)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.click(BasePage.java:478)
+	at au.wow.ngbomain.pages.RoutinesPage.fordateprimary2(RoutinesPage.java:363)
+	at au.wow.ngbomain.tests.RoutinesTest.primarydepartmentdaily(RoutinesTest.java:189)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace133423055", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace133423055'><pre>org.openqa.selenium.WebDriverException: Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:65)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.click(BasePage.java:478)
+	at au.wow.ngbomain.pages.RoutinesPage.fordateprimary2(RoutinesPage.java:363)
+	at au.wow.ngbomain.tests.RoutinesTest.primarydepartmentdaily(RoutinesTest.java:189)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>21</td>
+<td>au.wow.ngbomain.tests.RoutinesTest@6db9f5a4</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.RoutinesTest.primarydepartmentdaily()'><b>primarydepartmentdaily</b><br>Test class: au.wow.ngbomain.tests.RoutinesTest<br>Test method: Primary Department-daily</td>
+<td><div><pre>org.openqa.selenium.WebDriverException: Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:65)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.click(BasePage.java:478)
+	at au.wow.ngbomain.pages.RoutinesPage.fordateprimary2(RoutinesPage.java:363)
+	at au.wow.ngbomain.tests.RoutinesTest.primarydepartmentdaily(RoutinesTest.java:189)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace337043338", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace337043338'><pre>org.openqa.selenium.WebDriverException: Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:65)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.click(BasePage.java:478)
+	at au.wow.ngbomain.pages.RoutinesPage.fordateprimary2(RoutinesPage.java:363)
+	at au.wow.ngbomain.tests.RoutinesTest.primarydepartmentdaily(RoutinesTest.java:189)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>20</td>
+<td>au.wow.ngbomain.tests.RoutinesTest@6db9f5a4</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.subcategory()'><b>subcategory</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Multiple departments or Sub-categories- Subcategory </td>
+<td><div><pre>org.openqa.selenium.WebDriverException: Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:65)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.click(BasePage.java:478)
+	at au.wow.ngbomain.pages.oocreportpages.ooctabs(oocreportpages.java:168)
+	at au.wow.ngbomain.tests.oocreporttest.subcategory(oocreporttest.java:496)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace559632732", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace559632732'><pre>org.openqa.selenium.WebDriverException: Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:65)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.click(BasePage.java:478)
+	at au.wow.ngbomain.pages.oocreportpages.ooctabs(oocreportpages.java:168)
+	at au.wow.ngbomain.tests.oocreporttest.subcategory(oocreporttest.java:496)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>21</td>
+<td>au.wow.ngbomain.tests.oocreporttest@5f8edcc5</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.subcategory()'><b>subcategory</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Multiple departments or Sub-categories- Subcategory </td>
+<td><div><pre>java.lang.IllegalArgumentException: bound must be greater than origin
+	at java.util.concurrent.ThreadLocalRandom.nextInt(Unknown Source)
+	at au.wow.ngbomain.pages.oocreportpages.subcateglevel(oocreportpages.java:836)
+	at au.wow.ngbomain.tests.oocreporttest.subcategory(oocreporttest.java:489)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace98525529", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace98525529'><pre>java.lang.IllegalArgumentException: bound must be greater than origin
+	at java.util.concurrent.ThreadLocalRandom.nextInt(Unknown Source)
+	at au.wow.ngbomain.pages.oocreportpages.subcateglevel(oocreportpages.java:836)
+	at au.wow.ngbomain.tests.oocreporttest.subcategory(oocreporttest.java:489)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>22</td>
+<td>au.wow.ngbomain.tests.oocreporttest@5f8edcc5</td></tr>
+</table><p>
+</body>
+</html>

@@ -1,0 +1,1968 @@
+package au.wow.ngbomain.tests;
+
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeClass;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.SkipException;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.yaml.snakeyaml.emitter.ScalarAnalysis;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.ArticleDetailsObjects;
+import au.wow.ngbomain.objects.ArticleLookUpObjects;
+import au.wow.ngbomain.objects.EnhancedArticleLookUpObjects;
+import au.wow.ngbomain.objects.InstoreOMSObject;
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbomain.pages.EnhancedArticleLookUpPage;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.InstoreOMSPage;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+public class InstoreOMSTest extends TestBase{
+
+	private Logger log = LogManager.getLogger(InstoreOMATest.class);
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	InstoreOMSPage objInstoreOMSPage;
+	InstoreOMSObject objInstoreOMSObjects;
+	InstoreOMSTest objInstoreOMSTests;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;			
+	List<List<Object>> result;
+	List<List<Object>> result_temp;
+	public static XMLDataReader data;
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+    int count=0;		
+	int MCcount=0;
+	public static WebDriver driver;
+	public static boolean isFirstTest=true;
+	
+	String freshfood = "('25','30','40','45','47','55')";
+	String nonfreshfood = "('20','27','05','15','28','10','00')";
+	
+	public String returnedString ;
+	
+	
+	public InstoreOMSTest(){
+		super.log=log;
+	}
+	
+public void deletePromotionTable() throws SQLException{
+		
+		List<List<Object>> deleteResult = new ArrayList<List<Object>>();
+		String deletePromo = data.getText("deleteQuery");
+		deleteResult = sql.executeQuery(getContext(), deletePromo);	
+		
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Create Instore Other Markdown Special Activity promotion using article number for Non-fresh food")
+	public void instoreOMSNFF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+1;
+		}
+
+		TestStatus status = getTestStatus();
+		try {
+			navToInstoreOMS(status);
+			deletePromotionTable();
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			String articles_sql = data.getText("articlesNFF").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String  ranArticle = results.get(num).get(0).toString();
+				returnedString = objInstoreOMSPage.createInstoreOMS(objInstoreOMSObjects,ranArticle,driver);	
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}		
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+			}
+
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Create Instore Other Markdown Special Activity promotion using description for Non-fresh food")
+	public void instoreOMSNFFdesc() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+1;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOMS(status);
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			do{
+				String articles_sql = data.getText("articlesNFF").replace("nonfreshfood", nonfreshfood);
+				results = sql.executeQuery(getContext(), articles_sql);
+				if(results.size()!=0)
+				{
+					int num = common.RandomFromDB(results);
+					String  ranArticle = results.get(num).get(1).toString();
+					objInstoreOMSObjects.article.clear();
+					objInstoreOMSObjects.article.sendKeys(ranArticle);
+					htmlToExtent(cName,mName,extLogger,driver, "***Fetching Non-fresh food Articles***;;;Pass");
+					htmlToExtent(cName,mName,extLogger,driver, "Article selected is:"+ ranArticle+";;;Pass");
+					String currentDate=null;
+					objInstoreOMSObjects.endDate.clear();
+					currentDate = formatDate1(new Date());
+					htmlToExtent(cName,mName,extLogger,driver, "Other Markdown Special Activity Promotion Start Date is: "+currentDate+";;;Pass");
+					String endDate=null;
+					endDate = common.AddDate(common.ConvertdateFormatddmmyy(currentDate), 30);
+					objInstoreOMSObjects.endDate.sendKeys(endDate);
+					objInstoreOMSObjects.ClickOutside.click();
+					htmlToExtent(cName,mName,extLogger,driver, "Other Markdown Special Activity Promotion End Date is: "+endDate+";;;Pass");
+					htmlToExtent(cName,mName,extLogger,driver,"Max duration is: 31 days;;;Pass");
+					objInstoreOMSObjects.SpecialActivity.click();
+					waitFor(1);
+					objInstoreOMSObjects.searchAndAdd.click();
+					htmlToExtent(cName,mName,extLogger,driver,"Search and Add button is clicked;;;Pass");
+					
+					try{
+						if(driver.findElement(By.xpath("//*[@id='articleSearchTbody']/tr[2]/td[4]")).isDisplayed()){
+							driver.findElement(By.xpath("//*[@id='articleSearchTbody']/tr[2]/td[4]")).click();
+							objInstoreOMSObjects.addtolist.click();
+							
+						}
+					}catch(Exception e){
+						
+					}
+
+					waitFor(1);
+					if(isDisplayed(objInstoreOMSObjects.nodatafound))
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"No data found: searching another article;;;Info");
+					}
+					else
+					{
+						//if(isDisplayed(objInstoreOMSObjects.checkbox))
+						//{
+						//	objInstoreOMSObjects.checkbox.click();
+						//	objInstoreOMSObjects.addtolist.click();
+						//	htmlToExtent(cName,mName,extLogger,driver,"Article added to draft;;;Pass");
+						//}
+						//else
+						//{
+						htmlToExtent(cName,mName,extLogger,driver,"Article added to draft;;;Pass");
+						//	}
+					}	
+				}
+			}while(isDisplayed(objInstoreOMSObjects.nodatafound));
+			returnedString = objInstoreOMSPage.createInstoreOMSdesc(objInstoreOMSObjects,driver);
+			if(returnedString.equals("nodata")){
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Create Instore Other Markdown Special Activity promotion using article number for Fresh food")
+	public void instoreOMSFF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+1;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOMS(status);
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			String articles_sql = data.getText("articlesFF").replace("freshfood",freshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String  ranArticle = results.get(num).get(0).toString();
+				returnedString = objInstoreOMSPage.createInstoreOMS(objInstoreOMSObjects,ranArticle,driver);			
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}		
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Create Instore Other Markdown Special Activity promotion using description for Fresh food")
+	public void instoreOMSFFdesc() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+1;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOMS(status);
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			do{
+				String articles_sql = data.getText("articlesFF").replace("freshfood",freshfood);
+				results = sql.executeQuery(getContext(), articles_sql);
+				if(results.size()!=0)
+				{
+					int num = common.RandomFromDB(results);
+					String  ranArticle = results.get(num).get(1).toString();
+					objInstoreOMSObjects.article.clear();
+					objInstoreOMSObjects.article.sendKeys(ranArticle);
+					htmlToExtent(cName,mName,extLogger,driver, "***Fetching Fresh Food Articles***;;;Pass");
+					htmlToExtent(cName,mName,extLogger,driver, "Article selected is:"+ ranArticle+";;;Pass");
+					String currentDate=null;
+					objInstoreOMSObjects.endDate.clear();
+					currentDate = formatDate1(new Date());
+					htmlToExtent(cName,mName,extLogger,driver, "Other Markdown Special Activity Promotion Start Date is: "+currentDate+";;;Pass");
+					String endDate=null;
+					endDate = common.AddDate(common.ConvertdateFormatddmmyy(currentDate), 30);
+					objInstoreOMSObjects.endDate.sendKeys(endDate);
+					objInstoreOMSObjects.ClickOutside.click();
+					htmlToExtent(cName,mName,extLogger,driver, "Other Markdown Special Activity Promotion End Date is: "+endDate+";;;Pass");
+					htmlToExtent(cName,mName,extLogger,driver,"Max duration is: 31 days;;;Pass");
+					objInstoreOMSObjects.SpecialActivity.click();
+					waitFor(1);
+					objInstoreOMSObjects.searchAndAdd.click();
+					htmlToExtent(cName,mName,extLogger,driver,"Search and Add button is clicked;;;Pass");
+					
+					try{
+						if(driver.findElement(By.xpath("//*[@id='articleSearchTbody']/tr[2]/td[4]")).isDisplayed()){
+							driver.findElement(By.xpath("//*[@id='articleSearchTbody']/tr[2]/td[4]")).click();
+							objInstoreOMSObjects.addtolist.click();
+							
+						}
+					}catch(Exception e){
+						
+					}
+
+					
+					if(isDisplayed(objInstoreOMSObjects.nodatafound))
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"No data found: searching another article;;Fail;Pass");
+					}
+					else
+					{
+						/////if(isDisplayed(objInstoreOMSObjects.cancel))
+						//{
+						//	objInstoreOMSObjects.checkbox.click();
+						//	objInstoreOMSObjects.addtolist.click();
+						//	htmlToExtent(cName,mName,extLogger,driver,"Article added to draft;;;Pass");
+						//	}
+						//	else
+						///	{
+						htmlToExtent(cName,mName,extLogger,driver,"Article added to draft;;;Pass");
+						//	}
+					}	
+				}
+			}while(isDisplayed(objInstoreOMSObjects.nodatafound));
+			returnedString = objInstoreOMSPage.createInstoreOMSdesc(objInstoreOMSObjects,driver);		
+			if(returnedString.equals("nodata")){
+				return;
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	public void navToInstoreOMS(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "--------Login into Application as IT Admin-----------;;;Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store: " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objInstoreOMSPage = loginPage.navToInstoreOMSPromotiontester90(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store: " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store);
+			objInstoreOMSPage = loginPage.navToInstoreOMSPromotiontester90(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "------------Navigate To Instore Other Markdown Promotion Page-----------;;;Pass");
+			objInstoreOMSPage.clickOnInstoreOMA(objInstoreOMSObjects,driver);
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Create instore Other Markdown Special Activity promotion using PBD Article")
+	public void instorePBDOMS() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+1;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstorePBDOMS(status); 
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			String articles_sql = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String  ranArticle = results.get(num).get(0).toString();
+				htmlToExtent(cName,mName,extLogger,driver, "Article selected is: " + ranArticle+";;;Pass");
+				objInstoreOMSPage.instorePBDOMS(objInstoreOMSObjects,ranArticle,driver);					
+			}		
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	public void navToInstorePBDOMS(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store: " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objInstoreOMSPage = loginPage.navToInstoreOMSPromotiontester90(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store: " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store);
+			objInstoreOMSPage = loginPage.navToInstoreOMSPromotiontester90(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "-----------Navigate To Instore Other Markdown Promotion Page----------;;;Pass");
+			objInstoreOMSPage.clickOnInstoreOMA(objInstoreOMSObjects,driver);
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Department Manager for Other Markdown Special Activity Promotion for Non Fresh Food Articles")
+	public void MaxPercentAndDurationDMOMSNFF() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+2;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreDMOMS(status);
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			String articles_sql = data.getText("articlesNFF").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String  ranArticle = results.get(num).get(0).toString();
+				//ranArticle = "661991";
+				returnedString = objInstoreOMSPage.MaxPercentageDMOMSNFF(objInstoreOMSObjects,ranArticle,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}		
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Team Member for Other Markdown Special Activity Promotion for Non Fresh Food Articles")
+	public void MaxPercentAndDurationTMOMSNFF() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+2;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreTMOMS(status);
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			String articles_sql = data.getText("articlesNFF").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String  ranArticle = results.get(num).get(0).toString();
+				/*Using the same function in Department Manager*/
+				returnedString = objInstoreOMSPage.MaxPercentageDMOMSNFF(objInstoreOMSObjects,ranArticle,driver);	
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}		
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Customer Assistance for Other Markdown Special Activity Promotion for Non Fresh Food Articles")
+	public void MaxPercentAndDurationCAOMSNFF() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+2;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreCAOMS(status);
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			String articles_sql = data.getText("articlesNFF").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String  ranArticle = results.get(num).get(0).toString();
+				/*Using the same function in Department Manager*/
+				ranArticle = "216079";
+				returnedString = objInstoreOMSPage.MaxPercentageDMOMSNFF(objInstoreOMSObjects,ranArticle,driver);	
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}		
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Office Assistance for Other Markdown Special Activity Promotion for Non Fresh Food Articles")
+	public void MaxPercentAndDurationOAOMSNFF() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+2;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOAOMS(status);
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			String articles_sql = data.getText("articlesNFF").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String  ranArticle = results.get(num).get(0).toString();
+				/*Using the same function in Department Manager*/
+				returnedString = objInstoreOMSPage.MaxPercentageDMOMSNFF(objInstoreOMSObjects,ranArticle,driver);	
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}		
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Stock take manager for Other Markdown Special Activity Promotion for Non Fresh Food Articles")
+	public void MaxPercentAndDurationSTMOMSNFF() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+2;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSTMOMS(status);
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			String articles_sql = data.getText("articlesNFF").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String  ranArticle = results.get(num).get(0).toString();
+				/*Using the same function in Tester90*/
+				returnedString = 	objInstoreOMSPage.createInstoreOMS(objInstoreOMSObjects,ranArticle,driver);	
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}		
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Office Supervisor for Other Markdown Special Activity Promotion for Non Fresh Food Articles")
+	public void MaxPercentAndDurationOSOMSNFF() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+2;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOSOMS(status);
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			String articles_sql = data.getText("articlesNFF").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String  ranArticle = results.get(num).get(0).toString();
+				/*Using the same function in Department Manager*/
+				returnedString = 	objInstoreOMSPage.MaxPercentageDMOMSNFF(objInstoreOMSObjects,ranArticle,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}		
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Store Manager for Other Markdown Special Activity Promotion for Non Fresh Food Articles")
+	public void MaxPercentAndDurationSMOMSNFF() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+2;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSMOMS(status);
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			String articles_sql = data.getText("articlesNFF").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String  ranArticle = results.get(num).get(0).toString();
+				returnedString = objInstoreOMSPage.MaxPercentageSMOMS(objInstoreOMSObjects,ranArticle,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}		
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Business Review for Other Markdown Special Activity Promotion for Fresh/Non Fresh Food Articles")
+	public void MaxPercentAndDurationBROMS() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+3;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreBROMS(status);
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			htmlToExtent(cName,mName,extLogger,driver,"Checking whether Special Activity promotion is present or Not;;;Pass");
+			if(isDisplayed(objInstoreOMSObjects.SpecialActivity))
+			{	
+				//htmlToExtent(cName,mName,extLogger,driver,"Special Activity promotion Found;;;Pass");
+				//loginPage.Logout(inStoreOMSArtScenarios,inStoreOMSArttestname,driver);
+				waitFor(1);
+				//htmlToExtent(cName,mName,extLogger,driver,"Login as IT Admin;;;Pass");
+				//loginPage.tester90Login(getContext().getStringProperty("store"),driver);
+				//waitFor(1);
+				//htmlToExtent(cName,mName,extLogger,driver,"Disabling Special Activity promotion for Business Review role in application settings;;;Pass");
+				//objInstoreOMSPage.DisableBROMS(objInstoreOMSObjects,driver);
+				//htmlToExtent(cName,mName,extLogger,driver,"Special Activity promotion for Business Review role is disabled;;;Pass");
+				//waitFor(1);
+				//loginPage.Logout(inStoreOMSArtScenarios,inStoreOMSArttestname,driver);
+				//waitFor(1);
+				htmlToExtent(cName,mName,extLogger,driver,"Login as Business Review;;;Pass");
+				//loginPage.BRLogin(getContext().getStringProperty("store"),driver);
+				//waitFor(1);
+				//driver.navigate().to("http://ngbo-acpt.gss.woolworths.com.au/StoreCentral/1005/instore/otherMarkdownOnPageLoad.htm");
+				waitForJSandJQueryToLoad(driver);;
+
+				//if(isDisplayed(objInstoreOMSObjects.SpecialActivity))
+				//{
+				//	htmlToExtent(cName,mName,extLogger,driver,"Disabling Business Review role in application settings;;;Pass");
+				//}
+				//else
+				//{
+				htmlToExtent(cName,mName,extLogger,driver,"Business Review User has only View Access;;;Pass"); 
+				//}
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Business Review User has only View Access;;;Pass");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	public void navToInstoreDMOMS(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------Login into Application as Dept Manager--------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstoreOMSPage = loginPage.navToInstorePromotionDMOMS(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------;;;Pass");
+		objInstoreOMSPage.clickOnInstoreOMA(objInstoreOMSObjects,driver);
+	}
+	
+	public void navToInstoreTMOMS(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------Login into Application as Team Member-----------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstoreOMSPage = loginPage.navToInstorePromotionTMOMS(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------------;;;Pass");
+		objInstoreOMSPage.clickOnInstoreOMA(objInstoreOMSObjects,driver);
+	}
+	
+	public void navToInstoreCAOMS(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------Login into Application as Customer Assistance----------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstoreOMSPage = loginPage.navToInstorePromotionCAOMS(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------------;;;Pass");
+		objInstoreOMSPage.clickOnInstoreOMA(objInstoreOMSObjects,driver);
+	}
+	
+	public void navToInstoreOAOMS(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "--------Login into Application as Office Assistance---------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstoreOMSPage = loginPage.navToInstorePromotionOAOMS(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------------;;;Pass");
+		objInstoreOMSPage.clickOnInstoreOMA(objInstoreOMSObjects,driver);
+	}
+	
+	public void navToInstoreOSOMS(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------Login into Application as Office Supervisor----------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstoreOMSPage = loginPage.navToInstorePromotionOSOMS(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------------;;;Pass");
+		objInstoreOMSPage.clickOnInstoreOMA(objInstoreOMSObjects,driver);
+	}
+	
+	public void navToInstoreSMOMS(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------Login into Application as Store Manager--------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstoreOMSPage = loginPage.navToInstorePromotionSMOMS(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------------;;;Pass");
+		objInstoreOMSPage.clickOnInstoreOMA(objInstoreOMSObjects,driver);
+	}
+	
+	public void navToInstoreSTMOMS(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "--------Login into Application as Stock Take manager---------;;;Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store: " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objInstoreOMSPage = loginPage.navToInstorePromotionSTMOMS(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store: " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store);
+			objInstoreOMSPage = loginPage.navToInstorePromotionSTMOMS(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------------;;;Pass");
+			objInstoreOMSPage.clickOnInstoreOMA(objInstoreOMSObjects,driver);
+	}
+	
+	public void navToInstoreBROMS(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------Login into Application as Business Review----------;;;Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objInstoreOMSPage = loginPage.navToInstorePromotionBROMS(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store);
+			objInstoreOMSPage = loginPage.navToInstorePromotionBROMS(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "-----------Navigate To Instore Other Markdown Promotion Page---------;;;Pass");
+			objInstoreOMSPage.clickOnInstoreOMA(objInstoreOMSObjects,driver);
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Enusre the error message when user provide greater than Maximum % in Other Markdown Special Activity Promotion")
+	public void MaxPercentErrorOMS() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+1;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			for(int i=0;i<=7;i++){
+				if(i ==0) 
+				{
+					navToInstoreOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToUsers();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for IT Admin verified successfully;;;Pass");
+				}
+				else if (i ==1){
+					navToInstoreDMOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToUsers();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Department Manager verified successfully;;;Pass");
+				}
+				else if (i ==2){
+					navToInstoreTMOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToUsers();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Team Member verified successfully;;;Pass");				
+				}
+				else if (i ==3){
+					navToInstoreCAOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToUsers();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Customer Assistant verified successfully;;;Pass");
+				}
+				else if (i ==4){
+					navToInstoreOAOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToUsers();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Office Assistance verified successfully;;;Pass");
+				}
+				else if (i ==5){
+					navToInstoreOSOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToUsers();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Office Supervisor verified successfully;;;Pass");
+				}
+				else if (i ==6){
+					navToInstoreSMOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToUsers1();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Store Manager verified successfully;;;Pass");
+				}
+				else if (i ==7){
+					navToInstoreSTMOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToUsers();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Stock Take Manager verified successfully;;;Pass");
+				}
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+			}
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	public void navToUsers() throws IOException, AWTException, SQLException,  ParseException{
+		
+	//	 if(isDisplayed(objInstoreOMSObjects.SpecialActivity))
+	//	{
+		objInstoreOMSObjects.SpecialActivity.click();
+	//	}
+	//	else
+	//	{
+	//		objInstoreOMSPage.EnableOMS(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);
+			objInstoreOMSPage.clickOnInstoreOMA(objInstoreOMSObjects, driver);
+			//driver.navigate().to("http://ngbo-acpt.gss.woolworths.com.au/StoreCentral/1005/instore/otherMarkdownOnPageLoad.htm");
+	//	}
+		
+		String articles_sql = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+		if(results.size()!=0)
+		{
+			int num = common.RandomFromDB(results);
+			String  ranArticle = results.get(num).get(0).toString();
+		//	ranArticle = "33847";
+			returnedString = objInstoreOMSPage.createInstoreErrorOMS(objInstoreOMSObjects,ranArticle,driver);		
+			if(returnedString.equals("nodata")){
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+		}		
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}
+	}
+	public void navToUsers1() throws IOException, AWTException, SQLException,  ParseException{
+		
+		if(isDisplayed(objInstoreOMSObjects.SpecialActivity))
+		{
+		objInstoreOMSObjects.SpecialActivity.click();
+		}
+		else
+		{
+			objInstoreOMSPage.EnableOMS(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);
+			objInstoreOMSPage.clickOnInstoreOMA(objInstoreOMSObjects, driver);
+			//driver.navigate().to("http://ngbo-acpt.gss.woolworths.com.au/StoreCentral/1005/instore/otherMarkdownOnPageLoad.htm");
+		}
+		
+		String articles_sql = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+		if(results.size()!=0)
+		{
+			int num = common.RandomFromDB(results);
+			String  ranArticle = results.get(num).get(0).toString();
+			returnedString = objInstoreOMSPage.createInstoreError1OMS(objInstoreOMSObjects,ranArticle,driver);
+			if(returnedString.equals("nodata")){
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+		}		
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}
+	}
+	
+	/*Max duration Error NFF*/
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Enusre the error message when user provide greater than Maximum duration in Other Markdown Special Activity Promotion for Non Fresh Food")
+	public void MaxDurationErrorOMSNFF() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+1;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			for(int i=0;i<=7;i++){
+				if(i ==0) 
+				{
+					navToInstoreOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToAllUsersNFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for IT Admin verified successfully;;;Pass");
+				}
+				else if (i ==1){
+					navToInstoreDMOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToAllUsersNFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Department Manager verified successfully;;;Pass");				
+				}
+				else if (i ==2){
+					navToInstoreTMOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToAllUsersNFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Team Member verified successfully;;;Pass");				
+				}
+				else if (i ==3){
+					navToInstoreCAOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToAllUsersNFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Customer Assistant verified successfully;;;Pass");
+				}
+				else if (i ==4){
+					navToInstoreOAOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToAllUsersNFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Office Assistance verified successfully;;;Pass");				
+				}
+				else if (i ==5){
+					navToInstoreOSOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToAllUsersNFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Office Supervisor verified successfully;;;Pass");
+				}
+				else if (i ==6){
+					navToInstoreSMOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToAllUsersNFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Store Manager verified successfully;;;Pass");				
+				}
+				else if (i ==7){
+					navToInstoreSTMOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToAllUsersNFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Stock Take Manager verified successfully;;;Pass");
+				}
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+			}
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	public void navToAllUsersNFF() throws IOException, AWTException, SQLException,  ParseException{
+		
+		String articles_sql = data.getText("articlesNFF").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+		if(results.size()!=0)
+		{
+			int num = common.RandomFromDB(results);
+			String  ranArticle = results.get(num).get(0).toString();
+			returnedString = objInstoreOMSPage.MaxDurationErrorOMS(objInstoreOMSObjects,ranArticle,driver);	
+			if(returnedString.equals("nodata")){
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+		}		
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}
+	}
+	
+	
+	/*Max duration Error FF*/
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Enusre the error message when user provide greater than Maximum duration in Other Markdown Special Activity Promotion for Fresh Food")
+	public void MaxDurationErrorOMSFF() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+1;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			for(int i=0;i<=7;i++){
+				if(i ==0) 
+				{
+					navToInstoreOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToSMFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for IT Admin verified successfully;;;Pass");				
+				}
+				else if (i ==1){
+					navToInstoreDMOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToDMFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Department Manager verified successfully;;;Pass");				
+				}
+				else if (i ==2){
+					navToInstoreTMOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToAllUsersFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Team Member verified successfully;;;Pass");				
+				}
+				else if (i ==3){
+					navToInstoreCAOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToAllUsersFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Customer Assistant verified successfully;;;Pass");
+				}
+				else if (i ==4){
+					navToInstoreOAOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToAllUsersFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Office Assistance verified successfully;;;Pass");
+				}
+				else if (i ==5){
+					navToInstoreOSOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToAllUsersFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Office Supervisor verified successfully;;;Pass");				
+				}
+				else if (i ==6){
+					navToInstoreSMOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToSMFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Store Manager verified successfully;;;Pass");				
+				}
+				else if (i ==7){
+					navToInstoreSTMOMS(status);
+					objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+					navToSMFF();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message for Stock Take Manager verified successfully;;;Pass");			
+					}
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+			}}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	public void navToSMFF() throws IOException, AWTException, SQLException,  ParseException{
+		
+		String articles_sql = data.getText("articlesFF").replace("freshfood", freshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+		if(results.size()!=0)
+		{
+			int num = common.RandomFromDB(results);
+			String  ranArticle = results.get(num).get(0).toString();
+			returnedString = objInstoreOMSPage.MaxDurationErrorOMS(objInstoreOMSObjects,ranArticle,driver);		
+			if(returnedString.equals("nodata")){
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+		}		
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}
+	}
+	
+public void navToDMFF() throws IOException, AWTException, SQLException,  ParseException{
+		
+		String articles_sql = data.getText("articlesFF").replace("freshfood",freshfood);
+			results = sql.executeQuery(getContext(), articles_sql);	
+		if(results.size()!=0)
+		{
+			int num = common.RandomFromDB(results);
+			String  ranArticle = results.get(num).get(0).toString();
+			returnedString = objInstoreOMSPage.MaxDurationErrorDMOMS(objInstoreOMSObjects,ranArticle,driver);
+			if(returnedString.equals("nodata")){
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+		}		
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}
+	}
+
+public void navToAllUsersFF() throws IOException, AWTException, SQLException,  ParseException{
+	
+	String articles_sql = data.getText("articlesFF").replace("freshfood",freshfood);
+		results = sql.executeQuery(getContext(), articles_sql);	
+	if(results.size()!=0)
+	{
+		int num = common.RandomFromDB(results);
+		String  ranArticle = results.get(num).get(0).toString();
+		returnedString = objInstoreOMSPage.MaxDurationErrorALLOMS(objInstoreOMSObjects,ranArticle,driver);		
+		//returnedString = objInstoreOMSPage.MaxDurationErrorDMOMS(objInstoreOMSObjects,ranArticle,driver);
+		if(returnedString.equals("nodata")){
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+			return;
+		}
+	}		
+	else 			
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+	}
+}
+
+
+public void navToAllUsersDMFF() throws IOException, AWTException, SQLException,  ParseException{
+	
+	String articles_sql = data.getText("articlesFF").replace("freshfood",freshfood);
+		results = sql.executeQuery(getContext(), articles_sql);	
+	if(results.size()!=0)
+	{
+		int num = common.RandomFromDB(results);
+		String  ranArticle = results.get(num).get(0).toString();
+		//returnedString = objInstoreOMSPage.MaxDurationErrorALLOMS(objInstoreOMSObjects,ranArticle,driver);		
+		returnedString = objInstoreOMSPage.MaxDurationErrorDMOMS(objInstoreOMSObjects,ranArticle,driver);
+		if(returnedString.equals("nodata")){
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+			return;
+		}
+	}		
+	else 			
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+	}
+}
+
+		
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify de-activate in Active and Future Promotion in Other Markdown Special Activity promotion")
+	public void DeactivateRecordOMS() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+1;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOMS(status);
+			objInstoreOMSPage.deactivateRecord(objInstoreOMSObjects,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify Create Other Markdown Special Activity Promotion is Allowed for Deleted articles")
+	public void CreateDeletedArticleOMS() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+1;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOMS(status);
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			String articles_sql = data.getText("deletedarticles");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String  ranArticle = results.get(num).get(0).toString();
+				returnedString = objInstoreOMSPage.createInstoreOMS(objInstoreOMSObjects,ranArticle,driver);		
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}		
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=1,description = "Validate user can't access the Special Activity Promotion type if the option is disabled in application settings")
+	public void DisableOMSPromotion() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+1;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOMS(status);
+			objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);;
+			if(isDisplayed(objInstoreOMSObjects.SpecialActivity))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"***Trying to disable the Special Activity promotion in application settings***;;;Pass");
+				objInstoreOMSPage.DisableOMS(objInstoreOMSObjects,driver);
+				waitForJSandJQueryToLoad(driver);
+				objInstoreOMSObjects.Pricing.click();waitForJSandJQueryToLoad(driver);
+				objInstoreOMSObjects.InstorePromotions.click();waitForJSandJQueryToLoad(driver);
+				objInstoreOMSObjects.OtherMarkdownPromotions.click();waitForJSandJQueryToLoad(driver);
+				//	driver.navigate().to("http://ngbo-acpt.gss.woolworths.com.au/StoreCentral/1005/instore/otherMarkdownOnPageLoad.htm");
+				if(isDisplayed(objInstoreOMSObjects.SpecialActivity)){
+					htmlToExtent(cName,mName,extLogger,driver,"Trying to disable the Special Activity promotion in application settings;;;Pass");
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"User is not able to access Special Activity promotion because settings is disabled;;;Pass");
+				}
+			}
+
+			objInstoreOMSPage.EnableOMS(objInstoreOMSObjects, driver);
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify Filters in Active and Future Promotion in Other Markdown Special Activity promotion")
+	public void VerifyActivePromotionFiltersOMS() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+1;
+		}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOMS(status);
+			objInstoreOMSPage.verifyarticleFilterActiveOMS(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver, "Filters for Active and Future Promotion in Other Markdown Special Activity promotion is verified successfully;;;Pass"); 
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify Search and Filters in Past Promotion in Other Markdown Special Activity promotion")
+	public void SearchAndFilterPastOMS() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(inStoreOMSArtpreCount2==-1)
+		{
+			MCcount =MCcount+2;
+		} 
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOMS(status);
+			objInstoreOMSPage.SearchAndFilterPastOMS(objInstoreOMSObjects,driver);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver, "Search and Filters in Past Promotions is Verified Successfully;;;Pass"); 
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	
+@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Department Manager for Other Markdown Special Activity Promotion for Fresh Food Articles")
+public void MaxPercentAndDurationDMOMSFF() //throws SQLException, IOException, AWTException, ParseException
+{
+	if(inStoreOMSArtpreCount2==-1)
+	{
+		MCcount =MCcount+1;
+	}
+
+	TestStatus status = getTestStatus();
+	try{
+		navToInstoreDMOMS(status);
+		objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+		waitForJSandJQueryToLoad(driver);;
+		String articles_sql = data.getText("articlesFF").replace("freshfood",freshfood);
+		results = sql.executeQuery(getContext(), articles_sql);	
+		if(results.size()!=0)
+		{
+			int num = common.RandomFromDB(results);
+			String  ranArticle = results.get(num).get(0).toString();
+			returnedString = objInstoreOMSPage.MaxPercentageDMOMSFF(objInstoreOMSObjects,ranArticle,driver);		
+			if(returnedString.equals("nodata")){
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+		}		
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+	}catch (Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+	}
+	status.assertAll();	
+}
+
+@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Team Member for Other Markdown Special Activity Promotion for Fresh Food Articles")
+public void MaxPercentAndDurationTMOMSFF() //throws SQLException, IOException, AWTException, ParseException
+{
+if(inStoreOMSArtpreCount2==-1)
+	{
+		MCcount =MCcount+1;
+	}
+	
+	TestStatus status = getTestStatus();
+	try{
+	navToInstoreTMOMS(status);
+	objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+	waitForJSandJQueryToLoad(driver);;
+	String articles_sql = data.getText("articlesFF").replace("freshfood",freshfood);
+		results = sql.executeQuery(getContext(), articles_sql);	
+	if(results.size()!=0)
+	{
+		int num = common.RandomFromDB(results);
+		String  ranArticle = results.get(num).get(0).toString();
+		returnedString = objInstoreOMSPage.MaxDurationOMSFF(objInstoreOMSObjects,ranArticle,driver);	
+		if(returnedString.equals("nodata")){
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+			return;
+		}
+	}		
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+	}htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+	}catch (Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+	}
+	status.assertAll();
+}
+
+
+@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Customer Assistance for Other Markdown Special Activity Promotion for Fresh Food Articles")
+public void MaxPercentAndDurationCAOMSFF()// throws SQLException, IOException, AWTException, ParseException
+{
+	if(inStoreOMSArtpreCount2==-1)
+	{
+		MCcount =MCcount+1;
+	}
+
+	TestStatus status = getTestStatus();
+	try{
+		navToInstoreCAOMS(status);
+		objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+		waitForJSandJQueryToLoad(driver);;
+		String articles_sql = data.getText("articlesFF").replace("freshfood",freshfood);
+		results = sql.executeQuery(getContext(), articles_sql);	
+		if(results.size()!=0)
+		{
+			int num = common.RandomFromDB(results);
+			String  ranArticle = results.get(num).get(0).toString();
+			returnedString = objInstoreOMSPage.MaxDurationOMSFF(objInstoreOMSObjects,ranArticle,driver);		
+			if(returnedString.equals("nodata")){
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+		}		
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+	}catch (Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+	}
+	status.assertAll();
+}
+
+@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Office Assistance for Other Markdown Special Activity Promotion for Fresh Food Articles")
+public void MaxPercentAndDurationOAOMSFF() //throws SQLException, IOException, AWTException, ParseException
+{
+	if(inStoreOMSArtpreCount2==-1)
+	{
+		MCcount =MCcount+1;
+	}
+
+	TestStatus status = getTestStatus();
+	try{
+		navToInstoreOAOMS(status);
+		objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+		waitForJSandJQueryToLoad(driver);;
+		String articles_sql = data.getText("articlesFF").replace("freshfood",freshfood);
+		results = sql.executeQuery(getContext(), articles_sql);	
+		if(results.size()!=0)
+		{
+			int num = common.RandomFromDB(results);
+			String  ranArticle = results.get(num).get(0).toString();
+			returnedString = objInstoreOMSPage.MaxDurationOMSFF(objInstoreOMSObjects,ranArticle,driver);		
+			if(returnedString.equals("nodata")){
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+		}		
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+	}catch (Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+	}
+	status.assertAll();
+}
+
+@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Stock take manager for Other Markdown Special Activity Promotion for Fresh Food Articles")
+public void MaxPercentAndDurationSTMOMSFF() //throws SQLException, IOException, AWTException, ParseException
+{
+	if(inStoreOMSArtpreCount2==-1)
+	{
+		MCcount =MCcount+1;
+	}
+
+	TestStatus status = getTestStatus();
+	try{
+		navToInstoreSTMOMS(status);
+		objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+		waitForJSandJQueryToLoad(driver);;
+		String articles_sql = data.getText("articlesFF").replace("freshfood",freshfood);
+		results = sql.executeQuery(getContext(), articles_sql);	
+		if(results.size()!=0)
+		{
+			int num = common.RandomFromDB(results);
+			String  ranArticle = results.get(num).get(0).toString();
+			/*Using the same function in Tester90*/
+			returnedString = objInstoreOMSPage.createInstoreOMSFF(objInstoreOMSObjects,ranArticle,driver);			
+			if(returnedString.equals("nodata")){
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+		}		
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+	}catch (Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+	}
+	status.assertAll();
+}
+
+@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Office Supervisor for Other Markdown Special Activity Promotion for Fresh Food Articles")
+public void MaxPercentAndDurationOSOMSFF() //throws SQLException, IOException, AWTException, ParseException
+{
+	if(inStoreOMSArtpreCount2==-1)
+	{
+		MCcount =MCcount+1;
+	}
+
+	TestStatus status = getTestStatus();
+	try{
+		navToInstoreOSOMS(status);
+		objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+		waitForJSandJQueryToLoad(driver);;
+		String articles_sql = data.getText("articlesFF").replace("freshfood",freshfood);
+		results = sql.executeQuery(getContext(), articles_sql);	
+		if(results.size()!=0)
+		{
+			int num = common.RandomFromDB(results);
+			String  ranArticle = results.get(num).get(0).toString();
+			returnedString = objInstoreOMSPage.MaxDurationOMSFF(objInstoreOMSObjects,ranArticle,driver);	
+			if(returnedString.equals("nodata")){
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+		}		
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+	}catch (Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+	}
+	status.assertAll();
+}
+
+@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum % and duration for Store Manager for Other Markdown Special Activity Promotion for Fresh Food Articles")
+public void MaxPercentAndDurationSMOMSFF() //throws SQLException, IOException, AWTException, ParseException
+{
+	if(inStoreOMSArtpreCount2==-1)
+	{
+		MCcount =MCcount+1;
+	}
+
+	TestStatus status = getTestStatus();
+	try{
+		navToInstoreSMOMS(status);
+		objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+		waitForJSandJQueryToLoad(driver);;
+		String articles_sql = data.getText("articlesFF").replace("freshfood",freshfood);
+		results = sql.executeQuery(getContext(), articles_sql);	
+		if(results.size()!=0)
+		{
+			int num = common.RandomFromDB(results);
+			String  ranArticle = results.get(num).get(0).toString();
+			returnedString = objInstoreOMSPage.MaxPercentageSMOMS(objInstoreOMSObjects,ranArticle,driver);		
+			if(returnedString.equals("nodata")){
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+		}		
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+	}catch (Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+	}
+	status.assertAll();
+}
+
+@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify Special Activity Promotion is alloweed if PS status is blocked for Procurement")
+public void BlockedProcurement() //throws IOException, AWTException, SQLException,  ParseException
+{
+	if(inStoreOMSArtpreCount2==-1)
+	{
+		MCcount =MCcount+1;
+	}
+
+	TestStatus status = getTestStatus();
+	try{
+		navToInstoreOMS(status);
+		objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+		String Art = data.getText("articles");
+		results = sql.executeQuery(getContext(), Art);
+		if(results.size()!=0){
+			int num = common.RandomFromDB(results);
+			String Article = results.get(num).get(0).toString();
+			returnedString = objInstoreOMSPage.createInstoreOMS(objInstoreOMSObjects,Article,driver);
+			if(returnedString.equals("nodata")){
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+			//objInstoreOMSPage.MaxDuration(objInstoreOMSObjects, Article,31);
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}	
+		htmlToExtent(cName,mName,extLogger,driver,"Promotion for Blocked Procurement article is created successfully;;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+	}catch (Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+	}
+	status.assertAll();
+}
+
+@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify Special Activity Promotion is blocked if ALC status is End Of Stock")
+public void EOS() //throws IOException, AWTException, SQLException,  ParseException
+{
+	if(inStoreOMSArtpreCount2==-1)
+	{
+		MCcount =MCcount+1;
+	}
+
+	TestStatus status = getTestStatus();
+	try{
+		navToInstoreOMS(status);
+		objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+		String Art = data.getText("articles");
+		results = sql.executeQuery(getContext(), Art);
+		if(results.size()!=0){
+			int num = common.RandomFromDB(results);
+			String Article = results.get(num).get(0).toString();
+			//objInstorePage.MaxDuration(objInstoreObjects, Article, 1);
+			objInstoreOMSPage.BlockedArticle(objInstoreOMSObjects, Article,driver);
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}	
+		htmlToExtent(cName,mName,extLogger,driver,"Promotion for ALC Status equals to EOS articls is not added to draft;;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+	}catch (Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+	}
+	status.assertAll();
+}
+
+@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify Special Activity Promotion is blocked if ALC status is End Of Stock Confirmation")
+public void EOSConfirmation() //throws IOException, AWTException, SQLException,  ParseException
+{
+	if(inStoreOMSArtpreCount2==-1)
+	{
+		MCcount =MCcount+1;
+	}
+
+	TestStatus status = getTestStatus();
+	try{
+		navToInstoreOMS(status);
+		objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+		String Art = data.getText("articles");
+		results = sql.executeQuery(getContext(), Art);
+		if(results.size()!=0){
+			int num = common.RandomFromDB(results);
+			String Article = results.get(num).get(0).toString();
+			objInstoreOMSPage.BlockedArticle(objInstoreOMSObjects, Article,driver);
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}	
+		htmlToExtent(cName,mName,extLogger,driver,"Promotion for ALC Status equals to EOS Confirmation articls is not added to draft;;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+	}catch (Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+	}
+	status.assertAll();
+}
+
+@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify Special Activity Promotion is blocked if PS status is Product Recall")
+public void ProductRecall() //throws IOException, AWTException, SQLException,  ParseException
+{
+	if(inStoreOMSArtpreCount2==-1)
+	{
+		MCcount =MCcount+1;
+	}
+
+	TestStatus status = getTestStatus();
+	try{
+		navToInstoreOMS(status);
+		objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+		String Art = data.getText("articles");
+		results = sql.executeQuery(getContext(), Art);
+		if(results.size()!=0){
+			int num = common.RandomFromDB(results);
+			String Article = results.get(num).get(0).toString();
+			objInstoreOMSPage.BlockedArticle(objInstoreOMSObjects, Article,driver);
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}	
+		htmlToExtent(cName,mName,extLogger,driver,"Promotions for Recalled articles are not added to draft;;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+	}catch (Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+	}
+	status.assertAll();
+}
+
+@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify Special Activity Promotion is blocked if PS status is Ready for Archiving")
+public void ReadyForArchiving() //throws IOException, AWTException, SQLException,  ParseException
+{
+	if(inStoreOMSArtpreCount2==-1)
+	{
+		MCcount =MCcount+1;
+	}
+
+	TestStatus status = getTestStatus();
+	try{
+		navToInstoreOMS(status);
+		objInstoreOMSPage.DeletePreArticle(objInstoreOMSObjects,driver);
+		String Art = data.getText("articles");
+		results = sql.executeQuery(getContext(), Art);
+
+		if(results.size()!=0){
+			int num = common.RandomFromDB(results);
+			String Article = results.get(num).get(0).toString();
+			objInstoreOMSPage.BlockedArticle(objInstoreOMSObjects, Article,driver);
+		}
+
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"No data found;;;Fail");
+		}
+
+		htmlToExtent(cName,mName,extLogger,driver,"Promotions for Ready for archiving articles are not added to draft;;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMSArtScenarios,inStoreOMSArttestname,driver));
+	}catch (Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+	}
+	status.assertAll();
+}
+
+
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+	System.out.println("test1 - beforemethod");
+	
+	mName=m9.getName().toString().trim();			
+		if(!methodList.contains(m9.getName().toString().trim())){
+		methodList.add(m9.getName().toString().trim());
+		extLogger = extReport.startTest(m9.getName().toString().trim());
+		}
+		initializeTestcontext();
+	
+	log.info("Loading Testdata for the test case: " + m9.getName().toString());
+	data.getTCNameFromChildren(m9.getName().toString().trim());
+	if(isFirstTest){
+		driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+	}else{
+		String title = driver.getCurrentUrl();
+		if(title.contains("logginOut"))
+		{
+			driver.navigate().refresh();
+			TimeUnit.SECONDS.sleep(5);
+		}else{
+			driver.navigate().refresh();
+			TimeUnit.SECONDS.sleep(5);
+			if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+			{
+				if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+					WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+					scrolltoElement(home,driver);
+					home.click();
+					TimeUnit.SECONDS.sleep(5);
+					loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+					driver.navigate().refresh();
+					TimeUnit.SECONDS.sleep(5);}
+			}
+		}
+	}
+		isFirstTest=false;
+		//driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser")); 
+		setDriver(driver);
+	testcontext.setAttribute("WebDriver", driver);
+	testcontext.setAttribute("Customreports", this.customreport);
+	customreport.startTest(m9.getName().toString());
+	initializeTestStatus();
+	reportPath = new File(getContext().getStringProperty("reportPath"));
+	inStoreOMSArttestname = m9.getName().toString().trim();
+	inStoreOMSArttestdesc = m9.getAnnotation(Test.class).description();
+	htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+	objInstoreOMSObjects = PageFactory.initElements(this.driver, InstoreOMSObject.class);
+	objInstoreOMSPage = PageFactory.initElements(this.driver, InstoreOMSPage.class);
+	//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+	BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+	common = PageFactory.initElements(this.driver, CommonFunctions.class);
+	storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+}
+	
+	@BeforeClass
+	public void loadXMLFile(){	
+	//initializeTestcontext();
+	System.out.println("test1 - Beforeclass");
+	data = new XMLDataReader(log);
+	customreport=new CustomExtentReports();
+	log.info("Loading data for the class: " );
+	data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\InstoreOMS.xml");
+	customreport.createExtentReport();
+	cName=this.getClass().getSimpleName();
+	reportPath = new File(TestContext.getStringProperty("reportPath"));			
+	extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+	classList.add(this.getClass().getSimpleName());
+}
+
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+	System.out.println("afterclass");
+	
+	sceCtMap.put(cName+"_totalCt", methodList.size());
+	sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+	sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+	tcCt.put(this.getClass().getSimpleName().toString(),MCcount);
+	//System.out.println(extentList);
+	//System.out.println(methodList);
+    extReport.endTest(extLogger);
+	extReport.flush();
+	removeDriver();
+	closeDriver(driver);
+	moduleName.put("Modules", inStoreOMSArtModules);
+	int OMSArtMC=MCcount;
+	inStoreOMSArtMC=""+OMSArtMC;
+}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+	System.out.println("AffterMethod");
+	
+	extReport.endTest(extLogger);
+	extReport.flush();
+	try{
+		if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+			htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+			result9.removeAttribute("isFail");
+		}}catch(Exception e ){
+			//System.out.println();
+		
+		}
+
+	/*Date ppMEndDate1 = new Date();
+	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	inStoreOMSArtMEndDate = dateFormat.format(ppMEndDate1);
+	//System.out.println(inStoreOMSArtMEndDate); // 12/01/2011 4:48:16 PM
+	String EnhancedArtTime = inStoreOMSArttestdesc +";"+ inStoreOMSArtStartdat +";" + inStoreOMSArtMEndDate;
+	
+	htmlToExtent(cName,mName,extLogger,driver, "Running Completed Status;;;Pass"); 
+	inStoreOMSArtTime.put(inStoreOMSArttestname, EnhancedArtTime);
+	waitFor(4);
+	closeDriver(driver);*/
+	customreport.getExtentReport().endTest(customreport.getExtentTest());
+	customreport.getExtentReport().flush();
+	if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info"))
+	{
+		int cnt = inStoreOMSArtpreCount2+1;
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+		inStoreOMSArtpreCount2++;
+	}
+	/*waitFor(1);
+	if((getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")) && inStoreOMSArtpreCount2!=reCount)
+	{
+		waitFor(1);
+		inStoreOMSArtTime.removeAll(inStoreOMSArttestname);
+		waitFor(1);
+		inStoreOMSArtScenarios.removeAll(inStoreOMSArttestname);
+	}
+	waitFor(1);*/
+	if(inStoreOMSArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass"))
+	{
+		inStoreOMSArtpreCount2=-1;
+	}
+   }
+}

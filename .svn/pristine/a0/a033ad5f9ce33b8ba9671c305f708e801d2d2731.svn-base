@@ -1,0 +1,326 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class ArticleDetailsObjects {
+	
+	public static final String listUOMRadio="//*[@id='uomRadio_pos']/p/input[dynamic]";
+	public static final String listUOMtext="//*[@id='uomRadio_pos']/p/label[dynamic]";
+	
+	public static final String listUOMRadioHis="//*[@id='uomRadio_salesHist']/p/input[dynamic]";
+	public static final String listUOMtextHis="//*[@id='uomRadio_salesHist']/p/label[dynamic]";
+	
+	public static final String UOMRadio="//*[@id='uomForExpirePopUp']/input['dynamic']";
+	public static final String OutofCode_expiryDate = "//*[@id='outOfCodeData']/tr[2]/td[dynamic]";
+	public static final String OutofCode_UOM = "//*[@id='outOfCodeData']/tr[2]/td[dynamic]";
+	
+	@FindBy(tagName="body")
+	public WebElement body;
+	
+	
+	@FindBy(xpath ="//*[@id='rplPopUpEA0']")
+	public WebElement uom;
+	
+	@FindBy(xpath ="//*[@class='fullHstryRow fullHstryM']/td[2]")
+	public WebElement uomHistoryMPL;
+	
+	@FindBy(xpath ="(//*[@class=' fullHstryRow fullHstryS']/td[2])[1]")
+	public WebElement uomHistorySC;
+	
+	@FindBy(xpath ="(//*[@class=' fullHstryRow fullHstryF']/td[2])[1]")
+	public WebElement uomHistoryFac;
+	
+	
+	
+	@FindBy(xpath ="//*[@id='posInd']")
+	public WebElement checkPOS;
+	
+	@FindBy(xpath ="//*[@id='getGP']")
+	public WebElement checkGross;
+	
+	@FindBy(xpath ="//*[@class='pos_prc_cont loaded']//*[@class='valueInfo price']")
+	public WebElement checkPOSAmt;
+	
+	@FindBy(xpath ="//*[@class='pos_prc_cont gploaded']//*[@class='valueInfo price']")
+	public WebElement GrossPOSAmt;
+	
+	@FindBy(xpath ="//*[@id='dialog-pos-price']/div/div[2]/span/label")
+	public WebElement dialogOK;
+	
+	@FindBy(xpath= "//*[@id='uomRadio_pos']/p/input")
+	public List<WebElement> listofUOM;
+	
+	@FindBy(xpath= "//*[@id='uomRadio_salesHist']/p/input")
+	public List<WebElement> listofUOMHistory;
+	
+	
+	
+	@FindBy(xpath= "//*[@id='error_msg']/li")
+	public WebElement errormsg;
+	
+	@FindBy(xpath= "//*[@id='articleHierarchy']/li[1]")
+	public WebElement deptSearchHead;
+	
+	@FindBy(id= "nearBy")
+	public WebElement nearBy;
+	
+	@FindBy(xpath= "//*[@id='nearbyStoresResultTable']/tbody/tr[1]/td[2]")
+	public WebElement nearByStoreNo;
+	
+	@FindBy(xpath= "//*[@id='nearbyStoresResultTable']/tbody/tr[1]/td[1]/span/a")
+	public WebElement expandStore;
+	
+	@FindBy(xpath= "//*[@id='nearbyStoresResultTable']/tbody/tr")
+	public List<WebElement> nearByStoreTable;
+	
+	@FindBy(xpath= "//*[@id='nearbyStoresResultTable']//td[@class='address']")
+	public WebElement nearbyAdd;
+	
+	@FindBy(xpath= "(//*[@id='nearbyStoresResultTable']//td[@class='contact'])[1]")
+	public WebElement nearbyContact;
+	
+	@FindBy(xpath= "(//*[@id='nearbyStoresResultTable']//td[@class=' store_active_hrs'])[1]")
+	public WebElement nearbyhours;
+	
+	@FindBy(xpath= "//*[@id='salesHistory']")
+	public WebElement salesHistory;
+	
+	@FindBy(xpath= "//*[@id='salesHistContent']/tr")
+	public List<WebElement> salesHistoryTable;
+	
+	@FindBy(xpath= "//*[@id='dialog-modal-his']/div/div[2]/span/label")
+	public WebElement salesHistoryOk;
+	
+	@FindBy(xpath= "//*[@id='sohFullLog']")
+	public WebElement soh;
+	
+	@FindBy(xpath= "//*[@id='dialog-sohFullLog']/div/div[2]/span/label")
+	public WebElement sohOk;
+	
+	@FindBy(id= "reason_code_desc_tr_1_0")
+	public WebElement sohReasonCode;
+	
+	@FindBy(xpath= "//*[@id='printReportPopUp']/a/label")
+	public WebElement sohPrint;
+	
+	@FindBy(xpath= "//*[@id='success_msg']/li")
+	public List<WebElement> sohReport;
+	
+	@FindBy(xpath= "//*[@id='success-wrapper']/div/div/div[1]/a")
+	public WebElement sohReportClose;
+	
+	@FindBy(xpath= "//*[@id='blocking_reason_content']/div/div/table/tbody/tr[1]/td[2]")
+	public WebElement rcReason;
+	
+	@FindBy(id= "checkBlockingReason")
+	public WebElement rcBlock;
+	
+	@FindBy(xpath= "(//label[text()='Ok'])[1]")
+	public WebElement rcBlockClose;
+	
+	@FindBy(xpath= "//label[text()='Edit']")
+	public WebElement rcEdit;
+	
+	@FindBy(id= "start")
+	public WebElement rcCalendar;
+	
+	@FindBy(xpath= "//*[@id='uomForExpirePopUp']/input[@type='radio']")
+	public List<WebElement> rcUOM;
+	
+	@FindBy(xpath= "//*[@id='uomRadio']/p/input")
+	public List<WebElement> MplUOM;
+	
+	@FindBy(xpath= "//*[@id='fullHstryRadioCntnt']/p/input")
+	public List<WebElement> MplHistoryUOM;
+	
+	@FindBy(xpath= "//*[@id='rplRadioUOM']/input")
+	public List<WebElement> replUOM;
+	
+	@FindBy(xpath= "//*[@id='searchAndAdd']")
+	public WebElement add;
+	
+	@FindBy(xpath= "//*[@id='dialog-editFunctions']/div/div[2]/span/label[2]/a")
+	public WebElement cancel;
+	
+	@FindBy(xpath= "(//*[@id='ui-id-13'])[2]")
+	public WebElement outofCode;
+	
+	@FindBy(xpath= "//tr[contains(@class,'pageNo-1 expireDatePopUp')]")
+	public List<WebElement> outofCodeTable;
+	
+
+	@FindBy(xpath= "//*[contains(@id,'expDate-')]")
+	public List<WebElement> expiryTable;
+	
+	@FindBy(xpath="//label[text()='Security Item']")
+	public WebElement securityflag;
+	
+	
+	@FindBy(xpath="//*[@id='success-wrapper']/div/div/div[1]/a")
+	public WebElement close;
+	
+	@FindBy(id="securityTAG")
+	public WebElement securityTAG;
+	
+	@FindBy(id="yST")
+	public WebElement check_security;
+	
+	@FindBy(xpath="//*[@id='createOrderButton']/a/label")
+	public WebElement save;
+	
+	@FindBy(xpath="(//*[@id='ui-id-14'])[2]")
+	public WebElement POSDetails;
+	
+	@FindBy(id="security_flag")
+	public WebElement security_pos;
+	
+	@FindBy(id="sohValue")
+	public WebElement SOH;
+	
+	@FindBy(xpath="//*[@id='endSOHValue']")
+	public WebElement endSOHValue;
+	
+	@FindBy(xpath="//*[@id='linkFactor']/label[1]/strong")
+	public WebElement endSOHValueKG;
+	
+	
+	@FindBy(xpath="//*[@id='success-wrapper']/div/div/div[1]/a")
+	public WebElement closeSohReport;
+	
+	@FindBy(xpath="//*[@id='yes']/label")
+	public List<WebElement> nonPIItemYeslist;
+	
+	@FindBy(xpath="//*[@id='yes']/label")
+	public WebElement nonPIItemYes;
+	
+	@FindBy(xpath="html/body/div[53]")
+	public WebElement nonPIDialog;
+	
+	@FindBy(xpath ="//*[@class='notepad']")
+	public WebElement sohHistory;
+	
+	@FindBy(xpath ="//*[@id='historyDiv']")
+	public WebElement sohHistoryTable;
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[1]/a")
+	public WebElement noStockAdj;
+	
+	@FindBy(xpath ="//*[@id='information-wrapper']/div/div/div[1]/a")
+	public WebElement enterWeightAlert;
+	
+	@FindBy(id="adjustSOHWeight")
+	public WebElement adjSohWt;
+	
+	@FindBy(xpath ="//*[@id='secondaryDetails']/label[1]/strong")
+	public WebElement sohnew;
+	
+	@FindBy(xpath ="//*[@id='secondaryDetails']/label[1]/strong")
+	public List<WebElement> sohnewList;
+	
+	@FindBy(id="EA")
+	public WebElement EA;
+	
+	@FindBy(id="KG")
+	public WebElement kg;
+	
+	@FindBy(xpath="//*[@id='expireDatePopUpTable']/tr")
+	public List<WebElement> expireDatePopUpTable;
+	
+	@FindBy(xpath="//*[@id='outOfCodeData']/tr")
+	public List<WebElement> outOfCodeData;
+
+	@FindBy(xpath ="//*[@id='openOrdersLink']")
+	public WebElement onOrder;
+	
+	@FindBy(xpath ="//*[@id='articleTable1']/table/tbody/tr[6]/td[2]")
+	public WebElement onOrdernull;
+	
+	@FindBy(xpath ="//*[@id='dialog-openOrders']/div/div[2]/span/label")
+	public WebElement onOrderOk;
+	
+	@FindBy(xpath ="//*[@id='onOrderTable']/tbody/tr[not(contains(@class, 'hideBlock'))][1]/td[1]")
+	public WebElement rowelement;
+	
+	@FindBy(xpath ="//*[@id='rpt_stk_adj_article_table']/tbody/tr[not(contains(@class, 'hideBlock'))][1]/td[1]")
+	public WebElement rowelement1;
+	
+	@FindBy(xpath = "//*[@id='paginationDiv11']/ul/li")
+	public List<WebElement> pagination_list;
+	
+	@FindBy(xpath = "//*[@id='rpt_stk_adj_article_head_page']/ul/li")
+	public List<WebElement> pagListOnOder1;
+	
+	@FindBy(xpath = "//*[@id='paginationDiv11']/ul/li")
+	public List<WebElement> pagListOnOder;
+			
+	@FindBy(xpath ="//*[@id='mplAndScTab']")
+	public WebElement mpl;
+	
+	@FindBy(xpath ="//*[@id='mplAndScTable']/form/table/tbody/tr[1]/td[2]/input")
+	public WebElement currentMPL;
+	
+	@FindBy(xpath ="//*[@id='mplAndScTable']/form/table/tbody/tr[1]/td[4]/input")
+	public WebElement currentSC;
+	
+	
+	@FindBy(id="createOrderButton")
+	public WebElement orderSave;
+	
+	@FindBy(xpath ="//*[@id='dialog-editFunctions']/div/div[2]/span/label[2]/a")
+	public WebElement mplCancel;
+	
+	
+	@FindBy(xpath ="//*[@id='yes']/label")
+	public WebElement adjsohYes;
+	
+	@FindBy(xpath ="//*[@id='yes-btn-orders']")
+	public WebElement adjContinue;
+	
+	@FindBy(xpath ="//*[@id='flagValue']")
+	public WebElement deletedArticle;
+	
+
+	@FindBy(xpath ="//table[not(contains(@class, 'hideBlock'))]/tbody/tr/td[@id='curMPL']")
+	public WebElement replCurrentMPL;
+	
+
+	@FindBy(xpath ="//table[not(contains(@class, 'hideBlock'))]/tbody/tr/td[@id='curShelfLif']")
+	public WebElement replCurrentSC;
+	
+	@FindBy(xpath ="//*[@id='minPresLevelValue']")
+	public WebElement stockCurrentMPL;
+	
+	@FindBy(xpath ="//*[@id='shelfcapacityValue']")
+	public WebElement stockCurrentSC;
+	
+	@FindBy(xpath ="//*[@id='searchBox']")
+	public WebElement lookup;
+	
+	@FindBy(id="articleGO")
+	public WebElement articleGO;
+	
+	@FindBy(xpath ="//*[@id='salesHistContent']")
+	public WebElement salesHistContent;
+	
+	@FindBy(id="facingsValue")
+	public WebElement facingValue;
+	
+	@FindBy(xpath ="//*[@id='mplAndScTable']/form/table/tbody/tr[1]/td[5]")
+	public WebElement currentFacing;
+	
+	@FindBy(xpath ="//*[@id='fullHistory']")
+	public WebElement fullHistory;
+	
+	@FindBy(xpath ="//*[@id='fullHstryCntnt']/tr[last()]")
+	public List<WebElement> lastRow;
+	
+	@FindBy(xpath ="//*[@id='mplAndScTable']/form/table/tbody/tr[2]/td[2]")
+	public WebElement prevMPL;
+	
+	@FindBy(xpath ="//*[@id='msg']")
+	public List<WebElement> nearbymsg;
+	
+}

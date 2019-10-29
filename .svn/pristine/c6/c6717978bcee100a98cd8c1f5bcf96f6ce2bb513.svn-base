@@ -1,0 +1,2173 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.RoutineObjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+//import au.wow.ngbomain.pages.OrderEnquiryPage;
+import au.wow.ngbomain.pages.RoutinesPage;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+
+public class OverstockReportsTest  extends TestBase {
+
+
+	private Logger log = LogManager.getLogger(OverstockReportsTest.class);
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	XMLDataReader data;
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	RoutinesPage objRoutinesPage;
+	RoutineObjects objRoutineObjects;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;			
+	List<List<Object>> result;
+	List<List<Object>> result_temp;
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+	public static boolean isFirstTest=true;
+	int count=0;		
+	int MCcount=0;
+	public static WebDriver driver;
+
+
+
+	public OverstockReportsTest(){
+		super.log=log;
+	}
+	/*@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department-Weekly")
+>>>>>>> .r14141
+	public void VerifyReportWeekly() throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		try{
+			TestStatus status = getTestStatus();
+			waitFor(1);
+			navToRoutines(status);
+			waitFor(1);
+			String StDate = objRoutineObjects.SDate.getText();
+			//System.out.println("Date from Report is" +StDate);
+			String StartDate = common.ConvertdateFormat1(0);
+			//System.out.println("From Function is " +StartDate);
+			String EndDate = common.ConvertdateFormat(-6);
+			//System.out.println("From Function End Date is " +EndDate);
+			if(objRoutineObjects.Weekly.isEnabled())
+			{
+				//System.out.println("Weekly (Summary) Selection criteria is enabled currently");
+				htmlToExtent(cName,mName,extLogger,driver, "Weekly (Summary) Selection criteria is enabled currently;;;Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Weekly (Summary) Selection criteria is Disabled currently;;;Fail");
+			}
+			waitFor(1);
+			if(objRoutineObjects.CurrentWeek.isEnabled())
+			{
+				//System.out.println("Current Week Selection criteria is enabled currently");
+				htmlToExtent(cName,mName,extLogger,driver, "Current Week Selection criteria is enabled currently;;;Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Current Week Selection criteria is Disabled currently;;;Fail");
+			}
+			waitFor(2);
+			objRoutineObjects.dropdownselect.click();
+			if(objRoutineObjects.AllDeptCheckbox.isSelected())
+			{
+				objRoutineObjects.Done.click();
+				objRoutineObjects.GenerateReport.click();
+			}
+			else
+			{
+				objRoutineObjects.AllDeptCheckbox.click();
+				objRoutineObjects.Done.click();
+				objRoutineObjects.GenerateReport.click();
+			}
+			if(objRoutineObjects.msg.size()!=0)
+			{
+				objRoutinesPage.fnNoRecords(objRoutineObjects,driver);	
+				waitFor(5);
+			}else{
+			
+				List<List<Object>> ApplList2 =  new ArrayList<List<Object>>();
+			List<List<Object>> ApplList = getValuesFromTable(objRoutineObjects.AllValuesFromTable);
+			//System.out.println(ApplList);
+			//String Records=data.getText("alldeptdaily").replace("DATE",SelectDate);
+			String Records=data.getText("alldept");
+			results = sql.executeQuery(getContext(),Records);
+			//System.out.println("Listing the DB records Started");
+			List<List<Object>> DB = new ArrayList<List<Object>>();
+			/*for (int j = 0; j < results.size(); j++)
+			{
+				List<Object> tempdb1 = new ArrayList<Object>();
+				List<Object> tempdb2 = new ArrayList<Object>();
+				{
+				String ReasonCode1 = results.get(0).get(0).toString();
+					String MondayCount1 = results.get(1).get(1).toString();
+					String MondayPercentage1 = results.get(1).get(2).toString();
+					String TuesdayCount1 = results.get(3).get(1).toString();
+					String TuesdayPercentage1 = results.get(3).get(2).toString();
+					String WednesdayCount1 = results.get(6).get(1).toString();
+					String WednesdayPercentage1 = results.get(6).get(2).toString();
+					String ThursdayCount1 = results.get(5).get(1).toString();
+					String ThursdayPercentage1 = results.get(5).get(2).toString();
+					String FridayCount1 = results.get(0).get(1).toString();
+					String FridayPercentage1 = results.get(0).get(2).toString();
+					String SaturdayCount1 = results.get(4).get(1).toString();
+					String SaturdayPercentage1 = results.get(4).get(2).toString();
+					String SundayCount1 = results.get(2).get(1).toString();
+					String SundayPercentage1 = results.get(2).get(2).toString();
+					String ReasonCode2 = results.get(7).get(0).toString();
+					String MondayCount2 = results.get(8).get(1).toString();
+                     String MondayPercentage2 = results.get(8).get(2).toString();
+				String TuesdayCount2 = results.get(10).get(1).toString();
+					String TuesdayPercentage2 = results.get(10).get(2).toString();
+					String WednesdayCount2 = results.get(13).get(1).toString();
+					String WednesdayPercentage2 = results.get(13).get(2).toString();
+					String ThursdayCount2 = results.get(12).get(1).toString();
+					String ThursdayPercentage2 = results.get(12).get(2).toString();
+					String FridayCount2 = results.get(7).get(1).toString();
+					String FridayPercentage2 = results.get(7).get(2).toString();
+					String SaturdayCount2 = results.get(11).get(1).toString();
+					String SaturdayPercentage2 = results.get(11).get(2).toString();
+					String SundayCount2 = results.get(9).get(1).toString();
+					String SundayPercentage2 = results.get(9).get(2).toString();
+					tempdb1.add(ReasonCode1);
+					tempdb1.add(MondayCount1);
+					tempdb1.add(MondayPercentage1);
+					tempdb1.add(TuesdayCount1);
+					tempdb1.add(TuesdayPercentage1);
+					tempdb1.add(WednesdayCount1);
+					tempdb1.add(WednesdayPercentage1);
+					tempdb1.add(ThursdayCount1);
+					tempdb1.add(ThursdayPercentage1);
+					tempdb1.add(FridayCount1);
+					tempdb1.add(FridayPercentage1);
+					tempdb1.add(SaturdayCount1);
+					tempdb1.add(SaturdayPercentage1);
+					tempdb1.add(SundayCount1);
+					tempdb1.add(SundayPercentage1);
+					tempdb2.add(ReasonCode2);
+					tempdb2.add(MondayCount2);
+					tempdb2.add(MondayPercentage2);
+					tempdb2.add(TuesdayCount2);
+					tempdb2.add(TuesdayPercentage2);
+					tempdb2.add(WednesdayCount2);
+					tempdb2.add(WednesdayPercentage2);
+					tempdb2.add(ThursdayCount2);
+					tempdb2.add(ThursdayPercentage2);
+					tempdb2.add(FridayCount2);
+					tempdb2.add(FridayPercentage2);
+					tempdb2.add(SaturdayCount2);
+					tempdb2.add(SaturdayPercentage2);
+					tempdb2.add(SundayCount2);
+					tempdb2.add(SundayPercentage2);
+				
+					ApplList2.add(tempdb1);
+					ApplList2.add(tempdb2);
+					//System.out.println(ApplList2);
+					//System.out.println("Listing the DB records  Completed");
+					//ElementContains1(cName, mName,extLogger,driver, ApplList2,ApplList);
+				}
+				
+			
+			ElementContains1(cName, mName,extLogger,driver, ApplList2,ApplList);
+			waitFor(1);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+			status.assertAll();
+		}
+
+	}catch(Exception e){
+		isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+	}
+	}*/
+
+
+
+
+	/*@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Departments-Daily")
+>>>>>>> .r14141
+	public void VerifyReportDailyAllDepartments() throws SQLException,IOException,AWTException,ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		try{
+			TestStatus status = getTestStatus();
+			List<List<Object>> results2 = null;
+			waitFor(1);
+			navToRoutines(status);
+			objRoutineObjects.daily.click();
+			waitFor(1);
+			String articleType;
+			String PromoIndicator;
+			String MPL;
+			String Capacity;
+			String article_No=null;
+			objRoutinesPage.DateSelect(objRoutineObjects,driver);
+			objRoutineObjects.dropdownselect.click();
+			if(objRoutineObjects.AllDeptCheckbox.isSelected())
+			{
+				objRoutineObjects.Done.click();
+				objRoutineObjects.GenerateReport.click();
+			}
+			else
+			{
+				objRoutineObjects.AllDeptCheckbox.click();
+				objRoutineObjects.Done.click();
+				objRoutineObjects.GenerateReport.click();
+			}
+			String SelectDate = common.ConvertdateFormat1(0);
+			//System.out.println("Today Date is " +SelectDate);
+			if(objRoutineObjects.msg.size()!=0)
+			{
+				objRoutinesPage.fnNoRecords(objRoutineObjects,driver);	
+				waitFor(5);
+			}else{
+				List<List<Object>> ApplList = getValuesFromTableST(objRoutineObjects.DailyReportTable);
+				//System.out.println(ApplList);
+				//String Records=data.getText("alldeptdaily").replace("DATE",SelectDate);
+				String Records=data.getText("alldeptdaily");
+				results = sql.executeQuery(getContext(),Records);
+				//System.out.println("Listing the DB records Started");
+				List<List<Object>> DB = new ArrayList<List<Object>>();
+				for (int j = 0; j < results.size(); j++)
+				{
+					List<Object> tempdb = new ArrayList<Object>();
+					{
+						results=removeExtraSpaces(results,2);
+						String ArticleNumber = results.get(j).get(0).toString();
+						if (results.get(j).get(1)==null){
+							PromoIndicator = "" ;
+						}else{
+							PromoIndicator = results.get(j).get(1).toString();
+						}
+						String ArticleDesc = results.get(j).get(2).toString();
+						String SohValues = results.get(j).get(3).toString();
+						if(SohValues.contains("."))
+						{
+							String[] SOH = SohValues.split(" ");
+							//System.out.println("Splitted values are :  " +SOH[0]);
+							String Decim= SOH[0];
+							DecimalFormat df = new DecimalFormat("#.##");
+							float soh=Float.parseFloat((Decim.trim()));
+							SohValues=df.format(soh);
+							SohValues=SohValues+" "+SOH[1]; 
+						}
+						//System.out.println("SOH value is " +SohValues);
+						if (results.get(j).get(4)==null){
+							MPL = "" ;
+						}else{
+							results=removeLastZero1(results,4);
+							MPL = results.get(j).get(4).toString();
+						}
+						//System.out.println("MPL value is " +MPL);
+						if (results.get(j).get(5)==null){
+							Capacity = "" ;
+						}else{
+							results=removeLastZero1(results,5);
+							Capacity = results.get(j).get(5).toString();
+						}
+						//System.out.println("Capacity value is " +Capacity);
+						tempdb.add(ArticleNumber);
+						tempdb.add(PromoIndicator);
+						tempdb.add(ArticleDesc);
+						tempdb.add(SohValues);
+						tempdb.add(MPL);
+						tempdb.add(Capacity);
+						DB.add(tempdb);
+						//System.out.println(DB);
+						//System.out.println("Listing the DB records  Completed");
+						ElementContains1(cName, mName,extLogger,driver, DB,ApplList);
+					}
+				}
+				waitFor(1);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+				status.assertAll();
+			}
+
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Single Department-Daily")
+	public void VerifyReportDailySingleDepartment() throws SQLException,IOException,AWTException,ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		try{
+			TestStatus status = getTestStatus();
+			List<List<Object>> results2 = null;
+			waitFor(1);
+			navToRoutines(status);
+			objRoutineObjects.daily.click();
+			waitFor(1);
+			String articleType;
+			String PromoIndicator;
+			String MPL;
+			String Capacity;
+			String article_No=null;
+			objRoutinesPage.DateSelect(objRoutineObjects,driver);
+			objRoutineObjects.dropdownselect.click();
+			if(objRoutineObjects.AllDeptCheckbox.isSelected())
+			{
+				objRoutineObjects.AllDeptCheckbox.click();
+				objRoutineObjects.BakeHouse.click();
+				objRoutineObjects.Done.click();
+				objRoutineObjects.GenerateReport.click();
+			}
+			else
+			{
+				objRoutineObjects.AllDeptCheckbox.click();
+				objRoutineObjects.AllDeptCheckbox.click();
+				objRoutineObjects.BakeHouse.click();
+				objRoutineObjects.Done.click();
+				objRoutineObjects.GenerateReport.click();
+			}
+			String SelectDate = common.ConvertdateFormat1(0);
+			//System.out.println("Today Date is " +SelectDate);
+			if(objRoutineObjects.msg.size()!=0)
+			{
+				objRoutinesPage.fnNoRecords(objRoutineObjects,driver);	
+				waitFor(5);
+			}else{
+				List<List<Object>> ApplList = getValuesFromTableST(objRoutineObjects.DailyReportTable);
+				//System.out.println(ApplList);
+				//String Records=data.getText("alldeptdaily").replace("DATE",SelectDate);
+				String Records=data.getText("alldeptdaily");
+				results = sql.executeQuery(getContext(),Records);
+				//System.out.println("Listing the DB records Started");
+				List<List<Object>> DB = new ArrayList<List<Object>>();
+				for (int j = 0; j < results.size(); j++)
+				{
+					List<Object> tempdb = new ArrayList<Object>();
+					{
+						results=removeExtraSpaces(results,2);
+						String ArticleNumber = results.get(j).get(0).toString();
+						if (results.get(j).get(1)==null){
+							PromoIndicator = "" ;
+						}else{
+							PromoIndicator = results.get(j).get(1).toString();
+						}
+						String ArticleDesc = results.get(j).get(2).toString();
+						String SohValues = results.get(j).get(3).toString();
+						if(SohValues.contains("."))
+						{
+							String[] SOH = SohValues.split(" ");
+							//System.out.println("Splitted values are :  " +SOH[0]);
+							String Decim= SOH[0];
+							DecimalFormat df = new DecimalFormat("#.##");
+							float soh=Float.parseFloat((Decim.trim()));
+							SohValues=df.format(soh);
+							SohValues=SohValues+" "+SOH[1]; 
+						}
+						//System.out.println("SOH value is " +SohValues);
+						if (results.get(j).get(4)==null){
+							MPL = "" ;
+						}else{
+							results=removeLastZero1(results,4);
+							MPL = results.get(j).get(4).toString();
+						}
+						//System.out.println("MPL value is " +MPL);
+						if (results.get(j).get(5)==null){
+							Capacity = "" ;
+						}else{
+							results=removeLastZero1(results,5);
+							Capacity = results.get(j).get(5).toString();
+						}
+						//System.out.println("Capacity value is " +Capacity);
+						tempdb.add(ArticleNumber);
+						tempdb.add(PromoIndicator);
+						tempdb.add(ArticleDesc);
+						tempdb.add(SohValues);
+						tempdb.add(MPL);
+						tempdb.add(Capacity);
+						DB.add(tempdb);
+						//System.out.println(DB);
+						//System.out.println("Listing the DB records  Completed");
+						ElementContains1(cName, mName,extLogger,driver, DB,ApplList);
+					}
+				}
+				waitFor(1);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+				status.assertAll();
+			}
+
+<<<<<<< .mine
+		
+		String applCountpartial = getText(objDscReport.reportcountpartial);
+		String applCountalldept = getText(objDscReport.reportcountalldept);
+		
+		//String countDBStringValue = String.valueOf(countDB);
+		
+		objRoutinesPage.overstock(objRoutineObjects,driver);
+		if(reportcountpartial<reportcountalldept)
+		
+			htmlToExtent(cName,mName,extLogger,driver, "The No of records generated by the report is correct;;Pass");
+			//Report_AddStep("testcase", "The No of records generated by the report is correct",applCount ,countDBStringValue , "Pass");
+		else
+			htmlToExtent(cName,mName,extLogger,driver, "The No of records generated by the report is incorrect;;Fail");
+	
+||||||| .r13617
+		
+		String applCountpartial = getText(objDscReport.reportcountpartial);
+		String applCountalldept = getText(objDscReport.reportcountalldept);
+		
+		//String countDBStringValue = String.valueOf(countDB);
+		
+		objRoutinesPage.overstock(objRoutineObjects,driver);
+		if(reportcountpartial<reportcountalldept)
+		
+			htmlToExtent(cName,mName,extLogger,driver, "The No of records generated by the report is correct;;Pass");
+			//Report_AddStep("testcase", "The No of records generated by the report is correct",applCount ,countDBStringValue , "Pass");
+		else
+			htmlToExtent(cName,mName,extLogger,driver, "The No of records generated by the report is incorrect;;Fail");
+	
+=======
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+>>>>>>> .r14139
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department-Weekly-Last week")
+	public void verifyreportlastweek() throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		try{
+
+			TestStatus status = getTestStatus();
+			waitFor(1);
+			navToRoutines(status);
+
+
+			objRoutinesPage.click(objRoutineObjects.lastweek);//Click Weekly reason//for current week
+			waitFor(1);
+
+			objRoutinesPage.AllDepartmentReport(objRoutineObjects,driver);
+
+			int size =objRoutineObjects.recordslastweek.size();
+
+			//System.out.println(size);
+
+			objRoutinesPage.PartialDepartment(objRoutineObjects,driver);	
+			objRoutineObjects.GenerateReport.click(); 
+
+			int sizep =objRoutineObjects.recordslastweekpartial.size();
+
+			//System.out.println(size);
+
+			if(size<=sizep)
+
+
+				htmlToExtent(cName,mName,extLogger,driver, "The No of records generated by the report is correct;;Pass");
+
+			else
+				htmlToExtent(cName,mName,extLogger,driver, "The No of records generated by the report is incorrect;;Fail");
+
+
+			log.info("-----------------Logout from Application------------------");
+			loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+			status.assertAll();	
+
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department-Daily- RW")//Done
+	public void verifyreportdailyRW() throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		try{
+
+			TestStatus status = getTestStatus();
+			List<List<Object>> results2 = null;
+			waitFor(1);
+
+			navToRoutines(status);
+			objRoutinesPage.click(objRoutineObjects.daily);//Click daily reason
+			waitFor(1);
+			String articleType;
+			String article_No = null;
+			String indiv_UomArticle_sql = data.getText("alldeptdaily");// Action
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+
+			objRoutinesPage.DateSelect(objRoutineObjects,driver);
+			if(objRoutineObjects.msg.size()!=0)
+			{
+				objRoutinesPage.fnNoRecords(objRoutineObjects,driver);			
+			}else{
+				List <String> article = new ArrayList<String>();
+				article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);
+				for(int i=0;i<article.size();i++)
+				{
+					String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i).toString());// Action
+					results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);//query works fine-results1
+					if(results1.size()!=0)
+					{
+						articleType = results1.get(0).get(17).toString();
+						//System.out.println("The article type is"+articleType);
+						if(articleType.equalsIgnoreCase("Y"))
+
+						{
+							//article_No = results1.get(i).get(0).toString();
+							article_No = results1.get(0).get(0).toString();
+							break;
+
+						}else{
+							//System.out.println("fail");
+						}
+
+					}}
+				String indiv_UomArticle_sql2 = data.getText("alldeptdaily").replace("numbr",article_No);// Action
+				results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+				replacenullToZero(results2);
+				removeLastZero(results2,5);
+				removeLastZero(results2,6);
+
+				objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);	
+
+
+			}
+			waitFor(1);
+			log.info("-----------------Logout from Application------------------");
+			loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+			status.assertAll();
+
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+	}
+	//select No department error msg is displayed
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "No Department selected")
+	public void nodepartment() throws SQLException, IOException, AWTException,
+	ParseException {
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		try{
+
+			TestStatus status = getTestStatus();
+			List<List<Object>> results2 = null;
+			waitFor(1);
+
+			navToRoutines(status);
+			objRoutineObjects.dropdownselect.click();
+			waitFor(1);
+			if (isEnabled(objRoutineObjects.alldept))
+
+			{
+				waitFor(3);
+				//click(objRoutineObjects.alldeptcb);
+				click(objRoutineObjects.alldept);
+
+				waitForJSandJQueryToLoad(driver);;
+			}
+
+
+
+			click(objRoutineObjects.Done);
+			waitFor(1);
+			click(objRoutineObjects.GenerateReport);
+			waitFor(2);
+			try{
+				if(objRoutineObjects.msg.size()!=0)
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "error message is displayed;;;Pass");
+					objRoutinesPage.fnNoDeptselected(objRoutineObjects,driver);		
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver, "error message for no department is not displayed;;;Fail");
+				}
+				waitFor(5);
+			}catch(Exception e)	{
+			}
+
+			
+
+			waitFor(1);
+			log.info("-----------------Logout from Application------------------");
+			loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+			status.assertAll();
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department-Daily")//Done
+	public void verifyreportdaily() throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		try{
+			TestStatus status = getTestStatus();
+			List<List<Object>> results2 = null;
+			waitFor(1);
+
+			navToRoutines(status);
+			//Click daily(detailed) Radio button
+			objRoutinesPage.click(objRoutineObjects.daily);
+			waitFor(1);
+			String articleType;
+			String article_No=null;
+
+			//Select date from drop down
+			objRoutinesPage.DateSelect(objRoutineObjects,driver);
+			if(objRoutineObjects.msg.size()!=0)
+			{
+				objRoutinesPage.fnNoRecords(objRoutineObjects,driver);	
+				waitFor(5);
+			}else{
+				//DB validation
+				List <String>article = new ArrayList<String>();//##		
+				article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);//##matnr
+
+
+				for(int i=0;i<article.size();i++)//after this sql
+				{
+					String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i).toString());// Action
+					results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);//results1 is displayed wen debugg
+					//System.out.println(results1);
+
+
+					if(results1.size()!=0)
+					{
+						articleType = results1.get(i).get(1).toString();//HAWA 0,1->get(1)
+
+						if(articleType.equalsIgnoreCase("HAWA"))
+						{
+							article_No = results1.get(i).get(0).toString();
+							break;
+
+						}}
+
+				}
+
+
+
+				String indiv_UomArticle_sql2 = data.getText("alldeptdaily").replace("numbr",article_No);// Local db//##error while debugg
+				results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+				replacenullToZero(results2);
+				removeLastZero(results2,5);
+				removeLastZero(results2,6);
+
+				objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);	
+
+			}
+			waitFor(1);
+			log.info("-----------------Logout from Application------------------");
+			loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+			status.assertAll();
+
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+	}
+
+
+
+
+
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department-Daily- PBD")//Done
+	public void verifyreportdailyPBD() throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		try{
+
+			TestStatus status = getTestStatus();
+			List<List<Object>> results2 = null;
+			waitFor(1);
+
+			navToRoutines(status);
+			objRoutinesPage.click(objRoutineObjects.daily);//Click daily reason
+			waitFor(1);
+			String articleType;
+			String article_No = null;
+			String indiv_UomArticle_sql = data.getText("alldeptdaily");// Action
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+
+
+
+			objRoutinesPage.DateSelect(objRoutineObjects,driver);
+			waitFor(5);
+			if(objRoutineObjects.msg.size()!=0)
+			{
+				objRoutinesPage.fnNoRecords(objRoutineObjects,driver);	
+				waitFor(5);
+			}else{
+				List<String>article = new ArrayList<String>();
+				article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);
+				for(int i=0;i<article.size();i++)
+				{
+					String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i).toString());// Action
+					results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+					if(results1.size()!=0)
+					{
+
+						articleType = results1.get(0).get(20).toString();
+						//System.out.println("articleType is " +articleType);
+						if(articleType.equalsIgnoreCase("Y"))
+
+						{
+							article_No = results1.get(0).get(0).toString();
+							break;
+
+
+						}else{
+							//System.out.println("fail");
+						}
+
+					}}
+
+				String indiv_UomArticle_sql2 = data.getText("alldeptdaily").replace("numbr",article_No);// Action
+				results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+				replacenullToZero(results2);
+				removeLastZero(results2,5);
+				removeLastZero(results2,6);
+
+
+				objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);	
+
+			}
+			waitFor(1);
+			log.info("-----------------Logout from Application------------------");
+			loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+			status.assertAll();
+
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+	}
+
+<<<<<<< .mine
+	/*@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department-Daily- Litre")
+||||||| .r14139
+	/*@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department-Daily- Litre")
+=======
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department-Daily- Litre")
+>>>>>>> .r14141
+	public void verifyreportdailyLitre() throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		try{
+<<<<<<< .mine
+		TestStatus status = getTestStatus();
+		List<List<Object>> results2 = null;
+		waitFor(1);
+		
+		navToRoutines(status);
+		objRoutinesPage.click(objRoutineObjects.daily);//Click daily reason
+		waitFor(1);
+		String articleType;
+		String article_No = null;
+		String indiv_UomArticle_sql = data.getText("alldeptdaily");// Action
+||||||| .r13617
+		TestStatus status = getTestStatus();
+		List<List<Object>> results2 = null;
+		waitFor(1);
+		
+		navToRoutines(status);
+		objRoutinesPage.click(objRoutineObjects.daily);//Click daily reason
+		waitFor(1);
+		String articleType;
+		String article_No = null;
+		/*String indiv_UomArticle_sql = data.getText("alldeptdaily");// Action
+=======
+			TestStatus status = getTestStatus();
+			List<List<Object>> results2 = null;
+			waitFor(1);
+
+			navToRoutines(status);
+			objRoutinesPage.click(objRoutineObjects.daily);//Click daily reason
+			waitFor(1);
+			String articleType;
+			String article_No = null;
+			String indiv_UomArticle_sql = data.getText("alldeptdaily");// Action
+>>>>>>> .r14139
+		 results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+<<<<<<< .mine
+      
+		objRoutinesPage.dateselect(objRoutineObjects,driver);
+		waitFor(5);
+		if(objRoutineObjects.msg.size()!=0)
+		{
+			objRoutinesPage.fnNoRecords(objRoutineObjects,driver);	
+||||||| .r13617
+      
+		objRoutinesPage.dateselect(objRoutineObjects,driver);
+		waitFor(5);
+		if(objRoutineObjects.msg.size()!=0)
+		{
+			objRoutinesPage.fnNoRecords(objRoutineObjects,driver);	
+=======
+
+			objRoutinesPage.DateSelect(objRoutineObjects,driver);
+>>>>>>> .r14139
+			waitFor(5);
+<<<<<<< .mine
+		}else
+		{		
+			List <String>article = new ArrayList<String>();
+		article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);
+		for(int i=0;i<article.size();i++)
+		{
+		String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i).toString());// Action//works fine
+				
+		 results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);////results1 is Not displayed wen debugg
+		 
+		 
+		 
+		 if(results1.size()!=0)
+||||||| .r13617
+		}else
+		{		
+			List <String>article = new ArrayList<String>();
+		article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);
+		for(int i=0;i<article.size();i++)
+		{
+		String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i).toString());// Action//works fine
+				
+		 results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);////results1 is Not displayed wen debugg
+		 
+		 
+		 
+		 if(results1.size()!=0)
+=======
+			if(objRoutineObjects.msg.size()!=0)
+			{
+				objRoutinesPage.fnNoRecords(objRoutineObjects,driver);	
+				waitFor(5);
+			}else
+			{		
+				List <String>article = new ArrayList<String>();
+				article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);
+				for(int i=0;i<article.size();i++)
+				{
+					String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i).toString());// Action//works fine
+
+					results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);////results1 is Not displayed wen debugg
+
+
+
+					 if(results1.size()!=0)
+>>>>>>> .r14139
+		 {
+		 articleType = results1.get(i).get(20).toString();
+
+		if(articleType.equalsIgnoreCase("Y"))
+		{
+			article_No = results1.get(i).get(0).toString();
+			break;
+
+		}
+<<<<<<< .mine
+		 }}
+			 
+		 if(results1.size()!=0)
+		 {
+			 
+		 articleType = results1.get(0).get(20).toString();
+		 //System.out.println("articleType is " +articleType);
+		if(articleType.equalsIgnoreCase("Y"))
+		
+		{
+			article_No = results1.get(0).get(0).toString();
+			break;
+||||||| .r13617
+		 }}
+			 
+		 if(results1.size()!=0)
+		 {
+			 
+		 articleType = results1.get(0).get(20).toString();
+		 //System.out.println("articleType is " +articleType);
+		if(articleType.equalsIgnoreCase("Y"))
+		
+		{
+			article_No = results1.get(0).get(0).toString();
+			break;
+=======
+		 }}
+
+					if(results1.size()!=0)
+					{
+
+						articleType = results1.get(0).get(20).toString();
+						//System.out.println("articleType is " +articleType);
+						if(articleType.equalsIgnoreCase("Y"))
+
+						{
+							article_No = results1.get(0).get(0).toString();
+							break;
+
+
+						}else{
+							//System.out.println("fail");
+						}
+
+					}}
+
+				String indiv_UomArticle_sql2 = data.getText("alldeptdaily").replace("numbr",article_No);// Action
+				results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+				replacenullToZero(results2);
+				removeLastZero(results2,5);
+				removeLastZero(results2,6);
+
+				objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);	
+
+>>>>>>> .r14139
+			
+	}
+			waitFor(1);
+			log.info("-----------------Logout from Application------------------");
+			loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+			status.assertAll();
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+
+	
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department-Daily- Weighted")//No weighted article is present
+	public void verifyreportdailyWeighted() throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		try{
+			TestStatus status = getTestStatus();
+			List<List<Object>> results2 = null;
+			waitFor(1);
+
+			navToRoutines(status);
+			objRoutinesPage.click(objRoutineObjects.daily);//Click daily reason
+			waitFor(1);
+			String articleType;
+			String article_No = null;
+			String indiv_UomArticle_sql = data.getText("alldeptdaily");// Action
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+
+
+
+			objRoutinesPage.DateSelect(objRoutineObjects,driver);
+			waitFor(5);
+			if(objRoutineObjects.msg.size()!=0)
+			{
+				objRoutinesPage.fnNoRecords(objRoutineObjects,driver);			
+			}else{		List <String>article = new ArrayList<String>();
+			article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);
+			for(int i=0;i<article.size();i++)
+			{
+				String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i).toString());// Action
+				results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+
+
+				if(results1.size()!=0)
+				{
+					articleType = results1.get(i).get(i).toString();//123506 fail
+					//System.out.println(articleType); 
+
+					if(articleType.equalsIgnoreCase("Y"))
+					{
+						article_No = results1.get(i).get(0).toString();
+						//article_No = results1.get(0).get(0).toString();
+						break;
+
+
+					}else{
+						//System.out.println("fail");
+
+					}
+
+
+				}
+			}
+
+
+
+
+
+			String indiv_UomArticle_sql2 = data.getText("alldeptdaily").replace("numbr",article_No);// Action
+			results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+			replacenullToZero(results2);
+			removeLastZero(results2,5);
+			removeLastZero(results2,6);
+
+			objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);	
+			}
+
+			waitFor(1);
+			log.info("-----------------Logout from Application------------------");
+			loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+			status.assertAll();
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department-Daily- KG")
+	public void verifyreportdailyKG() throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		try{
+
+			TestStatus status = getTestStatus();
+			List<List<Object>> results2 = null;
+			waitFor(1);
+
+			navToRoutines(status);
+			objRoutinesPage.click(objRoutineObjects.daily);//Click daily reason
+			waitFor(1);
+			String articleType;
+			String article_No = null;
+
+
+
+			objRoutinesPage.DateSelect(objRoutineObjects,driver);
+			waitFor(5);
+			if(objRoutineObjects.msg.size()!=0)
+			{
+				objRoutinesPage.fnNoRecords(objRoutineObjects,driver);	
+				waitFor(5);
+			}
+			else
+			{		
+				List <String>article = new ArrayList<String>();
+				article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);
+				for(int i=0;i<article.size();i++)
+				{
+					String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i).toString());// Action
+					results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+					// //System.out.println(results1);[[139554, EA], [139554, EA], [141919, EA], [141919, EA], [141920, EA], [141920, EA], [141920, EA], [141921, EA], [141921, EA], [141921, EA], [144, EA], [144, EA], [170310, EA], [170310, EA], [170312, EA], [170312, EA], [171936, EA], [171936, EA], [200966, EA], [200966, EA], [200967, EA], [200967, EA], [201383, EA], [201383, EA], [201414, EA], [201414, EA], [201414, EA], [232857, EA], [232857, EA], [240688, EA], [240688, EA], [257437, EA], [257437, EA], [257451, EA], [257451, EA], [259095, EA], [259095, EA], [263871, EA], [263871, EA], [263878, EA], [263880, EA], [263880, EA], [263880, EA], [263882, EA], [263882, EA], [263884, EA], [263884, EA], [263889, EA], [263889, EA], [263932, EA], [263932, EA], [263933, EA], [263933, EA], [263937, EA], [263937, EA], [263943, EA], [263943, EA], [263969, EA], [263969, EA], [263971, EA], [263971, EA], [264241, EA], [264241, EA], [264248, EA], [264248, EA], [264278, EA], [264278, EA], [264281, EA], [264281, EA], [264475, EA], [264475, EA], [264527, EA], [264527, EA], [264551, EA], [264551, EA], [264552, EA], [264552, EA], [264570, EA], [264570, EA], [264578, EA], [264578, EA], [264583, EA], [264583, EA], [264584, EA], [264584, EA], [264590, EA], [264590, EA], [264592, EA], [264592, EA], [264745, EA], [264745, EA], [265154, EA], [265201, EA], [265201, EA], [265201, EA], [265205, EA], [265208, EA], [265208, EA], [265208, EA], [265216, EA], [265216, EA], [265216, EA], [265264, EA], [265264, EA], [265264, EA], [265266, EA], [265266, EA], [265266, EA], [265268, EA], [265268, EA], [265268, EA], [265271, EA], [265271, EA], [265272, EA], [265272, EA], [265288, EA], [265288, EA], [265293, EA], [265293, EA], [265325, EA], [265325, EA], [265328, EA], [265328, EA], [265364, EA], [265364, EA], [265381, EA], [265381, EA], [267257, EA], [267257, EA], [267257, EA], [267300, EA], [267300, EA], [267699, EA], [267699, EA], [267699, EA], [268002, EA], [268002, EA], [268017, EA], [268017, EA], [268129, EA], [268129, EA], [268247, EA], [268247, EA], [268359, EA], [268359, EA], [268457, EA], [268457, EA], [268478, EA], [268478, EA], [268478, EA], [268570, EA], [268570, EA], [268611, EA], [268611, EA], [268613, EA], [268613, EA], [268648, EA], [268648, EA], [268692, EA], [268692, EA], [268692, EA], [269617, EA], [269617, EA], [269685, EA], [269685, EA], [269685, EA], [265983, EA], [265983, EA], [266022, EA], [266022, EA], [266024, EA], [266024, EA], [266030, EA], [266030, EA], [266503, EA], [266503, EA], [266528, EA], [266528, EA], [266528, EA], [266540, EA], [266540, EA], [266540, EA], [266546, EA], [266563, EA], [266563, EA], [266586, EA], [266586, EA], [266586, EA], [266592, EA], [266592, EA], [266605, EA], [266605, EA], [266614, EA], [266614, EA], [266800, EA], [266800, EA], [266800, EA], [266801, EA], [266801, EA], [266801, EA], [266854, EA], [266854, EA], [266855, EA], [266855, EA], [266925, EA], [266925, EA], [267018, EA], [267018, EA], [271713, EA], [271713, EA], [271713, EA], [271724, EA], [271724, EA], [271724, EA], [272592, EA], [272592, EA], [272606, EA], [272606, EA], [272606, EA], [272633, EA], [272633, EA], [272986, EA], [272986, EA], [273747, EA], [273747, EA], [273791, EA], [273791, EA], [273804, EA], [273804, EA], [273815, EA], [273815, EA], [273854, EA], [273854, EA], [269748, EA], [269748, EA], [269805, EA], [269805, EA], [269824, EA], [269824, EA], [269913, EA], [269913, EA], [269950, EA], [269950, EA], [270239, EA], [270239, EA], [270252, EA], [270252, EA], [270268, EA], [270268, EA], [270276, EA], [270276, EA], [270316, EA], [270316, EA], [270351, EA], [270351, EA], [270364, EA], [270364, EA], [270367, EA], [270367, EA], [270369, EA], [270369, EA], [270389, EA], [270389, EA], [270401, EA], [270401, EA], [270404, EA], [270404, EA], [270432, EA], [270432, EA], [270655, EA], [270655, EA], [270752, EA], [270752, EA], [270830, EA], [270830, EA], [270954, EA], [270954, EA], [270968, EA], [270968, EA], [271071, EA], [271071, EA], [271161, EA], [271161, EA], [271343, EA], [271343, EA], [279359, EA], [279359, EA], [279524, EA], [279524, EA], [280562, EA], [280562, EA], [280680, EA], [280680, EA], [280680, EA], [281286, EA], [281286, EA], [274823, EA], [274823, EA], [274832, EA], [274832, EA], [274947, EA], [274947, EA], [274949, EA], [274949, EA], [275099, EA], [275099, EA], [275641, EA], [275641, EA], [29144, EA], [29144, EA], [292993, EA], [292993, EA], [293149, EA], [293149, EA], [293149, EA], [293150, EA], [293150, EA], [293150, EA], [294521, EA], [294521, EA], [297601, EA], [297601, EA], [297608, EA], [297608, EA], [298729, EA], [298729, EA], [300605, EA], [300605, EA], [312404, EA], [312404, EA], [312185, EA], [312185, EA], [313914, EA], [313914, EA], [312728, EA], [312728, EA], [313730, EA], [313730, EA], [313768, EA], [313768, EA], [313768, EA], [313773, EA], [313773, EA], [313773, EA], [313802, EA], [313802, EA], [313802, EA], [313809, EA], [313809, EA], [313809, EA], [313825, EA], [313825, EA], [313825, EA], [313826, EA], [313826, EA], [313826, EA], [315875, EA], [315875, EA], [318087, EA], [318087, EA], [318087, EA], [318093, EA], [318093, EA], [318093, EA], [318711, EA], [318711, EA], [319367, EA], [319367, EA], [319367, EA], [320391, EA], [320391, EA], [320424, EA], [320424, EA], [320448, EA], [320448, EA], [320838, EA], [320838, EA], [321172, EA], [321172, EA], [321611, EA], [321611, EA], [321613, EA], [321613, EA], [321700, EA], [321700, EA], [321702, EA], [321702, EA], [322115, EA], [322115, EA], [322116, EA], [322116, EA], [322834, EA], [322834, EA], [324052, EA], [324052, EA], [324347, EA], [324347, EA], [324347, EA], [324353, EA], [324353, EA], [324624, EA], [324624, EA], [324624, EA], [326002, EA], [326972, EA], [326972, EA], [328540, EA], [328540, EA], [329002, EA], [329002, EA], [328658, EA], [330502, EA], [330502, EA], [330502, EA], [330512, EA], [330512, EA], [331575, EA], [333247, EA], [333247, EA], [335008, EA], [335008, EA], [335126, EA], [335126, EA], [335135, EA], [335135, EA], [336686, EA], [337198, EA], [337198, EA], [337199, EA], [337199, EA], [336059, EA], [336059, EA], [337865, EA], [337865, EA], [337875, EA], [337875, EA], [337941, EA], [337941, EA], [341105, EA], [341105, EA], [343727, EA], [343727, EA], [343745, EA], [343745, EA], [343944, EA], [343944, EA], [344169, EA], [344169, EA], [343586, EA], [343586, EA], [344626, EA], [344626, EA], [344626, EA], [345997, EA], [345997, EA], [345997, EA], [346918, EA], [346918, EA], [346918, EA], [352484, EA], [352484, EA], [35285, EA], [35285, EA], [35426, EA], [35426, EA], [354296, EA], [354296, EA], [354296, EA], [354410, EA], [354410, EA], [354733, EA], [354733, EA], [358615, EA], [358615, EA], [360870, EA], [360870, EA], [360870, EA], [361500, EA], [361500, EA], [363930, EA], [363930, EA], [365725, EA], [365725, EA], [366632, EA], [366632, EA], [367139, EA], [367139, EA], [374488, EA], [374488, EA], [375442, EA], [375442, EA], [377553, EA], [377553, EA], [381680, EA], [381680, EA], [381680, EA], [381894, EA], [381894, EA], [382620, EA], [382620, EA], [382636, EA], [382636, EA], [384054, EA], [384054, EA], [384253, EA], [384253, EA], [384254, EA], [384254, EA], [405486, EA], [405486, EA], [412393, EA], [412393, EA], [417499, EA], [417499, EA], [423447, EA], [423447, EA], [439491, EA], [439491, EA], [451180, EA], [451180, EA], [450644, EA], [450644, EA], [450650, EA], [450650, EA], [450651, EA], [450651, EA], [450653, EA], [450653, EA], [458030, EA], [458030, EA], [458031, EA], [458031, EA], [458032, EA], [458032, EA], [458033, EA], [458033, EA], [458035, EA], [458035, EA], [457333, EA], [457333, EA], [457336, EA], [457336, EA], [458015, EA], [458015, EA], [468306, EA], [468306, EA], [468316, EA], [468316, EA], [468317, EA], [468317, EA], [468371, EA], [468371, EA], [468503, EA], [468503, EA], [464270, EA], [464270, EA], [475120, EA], [475120, EA], [475124, EA], [475124, EA], [475126, EA], [475126, EA], [475129, EA], [475129, EA], [469928, EA], [469928, EA], [47261, EA], [47261, EA], [47261, EA], [473289, EA], [473289, EA], [481448, EA], [481448, EA], [481448, EA], [481507, EA], [481507, EA], [481507, EA], [481508, EA], [481508, EA], [481508, EA], [483939, EA], [483939, EA], [483939, EA], [483940, EA], [483940, EA], [483940, EA], [489991, EA], [489991, EA], [489992, EA], [489992, EA], [489992, EA], [489993, EA], [489993, EA], [485434, EA], [485434, EA], [488681, EA], [488681, EA], [490980, EA], [490980, EA], [490981, EA], [490981, EA], [492037, EA], [492037, EA], [492037, EA], [498446, EA], [498446, EA], [499690, EA], [499690, EA], [507566, EA], [507566, EA], [507893, EA], [507893, EA], [507895, EA], [507895, EA], [507895, EA], [507900, EA], [507900, EA], [505558, EA], [505558, EA], [508468, EA], [509566, EA], [509566, EA], [510119, EA], [510119, EA], [510119, EA], [510119, EA], [512230, EA], [512230, EA], [513580, EA], [513580, EA], [513581, EA], [513581, EA], [513583, EA], [513583, EA], [513585, EA], [513585, EA], [514388, EA], [514388, EA], [514880, EA], [514880, EA], [514880, EA], [514885, EA], [514885, EA], [514885, EA], [518005, EA], [518005, EA], [518725, EA], [518725, EA], [532658, EA], [532658, EA], [533578, EA], [533578, EA], [533578, EA], [535539, EA], [535539, EA], [53924, EA], [53924, EA], [540798, EA], [540798, EA], [540880, EA], [540880, EA], [541557, EA], [541557, EA], [541557, EA], [551927, EA], [551927, EA], [555197, EA], [555197, EA], [561960, EA], [561960, EA], [561960, EA], [561960, EA], [563997, EA], [563999, EA], [564105, EA], [564111, EA], [568513, EA], [568513, EA], [568877, EA], [568877, EA], [569110, EA], [569110, EA], [573635, EA], [573635, EA], [571496, EA], [577627, EA], [577627, EA], [585997, EA], [585997, EA], [585997, EA], [587001, EA], [587001, EA], [587001, EA], [587004, EA], [587004, EA], [587004, EA], [588215, EA], [588215, EA], [588215, EA], [588216, EA], [588216, EA], [588216, EA], [588217, EA], [588217, EA], [588217, EA], [588218, EA], [588218, EA], [588218, EA], [588714, EA], [588714, EA], [588714, EA], [588715, EA], [588715, EA], [588715, EA], [584288, EA], [58428...
+
+					if(results1.size()!=0)
+					{
+						articleType = results1.get(0).get(1).toString();
+
+						if(articleType.equalsIgnoreCase("Y"))
+						{
+							article_No = results1.get(i).get(0).toString();
+							break;
+
+						}
+
+					}
+
+				}
+
+				if(results1.size()!=0)//##
+		 {
+
+		 articleType = results1.get(0).get(1).toString();
+<<<<<<< .mine
+		 
+		if(articleType.equalsIgnoreCase("Y"))
+		{
+			article_No = results1.get(i).get(0).toString();
+			break;
+			
+		}
+		
+		 }
+		 
+		 }
+		
+		 if(results1.size()!=0)//##
+		 {
+			 
+		 articleType = results1.get(0).get(1).toString();
+||||||| .r13617
+		 
+		if(articleType.equalsIgnoreCase("Y"))
+		{
+			article_No = results1.get(i).get(0).toString();
+			break;
+			
+		}
+		
+		 }
+		 
+		 }
+		
+		 if(results1.size()!=0)//##
+		 {
+			 
+		 articleType = results1.get(0).get(1).toString();
+=======
+>>>>>>> .r14139
+		 //System.out.println("articleType is " +articleType);
+		if(articleType.equalsIgnoreCase("Y"))
+
+		{
+			article_No = results1.get(0).get(0).toString();
+			break;
+
+
+		}else{
+				//System.out.println("fail");
+			}
+<<<<<<< .mine
+		
+		}}
+		
+		 String indiv_UomArticle_sql2 = data.getText("alldeptdaily").replace("numbr",article_No);// Action
+		 results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+		 replacenullToZero(results2);
+		 removeLastZero(results2,5);
+		 removeLastZero(results2,6);
+		 
+		objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);	
+		
+		}
+		waitFor(1);
+		log.info("-----------------Logout from Application------------------");
+||||||| .r13617
+		
+		}}
+		
+		 String indiv_UomArticle_sql2 = data.getText("alldeptdaily").replace("numbr",article_No);// Action
+		 results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+		 replacenullToZero(results2);
+		 removeLastZero(results2,5);
+		 removeLastZero(results2,6);
+		 
+		objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);	
+		
+		}
+		waitFor(1);
+		log.info("-----------------Logout from Application------------------");
+=======
+
+		}}
+
+				String indiv_UomArticle_sql2 = data.getText("alldeptdaily").replace("numbr",article_No);// Action
+				results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+				replacenullToZero(results2);
+				removeLastZero(results2,5);
+				removeLastZero(results2,6);
+
+				objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);	
+
+			}
+			waitFor(1);
+			log.info("-----------------Logout from Application------------------");
+>>>>>>> .r14139
+			loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+			status.assertAll();
+
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+	}
+*/
+	/*
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Partial Department-weekly")
+	public void partialdepartmentweekly() throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		try{
+
+			TestStatus status = getTestStatus();
+			waitFor(1);
+			navToRoutines(status);
+			//Click Weekly reason radio button
+			objRoutinesPage.click(objRoutineObjects.Weekly);
+			waitFor(1);
+
+			objRoutinesPage.fordate(objRoutineObjects,driver);
+			waitFor(1);
+			log.info("-----------------Logout from Application------------------");
+			loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+			status.assertAll();
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Partial Department-daily")//query asked
+	public void partialdepartmentdaily() throws Exception
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		try{
+
+			TestStatus status = getTestStatus();
+			List<List<Object>> results2 = null;
+			waitFor(1);
+
+			navToRoutines(status);
+			//Click daily(detailed) Radio button
+			objRoutinesPage.click(objRoutineObjects.daily);
+			waitFor(1);
+			String articleType;
+			String article_No=null;
+
+			//Select date from drop down
+			objRoutinesPage.DateSelect(objRoutineObjects,driver);
+			waitFor(5);
+			if(objRoutineObjects.msg.size()!=0)
+			{
+				objRoutinesPage.fnNoRecords(objRoutineObjects,driver);	
+				waitFor(5);
+			}else{
+				//DB validation
+				List <String>article = new ArrayList<String>();//##		
+				article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);//##matnr
+
+
+				for(int i=0;i<article.size();i++)//after this sql
+				{
+					String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i).toString());// Action
+					results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);//results1 is displayed wen debugg
+					//System.out.println(results1);
+
+
+					if(results1.size()!=0)
+					{
+						articleType = results1.get(i).get(1).toString();//HAWA 0,1->get(1)
+
+						if(articleType.equalsIgnoreCase("HAWA"))
+						{
+							article_No = results1.get(i).get(0).toString();
+							break;
+
+						}}
+
+				}
+
+
+
+				String indiv_UomArticle_sql2 = data.getText("partialdeptdaily").replace("numbr",article_No);// Local db//##error while debugg
+				results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+				replacenullToZero(results2);
+				removeLastZero(results2,5);
+				removeLastZero(results2,6);
+
+				objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);	
+
+			}
+			waitFor(1);
+			log.info("-----------------Logout from Application------------------");
+			loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+			status.assertAll();
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+
+	}
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Primary Department-weekly")
+	public void primarydepartmentweekly() throws Throwable
+
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		try{
+			TestStatus status = getTestStatus();
+			waitFor(1);
+			navToRoutines(status);
+
+
+			objRoutinesPage.click(objRoutineObjects.Weekly);//Click Weekly reason//for current week
+			waitFor(1);
+
+
+			//objRoutinesPage.weekselect(objRoutineObjects,driver);
+			waitFor(1);
+
+			objRoutinesPage.AllDepartmentReport(objRoutineObjects,driver);
+
+
+			//List<WebElement> rows = driver.findElements(By.xpath("//table[@id='Overstock_Daily_Weekly_table']//tbody//tr[2]"));//
+			int size =objRoutineObjects.records.size();
+
+			//System.out.println(size);
+
+			objRoutinesPage.PartialDepartment(objRoutineObjects,driver);
+
+
+			objRoutineObjects.GenerateReport.click(); 
+
+			int sizep =objRoutineObjects.recordspartial.size();
+
+			//System.out.println(size);
+
+			if(size<=sizep)
+				htmlToExtent(cName,mName,extLogger,driver, "The No of records generated by the report is correct;;Pass");
+
+			else
+				htmlToExtent(cName,mName,extLogger,driver, "The No of records generated by the report is incorrect;;Fail");
+
+
+			log.info("-----------------Logout from Application------------------");
+			loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+			status.assertAll();	
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Primary Department-daily")
+	public void primarydepartmentdaily() throws Exception
+
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		try{
+			TestStatus status = getTestStatus();
+			waitFor(1);
+			navToRoutines(status);
+			objRoutinesPage.click(objRoutineObjects.daily);//Click daily reason RB
+			waitFor(1);
+			String indiv_UomArticle_sql11 = data.getText("primarydeptdaily");
+
+			results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql11);
+			objRoutinesPage.DateSelect(objRoutineObjects,driver);
+
+			//##objRoutinesPage.fordateprimary2(objRoutineObjects,results1);
+
+			//objRoutinesPage.ooctabs(objRoutineObjects,results2);
+
+
+
+			waitFor(5);
+			log.info("-----------------Logout from Application------------------");
+			loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+			status.assertAll();
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+	}	*/ 
+
+
+
+
+	public void navToRoutines(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		if(System.getProperty("store")==null){
+			StoreNo = getContext().getStringProperty("store");
+
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : " + getContext().getStringProperty("store"),"","", "Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objRoutinesPage = loginPage.navToRoutines(getContext().getStringProperty("store"),driver);
+		}else{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store :  + store;;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : " + store,"","", "Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store);
+			objRoutinesPage = loginPage.navToRoutines(store,driver);
+		}
+
+		log.info("-------------Navigate to Routines Page------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to Routines Page--------------------;;;Pass");
+		//Report_AddStep("testcase", "----------------Navigate to Routines Page--------------------","","", "Pass");
+		objRoutinesPage.clickOnroutines(objRoutineObjects,driver);
+	}
+
+
+	
+
+
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		waitFor(2);
+		System.out.println("test1 - beforemethod");
+		mName=m9.getName().toString().trim();			
+		if(!methodList.contains(m9.getName().toString().trim())){
+			methodList.add(m9.getName().toString().trim());
+			extLogger = extReport.startTest(m9.getName().toString().trim());
+		}	
+
+		initializeTestcontext();
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		}else{
+			String title = driver.getCurrentUrl();
+			if(title.contains("logginOut"))
+			{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+			}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+						WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+						scrolltoElement(home,driver);
+						home.click();
+						TimeUnit.SECONDS.sleep(5);
+						loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+						driver.navigate().refresh();
+						TimeUnit.SECONDS.sleep(5);}
+				}
+			}
+		}
+			isFirstTest=false;
+		
+		//driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"),cName,mName,extLogger,driver); 
+		setDriver(driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		RoutinesArttestname = m9.getName().toString().trim();
+		RoutinesArttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		objRoutineObjects = PageFactory.initElements(this.driver, RoutineObjects.class);
+		objRoutinesPage = PageFactory.initElements(this.driver, RoutinesPage.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+	}
+
+	@BeforeClass
+	public void loadXMLFile(){	
+		//initializeTestcontext();
+		System.out.println("test1 - Beforeclass");
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\Routine.xml");
+		customreport.createExtentReport();
+	}
+
+
+
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitFor(1);
+		System.out.println("afterclass");
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(), MCcount);
+		//System.out.println(extentList);
+		//System.out.println(methodList);
+		extReport.endTest(extLogger);
+		extReport.flush();
+		removeDriver();
+		closeDriver(driver);
+		waitFor(1);
+		moduleName.put("Modules", RoutinesArtModules);
+		waitFor(1);
+		Date ppModEnd2 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		RoutinesArtenddateex = dateFormat.format(ppModEnd2);
+
+		//System.out.println(RoutinesArtenddateex);
+		waitFor(2);
+		int OEArtM=MCcount;
+		overstockArtMC=""+OEArtM;
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+		System.out.println("AffterMethod");
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				//System.out.println();
+
+			}
+/*
+		waitFor(1);
+		Date ppMEndDate1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		RoutinesArtMEndDate = dateFormat.format(ppMEndDate1);
+		//System.out.println(RoutinesArtMEndDate); // 12/01/2011 4:48:16 PM
+		String EnhancedArtTime = RoutinesArttestdesc +";"+ RoutinesArtStartdat +";" + RoutinesArtMEndDate;
+
+		RoutinesArtTime.put(RoutinesArttestname, EnhancedArtTime);
+		//Report_AddStep("testcase", "Running Completed Status","","", getResultStatusName(result.getStatus()));
+		waitFor(4);
+		*/
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")){
+			int cnt = RoutinesArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			RoutinesArtpreCount2++;
+		}
+		waitFor(1);
+		/*if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail") && RoutinesArtpreCount2!=reCount){
+			waitFor(1);
+			RoutinesArtTime.removeAll(RoutinesArttestname);
+			waitFor(1);
+			RoutinesArtScenarios.removeAll(RoutinesArttestname);
+		}
+		waitFor(1);*/
+		if(RoutinesArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+			RoutinesArtpreCount2=-1;
+		}
+	}
+	
+	//Srivinith
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department-WeeklyCurrentWeek")
+	public void verifyReportCurrentWeekAllDepartment()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+		navToRoutines(status);
+		
+		
+		//Fetching Date
+//		String settingMonday = data.getText("setmonday");// Action
+//		List<List<Object>> setMonday = sql.executeQuery(getContext(),settingMonday);
+		
+		String fetchingDates = data.getText("currentweek");// Action
+		List<String> results1 = sql.executeQueryList(getContext(),fetchingDates);
+		String stDate = results1.get(0);
+		String edDate = results1.get(1);
+		String[] StartDate = stDate.split(" ");
+		String sDate = StartDate[0];
+		String[] EndDate = edDate.split(" ");
+		String edDate1 = EndDate[0];
+		String weekStartDate= common.weekStartFormatWithoutHiphen(sDate);
+		String weekEndtDate= common.weekUpcomingSundayFormatWithoutHiphen(edDate1);
+		
+		
+		//DB
+		String indiv_UomArticle_sql = data.getText("alldeptcurrentweek");// Action
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekstart", weekStartDate);
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekenddate", weekEndtDate);
+		List<List<Object>> results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		removeLastZero(results,7);
+		
+		objRoutineObjects.Weekly.click();
+		objRoutineObjects.currentWeekRadioButton.click();
+		waitFor(1);
+
+		objRoutinesPage.AllDepartmentDropDown(objRoutineObjects,driver);
+		
+		objRoutinesPage.overstockReportCurrentWeek(objRoutineObjects,results,driver);
+		
+		
+		log.info("-----------------Logout from Application------------------");
+	//loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+//		htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department-WeeklyLastWeek")
+	public void verifyReportLastWeekAllDepartment() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+		navToRoutines(status);
+		
+		//Fetching Date
+//		String settingMonday = data.getText("setmonday");// Action
+//		List<List<Object>> setMonday = sql.executeQuery(getContext(),settingMonday);
+		
+		String fetchingDates = data.getText("currentweek");// Action
+		List<String> results1 = sql.executeQueryList(getContext(),fetchingDates);
+		
+		String stDate = results1.get(0);
+		String edDate = results1.get(1);
+		String[] StartDate = stDate.split(" ");
+		String sDate = StartDate[0];
+		String[] EndDate = edDate.split(" ");
+		String edDate1 = EndDate[0];
+		String weekStartDate= common.weekStartFormatWithoutHiphen(sDate);
+		String weekEndtDate= common.weekUpcomingSundayFormatWithoutHiphen(edDate1);
+		
+		//DB
+		String indiv_UomArticle_sql = data.getText("alldeptcurrentweek");// Action
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekstart", weekStartDate);
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekenddate", weekEndtDate);
+		List<List<Object>> results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		removeLastZero(results,7);
+		
+		objRoutineObjects.Weekly.click();//Click Weekly
+		objRoutineObjects.lastWeekRadioButton.click();
+		waitFor(1);
+		
+		objRoutinesPage.AllDepartmentDropDown(objRoutineObjects,driver);
+		
+		objRoutinesPage.overstockReportCurrentWeek(objRoutineObjects,results,driver);
+		
+		log.info("-----------------Logout from Application------------------");
+//		loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+//		htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Partial Department-WeeklyCurrentWeek")
+	public void verifyReportCurrentWeekPartialDepartment() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+		navToRoutines(status);
+		objRoutineObjects.Weekly.click();//Click Weekly
+		objRoutineObjects.currentWeekRadioButton.click();
+		
+		List<String> dropdownList = objRoutinesPage.PartialDepartment(objRoutineObjects,driver);
+		
+		int count=0;
+		StringBuilder deptLists=new StringBuilder();
+		for(String splitValue:dropdownList){
+			deptLists.append("'");
+			deptLists.append(splitValue);
+			deptLists.append("'");
+		count++;
+		if(count!=dropdownList.size()){
+			deptLists.append(",");
+		}
+		}
+		deptLists.toString();
+		//System.out.println(deptLists);
+		
+		//Fetching Date
+//		String settingMonday = data.getText("setmonday");// Action
+//		List<List<Object>> setMonday = sql.executeQuery(getContext(),settingMonday);
+		
+		String fetchingDates = data.getText("currentweek");// Action
+		List<String> results1 = sql.executeQueryList(getContext(),fetchingDates);
+		String stDate = results1.get(0);
+		String edDate = results1.get(1);
+		String[] StartDate = stDate.split(" ");
+		String sDate = StartDate[0];
+		String[] EndDate = edDate.split(" ");
+		String edDate1 = EndDate[0];
+		String weekStartDate= common.weekStartFormatWithoutHiphen(sDate);
+		String weekEndtDate= common.weekUpcomingSundayFormatWithoutHiphen(edDate1);
+		
+		//DB
+		String deptCode = data.getText("deptcode");
+    	deptCode = deptCode.replace("departmentsfromlist",deptLists);
+		List<String> deptcodes = sql.executeQueryList(getContext(),deptCode);
+		String deptLists1 = String.join(",", deptcodes);
+		//System.out.println(deptLists1);
+		
+		String indiv_UomArticle_sql = data.getText("alldeptcurrentweek");// Action
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekstart", weekStartDate);
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekenddate", weekEndtDate);
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("departmentsfromlist", deptLists1);
+		List<List<Object>> results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		System.out.println(results);
+		
+		removeLastZero(results,7);
+		
+		waitFor(1);
+
+		objRoutinesPage.overstockReportCurrentWeek(objRoutineObjects,results,driver);
+		
+		log.info("-----------------Logout from Application------------------");
+//		loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+//		htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Partial Department-WeeklyLastWeek")
+	public void verifyReportLastWeekPartialDepartment() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+		navToRoutines(status);
+		objRoutineObjects.Weekly.click();//Click Weekly
+		objRoutineObjects.lastWeekRadioButton.click();
+		
+		List<String> dropdownList = objRoutinesPage.PartialDepartment(objRoutineObjects,driver);
+		
+		int count=0;
+		StringBuilder deptLists=new StringBuilder();
+		for(String splitValue:dropdownList){
+			deptLists.append("'");
+			deptLists.append(splitValue);
+			deptLists.append("'");
+		count++;
+		if(count!=dropdownList.size()){
+			deptLists.append(",");
+		}
+		}
+		deptLists.toString();
+		
+		//Fetching Date
+//		String settingMonday = data.getText("setmonday");// Action
+//		List<List<Object>> setMonday = sql.executeQuery(getContext(),settingMonday);
+		
+		String fetchingDates = data.getText("currentweek");// Action
+		List<String> results1 = sql.executeQueryList(getContext(),fetchingDates);
+		String stDate = results1.get(0);
+		String edDate = results1.get(1);
+		String[] StartDate = stDate.split(" ");
+		String sDate = StartDate[0];
+		String[] EndDate = edDate.split(" ");
+		String edDate1 = EndDate[0];
+		String weekStartDate= common.weekStartFormatWithoutHiphen(sDate);
+		String weekEndtDate= common.weekUpcomingSundayFormatWithoutHiphen(edDate1);
+		
+		//DB
+		String deptCode = data.getText("deptcode");
+    	deptCode = deptCode.replace("departmentsfromlist",deptLists);
+		List<String> deptcodes = sql.executeQueryList(getContext(),deptCode);
+		String deptLists1 = String.join(",", deptcodes);
+		
+		String indiv_UomArticle_sql = data.getText("alldeptcurrentweek");// Action
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekstart", weekStartDate);
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekenddate", weekEndtDate);
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("departmentsfromlist", deptLists1);
+		List<List<Object>> results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		
+		removeLastZero(results,7);
+		
+		waitFor(1);
+		
+		objRoutinesPage.overstockReportCurrentWeek(objRoutineObjects,results,driver);
+		
+		
+		log.info("-----------------Logout from Application------------------");
+//		loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+//		htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Primary Department-WeeklCurrentWeek")
+	public void verifyReportCurrentWeekPrimaryDepartment() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+		navToRoutines(status);
+		objRoutineObjects.Weekly.click();//Click Weekly
+		objRoutineObjects.currentWeekRadioButton.click();
+		
+		List<String>departmentLists = objRoutinesPage.primarydepartment(objRoutineObjects,driver);
+		String deptLists = String.join(",", departmentLists);
+		
+		String fetchingDates = data.getText("currentweek");
+		List<String> results1 = sql.executeQueryList(getContext(),fetchingDates);
+		String stDate = results1.get(0);
+		String edDate = results1.get(1);
+		String[] StartDate = stDate.split(" ");
+		String sDate = StartDate[0];
+		String[] EndDate = edDate.split(" ");
+		String edDate1 = EndDate[0];
+		String weekStartDate= common.weekStartFormatWithoutHiphen(sDate);
+		String weekEndtDate= common.weekUpcomingSundayFormatWithoutHiphen(edDate1);
+		
+		if(deptLists.contains("All")){
+			String indiv_UomArticle_sql = data.getText("alldeptcurrentweek");// Action
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekstart", weekStartDate);
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekenddate", weekEndtDate);
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("departmentsfromlist", "ALL");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			
+			}
+		
+		else{
+			int count=0;
+			StringBuilder deptLists1=new StringBuilder();
+			for(String splitValue:departmentLists){
+				deptLists1.append("'");
+				deptLists1.append(splitValue);
+				deptLists1.append("'");
+			count++;
+			if(count!=departmentLists.size()){
+				deptLists1.append(",");
+			}
+			}
+			deptLists1.toString();
+			
+			//DB
+			String deptCode = data.getText("deptcode");
+	    	deptCode = deptCode.replace("departmentsfromlist",deptLists1);
+			List<String> deptcodes = sql.executeQueryList(getContext(),deptCode);
+			String deptLists2 = String.join(",", deptcodes);
+			//System.out.println(deptLists2);
+			
+			String indiv_UomArticle_sql = data.getText("alldeptcurrentweek");// Action
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekstart", weekStartDate);
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekenddate", weekEndtDate);
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("departmentsfromlist", deptLists2);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			objRoutinesPage.removedoublezero(results,7);
+			System.out.println(results);
+		}
+		
+		waitFor(1);
+		
+		objRoutinesPage.overstockReportCurrentWeek(objRoutineObjects,results,driver);
+		
+		
+		log.info("-----------------Logout from Application------------------");
+//		loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+//		htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Primary Department-WeeklyLastWeek")
+	public void verifyReportLastWeekPrimaryDepartment() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+		navToRoutines(status);
+		objRoutineObjects.Weekly.click();//Click Weekly
+		objRoutineObjects.lastWeekRadioButton.click();
+		
+		List<String>departmentLists = objRoutinesPage.primarydepartment(objRoutineObjects,driver);
+		String deptLists = String.join(",", departmentLists);
+		
+		String fetchingDates = data.getText("currentweek");// Action
+		List<String> results1 = sql.executeQueryList(getContext(),fetchingDates);
+		String stDate = results1.get(0);
+		String edDate = results1.get(1);
+		String[] StartDate = stDate.split(" ");
+		String sDate = StartDate[0];
+		String[] EndDate = edDate.split(" ");
+		String edDate1 = EndDate[0];
+		String weekStartDate= common.weekStartFormatWithoutHiphen(sDate);
+		String weekEndtDate= common.weekUpcomingSundayFormatWithoutHiphen(edDate1);
+		
+		if(deptLists.contains("All")){
+			String indiv_UomArticle_sql = data.getText("alldeptcurrentweek");// Action
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekstart", weekStartDate);
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekenddate", weekEndtDate);
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("departmentsfromlist", "ALL");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			
+			}
+		
+		else{
+			int count=0;
+			StringBuilder deptLists1=new StringBuilder();
+			for(String splitValue:departmentLists){
+				deptLists1.append("'");
+				deptLists1.append(splitValue);
+				deptLists1.append("'");
+			count++;
+			if(count!=departmentLists.size()){
+				deptLists1.append(",");
+			}
+			}
+			deptLists1.toString();
+			
+			//DB
+			String deptCode = data.getText("deptcode");
+	    	deptCode = deptCode.replace("departmentsfromlist",deptLists1);
+			List<String> deptcodes = sql.executeQueryList(getContext(),deptCode);
+			String deptLists2 = String.join(",", deptcodes);
+			
+			String indiv_UomArticle_sql = data.getText("alldeptcurrentweek");// Action
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekstart", weekStartDate);
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("weekenddate", weekEndtDate);
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("departmentsfromlist", deptLists2);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		}
+		
+		waitFor(1);
+		
+		objRoutinesPage.overstockReportCurrentWeek(objRoutineObjects,results,driver);
+		
+		
+		log.info("-----------------Logout from Application------------------");
+//		loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+//		htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	
+	//Daily Reports
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "All Department-Daily")
+	public void verifyReportDailyAllDepartment()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+		
+		navToRoutines(status);
+		objRoutineObjects.dailyRadioButton.click();//Click Daily
+		String convdate= objRoutinesPage.dateselection(objRoutineObjects,driver);
+
+		//DB
+		String indiv_UomArticle_sql = data.getText("alldeptdaily");
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("todaysdate", convdate);
+		List<List<Object>> results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		replacenullToZero(results);
+		removeExtraSpaces(results,2);
+		removeLastZero(results,3);
+//		objRoutinesPage.removesinglezero(results,3);
+//		objRoutinesPage.removeconvertion(results,3);
+		objRoutinesPage.removedoublezero(results,4);
+		objRoutinesPage.removedoublezero(results,5);
+		System.out.println(results);
+		waitFor(1);
+		
+		objRoutinesPage.AllDepartmentDropDown(objRoutineObjects,driver);
+		
+		objRoutinesPage.overstockReportDaily(objRoutineObjects,results,driver);
+		
+		log.info("-----------------Logout from Application------------------");
+//		loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+//		htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Partial Department-Daily")
+	public void verifyReportDailyPartialDepartment() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+		//waitFor(1);
+		navToRoutines(status);
+		objRoutineObjects.dailyRadioButton.click();//Click Daily
+		String convdate= objRoutinesPage.dateselection(objRoutineObjects,driver);
+		List<String> dropdownList = objRoutinesPage.PartialDepartment(objRoutineObjects,driver);
+		
+		int count=0;
+		StringBuilder deptLists=new StringBuilder();
+		for(String splitValue:dropdownList){
+			deptLists.append("'");
+			deptLists.append(splitValue);
+			deptLists.append("'");
+		count++;
+		if(count!=dropdownList.size()){
+			deptLists.append(",");
+		}
+		}
+		deptLists.toString();
+		
+		//DB
+		String deptCode = data.getText("deptcode");
+    	deptCode = deptCode.replace("departmentsfromlist",deptLists);
+		List<String> deptcodes = sql.executeQueryList(getContext(),deptCode);
+		String deptLists1 = String.join(",", deptcodes);
+		
+		
+		String indiv_UomArticle_sql = data.getText("alldeptdaily");// Action
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("todaysdate", convdate);
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("departmentsfromlist", deptLists1);
+		List<List<Object>> results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		
+		replacenullToZero(results);//For Results1
+		removeExtraSpaces(results,2);
+		removeLastZero(results,3);
+//		objRoutinesPage.removeconvertion(results,3);
+		objRoutinesPage.removedoublezero(results,4);
+		objRoutinesPage.removedoublezero(results,5);
+		
+		waitFor(1);
+		
+		objRoutinesPage.overstockReportDaily(objRoutineObjects,results,driver);
+		
+		log.info("-----------------Logout from Application------------------");
+//		loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+//		htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Primary Department-Daily")
+	public void verifyReportDailyPrimaryDepartment() //throws SQLException, IOException, AWTException, ParseException
+	{
+		if(overstockArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+		//waitFor(1);
+		navToRoutines(status);
+		objRoutineObjects.dailyRadioButton.click();//Click Daily
+		String convdate= objRoutinesPage.dateselection(objRoutineObjects,driver);
+		
+		List<String>departmentLists = objRoutinesPage.primarydepartment(objRoutineObjects,driver);
+		String deptLists = String.join(",", departmentLists);
+		
+		if(deptLists.contains("All")){
+			String indiv_UomArticle_sql = data.getText("alldeptcurrentweek");// Action
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("todaysdate", convdate);
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("departmentsfromlist", "ALL");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			
+			replacenullToZero(results);//For Results1
+			removeExtraSpaces(results,2);
+			removeLastZero(results,3);
+//			objRoutinesPage.removeconvertion(results,3);
+			objRoutinesPage.removedoublezero(results,4);
+			objRoutinesPage.removedoublezero(results,5);
+			
+			}
+		
+		else{
+			int count=0;
+			StringBuilder deptLists1=new StringBuilder();
+			for(String splitValue:departmentLists){
+				deptLists1.append("'");
+				deptLists1.append(splitValue);
+				deptLists1.append("'");
+			count++;
+			if(count!=departmentLists.size()){
+				deptLists1.append(",");
+			}
+			}
+			deptLists1.toString();
+			
+			//DB
+			String deptCode = data.getText("deptcode");
+	    	deptCode = deptCode.replace("departmentsfromlist",deptLists1);
+			List<String> deptcodes = sql.executeQueryList(getContext(),deptCode);
+			String deptLists2 = String.join(",", deptcodes);
+			
+			String indiv_UomArticle_sql = data.getText("alldeptdaily");// Action
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("todaysdate", convdate);
+			indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("departmentsfromlist", deptLists2);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			
+			replacenullToZero(results);//For Results1
+			removeExtraSpaces(results,2);
+			removeLastZero(results,3);
+//			objRoutinesPage.removeconvertion(results,3);
+			objRoutinesPage.removedoublezero(results,4);
+			objRoutinesPage.removedoublezero(results,5);
+		}
+		
+		waitFor(1);
+		
+		objRoutinesPage.overstockReportDaily(objRoutineObjects,results,driver);
+		
+		log.info("-----------------Logout from Application------------------");
+//		loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver);
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+//		htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+}
+

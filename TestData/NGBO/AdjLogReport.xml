@@ -1,0 +1,1995 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<configuration>
+<TCName name="reportPage">
+<articles>
+<![CDATA[SELECT DISTINCT A.MATNR, A.ONLINE_DESC, E.EAN11, E.MEINH, A.PLU_CODE, F.STORE_SOH
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE 
+AND A.MTART='HAWA' AND A.ARTICLE_CAT_DESC ='Single article' AND F.STORE_SOH > '0' ORDER BY A.MATNR, E.MEINH ASC]]> 
+</articles>
+<PLUarticles>
+<![CDATA[ SELECT DISTINCT A.MATNR, A.ONLINE_DESC, E.EAN11, E.MEINH, A.PLU_CODE, F.STORE_SOH
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE 
+AND A.WEIGHTED_IND ='Y' AND F.STORE_SOH > 0 AND B.PS_ARTICLE_STATUS <> '02']]> 
+</PLUarticles>
+
+<PLUnumbers>
+<![CDATA[select MATNR,PLU_CODE from saap.zwowc_article_master where matnr in (select distinct a.plu_code from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr)]]> 
+</PLUnumbers>
+</TCName>
+
+
+
+<TCName name="reportSOH">
+<partialdept>
+<![CDATA[select tt.matnr, 
+coalesce(aed.uom_desc,zam.article_desc) as article_desc, 
+    (tt.reason_desc||'('||tt.reason_code||')') as reasoncode,
+    dateformat(tt.adjusted_date||tt.adjusted_time, 'DD/MM/YYYY HH:NN:SS') as adj_date_time,
+    tt.user_name, CAST(ROUND(tt.soh_original,2) AS DECIMAL(10,2)) as soh_original,
+    CAST(ROUND(tt.soh_final,2) AS DECIMAL(10,2)) as soh_final, 
+    CAST(ROUND(tt.soh_adjusted,2) AS DECIMAL(10,2)) as soh_adjusted ,
+    tt.std_sell_price, CAST(ROUND((tt.soh_adjusted * tt.std_sell_price),2) AS DECIMAL(10,2)) as stk_adj_value,
+    tt.additional_info
+    from (
+select tmi.matnr, zmi.meinh, zmi.soh_original, tmi.menge as soh_adjusted,
+case when zam.item_linkage_ind = 'Y' 
+     then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+     else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+end case as soh_final,
+zmi.sadj_reason_code as reason_code, stk.short_desc as  reason_desc, zmh.updated_user user_id,
+fn_wow_get_user_name(zmh.updated_user) as user_name,
+tmh.bldat as adjusted_date, coalesce(zmh.recv_time,'000000') as adjusted_time,
+fn_wow_get_std_sell_price(tmi.matnr,zmi.meinh) as std_sell_price,
+case when length(zmi.charity_pgm) > 1 then 'Stock Rescued for '||zmi.charity_pgm_desc
+     when length(zmh.comments) > 0 then zmh.comments
+     else '' 
+end case as additional_info
+from t_mdochd tmh
+join zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+join t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+join zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+join (Select *  from zwowc_stk_adj_reason_codes  where display_ind='Y') stk on (zmi.sadj_reason_code = stk.reason_code)
+join zwowc_article_master zam on (tmi.matnr=zam.matnr)
+join mat_view_zwow_articles_hier hier on (tmi.matnr = hier.matnr)
+JOIN (SELECT DISTINCT USERS.USR_ID, USR.USR_NM
+        FROM (SELECT DISTINCT RECV_USER usr_id
+        FROM ZWOWO_MDOCHD WHERE MESFCT IN ('SDJ','sdj')
+        UNION
+        SELECT DISTINCT RECV_USER
+        FROM ZWOWT_MDOCHD WHERE MESFCT IN ('SDJ','sdj')) USERS
+        LEFT JOIN USR ON (USERS.USR_ID=USR.USR_ID)) usr_table ON (zmh.updated_user=usr_table.USR_ID)
+left join (
+    select c.matnr, c.child_article_qty
+    from zwowc_article_child c 
+    join zwowc_article_listing l on (c.matnr=l.matnr)
+    where l.perpetual_flag='Y'
+) zac on (zam.matnr=zac.matnr)
+where zmh.mesfct in ('SDJ','sdj')
+and tmh.bldat between 'frmdate' and 'todate'
+and  hier.dept_name IN ('desc1','desc2','desc3')
+ UNION 
+select tmi.matnr, zmi.meinh, zmi.soh_original, tmi.menge as soh_adjusted,
+case when zam.item_linkage_ind = 'Y' 
+     then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+     else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+end case as soh_final,
+zmi.sadj_reason_code reason_code, stk.short_desc as  reason_desc, zmh.updated_user user_id,
+fn_wow_get_user_name(zmh.updated_user) as user_name,
+tmh.bldat as adjusted_date, coalesce(zmh.recv_time,'000000') as adjusted_time,
+fn_wow_get_std_sell_price(tmi.matnr,zmi.meinh) as std_sell_price,
+case when length(zmi.charity_pgm) > 1 then 'Stock Rescued for '||zmi.charity_pgm_desc
+     when length(zmh.comments) > 0 then zmh.comments
+     else '' 
+end case as additional_info
+from o_mdochd tmh
+join zwowo_mdochd zmh on (tmh.mblnr = zmh.mblnr and tmh.mjahr = zmh.mjahr)
+join o_mdoc_itm tmi on (tmh.mblnr = tmi.mblnr and tmh.mjahr = tmi.mjahr)
+join zwowo_mdoc_itm zmi on (zmi.mblnr = tmi.mblnr and zmi.mjahr = tmi.mjahr and zmi.zeile = tmi.zeile)
+join (Select *  from zwowc_stk_adj_reason_codes  where   display_ind='Y') stk on (zmi.sadj_reason_code = stk.reason_code)
+join zwowc_article_master zam on (tmi.matnr=zam.matnr)
+left join (
+    select c.matnr, c.child_article_qty
+    from zwowc_article_child c 
+    join zwowc_article_listing l on (c.matnr=l.matnr)
+    where l.perpetual_flag='Y'
+) zac on (zam.matnr=zac.matnr)
+join mat_view_zwow_articles_hier hier on (tmi.matnr = hier.matnr)
+JOIN (SELECT DISTINCT USERS.USR_ID, USR.USR_NM
+        FROM (SELECT DISTINCT RECV_USER usr_id
+        FROM ZWOWO_MDOCHD WHERE MESFCT IN ('SDJ','sdj')
+        UNION
+        SELECT DISTINCT RECV_USER
+        FROM ZWOWT_MDOCHD WHERE MESFCT IN ('SDJ','sdj')) USERS
+        LEFT JOIN USR ON (USERS.USR_ID=USR.USR_ID)) usr_table ON (zmh.updated_user=usr_table.USR_ID)
+where zmh.mesfct in ('SDJ','sdj')
+and tmh.bldat between 'frmdate' and 'todate'
+and zmh.status = 'S'
+and not exists (
+    select 1 from ZWOWT_MDOCHD ztmh
+    join T_MDOC_ITM tmi1 on (ztmh.transid=tmi1.transid) 
+    where ztmh.transid=zmh.transid
+    and tmi.matnr=tmi1.matnr
+    )
+and  hier.dept_name IN ('desc1','desc2','desc3')
+)tt
+ join zwowc_article_master zam on (tt.matnr=zam.matnr)
+    left join zwowc_article_ean_desc aed on (tt.matnr=aed.matnr and tt.meinh=aed.meinh)
+where 1=1 
+and tt.soh_adjusted < 5
+]]> 
+</partialdept>
+<primarydept>
+<![CDATA[select tt.matnr, 
+coalesce(aed.uom_desc,zam.article_desc) as article_desc, 
+    (tt.reason_desc||'('||tt.reason_code||')') as reasoncode,
+    dateformat(tt.adjusted_date||tt.adjusted_time, 'DD/MM/YYYY HH:NN:SS') as adj_date_time,
+    tt.user_name, CAST(ROUND(tt.soh_original,2) AS DECIMAL(10,2)) as soh_original,
+    CAST(ROUND(tt.soh_final,2) AS DECIMAL(10,2)) as soh_final, 
+    CAST(ROUND(tt.soh_adjusted,2) AS DECIMAL(10,2)) as soh_adjusted ,
+    tt.std_sell_price, CAST(ROUND((tt.soh_adjusted * tt.std_sell_price),2) AS DECIMAL(10,2)) as stk_adj_value,
+    tt.additional_info
+    from (
+select tmi.matnr, zmi.meinh, zmi.soh_original, tmi.menge as soh_adjusted,
+case when zam.item_linkage_ind = 'Y' 
+     then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+     else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+end case as soh_final,
+zmi.sadj_reason_code as reason_code, stk.short_desc as  reason_desc, zmh.updated_user user_id,
+fn_wow_get_user_name(zmh.updated_user) as user_name,
+tmh.bldat as adjusted_date, coalesce(zmh.recv_time,'000000') as adjusted_time,
+fn_wow_get_std_sell_price(tmi.matnr,zmi.meinh) as std_sell_price,
+case when length(zmi.charity_pgm) > 1 then 'Stock Rescued for '||zmi.charity_pgm_desc
+     when length(zmh.comments) > 0 then zmh.comments
+     else '' 
+end case as additional_info
+from t_mdochd tmh
+join zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+join t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+join zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+join (Select *  from zwowc_stk_adj_reason_codes  where display_ind='Y') stk on (zmi.sadj_reason_code = stk.reason_code)
+join zwowc_article_master zam on (tmi.matnr=zam.matnr)
+join mat_view_zwow_articles_hier hier on (tmi.matnr = hier.matnr)
+JOIN (SELECT DISTINCT USERS.USR_ID, USR.USR_NM
+        FROM (SELECT DISTINCT RECV_USER usr_id
+        FROM ZWOWO_MDOCHD WHERE MESFCT IN ('SDJ','sdj')
+        UNION
+        SELECT DISTINCT RECV_USER
+        FROM ZWOWT_MDOCHD WHERE MESFCT IN ('SDJ','sdj')) USERS
+        LEFT JOIN USR ON (USERS.USR_ID=USR.USR_ID)) usr_table ON (zmh.updated_user=usr_table.USR_ID)
+left join (
+    select c.matnr, c.child_article_qty
+    from zwowc_article_child c 
+    join zwowc_article_listing l on (c.matnr=l.matnr)
+    where l.perpetual_flag='Y'
+) zac on (zam.matnr=zac.matnr)
+where zmh.mesfct in ('SDJ','sdj')
+and tmh.bldat between 'frmdate' and 'todate'
+and usr_table.USR_NM in ('us1','us2','us3')
+and stk.long_desc in ('rea1','rea2','rea3')
+and  hier.dept_name IN ('desc1','desc2','desc3','desc4','desc5','desc6','desc7','desc8','desc9','descTen','descEleven','descTwelve','descthirteen',
+'descfourteen','descfifteen')
+ UNION 
+select tmi.matnr, zmi.meinh, zmi.soh_original, tmi.menge as soh_adjusted,
+case when zam.item_linkage_ind = 'Y' 
+     then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+     else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+end case as soh_final,
+zmi.sadj_reason_code reason_code, stk.short_desc as  reason_desc, zmh.updated_user user_id,
+fn_wow_get_user_name(zmh.updated_user) as user_name,
+tmh.bldat as adjusted_date, coalesce(zmh.recv_time,'000000') as adjusted_time,
+fn_wow_get_std_sell_price(tmi.matnr,zmi.meinh) as std_sell_price,
+case when length(zmi.charity_pgm) > 1 then 'Stock Rescued for '||zmi.charity_pgm_desc
+     when length(zmh.comments) > 0 then zmh.comments
+     else '' 
+end case as additional_info
+from o_mdochd tmh
+join zwowo_mdochd zmh on (tmh.mblnr = zmh.mblnr and tmh.mjahr = zmh.mjahr)
+join o_mdoc_itm tmi on (tmh.mblnr = tmi.mblnr and tmh.mjahr = tmi.mjahr)
+join zwowo_mdoc_itm zmi on (zmi.mblnr = tmi.mblnr and zmi.mjahr = tmi.mjahr and zmi.zeile = tmi.zeile)
+join (Select *  from zwowc_stk_adj_reason_codes  where   display_ind='Y') stk on (zmi.sadj_reason_code = stk.reason_code)
+join zwowc_article_master zam on (tmi.matnr=zam.matnr)
+left join (
+    select c.matnr, c.child_article_qty
+    from zwowc_article_child c 
+    join zwowc_article_listing l on (c.matnr=l.matnr)
+    where l.perpetual_flag='Y'
+) zac on (zam.matnr=zac.matnr)
+join mat_view_zwow_articles_hier hier on (tmi.matnr = hier.matnr)
+JOIN (SELECT DISTINCT USERS.USR_ID, USR.USR_NM
+        FROM (SELECT DISTINCT RECV_USER usr_id
+        FROM ZWOWO_MDOCHD WHERE MESFCT IN ('SDJ','sdj')
+        UNION
+        SELECT DISTINCT RECV_USER
+        FROM ZWOWT_MDOCHD WHERE MESFCT IN ('SDJ','sdj')) USERS
+        LEFT JOIN USR ON (USERS.USR_ID=USR.USR_ID)) usr_table ON (zmh.updated_user=usr_table.USR_ID)
+where zmh.mesfct in ('SDJ','sdj')
+and tmh.bldat between 'frmdate' and 'todate'
+and zmh.status = 'S'
+and not exists (
+    select 1 from ZWOWT_MDOCHD ztmh
+    join T_MDOC_ITM tmi1 on (ztmh.transid=tmi1.transid) 
+    where ztmh.transid=zmh.transid
+    and tmi.matnr=tmi1.matnr
+    )
+and usr_table.USR_NM in ('us1','us2','us3')
+and stk.long_desc in ('rea1','rea2','rea3')
+and  hier.dept_name IN ('desc1','desc2','desc3','desc4','desc5','desc6','desc7','desc8','desc9','descTen','descEleven','descTwelve','descthirteen',
+'descfourteen','descfifteen')
+)tt
+ join zwowc_article_master zam on (tt.matnr=zam.matnr)
+    left join zwowc_article_ean_desc aed on (tt.matnr=aed.matnr and tt.meinh=aed.meinh)
+where 1=1
+]]> 
+</primarydept>
+
+<alldept>
+<![CDATA[select tt.matnr, 
+coalesce(aed.uom_desc,zam.article_desc) as article_desc, 
+    (tt.reason_desc||'('||tt.reason_code||')') as reasoncode,
+    dateformat(tt.adjusted_date||tt.adjusted_time, 'DD/MM/YYYY HH:NN:SS') as adj_date_time,
+    tt.user_name, CAST(ROUND(tt.soh_original,2) AS DECIMAL(10,2)) as soh_original,
+    CAST(ROUND(tt.soh_final,2) AS DECIMAL(10,2)) as soh_final, 
+    CAST(ROUND(tt.soh_adjusted,2) AS DECIMAL(10,2)) as soh_adjusted ,
+    tt.std_sell_price, CAST(ROUND((tt.soh_adjusted * tt.std_sell_price),2) AS DECIMAL(10,2)) as stk_adj_value,
+    tt.additional_info
+    from (
+select tmi.matnr, zmi.meinh, zmi.soh_original, tmi.menge as soh_adjusted,
+case when zam.item_linkage_ind = 'Y' 
+     then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+     else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+end case as soh_final,
+zmi.sadj_reason_code as reason_code, stk.short_desc as  reason_desc, zmh.updated_user user_id,
+fn_wow_get_user_name(zmh.updated_user) as user_name,
+tmh.bldat as adjusted_date, coalesce(zmh.recv_time,'000000') as adjusted_time,
+fn_wow_get_std_sell_price(tmi.matnr,zmi.meinh) as std_sell_price,
+case when length(zmi.charity_pgm) > 1 then 'Stock Rescued for '||zmi.charity_pgm_desc
+     when length(zmh.comments) > 0 then zmh.comments
+     else '' 
+end case as additional_info
+from t_mdochd tmh
+join zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+join t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+join zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+join (Select *  from zwowc_stk_adj_reason_codes  where display_ind='Y') stk on (zmi.sadj_reason_code = stk.reason_code)
+join zwowc_article_master zam on (tmi.matnr=zam.matnr)
+join mat_view_zwow_articles_hier hier on (tmi.matnr = hier.matnr)
+JOIN (SELECT DISTINCT USERS.USR_ID, USR.USR_NM
+        FROM (SELECT DISTINCT RECV_USER usr_id
+        FROM ZWOWO_MDOCHD WHERE MESFCT IN ('SDJ','sdj')
+        UNION
+        SELECT DISTINCT RECV_USER
+        FROM ZWOWT_MDOCHD WHERE MESFCT IN ('SDJ','sdj')) USERS
+        LEFT JOIN USR ON (USERS.USR_ID=USR.USR_ID)) usr_table ON (zmh.updated_user=usr_table.USR_ID)
+left join (
+    select c.matnr, c.child_article_qty
+    from zwowc_article_child c 
+    join zwowc_article_listing l on (c.matnr=l.matnr)
+    where l.perpetual_flag='Y'
+) zac on (zam.matnr=zac.matnr)
+where zmh.mesfct in ('SDJ','sdj')
+and tmh.bldat between 'frmdate' and 'todate'
+and usr_table.USR_NM in ('us1')
+and stk.long_desc in ('rea1')
+ UNION 
+select tmi.matnr, zmi.meinh, zmi.soh_original, tmi.menge as soh_adjusted,
+case when zam.item_linkage_ind = 'Y' 
+     then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+     else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+end case as soh_final,
+zmi.sadj_reason_code reason_code, stk.short_desc as  reason_desc, zmh.updated_user user_id,
+fn_wow_get_user_name(zmh.updated_user) as user_name,
+tmh.bldat as adjusted_date, coalesce(zmh.recv_time,'000000') as adjusted_time,
+fn_wow_get_std_sell_price(tmi.matnr,zmi.meinh) as std_sell_price,
+case when length(zmi.charity_pgm) > 1 then 'Stock Rescued for '||zmi.charity_pgm_desc
+     when length(zmh.comments) > 0 then zmh.comments
+     else '' 
+end case as additional_info
+from o_mdochd tmh
+join zwowo_mdochd zmh on (tmh.mblnr = zmh.mblnr and tmh.mjahr = zmh.mjahr)
+join o_mdoc_itm tmi on (tmh.mblnr = tmi.mblnr and tmh.mjahr = tmi.mjahr)
+join zwowo_mdoc_itm zmi on (zmi.mblnr = tmi.mblnr and zmi.mjahr = tmi.mjahr and zmi.zeile = tmi.zeile)
+join (Select *  from zwowc_stk_adj_reason_codes  where   display_ind='Y') stk on (zmi.sadj_reason_code = stk.reason_code)
+join zwowc_article_master zam on (tmi.matnr=zam.matnr)
+left join (
+    select c.matnr, c.child_article_qty
+    from zwowc_article_child c 
+    join zwowc_article_listing l on (c.matnr=l.matnr)
+    where l.perpetual_flag='Y'
+) zac on (zam.matnr=zac.matnr)
+join mat_view_zwow_articles_hier hier on (tmi.matnr = hier.matnr)
+JOIN (SELECT DISTINCT USERS.USR_ID, USR.USR_NM
+        FROM (SELECT DISTINCT RECV_USER usr_id
+        FROM ZWOWO_MDOCHD WHERE MESFCT IN ('SDJ','sdj')
+        UNION
+        SELECT DISTINCT RECV_USER
+        FROM ZWOWT_MDOCHD WHERE MESFCT IN ('SDJ','sdj')) USERS
+        LEFT JOIN USR ON (USERS.USR_ID=USR.USR_ID)) usr_table ON (zmh.updated_user=usr_table.USR_ID)
+where zmh.mesfct in ('SDJ','sdj')
+and tmh.bldat between 'frmdate' and 'todate'
+and zmh.status = 'S'
+and not exists (
+    select 1 from ZWOWT_MDOCHD ztmh
+    join T_MDOC_ITM tmi1 on (ztmh.transid=tmi1.transid) 
+    where ztmh.transid=zmh.transid
+    and tmi.matnr=tmi1.matnr
+    )
+and usr_table.USR_NM in ('us1')
+and stk.long_desc in ('rea1')
+
+)tt
+ join zwowc_article_master zam on (tt.matnr=zam.matnr)
+    left join zwowc_article_ean_desc aed on (tt.matnr=aed.matnr and tt.meinh=aed.meinh)
+where 1=1 
+and tt.soh_adjusted < 5
+and  (tt.soh_adjusted * tt.std_sell_price) > 10
+]]> 
+</alldept>
+
+<articles>
+<![CDATA[ SELECT DISTINCT A.MATNR, A.ONLINE_DESC, E.EAN11, E.MEINH, A.PLU_CODE, F.STORE_SOH
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE 
+AND A.MTART='HAWA' AND A.ARTICLE_CAT_DESC ='Single article' AND F.STORE_SOH > '0' AND B.PS_ARTICLE_STATUS <> '02' ORDER BY A.MATNR, E.MEINH ASC]]> 
+</articles>
+
+<singlearticle>
+<![CDATA[select tt.matnr, 
+coalesce(aed.uom_desc,zam.article_desc) as article_desc, 
+    (tt.reason_desc||'('||tt.reason_code||')') as reasoncode,
+    dateformat(tt.adjusted_date||tt.adjusted_time, 'DD/MM/YYYY HH:NN:SS') as adj_date_time,
+    tt.user_name, CAST(ROUND(tt.soh_original,2) AS DECIMAL(10,2)) as soh_original,
+    CAST(ROUND(tt.soh_final,2) AS DECIMAL(10,2)) as soh_final, 
+    CAST(ROUND(tt.soh_adjusted,2) AS DECIMAL(10,2)) as soh_adjusted ,
+    tt.std_sell_price, CAST(ROUND((tt.soh_adjusted * tt.std_sell_price),2) AS DECIMAL(10,2)) as stk_adj_value,
+    tt.additional_info
+    from (
+select tmi.matnr, zmi.meinh, zmi.soh_original, tmi.menge as soh_adjusted,
+case when zam.item_linkage_ind = 'Y' 
+     then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+     else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+end case as soh_final,
+zmi.sadj_reason_code as reason_code, stk.short_desc as  reason_desc, zmh.updated_user user_id,
+fn_wow_get_user_name(zmh.updated_user) as user_name,
+tmh.bldat as adjusted_date, coalesce(zmh.recv_time,'000000') as adjusted_time,
+fn_wow_get_std_sell_price(tmi.matnr,zmi.meinh) as std_sell_price,
+case when length(zmi.charity_pgm) > 1 then 'Stock Rescued for '||zmi.charity_pgm_desc
+     when length(zmh.comments) > 0 then zmh.comments
+     else '' 
+end case as additional_info
+from t_mdochd tmh
+join zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+join t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+join zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+join (Select *  from zwowc_stk_adj_reason_codes  where display_ind='Y') stk on (zmi.sadj_reason_code = stk.reason_code)
+join zwowc_article_master zam on (tmi.matnr=zam.matnr)
+join mat_view_zwow_articles_hier hier on (tmi.matnr = hier.matnr)
+JOIN (SELECT DISTINCT USERS.USR_ID, USR.USR_NM
+        FROM (SELECT DISTINCT RECV_USER usr_id
+        FROM ZWOWO_MDOCHD WHERE MESFCT IN ('SDJ','sdj')
+        UNION
+        SELECT DISTINCT RECV_USER
+        FROM ZWOWT_MDOCHD WHERE MESFCT IN ('SDJ','sdj')) USERS
+        LEFT JOIN USR ON (USERS.USR_ID=USR.USR_ID)) usr_table ON (zmh.updated_user=usr_table.USR_ID)
+left join (
+    select c.matnr, c.child_article_qty
+    from zwowc_article_child c 
+    join zwowc_article_listing l on (c.matnr=l.matnr)
+    where l.perpetual_flag='Y'
+) zac on (zam.matnr=zac.matnr)
+where zmh.mesfct in ('SDJ','sdj')
+and tmh.bldat between 'frmdate' and 'todate'
+and tmi.matnr IN ('art.no')
+ UNION 
+select tmi.matnr, zmi.meinh, zmi.soh_original, tmi.menge as soh_adjusted,
+case when zam.item_linkage_ind = 'Y' 
+     then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+     else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+end case as soh_final,
+zmi.sadj_reason_code reason_code, stk.short_desc as  reason_desc, zmh.updated_user user_id,
+fn_wow_get_user_name(zmh.updated_user) as user_name,
+tmh.bldat as adjusted_date, coalesce(zmh.recv_time,'000000') as adjusted_time,
+fn_wow_get_std_sell_price(tmi.matnr,zmi.meinh) as std_sell_price,
+case when length(zmi.charity_pgm) > 1 then 'Stock Rescued for '||zmi.charity_pgm_desc
+     when length(zmh.comments) > 0 then zmh.comments
+     else '' 
+end case as additional_info
+from o_mdochd tmh
+join zwowo_mdochd zmh on (tmh.mblnr = zmh.mblnr and tmh.mjahr = zmh.mjahr)
+join o_mdoc_itm tmi on (tmh.mblnr = tmi.mblnr and tmh.mjahr = tmi.mjahr)
+join zwowo_mdoc_itm zmi on (zmi.mblnr = tmi.mblnr and zmi.mjahr = tmi.mjahr and zmi.zeile = tmi.zeile)
+join (Select *  from zwowc_stk_adj_reason_codes  where   display_ind='Y') stk on (zmi.sadj_reason_code = stk.reason_code)
+join zwowc_article_master zam on (tmi.matnr=zam.matnr)
+left join (
+    select c.matnr, c.child_article_qty
+    from zwowc_article_child c 
+    join zwowc_article_listing l on (c.matnr=l.matnr)
+    where l.perpetual_flag='Y'
+) zac on (zam.matnr=zac.matnr)
+join mat_view_zwow_articles_hier hier on (tmi.matnr = hier.matnr)
+JOIN (SELECT DISTINCT USERS.USR_ID, USR.USR_NM
+        FROM (SELECT DISTINCT RECV_USER usr_id
+        FROM ZWOWO_MDOCHD WHERE MESFCT IN ('SDJ','sdj')
+        UNION
+        SELECT DISTINCT RECV_USER
+        FROM ZWOWT_MDOCHD WHERE MESFCT IN ('SDJ','sdj')) USERS
+        LEFT JOIN USR ON (USERS.USR_ID=USR.USR_ID)) usr_table ON (zmh.updated_user=usr_table.USR_ID)
+where zmh.mesfct in ('SDJ','sdj')
+and tmh.bldat between 'frmdate' and 'todate'
+and zmh.status = 'S'
+and not exists (
+    select 1 from ZWOWT_MDOCHD ztmh
+    join T_MDOC_ITM tmi1 on (ztmh.transid=tmi1.transid) 
+    where ztmh.transid=zmh.transid
+    and tmi.matnr=tmi1.matnr
+    )
+and tmi.matnr IN ('art.no')
+
+)tt
+ join zwowc_article_master zam on (tt.matnr=zam.matnr)
+    left join zwowc_article_ean_desc aed on (tt.matnr=aed.matnr and tt.meinh=aed.meinh)
+where 1=1 
+]]> 
+</singlearticle>
+
+<morearticle>
+<![CDATA[select tt.matnr, 
+coalesce(aed.uom_desc,zam.article_desc) as article_desc, 
+    (tt.reason_desc||'('||tt.reason_code||')') as reasoncode,
+    dateformat(tt.adjusted_date||tt.adjusted_time, 'DD/MM/YYYY HH:NN:SS') as adj_date_time,
+    tt.user_name, CAST(ROUND(tt.soh_original,2) AS DECIMAL(10,2)) as soh_original,
+    CAST(ROUND(tt.soh_final,2) AS DECIMAL(10,2)) as soh_final, 
+    CAST(ROUND(tt.soh_adjusted,2) AS DECIMAL(10,2)) as soh_adjusted ,
+    tt.std_sell_price, CAST(ROUND((tt.soh_adjusted * tt.std_sell_price),2) AS DECIMAL(10,2)) as stk_adj_value,
+    tt.additional_info
+    from (
+select tmi.matnr, zmi.meinh, zmi.soh_original, tmi.menge as soh_adjusted,
+case when zam.item_linkage_ind = 'Y' 
+     then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+     else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+end case as soh_final,
+zmi.sadj_reason_code as reason_code, stk.short_desc as  reason_desc, zmh.updated_user user_id,
+fn_wow_get_user_name(zmh.updated_user) as user_name,
+tmh.bldat as adjusted_date, coalesce(zmh.recv_time,'000000') as adjusted_time,
+fn_wow_get_std_sell_price(tmi.matnr,zmi.meinh) as std_sell_price,
+case when length(zmi.charity_pgm) > 1 then 'Stock Rescued for '||zmi.charity_pgm_desc
+     when length(zmh.comments) > 0 then zmh.comments
+     else '' 
+end case as additional_info
+from t_mdochd tmh
+join zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+join t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+join zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+join (Select *  from zwowc_stk_adj_reason_codes  where display_ind='Y') stk on (zmi.sadj_reason_code = stk.reason_code)
+join zwowc_article_master zam on (tmi.matnr=zam.matnr)
+join mat_view_zwow_articles_hier hier on (tmi.matnr = hier.matnr)
+JOIN (SELECT DISTINCT USERS.USR_ID, USR.USR_NM
+        FROM (SELECT DISTINCT RECV_USER usr_id
+        FROM ZWOWO_MDOCHD WHERE MESFCT IN ('SDJ','sdj')
+        UNION
+        SELECT DISTINCT RECV_USER
+        FROM ZWOWT_MDOCHD WHERE MESFCT IN ('SDJ','sdj')) USERS
+        LEFT JOIN USR ON (USERS.USR_ID=USR.USR_ID)) usr_table ON (zmh.updated_user=usr_table.USR_ID)
+left join (
+    select c.matnr, c.child_article_qty
+    from zwowc_article_child c 
+    join zwowc_article_listing l on (c.matnr=l.matnr)
+    where l.perpetual_flag='Y'
+) zac on (zam.matnr=zac.matnr)
+where zmh.mesfct in ('SDJ','sdj')
+and tmh.bldat between 'frmdate' and 'todate'
+and stk.long_desc in ('rea1','rea2','rea3')
+and tmi.matnr IN ('art1.no','art2.no','art3.no','art4.no')
+ UNION 
+select tmi.matnr, zmi.meinh, zmi.soh_original, tmi.menge as soh_adjusted,
+case when zam.item_linkage_ind = 'Y' 
+     then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+     else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+end case as soh_final,
+zmi.sadj_reason_code reason_code, stk.short_desc as  reason_desc, zmh.updated_user user_id,
+fn_wow_get_user_name(zmh.updated_user) as user_name,
+tmh.bldat as adjusted_date, coalesce(zmh.recv_time,'000000') as adjusted_time,
+fn_wow_get_std_sell_price(tmi.matnr,zmi.meinh) as std_sell_price,
+case when length(zmi.charity_pgm) > 1 then 'Stock Rescued for '||zmi.charity_pgm_desc
+     when length(zmh.comments) > 0 then zmh.comments
+     else '' 
+end case as additional_info
+from o_mdochd tmh
+join zwowo_mdochd zmh on (tmh.mblnr = zmh.mblnr and tmh.mjahr = zmh.mjahr)
+join o_mdoc_itm tmi on (tmh.mblnr = tmi.mblnr and tmh.mjahr = tmi.mjahr)
+join zwowo_mdoc_itm zmi on (zmi.mblnr = tmi.mblnr and zmi.mjahr = tmi.mjahr and zmi.zeile = tmi.zeile)
+join (Select *  from zwowc_stk_adj_reason_codes  where   display_ind='Y') stk on (zmi.sadj_reason_code = stk.reason_code)
+join zwowc_article_master zam on (tmi.matnr=zam.matnr)
+left join (
+    select c.matnr, c.child_article_qty
+    from zwowc_article_child c 
+    join zwowc_article_listing l on (c.matnr=l.matnr)
+    where l.perpetual_flag='Y'
+) zac on (zam.matnr=zac.matnr)
+join mat_view_zwow_articles_hier hier on (tmi.matnr = hier.matnr)
+JOIN (SELECT DISTINCT USERS.USR_ID, USR.USR_NM
+        FROM (SELECT DISTINCT RECV_USER usr_id
+        FROM ZWOWO_MDOCHD WHERE MESFCT IN ('SDJ','sdj')
+        UNION
+        SELECT DISTINCT RECV_USER
+        FROM ZWOWT_MDOCHD WHERE MESFCT IN ('SDJ','sdj')) USERS
+        LEFT JOIN USR ON (USERS.USR_ID=USR.USR_ID)) usr_table ON (zmh.updated_user=usr_table.USR_ID)
+where zmh.mesfct in ('SDJ','sdj')
+and tmh.bldat between 'frmdate' and 'todate'
+and zmh.status = 'S'
+and not exists (
+    select 1 from ZWOWT_MDOCHD ztmh
+    join T_MDOC_ITM tmi1 on (ztmh.transid=tmi1.transid) 
+    where ztmh.transid=zmh.transid
+    and tmi.matnr=tmi1.matnr
+    )
+and stk.long_desc in ('rea1','rea2','rea3')
+and tmi.matnr IN ('art1.no','art2.no','art3.no','art4.no')
+
+)tt
+ join zwowc_article_master zam on (tt.matnr=zam.matnr)
+    left join zwowc_article_ean_desc aed on (tt.matnr=aed.matnr and tt.meinh=aed.meinh)
+where 1=1 
+]]> 
+</morearticle>
+</TCName>
+
+<TCName name="reportsMPLSC">
+<articles>
+<![CDATA[ SELECT DISTINCT A.MATNR, A.ONLINE_DESC, E.EAN11, E.MEINH, A.PLU_CODE, F.STORE_SOH
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE 
+AND A.MTART='HAWA' AND A.ARTICLE_CAT_DESC ='Single article' AND F.STORE_SOH > '0' AND B.PS_ARTICLE_STATUS <> '02' ORDER BY A.MATNR, E.MEINH ASC]]> 
+</articles>
+<primarydeptMPL>
+<![CDATA[Select tt_mplsc.* from 
+    (select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+        
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value, 
+        his.new_value,
+        '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'MPL'
+    UNION 
+    select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+  
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value,
+       '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'CAP'
+    ) tt_mplsc
+JOIN  mat_view_zwow_articles_hier hier on (tt_mplsc.matnr = hier.matnr)
+WHERE 1=1
+and user_name in ('us1','us2','us3')
+and tt_mplsc.search_date between 'frmdate' and 'todate'
+and  hier.dept_name IN  ('desc1','desc2','desc3','desc4','desc5','desc6','desc7','desc8','desc9','descTen','descEleven','descTwelve','descthirteen',
+'descfourteen','descfifteen')
+and tt_mplsc.matnr IN ('art.no') 
+and mpl_or_cap = 'MPL';
+]]> 
+</primarydeptMPL>
+<primarydeptCAP>
+<![CDATA[Select tt_mplsc.* from 
+    (select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       	dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+        '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity,
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value        
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'MPL'
+    UNION 
+    select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+        dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+   '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity,
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'CAP'
+    ) tt_mplsc
+JOIN  mat_view_zwow_articles_hier hier on (tt_mplsc.matnr = hier.matnr)
+WHERE 1=1
+and user_name in ('us1','us2','us3')
+and tt_mplsc.search_date between 'frmdate' and 'todate'
+and  hier.dept_name IN  ('desc1','desc2','desc3','desc4','desc5','desc6','desc7','desc8','desc9','descTen','descEleven','descTwelve','descthirteen',
+'descfourteen','descfifteen')
+and tt_mplsc.matnr IN ('art.no')
+and mpl_or_cap = 'CAP';
+]]> 
+</primarydeptCAP>
+
+<multipledeptMPL>
+<![CDATA[Select tt_mplsc.* from 
+    (select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+        
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value, 
+        his.new_value,
+        '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'MPL'
+        and his.new_value < 10
+    UNION 
+    select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value,
+       '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'CAP'
+    ) tt_mplsc
+JOIN  mat_view_zwow_articles_hier hier on (tt_mplsc.matnr = hier.matnr)
+WHERE 1=1
+and tt_mplsc.search_date between 'frmdate' and 'todate'
+and  hier.dept_name IN ('desc1','desc2','desc3')
+and tt_mplsc.matnr IN ('art.no') 
+and mpl_or_cap = 'MPL';
+]]> 
+</multipledeptMPL>
+<multipledeptCAP>
+<![CDATA[Select tt_mplsc.* from 
+    (select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       	dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+        '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity,
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value        
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'MPL'
+    UNION 
+    select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+        dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+   '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity,
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'CAP'
+    ) tt_mplsc
+JOIN  mat_view_zwow_articles_hier hier on (tt_mplsc.matnr = hier.matnr)
+WHERE 1=1
+and tt_mplsc.search_date between 'frmdate' and 'todate'
+and  hier.dept_name IN ('desc1','desc2','desc3') 
+and tt_mplsc.matnr IN ('art.no')
+and mpl_or_cap = 'CAP';
+]]> 
+</multipledeptCAP>
+
+<alldeptMPL>
+<![CDATA[Select tt_mplsc.* from 
+    (select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+        
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value, 
+        his.new_value,
+        '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'MPL'
+        and his.new_value < 10
+    UNION 
+    select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+  
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value,
+       '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'CAP'
+    ) tt_mplsc
+JOIN  mat_view_zwow_articles_hier hier on (tt_mplsc.matnr = hier.matnr)
+WHERE 1=1
+and tt_mplsc.search_date between 'frmdate' and 'todate'
+and user_name in ('us1')
+and tt_mplsc.matnr IN ('art.no') 
+and mpl_or_cap = 'MPL';
+]]> 
+</alldeptMPL>
+<alldeptCAP>
+<![CDATA[Select tt_mplsc.* from 
+    (select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       	dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+        '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity,
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value        
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'MPL'
+    UNION 
+    select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+        dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+   '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity,
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'CAP'
+        and his.new_value < 8
+    ) tt_mplsc
+JOIN  mat_view_zwow_articles_hier hier on (tt_mplsc.matnr = hier.matnr)
+WHERE 1=1
+and tt_mplsc.search_date between 'frmdate' and 'todate'
+and user_name in ('us1')
+and tt_mplsc.matnr IN ('art.no')
+and mpl_or_cap = 'CAP';
+]]> 
+</alldeptCAP>
+<singleartMPL>
+<![CDATA[Select tt_mplsc.* from 
+    (select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+        
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value, 
+        his.new_value,
+        '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'MPL'
+    UNION 
+    select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+  
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value,
+       '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'CAP'
+    ) tt_mplsc
+JOIN  mat_view_zwow_articles_hier hier on (tt_mplsc.matnr = hier.matnr)
+WHERE 1=1
+and tt_mplsc.search_date between 'frmdate' and 'todate'
+and tt_mplsc.matnr IN ('art.no') 
+and mpl_or_cap = 'MPL';
+]]> 
+</singleartMPL>
+<singleartCAP>
+<![CDATA[Select tt_mplsc.* from 
+    (select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       	dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+        '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity,
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value        
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'MPL'
+    UNION 
+    select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+        dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+   '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity,
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'CAP'
+    ) tt_mplsc
+JOIN  mat_view_zwow_articles_hier hier on (tt_mplsc.matnr = hier.matnr)
+WHERE 1=1
+and tt_mplsc.search_date between 'frmdate' and 'todate'
+and tt_mplsc.matnr IN ('art.no')
+and mpl_or_cap = 'CAP';
+]]> 
+</singleartCAP>
+
+<multipleArtMPL>
+<![CDATA[Select tt_mplsc.* from 
+    (select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+        
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value, 
+        his.new_value,
+        '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'MPL'
+    UNION 
+    select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+  
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value,
+       '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'CAP'
+    ) tt_mplsc
+JOIN  mat_view_zwow_articles_hier hier on (tt_mplsc.matnr = hier.matnr)
+WHERE 1=1
+and tt_mplsc.search_date between 'frmdate' and 'todate'
+and tt_mplsc.matnr IN ('art1.no','art2.no','art3.no','art4.no')
+and mpl_or_cap = 'MPL';
+]]> 
+</multipleArtMPL>
+<multipleArtCAP>
+<![CDATA[Select tt_mplsc.* from 
+    (select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       	dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+        '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity,
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value        
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'MPL'
+    UNION 
+    select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+        dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+   '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity,
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'CAP'
+    ) tt_mplsc
+JOIN  mat_view_zwow_articles_hier hier on (tt_mplsc.matnr = hier.matnr)
+WHERE 1=1
+and tt_mplsc.search_date between 'frmdate' and 'todate'
+and tt_mplsc.matnr IN ('art1.no','art2.no','art3.no','art4.no')
+and mpl_or_cap = 'CAP';
+]]> 
+</multipleArtCAP>
+
+
+</TCName>
+
+<TCName name = "reportFacing">
+<multiDepartment>
+<![CDATA[Select DISTINCT dept_name, cat_name, sub_cat_name, seg_name from saap.ZWOWC_ART_LIST_DEPARTMENT]]>
+</multiDepartment>
+<deptcatFacing>
+<![CDATA[select 
+    his.matnr, 
+    coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+    his.meinh, 
+    --his.user_id, 
+    dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') adj_date_time, 
+    coalesce(usr.usr_nm,his.user_id), 
+    --'FAC' as mpl_or_cap, 
+    mplsc.default_facings,
+    his.old_value, 
+    his.new_value 
+    --dateformat(his.modified_datetime,'dd/mm/yyyy') adj_date
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        JOIN  mat_view_zwow_articles_hier hier on (his.matnr = hier.matnr)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_fac ON (his.user_id = usr_fac.user_id)  
+    WHERE 1=1  
+    --and (usr_fac.USR_NM in ('SHLF_QTY_UPD')) or( HIS.USER_ID in('SHLF_QTY_UPD'))
+    and his.field_name = 'FACE'
+    and dateformat(his.modified_datetime,'YYYYMMDD') between 'frmdate' and 'todate'
+    --and his.new_value > 20
+    and and  hier.dept_name IN ('desc1')
+and  hier.cat_name IN ('cat1')
+and hier.sub_cat_name IN ('subcategory')
+and hier.seg_name IN ('seg1')
+    order by adj_date_time asc]]> 
+</deptcatFacing>
+
+</TCName>
+
+<TCName name = "mulDeptCatSubcat">
+<multiDepartment>
+<![CDATA[Select DISTINCT dept_name, cat_name, sub_cat_name, seg_name from saap.ZWOWC_ART_LIST_DEPARTMENT]]>
+</multiDepartment>
+<deptcat>
+<![CDATA[select tt.matnr, 
+coalesce(aed.uom_desc,zam.article_desc) as article_desc, 
+    (tt.reason_desc||'('||tt.reason_code||')') as reasoncode,
+    dateformat(tt.adjusted_date||tt.adjusted_time, 'DD/MM/YYYY HH:NN:SS') as adj_date_time,
+    tt.user_name, CAST(ROUND(tt.soh_original,2) AS DECIMAL(10,2)) as soh_original,
+    CAST(ROUND(tt.soh_final,2) AS DECIMAL(10,2)) as soh_final, 
+    CAST(ROUND(tt.soh_adjusted,2) AS DECIMAL(10,2)) as soh_adjusted ,
+    tt.std_sell_price, CAST(ROUND((tt.soh_adjusted * tt.std_sell_price),2) AS DECIMAL(10,2)) as stk_adj_value,
+    tt.additional_info
+    from (
+select tmi.matnr, zmi.meinh, zmi.soh_original, tmi.menge as soh_adjusted,
+case when zam.item_linkage_ind = 'Y' 
+     then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+     else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+end case as soh_final,
+zmi.sadj_reason_code as reason_code, stk.short_desc as  reason_desc, zmh.updated_user user_id,
+fn_wow_get_user_name(zmh.updated_user) as user_name,
+tmh.bldat as adjusted_date, coalesce(zmh.recv_time,'000000') as adjusted_time,
+fn_wow_get_std_sell_price(tmi.matnr,zmi.meinh) as std_sell_price,
+case when length(zmi.charity_pgm) > 1 then 'Stock Rescued for '||zmi.charity_pgm_desc
+     when length(zmh.comments) > 0 then zmh.comments
+     else '' 
+end case as additional_info
+from t_mdochd tmh
+join zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+join t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+join zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+join (Select *  from zwowc_stk_adj_reason_codes  where display_ind='Y') stk on (zmi.sadj_reason_code = stk.reason_code)
+join zwowc_article_master zam on (tmi.matnr=zam.matnr)
+join mat_view_zwow_articles_hier hier on (tmi.matnr = hier.matnr)
+JOIN (SELECT DISTINCT USERS.USR_ID, USR.USR_NM
+        FROM (SELECT DISTINCT RECV_USER usr_id
+        FROM ZWOWO_MDOCHD WHERE MESFCT IN ('SDJ','sdj')
+        UNION
+        SELECT DISTINCT RECV_USER
+        FROM ZWOWT_MDOCHD WHERE MESFCT IN ('SDJ','sdj')) USERS
+        LEFT JOIN USR ON (USERS.USR_ID=USR.USR_ID)) usr_table ON (zmh.updated_user=usr_table.USR_ID)
+left join (
+    select c.matnr, c.child_article_qty
+    from zwowc_article_child c 
+    join zwowc_article_listing l on (c.matnr=l.matnr)
+    where l.perpetual_flag='Y'
+) zac on (zam.matnr=zac.matnr)
+where zmh.mesfct in ('SDJ','sdj')
+and tmh.bldat between 'frmdate' and 'todate'
+and  hier.dept_name IN ('desc1')
+and  hier.cat_name IN ('cat1')
+and hier.sub_cat_name IN ('subcategory')
+and hier.seg_name IN ('seg1')
+ UNION 
+select tmi.matnr, zmi.meinh, zmi.soh_original, tmi.menge as soh_adjusted,
+case when zam.item_linkage_ind = 'Y' 
+     then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+     else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+end case as soh_final,
+zmi.sadj_reason_code reason_code, stk.short_desc as  reason_desc, zmh.updated_user user_id,
+fn_wow_get_user_name(zmh.updated_user) as user_name,
+tmh.bldat as adjusted_date, coalesce(zmh.recv_time,'000000') as adjusted_time,
+fn_wow_get_std_sell_price(tmi.matnr,zmi.meinh) as std_sell_price,
+case when length(zmi.charity_pgm) > 1 then 'Stock Rescued for '||zmi.charity_pgm_desc
+     when length(zmh.comments) > 0 then zmh.comments
+     else '' 
+end case as additional_info
+from o_mdochd tmh
+join zwowo_mdochd zmh on (tmh.mblnr = zmh.mblnr and tmh.mjahr = zmh.mjahr)
+join o_mdoc_itm tmi on (tmh.mblnr = tmi.mblnr and tmh.mjahr = tmi.mjahr)
+join zwowo_mdoc_itm zmi on (zmi.mblnr = tmi.mblnr and zmi.mjahr = tmi.mjahr and zmi.zeile = tmi.zeile)
+join (Select *  from zwowc_stk_adj_reason_codes  where   display_ind='Y') stk on (zmi.sadj_reason_code = stk.reason_code)
+join zwowc_article_master zam on (tmi.matnr=zam.matnr)
+left join (
+    select c.matnr, c.child_article_qty
+    from zwowc_article_child c 
+    join zwowc_article_listing l on (c.matnr=l.matnr)
+    where l.perpetual_flag='Y'
+) zac on (zam.matnr=zac.matnr)
+join mat_view_zwow_articles_hier hier on (tmi.matnr = hier.matnr)
+JOIN (SELECT DISTINCT USERS.USR_ID, USR.USR_NM
+        FROM (SELECT DISTINCT RECV_USER usr_id
+        FROM ZWOWO_MDOCHD WHERE MESFCT IN ('SDJ','sdj')
+        UNION
+        SELECT DISTINCT RECV_USER
+        FROM ZWOWT_MDOCHD WHERE MESFCT IN ('SDJ','sdj')) USERS
+        LEFT JOIN USR ON (USERS.USR_ID=USR.USR_ID)) usr_table ON (zmh.updated_user=usr_table.USR_ID)
+where zmh.mesfct in ('SDJ','sdj')
+and tmh.bldat between 'frmdate' and 'todate'
+and zmh.status = 'S'
+and not exists (
+    select 1 from ZWOWT_MDOCHD ztmh
+    join T_MDOC_ITM tmi1 on (ztmh.transid=tmi1.transid) 
+    where ztmh.transid=zmh.transid
+    and tmi.matnr=tmi1.matnr
+    )
+and  hier.dept_name IN ('desc1')
+and  hier.cat_name IN ('cat1')
+and hier.sub_cat_name IN ('subcategory')
+and hier.seg_name IN ('seg1')
+)tt
+ join zwowc_article_master zam on (tt.matnr=zam.matnr)
+    left join zwowc_article_ean_desc aed on (tt.matnr=aed.matnr and tt.meinh=aed.meinh)
+where 1=1
+]]> 
+</deptcat>
+</TCName>
+
+
+<TCName name = "mulDeptCatSubcatMPLSC">
+<multiDepartment>
+<![CDATA[Select DISTINCT dept_name, cat_name, sub_cat_name, seg_name from saap.ZWOWC_ART_LIST_DEPARTMENT]]>
+</multiDepartment>
+<deptcatMPL>
+<![CDATA[Select tt_mplsc.* from 
+    (select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+        
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        his.old_value as old_value, 
+        his.new_value,
+        '' as def_mpl,
+'' as old_mpl,
+'' as new_mpl
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'MPL'
+    UNION 
+    select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+        dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+  
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+       	his.old_value as old_value,
+        his.new_value,
+       '' as def_mpl,
+'' as old_mpl,
+'' as new_mpl
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'CAP'
+    ) tt_mplsc
+JOIN  mat_view_zwow_articles_hier hier on (tt_mplsc.matnr = hier.matnr)
+WHERE 1=1
+and tt_mplsc.search_date between 'frmdate' and 'todate'
+and  hier.dept_name IN ('desc1')
+and  hier.cat_name IN ('cat1')
+and hier.sub_cat_name IN ('subcategory')
+and hier.seg_name IN ('seg1')
+and tt_mplsc.matnr IN ('art.no') 
+and mpl_or_cap = 'MPL';
+]]> 
+</deptcatMPL>
+<deptcatCAP>
+<![CDATA[Select tt_mplsc.* from 
+    (select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+       	dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+        '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity,
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value        
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'MPL'
+        and his.new_value < 5
+    UNION 
+    select 
+        his.matnr, 
+        coalesce(aed.uom_desc,zam.article_desc) as article_desc,
+        his.meinh,
+        dateformat(his.modified_datetime,'dd/mm/yyyy hh:nn:ss') mod_datetime, 
+        dateformat(his.modified_datetime,'dd/mm/yyyy') mod_date,
+        dateformat(his.modified_datetime,'YYYYMMDD')search_date,
+        coalesce(usr.usr_nm, his.user_id) as user_name,
+        case his.field_name
+            when 'PLNU' then 'MPL'
+            when 'CTMU' then 'CAP'
+        end case as mpl_or_cap,
+   '' as def_capacity,
+'' as old_capacity,
+'' as new_capacity,
+        case his.field_name
+            when 'PLNU' then CONVERT(INT, mplsc.default_mpl)
+            when 'CTMU' then CONVERT(INT, mplsc.default_shelf_capacity)
+        end case as default_value,
+        CONVERT(INT, his.old_value) as old_value,
+        his.new_value
+    from (
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from ZWOWC_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        union
+        select matnr,meinh,field_name,user_id,old_value,new_value,modified_datetime 
+        from LOCAL_MPL_SC_FAC_HISTORY where field_name <> 'SECU'
+        ) his
+        join zwowc_article_master zam on (his.matnr=zam.matnr)
+        join zwowc_article_uom zau on (his.matnr=zau.matnr and his.meinh=zau.meinh)
+        left join zwowc_article_ean_desc aed on (zau.matnr=aed.matnr and zau.meinh=aed.uom_desc)
+        left join usr usr on (lower(his.user_id)=lower(usr.usr_id))
+        left join zwowo_article_update mplsc on (his.matnr=mplsc.matnr and his.meinh=mplsc.meinh)
+        JOIN (SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM ZWOWC_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')
+        UNION
+        SELECT  
+        MPLSC.USER_ID, usr.USR_NM
+        FROM LOCAL_MPL_SC_FAC_HISTORY MPLSC
+        LEFT JOIN usr ON (MPLSC.USER_ID=usr.USR_ID)
+        WHERE MPLSC.FIELD_NAME IN ('PLNU','CTMU')) usr_mplsc ON (his.user_id = usr_mplsc.user_id)  
+        where 1 = 1
+        and mpl_or_cap = 'CAP'
+    ) tt_mplsc
+JOIN  mat_view_zwow_articles_hier hier on (tt_mplsc.matnr = hier.matnr)
+WHERE 1=1
+and tt_mplsc.search_date between 'frmdate' and 'todate'
+and  hier.dept_name IN ('desc1')
+and  hier.cat_name IN ('cat1')
+and hier.sub_cat_name IN ('subcategory')
+and hier.seg_name IN ('seg1')
+and tt_mplsc.matnr IN ('art.no')
+and mpl_or_cap = 'CAP';
+]]> 
+</deptcatCAP>
+</TCName>
+
+
+
+</configuration>

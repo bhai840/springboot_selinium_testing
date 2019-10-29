@@ -1,0 +1,4188 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.awt.Robot;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Random;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.By.ByClassName;
+import org.openqa.selenium.By.ByXPath;
+import org.openqa.selenium.NotFoundException;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.Assert;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbomain.objects.GapscanReportObjects;
+import au.wow.ngbomain.objects.RoutineObjects;
+import au.wow.ngbomain.objects.ltoreportobjects;
+import au.wow.ngbomain.objects.oocreportobjects;
+import au.wow.ngbomain.tests.AdjustmentLogReportTests;
+//import au.wow.ngbomain.tests.GapscanReport;
+import au.wow.ngbomain.tests.GapscanReportTests;
+
+
+public class GapscanReportPage extends BasePage {
+	ExtentTest extLogger=GapscanReportTests.extLogger;
+	String cName= GapscanReportTests.cName;
+	String mName=GapscanReportTests.mName;
+	WebDriver driver ;
+	public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+	CommonFunctions common = PageFactory.initElements(driver,
+			CommonFunctions.class);
+	//private Logger log = LogManager.getLogger(GapscanReport.class);
+	//SQLWrapper sql = new SQLWrapper(log);
+	GapscanReportPage gsrPage;
+	GapscanReportObjects gsrobject;
+	
+
+	public void clickOnGapscanReport(GapscanReportObjects gsrobject,WebDriver driver) throws AWTException{
+		// TODO Auto-generated method stub
+		
+		waitFor(5);
+		waitForJSandJQueryToLoad(driver);;
+		verticalScroll(driver);
+		waitForElement(gsrobject.reports,driver);
+
+		Point coordinates = gsrobject.reports.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+
+		waitFor(1);
+		Actions action = new Actions(driver);
+		action.moveToElement(gsrobject.reports).click().build()
+		.perform();
+
+		waitForJSandJQueryToLoad(driver);;
+		waitForElement(gsrobject.stockmgmt,driver);
+
+		waitFor(1);
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(gsrobject.stockmgmt).click().build()
+		.perform();
+		waitFor(1);
+		Actions action1 = new Actions(driver);
+		action1.moveToElement(gsrobject.gapscanrep)
+		.click().build().perform();
+
+		robot.mouseMove(5, 5);
+
+		waitForJSandJQueryToLoad(driver);;
+	}
+	
+	/*public void clickOnGapscanReport(GapscanReportObjects gsrobject) throws AWTException{
+		//waitForJSandJQueryToLoad(driver);;
+		
+		verticalScroll(driver);
+		
+		waitFor(1);
+		Point coordinates = gsrobject.reports.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+		
+		Actions action = new Actions(getDriver());
+		action.moveToElement(gsrobject.reports).click().build().perform();	
+		waitFor(2);
+		
+		//verticalScroll(driver);
+		
+		Point coordinates1 = gsrobject.stockmgmt.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(),coordinates1.getY()+100);
+		
+		Actions action2 = new Actions(getDriver());
+		action2.moveToElement(gsrobject.stockmgmt).click().build().perform();
+		waitFor(2);
+		
+		Point coordinates2 = gsrobject.gapscanrep.getLocation();
+		Robot robo1t1 = new Robot();
+		robo1t1.mouseMove(coordinates2.getX(),coordinates2.getY()+100);
+		
+		Actions action3 = new Actions(getDriver());
+		action3.moveToElement(gsrobject.gapscanrep).click().build().perform();
+		waitFor(2);
+		robot.mouseMove(5,5);
+		
+		waitForJSandJQueryToLoad(driver);;
+		
+	}*/
+	
+	
+
+
+public int generaterandomnumber(int min, int max)//Function for dynamically generating a number. To access this Xpath should be Dynamic
+{
+	Random random = new Random();
+	int randnumber = random.nextInt(max + 1-min)+ min;
+	return randnumber;
+}
+	
+
+public void dynamicreasonclick(GapscanReportObjects gsrobject,WebDriver driver) throws AWTException
+{
+int randomno = generaterandomnumber(1,3);//Inserted that function
+WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.reasontypesdyn,randomno,driver);
+ele.click();
+
+
+
+
+}
+
+public void dynamictimeclick(GapscanReportObjects gsrobject,WebDriver driver) throws AWTException
+{
+int randomtime = generaterandomnumber(1,3);//Inserted that function
+WebElement timeele = prepareWebElementWithDynamicXpathWithInt(gsrobject.timedynamic,randomtime,driver);
+timeele.click();
+
+}
+
+
+public void gapscan(GapscanReportObjects gsrobject,int size,List<List<Object>> results,WebDriver driver) throws IOException
+{
+	
+	for(int l=1;l<=1;l++)
+	{
+		
+		gsrobject.dept_dropdown.click();//click on dept drop down
+		WebElement DDclick =  prepareWebElementWithDynamicXpathWithInt(gsrobject.clickinnerDD, l,driver);		
+		String deptname=DDclick.getText();	
+		//System.out.println(deptname);//##
+		htmlToExtent(cName,mName,extLogger,driver, "Checking for Department name - "+deptname+";;;Pass");
+		//Report_AddStep("testcase", "Checking for Department name - "+deptname+" ","","", "");
+		/*if((l!=1)&&(l!=2))
+		{
+			WebElement DDclick1 =  prepareWebElementWithDynamicXpathWithInt(gsrobject.clickinnerDD, 1,driver);	
+			DDclick1.click();
+			DDclick1.click();
+		}
+		if(l==2)
+		{
+			WebElement DDclick1 =  prepareWebElementWithDynamicXpathWithInt(gsrobject.clickinnerDD, 1,driver);	
+			DDclick1.click();				
+		}*/
+		verticalinternalscroll(DDclick,driver);//scroll department
+		DDclick.click();//All department is unchecked should be fixed Rakend
+		DDclick.click();
+		gsrobject.done.click();
+		gsrobject.generatereport.click();
+		waitForJSandJQueryToLoad(driver);;
+	
+		try{
+		if(gsrobject.close2.size()!=0)
+		{
+			gsrobject.close.click();
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+			//Click (-)Generate Gap Scan Report button
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;			
+		}
+		else{
+			printPage(gsrobject,driver);
+			dbvalidationalldept(gsrobject, results,driver);
+		}
+		
+		  }
+		catch(Exception e){
+				gapscantabs(gsrobject,results,driver);
+				waitFor(5);
+				
+			}
+	}
+//		scrollUp(driver);
+//		gsrobject.generategapscanreport.click();
+	
+	}
+
+
+public int random_no(int size)
+{
+	Random rand = new Random();
+	int n = rand.nextInt(size);
+	return n;
+}
+public void paginationhandling(GapscanReportObjects gsrobject,WebDriver driver) throws IOException  
+{
+	
+	if(gsrobject.msg.size()!=0)
+	{
+		String mesg = gsrobject.msgtext.getText();
+		if(mesg.equals("Sorry, No records found."))
+		{
+			//ltoReportArtScenarios.put(ltoReportArttestname, "" + mesg + ";;;Pass");
+			//htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"Click Stock management;;;PASS");
+			
+		//Report_AddStep("testcase", ""+mesg+"","","", "");
+	click(gsrobject.close);
+		}
+		
+		/*##else
+		{
+			
+		}*/
+	}		
+	else
+	{
+		 int u = gsrobject.pagination.size();//To calc how many pages are there
+			//As Prev & next are included we are subtracting it by 2
+			if(u!=0)
+			{
+				for(int k=1;k<=5;k++)
+				{
+				WebElement elements =  prepareWebElementWithDynamicXpathWithInt(gsrobject.paginationdynamic, k+1,driver);//Click on the respective page
+				elements.click();
+				waitFor(1);
+			}
+
+				
+			for(int k=2;k<=2;k++)
+			{
+				WebElement elements =  prepareWebElementWithDynamicXpathWithInt(gsrobject.paginationdynamic, k,driver);//Click on the respective page
+				elements.click();
+				waitFor(1);
+			}
+				
+			}}}	
+
+	public List<List<Object>> gapscantabs(GapscanReportObjects gsrobject,
+			List<List<Object>> results,WebDriver driver) throws IOException // For Pagination
+															// purpose
+	{
+		String art = null;
+		String desc = null;
+		String SOH = null;
+
+		List<List<Object>> allticket = null;
+		/*
+		 * List<List<Object>> results = new ArrayList<List<Object>>();//##
+		 * 
+		 * String indiv_UomArticle_sql = data.getText("alldept");// Action
+		 * indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("20171110",
+		 * convdate); // today // tab List<List<Object>> results =
+		 * sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		 */
+
+		int v = gsrobject.tabsize.size(); // to know the tab size
+		//System.out.println(v);
+//		for (int j = 1; j <= v; j++) {
+//			WebElement element = prepareWebElementWithDynamicXpathWithInt(
+//					gsrobject.tabsdynamic, j,driver); // dynamically choosing Action
+//												// required and Review only tab
+//			element.click();
+
+			waitFor(1);
+
+			allticket = getValuesFromTable(gsrobject.tablecontents1);// Extracting
+																		// table
+																		// values
+			// [[Non PI Article - Not an AutoStockR line, verify and remove
+			// ticket if required]
+			//System.out.println(allticket);
+
+			htmlToExtent(cName, mName, extLogger, driver,
+					"The below details is about article, description,Stock on hand;;;Pass");
+
+			// Report_AddStep("testcase","The below details is about article, description,Stock on hand",
+			// "", "", "");
+			// Report_AddStep("testcase",""+allticket+"", "", "", "");
+			// ## results=
+			ElementContains1(cName, mName, extLogger, driver, allticket,
+					results);// ##
+			// [[28730, , Bundaberg Rum & Cola Can 6x375ml, , , , 24, 24 EA, 4
+			// EA, , FILL REPORT, No]]
+			// [[28730, Bundaberg Rum & Cola Can 6x375ml, 4, FILL REPORT, FILL
+			// REPORT, A, 0, 1.000 CAR, 24.000000, 0, 0, 0, 0, 0, N, 24.000,
+			// 4.000 EA, 0, 0, 0, EA, Fill Stock - Locate stock instore and fill
+			// to shelf, 0],
+			// ####Change results->remove all zeros
+
+			fn(allticket, art, desc, SOH,driver);
+
+//		}
+		return allticket;
+	}
+
+public void fn(List<List<Object>> allticket,String art,String desc,String SOH,WebDriver driver) throws IOException
+{
+for (Iterator<List<Object>> it = allticket.iterator(); it.hasNext();) {//2D list
+List<Object> elem = it.next(); //Single Dimension list
+for(int i = 0;i<elem.size();i++) {
+if(i==0)
+{
+	art = (String) elem.get(i);
+}
+if(i==1)
+{
+	desc = (String) elem.get(i);
+	}
+if(desc==null)
+{
+	desc="";
+}
+if(i==2)
+{
+	SOH = (String) elem.get(i);
+}
+if(SOH==null)
+{
+	SOH="";
+}
+}
+htmlToExtent(cName,mName,extLogger,driver, "The details are "+art+" "+desc+" "+SOH+";;;Pass");
+
+//Report_AddStep("testcase","The details are "+art+","+desc+","+SOH+"", "", "", "");
+}}
+
+
+
+public List<Integer> generateMultiplRandomNumber(int min, int max, int multiple)
+{
+	 ArrayList<Integer> list = new ArrayList<Integer>();
+		
+        for (int i=min; i<=max; i++) {
+            list.add(new Integer(i));
+        }
+        Collections.shuffle(list);
+        /*for (int i=0; i<multiple; i++) {
+            //System.out.println(list.get(i));*/
+        //}
+        
+        return list;
+}
+public List<String> PartialDepartment(GapscanReportObjects gsrobject,WebDriver driver) throws IOException
+{
+	List<String> selectedDept = new ArrayList<String>();
+	int max = gsrobject.gapscandeptlist.size();//## gapscandeptlist is dept list
+	int min = 2;
+	
+	List<Integer> randomNumbers = new ArrayList<Integer>();
+	//System.out.println(randomNumbers);//##
+
+	gsrobject.dept_dropdown.click();
+	
+	if (isEnabled(gsrobject.alldept))
+		
+	{
+		click(gsrobject.alldept);//## uncheck all dept
+		waitFor(1);
+		
+	}
+	
+	else
+	{
+		click(gsrobject.alldept);
+		waitForJSandJQueryToLoad(driver);;
+		
+		click(gsrobject.alldept);
+		waitForJSandJQueryToLoad(driver);;
+	}
+
+
+
+randomNumbers = generateMultiplRandomNumber(min, max, 3);
+
+
+
+
+for(int i=0;i<3;i++)//## 3 depts to be selected
+{
+	WebElement element =  prepareWebElementWithDynamicXpathWithInt
+			(GapscanReportObjects.partialdeptselectiondynamic,randomNumbers.get(i),driver);
+	String dptName = element.getText().trim();//##dptName is the dpt to be selected
+	
+	
+	Coordinates coordinate = ((Locatable)element).getCoordinates(); 
+	coordinate.onPage(); 
+	coordinate.inViewPort();
+
+	
+	WebElement deptCheckbox =  prepareWebElementWithDynamicXpathWithInt
+			(GapscanReportObjects.partialdeptselectiondynamic,randomNumbers.get(i),driver);
+	click(deptCheckbox);
+	
+	//Report_AddStep("testcase","The department Selected is : "+dptName,"" ,"" , "Pass");
+	selectedDept.add(dptName);
+}
+//		htmlToExtent(cName,mName,extLogger,driver, "The department Selected is : ;"+selectedDept+";;Pass");
+		htmlToExtent(cName,mName,extLogger,driver, "The department Selected is "+selectedDept+";;;Pass");
+		return selectedDept;
+}
+
+
+
+
+public List<String> PartialEmployees(GapscanReportObjects gsrobject,WebDriver driver) throws IOException
+{
+	List<String> selectedemployees = new ArrayList<String>();
+	int max = gsrobject.employeesize.size();
+	//System.out.println("The no.of elements is"+max);
+	int min = 2;
+	
+	List<Integer> randomNumbers = new ArrayList<Integer>();
+	gsrobject.edropdown.click();
+	
+	if (isEnabled(gsrobject.allemployees))
+		
+	{
+		click(gsrobject.allemployees);
+		
+		waitForJSandJQueryToLoad(driver);;
+	}
+	
+	else
+	{
+		click(gsrobject.allemployees);
+		waitForJSandJQueryToLoad(driver);;
+		
+		click(gsrobject.allemployees);
+		waitForJSandJQueryToLoad(driver);;
+	}
+
+
+
+randomNumbers = generateMultiplRandomNumber(min, max, 3);
+
+
+
+
+for(int i=0;i<2;i++)//##3 employees to be selected
+{
+	//##error for 3rd
+	WebElement element =  prepareWebElementWithDynamicXpathWithInt(GapscanReportObjects.partialemployeeselectiondynamic,randomNumbers.get(i),driver);
+String empName = element.getText().trim();//##deptName change to empName
+	
+	
+
+
+	Coordinates coordinate = ((Locatable)element).getCoordinates(); 
+	coordinate.onPage(); 
+	coordinate.inViewPort();
+
+	
+	WebElement empNameCheckbox =  prepareWebElementWithDynamicXpathWithInt(GapscanReportObjects.partialemployeeselectiondynamic,randomNumbers.get(i),driver);
+	click(empNameCheckbox);
+	htmlToExtent(cName,mName,extLogger,driver, "The department Selected is : "+empName+";;;Pass");
+	//Report_AddStep("testcase","The department Selected is : "+dptName,"" ,"" , "Pass");
+	selectedemployees.add(empName);
+}
+
+return selectedemployees;
+}
+
+public List<String> primarydepartment(GapscanReportObjects gsrobject,WebDriver driver) throws IOException {
+	List<String> deptNameListApp = new ArrayList<String>();
+	
+	click(gsrobject.dept_dropdown);
+	waitForJSandJQueryToLoad(driver);;
+
+//	int deptsize=gsrobject.innerDD.size();
+	int deptsize=16;
+	for(int i=1;i<=deptsize;i++)
+	{
+		WebElement deptCheckbox =  prepareWebElementWithDynamicXpathWithInt(gsrobject.partialdeptselectiondynamic1,i,driver);
+		
+		Coordinates coordinate = ((Locatable)deptCheckbox).getCoordinates(); 
+		coordinate.onPage(); 
+		coordinate.inViewPort();
+		
+		if(i==1){
+			if(deptCheckbox.isSelected())
+			{
+				WebElement element =  prepareWebElementWithDynamicXpathWithInt(gsrobject.partialdeptselectiondynamic,i,driver);
+				String dptName = element.getText().trim();
+				String e =dptName.substring(0, 3).trim();
+				//System.out.println(e);
+				deptNameListApp.add(e);
+				//System.out.println(deptNameListApp);
+				break;
+			}
+		}
+		if(deptCheckbox.isSelected())
+		{
+			WebElement element =  prepareWebElementWithDynamicXpathWithInt(gsrobject.partialdeptselectiondynamic,i,driver);
+			String dptName = element.getText().trim();
+			deptNameListApp.add(dptName);
+			//System.out.println(deptNameListApp);
+		}
+		
+	}
+	return deptNameListApp;
+}
+
+public void gapscannew(GapscanReportObjects gsrobject, List<List<Object>> results, List<List<Object>> results1, List<List<Object>> resultspm,WebDriver driver) throws IOException, ParseException {
+	
+
+	int reasontypesize = gsrobject.reasontypelist.size();//Size of the reason radio buttons
+	int timesize = gsrobject.timelist.size();//Size of the Time radio buttons
+	
+	
+	for(int i=1;i<=1;i++)
+	{
+		
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.reasontypesdyn,i,driver);//Reasondynamic
+		click(ele);
+		
+		//##String date = common.addDaystoCurrentDate(-6);
+		String date = common.addDaystoCurrentDate(0);
+		gsrobject.date.clear();
+		gsrobject.date.sendKeys(date);
+		
+		for(i=1;i<=timesize;i++)//Loop is done for AM, PM and both
+		{
+		
+		WebElement timeele = prepareWebElementWithDynamicXpathWithInt(gsrobject.timedynamic,i,driver);//timeDynamic
+		waitFor(2);
+		verticalinternalscroll(gsrobject.dept_dropdown, driver);
+		click(timeele);//Time conditions are clicked
+		
+		gsrobject.dept_dropdown.click();// Dept dropdown is clicked
+		
+		if (isEnabled(gsrobject.alldept))
+		{
+			
+			click(gsrobject.alldept);
+			click(gsrobject.alldept);
+			waitFor(1);
+			click(gsrobject.done);
+			
+		}
+		else
+		{
+			click(gsrobject.alldept);// Not enabled means click alldept once
+			waitFor(1);
+			click(gsrobject.done);
+			
+		}
+		
+	click(gsrobject.edropdown);// Employee dropdown
+		
+		
+		if (isEnabled(gsrobject.allemployees))
+		
+		{
+			click(gsrobject.allemployees);
+			click(gsrobject.allemployees);
+			waitFor(1);
+			click(gsrobject.edone);
+			
+		}
+	
+		else
+		{
+			click(gsrobject.allemployees);
+			waitFor(1);
+			click(gsrobject.edone);
+			waitFor(3);
+		}
+	
+		gsrobject.generatereport.click(); 
+		waitForJSandJQueryToLoad(driver);;
+		/*if(gsrobject.msg.size()!=0)
+		{
+			gsrPage.fnNoRecords(gsrobject);		
+		}*/
+		if(i==1){
+		if(gsrobject.printButton1.size()==0)
+		{
+			//htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+			String mesg = gsrobject.norecords.getText();
+			if(mesg.equals("Sorry, No records found."))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+				//htmlToExtent(cName,mName,extLogger,driver, "+mesg+;;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+			//Report_AddStep("testcase", ""+mesg+"","","", "");
+			gsrobject.close.click();
+			gsrobject.generategapscanreport.click();
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;
+			
+			}
+			
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+			printPage(gsrobject,driver);
+			dbvalidationalldept(gsrobject,results1,driver);
+//			dbvalidationalldeptam(gsrobject,results1,driver);// DB validation for AM //##fail		
+		     }
+		
+		}
+		if(i==2){
+			if(gsrobject.printButton1.size()==0)//No records found is displayed
+			{
+				String mesg = gsrobject.norecords.getText();
+				waitFor(2);
+				if(mesg.equals("Sorry, No records found."))
+				{
+					waitFor(2);
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+					//htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				//Report_AddStep("testcase", ""+mesg+"","","", "");
+				gsrobject.close.click();
+				gsrobject.generategapscanreport.click();
+				gsrobject.generategapscanreport.click();
+				}
+				
+				}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+				printPage(gsrobject,driver);
+				dbvalidationalldept(gsrobject, resultspm,driver);// DB validation for PM and both
+				    }
+		
+			}
+		if(i==3){
+			if(gsrobject.printButton1.size()==0)//No records found is displayed
+			{
+				String mesg = gsrobject.norecords.getText();
+				waitFor(2);
+				if(mesg.equals("Sorry, No records found."))
+				{
+					waitFor(2);
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+					//htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				//Report_AddStep("testcase", ""+mesg+"","","", "");
+				gsrobject.close.click();
+				gsrobject.generategapscanreport.click();
+				gsrobject.generategapscanreport.click();
+				}
+			
+				}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+				printPage(gsrobject,driver);
+				dbvalidationalldept(gsrobject, results,driver);// DB validation for PM and both
+				    }
+			}
+		}
+		}
+	}
+	
+
+
+public void gapscannewreviewonly(GapscanReportObjects gsrobject, List<List<Object>> resultsboth, List<List<Object>> resultsam, List<List<Object>> resultspm,WebDriver driver) throws IOException, ParseException {
+	
+
+	int reasontypesize = gsrobject.reasontypelist.size();
+	int timesize = gsrobject.timelist.size();
+	
+	
+	for(int i=2;i<=2;i++)//##changed
+	{
+		
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.reasontypesdyn,i,driver);//Reasondynamic
+		click(ele);
+		
+		//##String date = common.addDaystoCurrentDate(-3);//Date is given here
+		String date = common.addDaystoCurrentDate(0);
+		gsrobject.date.clear();
+		waitFor(1);
+		gsrobject.date.sendKeys(date);
+		waitFor(1);
+		
+		for(i=1;i<=timesize;i++)
+		{
+		
+		WebElement timeele = prepareWebElementWithDynamicXpathWithInt(gsrobject.timedynamic,i,driver);//timeDynamic
+		waitFor(2);
+		verticalinternalscroll(gsrobject.dept_dropdown, driver);
+		click(timeele);
+		
+		
+	//	PartialDepartment(gsrobject,driver);//Partial dept is selected
+//		waitFor(5);
+//		click(gsrobject.done);
+//		waitFor(2);
+//		click(gsrobject.edropdown);
+		
+//		gsrobject.dept_dropdown.click();
+//		if (isEnabled(gsrobject.allemployees))
+//		
+//		{
+//			click(gsrobject.allemployees);
+//			click(gsrobject.allemployees);
+//			waitFor(1);
+//			click(gsrobject.edone);
+//			
+//		}
+//	
+//		else
+//		{
+//			click(gsrobject.allemployees);
+//			waitFor(1);
+//			click(gsrobject.edone);
+//			
+//		}
+		gsrobject.dept_dropdown.click();// Dept dropdown is clicked
+		
+		if (isEnabled(gsrobject.alldept))
+		{
+			
+			click(gsrobject.alldept);
+			waitFor(1);
+			click(gsrobject.alldept);
+			waitFor(1);
+			click(gsrobject.done);
+			
+		}
+		else
+		{
+			click(gsrobject.alldept);// Not enabled means click alldept once
+			waitFor(1);
+			click(gsrobject.done);
+			
+		}
+		
+		gsrobject.generatereport.click(); 
+		
+		waitForJSandJQueryToLoad(driver);;
+		
+		if(gsrobject.printButton1.size() ==0)
+		{
+			if(i==1){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+			}
+			else if(i==2){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+			}
+			else if(i==3){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+			}
+		
+			String mesg = gsrobject.norecords.getText();
+			waitFor(2);
+			if(mesg.equals("Sorry, No records found."))
+			{
+				waitFor(2);
+				//htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+			//Report_AddStep("testcase", ""+mesg+"","","", "");
+			gsrobject.close.click();
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;
+			
+			}	
+			
+		}
+			
+		else
+		{
+			if(i==1){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+				printPage(gsrobject,driver);
+				dbvalidationalldeptpm_reviewonly(gsrobject,resultsam,driver);//AM
+//				dbvalidationalldeptam_reviewonly(gsrobject,resultsam,driver);//AM	
+			}
+		
+			 if(i==2){
+				 htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+				printPage(gsrobject,driver);
+				dbvalidationalldeptpm_reviewonly(gsrobject,resultspm,driver);//PM
+			 		}
+		
+			 if(i==3){
+				 htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+				printPage(gsrobject,driver);
+				dbvalidationalldept_reviewonly(gsrobject, resultsboth,driver);//Both
+		}
+		}
+		
+		}}}
+
+
+public void gapscannewprimarydepartmentactionrequired(GapscanReportObjects gsrobject, List<List<Object>> resultsboth, List<List<Object>> resultsam, List<List<Object>> resultspm,WebDriver driver) throws IOException, ParseException {
+	
+
+	int reasontypesize = gsrobject.reasontypelist.size();
+	int timesize = gsrobject.timelist.size();
+	
+	
+	for(int i=1;i<=1;i++)//##changed
+	{
+		
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.reasontypesdyn,i,driver);//Reasondynamic
+		click(ele);
+		
+		//##String date = common.addDaystoCurrentDate(-3);//Date is given here
+		String date = common.addDaystoCurrentDate(0);
+		gsrobject.date.clear();
+		waitFor(1);
+		gsrobject.date.sendKeys(date);
+		waitFor(1);
+		
+		for(i=1;i<=timesize;i++)
+		{
+		
+		WebElement timeele = prepareWebElementWithDynamicXpathWithInt(gsrobject.timedynamic,i,driver);//timeDynamic
+		waitFor(2);
+		verticalinternalscroll(timeele, driver);
+		click(timeele);
+		
+		
+	//	PartialDepartment(gsrobject,driver);//Partial dept is selected
+//		waitFor(5);
+//		click(gsrobject.done);
+//		waitFor(2);
+//		click(gsrobject.edropdown);
+		
+//		gsrobject.dept_dropdown.click();
+//		if (isEnabled(gsrobject.allemployees))
+//		
+//		{
+//			click(gsrobject.allemployees);
+//			click(gsrobject.allemployees);
+//			waitFor(1);
+//			click(gsrobject.edone);
+//			
+//		}
+//	
+//		else
+//		{
+//			click(gsrobject.allemployees);
+//			waitFor(1);
+//			click(gsrobject.edone);
+//			
+//		}
+//		gsrobject.dept_dropdown.click();// Dept dropdown is clicked
+//		
+//		if (isEnabled(gsrobject.alldept))
+//		{
+//			
+//			click(gsrobject.alldept);
+//			waitFor(1);
+//			click(gsrobject.alldept);
+//			waitFor(1);
+//			click(gsrobject.done);
+//			
+//		}
+//		else
+//		{
+//			click(gsrobject.alldept);// Not enabled means click alldept once
+//			waitFor(1);
+//			click(gsrobject.done);
+//			
+//		}
+		
+		gsrobject.generatereport.click(); 
+		
+		waitForJSandJQueryToLoad(driver);;
+		
+		if(gsrobject.printButton1.size()==0)
+		{
+			if(i==1){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+			}
+			else if(i==2){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+			}
+			else if(i==3){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+			}
+			String mesg = gsrobject.norecords.getText();
+			waitFor(2);
+			if(mesg.equals("Sorry, No records found."))
+			{
+				waitFor(2);
+				//htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+			//Report_AddStep("testcase", ""+mesg+"","","", "");
+			gsrobject.close.click();
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;
+			
+			}	
+			
+		}
+			
+		else
+		{
+			if(i==1){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+				printPage(gsrobject,driver);
+				dbvalidationalldept(gsrobject,resultsam,driver);//AM
+//				dbvalidationalldeptam_reviewonly(gsrobject,resultsam,driver);//AM	
+			}
+		
+			 if(i==2){
+				 htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+				 	printPage(gsrobject,driver);
+				 	dbvalidationalldept(gsrobject,resultspm,driver);//PM
+			 		}
+		
+		 if(i==3){
+			 htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+			printPage(gsrobject,driver);
+			dbvalidationalldept(gsrobject, resultsboth,driver);//Both
+		}
+		}
+		
+		}}}
+
+public void gapscannewprimarydepartmentreviewonly(GapscanReportObjects gsrobject, List<List<Object>> resultsboth, List<List<Object>> resultsam, List<List<Object>> resultspm,WebDriver driver) throws IOException, ParseException {
+	
+
+	int reasontypesize = gsrobject.reasontypelist.size();
+	int timesize = gsrobject.timelist.size();
+	
+	
+	for(int i=2;i<=2;i++)//##changed
+	{
+		
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.reasontypesdyn,i,driver);//Reasondynamic
+		click(ele);
+		
+		//##String date = common.addDaystoCurrentDate(-3);//Date is given here
+		String date = common.addDaystoCurrentDate(0);
+		gsrobject.date.clear();
+		waitFor(1);
+		gsrobject.date.sendKeys(date);
+		waitFor(1);
+		
+		for(i=1;i<=timesize;i++)
+		{
+		
+		WebElement timeele = prepareWebElementWithDynamicXpathWithInt(gsrobject.timedynamic,i,driver);//timeDynamic
+		waitFor(2);
+		verticalinternalscroll(timeele, driver);
+		click(timeele);
+		
+		gsrobject.generatereport.click(); 
+		
+		waitForJSandJQueryToLoad(driver);;
+		
+		if(gsrobject.printButton1.size()==0)
+		{
+			if(i==1){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+			}
+			else if(i==2){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+			}
+			else if(i==3){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+			}
+			String mesg = gsrobject.norecords.getText();
+			waitFor(2);
+			if(mesg.equals("Sorry, No records found."))
+			{
+				waitFor(2);
+				//htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+			//Report_AddStep("testcase", ""+mesg+"","","", "");
+			gsrobject.close.click();
+			waitFor(2);
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;
+			
+			}	
+			
+		}
+			
+		else
+		{
+			if(i==1){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+				printPage(gsrobject,driver);
+				dbvalidationalldeptpm_reviewonly(gsrobject,resultsam,driver);//AM
+//				dbvalidationalldeptam_reviewonly(gsrobject,resultsam,driver);//AM	
+			}
+			 if(i==2){
+				 htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+				 printPage(gsrobject,driver);
+				 dbvalidationalldeptpm_reviewonly(gsrobject,resultspm,driver);//PM
+			 		}
+			 if(i==3){
+				 htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+				 printPage(gsrobject,driver);
+				 dbvalidationalldept_reviewonly(gsrobject, resultsboth,driver);//Both
+			}
+		}
+		
+		}}}
+
+public void gapscannewbothprimarydepartmentactionrequired(GapscanReportObjects gsrobject, List<List<Object>> resultsboth, List<List<Object>> resultsam, List<List<Object>> resultspm,WebDriver driver) throws IOException, ParseException {
+	
+
+	int reasontypesize = gsrobject.reasontypelist.size();
+	int timesize = gsrobject.timelist.size();
+	
+	
+	for(int i=3;i<=3;i++)//##changed
+	{
+		
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.reasontypesdyn,i,driver);//Reasondynamic
+		click(ele);
+		
+		//##String date = common.addDaystoCurrentDate(-3);//Date is given here
+		String date = common.addDaystoCurrentDate(0);
+		gsrobject.date.clear();
+		waitFor(1);
+		gsrobject.date.sendKeys(date);
+		waitFor(1);
+		
+		for(i=1;i<=timesize;i++)
+		{
+		
+		WebElement timeele = prepareWebElementWithDynamicXpathWithInt(gsrobject.timedynamic,i,driver);//timeDynamic
+		waitFor(2);
+		verticalinternalscroll(timeele, driver);
+		click(timeele);
+		
+		
+	//	PartialDepartment(gsrobject,driver);//Partial dept is selected
+//		waitFor(5);
+//		click(gsrobject.done);
+//		waitFor(2);
+//		click(gsrobject.edropdown);
+		
+//		gsrobject.dept_dropdown.click();
+//		if (isEnabled(gsrobject.allemployees))
+//		
+//		{
+//			click(gsrobject.allemployees);
+//			click(gsrobject.allemployees);
+//			waitFor(1);
+//			click(gsrobject.edone);
+//			
+//		}
+//	
+//		else
+//		{
+//			click(gsrobject.allemployees);
+//			waitFor(1);
+//			click(gsrobject.edone);
+//			
+//		}
+//		gsrobject.dept_dropdown.click();// Dept dropdown is clicked
+//		
+//		if (isEnabled(gsrobject.alldept))
+//		{
+//			
+//			click(gsrobject.alldept);
+//			waitFor(1);
+//			click(gsrobject.alldept);
+//			waitFor(1);
+//			click(gsrobject.done);
+//			
+//		}
+//		else
+//		{
+//			click(gsrobject.alldept);// Not enabled means click alldept once
+//			waitFor(1);
+//			click(gsrobject.done);
+//			
+//		}
+		
+		gsrobject.generatereport.click(); 
+		
+		waitForJSandJQueryToLoad(driver);;
+		
+		if(gsrobject.close.isDisplayed()){
+			String mesg1 = gsrobject.norecords.getText();
+			waitFor(2);
+			if(mesg1.equalsIgnoreCase("Sorry, No records found for \"Review Only\".") || mesg1.equalsIgnoreCase("Sorry, No records found for \"Action Required\".")){
+			gsrobject.close.click();
+			htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+			}
+		}
+
+		if(gsrobject.printButton1.size()==0)
+		{
+			String mesg = gsrobject.norecords.getText();
+			waitFor(2);
+			if(mesg.equals("Sorry, No records found."))
+			{
+				if(i==1){
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+				}
+				else if(i==2){
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+				}
+				else if(i==3){
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+				}
+				waitFor(2);
+				//htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+			//Report_AddStep("testcase", ""+mesg+"","","", "");
+			gsrobject.close.click();
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;
+			
+			}	
+			
+		}
+			
+		else
+		{
+			if(i==1){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+				printPage(gsrobject,driver);
+				dbvalidationalldeptpm_both(gsrobject,resultsam,driver);
+		//		dbvalidationalldeptpm_reviewonly(gsrobject,resultsam,driver);//AM   sv
+//				dbvalidationalldeptam_reviewonly(gsrobject,resultsam,driver);//AM	
+			}
+			
+		
+		
+			 if(i==2){
+				 htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+				 printPage(gsrobject,driver);
+				 dbvalidationalldeptpm_both(gsrobject,resultspm,driver);
+			//	 	dbvalidationalldeptpm_reviewonly(gsrobject,resultspm,driver);//PM   sv
+			 		}
+		
+		
+		
+		 if(i==3){
+			 htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+			 printPage(gsrobject,driver);
+			 dbvalidationalldeptpm_both(gsrobject, resultsboth,driver);//Both
+//		   	 dbvalidationalldept_reviewonly(gsrobject, resultsboth,driver);//Both   sv
+		}
+		}
+		
+		}}}
+
+
+
+
+/*public void gapscanreviewonly(GapscanReportObjects gsrobject) throws IOException, ParseException {
+	
+
+	int reasontypesize = gsrobject.reasontypelist.size();
+	int timesize = gsrobject.timelist.size();
+	
+	
+	for(int i=2;i<=2;i++)
+	{
+		
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.reasontypesdyn,i);//Reasondynamic
+		click(ele);
+		
+		String date = common.addDaystoCurrentDate(-2);
+		gsrobject.date.clear();
+		waitFor(1);
+		gsrobject.date.sendKeys(date);
+		waitFor(1);
+		
+		for(i=1;i<=timesize;i++)
+		{
+		waitFor(3);
+		WebElement timeele = prepareWebElementWithDynamicXpathWithInt(gsrobject.timedynamic,i);//timeDynamic
+		waitFor(3);
+		click(timeele);
+		
+		
+		gsrobject.dropdown.click();
+		
+		if (isEnabled(gsrobject.alldept))
+		{
+			
+			click(gsrobject.alldept);
+			click(gsrobject.alldept);
+			waitFor(1);
+			click(gsrobject.done);
+			
+		}
+		else
+		{
+			click(gsrobject.alldept);
+			waitFor(1);
+			click(gsrobject.done);
+			
+		}
+		
+	click(gsrobject.edropdown);
+		
+		
+		if (isEnabled(gsrobject.allemployees))
+		
+		{
+			click(gsrobject.allemployees);
+			click(gsrobject.allemployees);
+			waitFor(1);
+			click(gsrobject.edone);
+			
+		}
+	
+		else
+		{
+			click(gsrobject.allemployees);
+			waitFor(1);
+			click(gsrobject.edone);
+			
+		}
+	
+		gsrobject.generatereport.click(); waitForJSandJQueryToLoad(driver);;
+		if(gsrobject.close1.isDisplayed())
+		{
+			String mesg = gsrobject.norecords.getText();
+			if(mesg.equals("Sorry, No records found."))
+			{
+				
+				htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+			//Report_AddStep("testcase", ""+mesg+"","","", "");
+			gsrobject.close.click();
+			gsrobject.generategapscanreport.click();
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;
+			
+			}
+		
+	
+	
+}
+	}}}
+*/
+
+public void gapscanactionreviewboth(GapscanReportObjects gsrobject, List<List<Object>> results, List<List<Object>> resultspm, List<List<Object>> results1,WebDriver driver) throws IOException, ParseException {
+	
+
+	int reasontypesize = gsrobject.reasontypelist.size();
+	int timesize = gsrobject.timelist.size();
+	int resultsize = results.size();//Both
+	int resultspmsize = resultspm.size();//PM
+	int results1size = results1.size();//AM
+	
+	
+	for(int i=3;i<=3;i++)
+	{
+		
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.reasontypesdyn,i,driver);//Reasondynamic
+		click(ele);
+		
+		//##String date = common.addDaystoCurrentDate(-6);
+		String date = common.addDaystoCurrentDate(0);
+		gsrobject.date.clear();
+		waitFor(1);
+		gsrobject.date.sendKeys(date);
+		waitFor(1);
+		
+		for(i=1;i<=timesize;i++)
+		{
+		WebElement timeele = prepareWebElementWithDynamicXpathWithInt(gsrobject.timedynamic,i,driver);//timeDynamic
+		waitFor(1);
+		verticalinternalscroll(gsrobject.dept_dropdown, driver);
+		
+		click(timeele);
+		
+		
+		gsrobject.dept_dropdown.click();
+		
+		if (isEnabled(gsrobject.alldept))
+		{
+			
+			click(gsrobject.alldept);
+			click(gsrobject.alldept);
+			waitFor(1);
+			click(gsrobject.done);
+			
+		}
+		else
+		{
+			click(gsrobject.alldept);
+			waitFor(1);
+			click(gsrobject.done);
+			
+		}
+		
+	click(gsrobject.edropdown);
+		
+		
+		if (isEnabled(gsrobject.allemployees))
+		
+		{
+			click(gsrobject.allemployees);
+			click(gsrobject.allemployees);
+			waitFor(1);
+			click(gsrobject.edone);
+			
+		}
+	
+		else
+		{
+			click(gsrobject.allemployees);
+			waitFor(1);
+			click(gsrobject.edone);
+			
+		}
+	
+		gsrobject.generatereport.click();
+		waitForJSandJQueryToLoad(driver);;
+		try{
+			if(gsrobject.close.isDisplayed()){
+				String mesg = gsrobject.norecords.getText();
+				waitFor(2);
+				System.out.println(mesg);
+				if(mesg.equalsIgnoreCase("Sorry, No records found for \"Review Only\".")){
+				gsrobject.close.click();
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+				}
+			}
+		if(gsrobject.printButton1.size()==0)//No records found is displayed
+		{
+			if(i==1){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+			}
+			else if(i==2){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+			}
+			else if(i==3){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+			}
+			String mesg = gsrobject.norecords.getText();
+			waitFor(2);
+			if(mesg.contains("Sorry, No records found."))
+			{
+				waitFor(2);
+				//htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+			//Report_AddStep("testcase", ""+mesg+"","","", "");
+			gsrobject.close.click();
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;
+			}			
+		}	
+		
+		else{
+		if(i==1)
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+			printPage(gsrobject,driver);
+			dbvalidationalldeptpm_both(gsrobject,results1,driver);
+		//	dbvalidationalldeptam_both(gsrobject,results1,driver);//AM
+		}
+		
+		if(i==2)
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+			printPage(gsrobject,driver);
+			dbvalidationalldeptpm_both(gsrobject,resultspm,driver);//PM
+		}
+		
+		if(i==3)
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+			printPage(gsrobject,driver);
+			dbvalidationalldeptpm_both(gsrobject,results,driver);//Both
+//			dbvalidationalldept_both(gsrobject,results,driver);//Both
+			
+		}
+		}
+		}
+		catch(Exception e){
+			
+		}
+		
+		
+		
+		
+		//public void gapscanactionreviewboth(GapscanReportObjects gsrobject, List<List<Object>> results,
+				//List<List<Object>> resultspm, List<List<Object>> results1) 
+		
+		
+		
+//		if(gsrobject.close.isDisplayed())
+//		{
+//			String mesg2 = gsrobject.norecordsreviewonly.getText();
+//			String mesg1 = gsrobject.norecords.getText();
+//			String reviewonly = "Review Only";
+//			if(mesg2.contains("Review Only"))
+//			{
+//				
+//				//htmlToExtent(cName,mName,extLogger,driver, ""+mesg2+";;;Pass");
+//				htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+//			//Report_AddStep("testcase", ""+mesg+"","","", "");
+//			gsrobject.close.click();
+//			waitForJSandJQueryToLoad(driver);;
+//			
+//			}
+//
+//		
+//			
+//}
+	}}}
+	
+
+
+
+public void gapscanactionrequiredpartial(GapscanReportObjects gsrobject, List<List<Object>> resultsboth, List<List<Object>> resultsam, List<List<Object>> resultspm,WebDriver driver) throws IOException, ParseException {
+	
+
+	int reasontypesize = gsrobject.reasontypelist.size();
+	int timesize = gsrobject.timelist.size();// am,pm,both
+	
+	
+	for(int i=1;i<=1;i++)
+	{
+		
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.reasontypesdyn,i,driver);//Reasondynamic
+		click(ele);
+		
+		String date = common.addDaystoCurrentDate(0);
+		gsrobject.date.clear();
+		gsrobject.date.sendKeys(date);
+		gsrobject.chummadate.click();
+		for(i=1;i<=timesize;i++)
+		{
+		
+		WebElement timeele = prepareWebElementWithDynamicXpathWithInt(gsrobject.timedynamic,i,driver);//timeDynamic
+		waitFor(2);
+		verticalinternalscroll(gsrobject.dept_dropdown, driver);
+		timeele.click();
+		
+//		PartialDepartment(gsrobject,driver);
+//		waitFor(5);
+//		click(gsrobject.done);
+//		waitFor(5);
+//	    click(gsrobject.edropdown);
+//		
+//		
+//		if (isEnabled(gsrobject.allemployees))
+//		
+//		{
+//			click(gsrobject.allemployees);
+//			click(gsrobject.allemployees);
+//			waitFor(1);
+//			click(gsrobject.edone);
+//			waitFor(5);
+//		}
+//	
+//		else
+//		{
+//			click(gsrobject.allemployees);
+//			waitFor(1);
+//			click(gsrobject.edone);
+//			
+//		}
+//	
+		gsrobject.generatereport.click(); 
+		waitForJSandJQueryToLoad(driver);;
+		if(gsrobject.printButton1.size() ==0)
+		{
+			if(i==1){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+			}
+			else if(i==2){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+			}
+			else if(i==3){
+				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+			}
+			String mesg = gsrobject.norecords.getText();
+			if(mesg.equals("Sorry, No records found."))
+			{
+				
+				//htmlToExtent(cName,mName,extLogger,driver, "+mesg+;;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+			//Report_AddStep("testcase", ""+mesg+"","","", "");
+			gsrobject.close.click();
+			gsrobject.generategapscanreport.click();
+			waitFor(2);
+			gsrobject.generategapscanreport.click();
+			waitForJSandJQueryToLoad(driver);;
+			}
+		}
+		
+			else
+			{
+				if(i==1)
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+					printPage(gsrobject,driver);
+					dbpartial_both_actionrequired(gsrobject,resultsam,driver);//AM
+//					dbpartial_am_actionrequired(gsrobject,resultsam,driver);//AM
+				}
+				
+				if(i==2)
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+					printPage(gsrobject,driver);
+					dbpartial_both_actionrequired(gsrobject,resultspm,driver);//PM
+//					dbpartial_pm_actionrequired(gsrobject,resultspm,driver);//PM
+				}
+				
+				if(i==3)
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+					printPage(gsrobject,driver);
+					dbpartial_both_actionrequired(gsrobject,resultsboth,driver);//Both
+				}
+				
+			}
+		}
+	}
+}
+
+//Srivinith
+
+public List<String> gapscanactionrequiredpartial1(GapscanReportObjects gsrobject,WebDriver driver) throws IOException, ParseException {
+	
+
+//	int reasontypesize = gsrobject.reasontypelist.size();
+//	int timesize = gsrobject.timelist.size();// am,pm,both
+//	
+//	
+//	for(int i=1;i<=1;i++)
+//	{
+//		
+//		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.reasontypesdyn,i,driver);//Reasondynamic
+//		click(ele);
+//		
+//		String date = common.addDaystoCurrentDate(0);
+//		gsrobject.date.clear();
+//		waitFor(3);
+//		gsrobject.date.sendKeys(date);
+//		waitFor(3);
+//		gsrobject.chummadate.click();
+//		waitFor(3);
+//		for(i=1;i<=timesize;i++)
+//		{
+//		
+//		WebElement timeele = prepareWebElementWithDynamicXpathWithInt(gsrobject.timedynamic,i,driver);//timeDynamic
+//		waitFor(3);
+//		timeele.click();
+//		
+//		waitFor(5);
+//		
+//		PartialDepartment(gsrobject,driver);
+//		waitFor(5);
+//		click(gsrobject.done);
+//		waitFor(5);
+//	    click(gsrobject.edropdown);
+		
+		
+		List<String> dropDownList = PartialDepartment(gsrobject,driver);//Partial dept is selected
+		click(gsrobject.done);
+		waitFor(2);
+		click(gsrobject.edropdown);
+		
+//		gsrobject.dept_dropdown.click();
+		if (isEnabled(gsrobject.allemployees))
+		
+		{
+			click(gsrobject.allemployees);
+			click(gsrobject.allemployees);
+			waitFor(1);
+			click(gsrobject.edone);
+			
+		}
+	
+		else
+		{
+			click(gsrobject.allemployees);
+			waitFor(1);
+			click(gsrobject.edone);
+			
+		}
+	
+//		gsrobject.generatereport.click(); 
+//		waitForJSandJQueryToLoad(driver);;
+		return dropDownList;
+//		if(gsrobject.close.isDisplayed())
+//		{
+//			String mesg = gsrobject.norecords.getText();
+//			if(mesg.equals("Sorry, No records found."))
+//			{
+//				
+//				//htmlToExtent(cName,mName,extLogger,driver, "+mesg+;;;Pass");
+//				htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+//			//Report_AddStep("testcase", ""+mesg+"","","", "");
+//			gsrobject.close.click();
+//			gsrobject.generategapscanreport.click();
+//			gsrobject.generategapscanreport.click();
+//			waitForJSandJQueryToLoad(driver);;
+//			waitFor(5);
+//			
+//			}
+//		}
+//		
+//			else
+//			{
+//				if(i==1)
+//				{
+//					dbpartial_am_actionrequired(gsrobject,resultsam,driver);//AM
+//				}
+//				
+//				if(i==2)
+//				{
+//					dbpartial_pm_actionrequired(gsrobject,resultspm,driver);//PM
+//				}
+//				
+//				if(i==3)
+//				{
+//					dbpartial_both_actionrequired(gsrobject,resultsboth,driver);//Both
+//				}
+//				
+//			}
+//		}
+//	}
+}
+			
+
+
+public void gapscanreviewonlypartial(GapscanReportObjects gsrobject, List<List<Object>> resultsboth, List<List<Object>> resultsam, List<List<Object>> resultspm,WebDriver driver) throws IOException, ParseException {
+	//public void gapscanactionrequiredpartial(GapscanReportObjects gsrobject, List<List<Object>> resultsboth, List<List<Object>> resultsam, List<List<Object>> resultspm) throws IOException, ParseException {
+	
+
+	int reasontypesize = gsrobject.reasontypelist.size();
+	int timesize = gsrobject.timelist.size();
+	
+	
+	for(int i=2;i<=2;i++)
+	{
+		
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.reasontypesdyn,i,driver);//Reasondynamic
+		click(ele);
+		
+		String date = common.addDaystoCurrentDate(0);
+		gsrobject.date.clear();
+		waitFor(1);
+		gsrobject.date.sendKeys(date);
+		waitFor(1);
+		
+		for(i=1;i<=timesize;i++)
+		{
+		
+		WebElement timeele = prepareWebElementWithDynamicXpathWithInt(gsrobject.timedynamic,i,driver);//timeDynamic
+		waitFor(1);
+		verticalinternalscroll(gsrobject.dept_dropdown, driver);
+		click(timeele);
+		
+		
+//		PartialDepartment(gsrobject,driver);
+//		waitFor(5);
+//		click(gsrobject.done);
+//		
+//		click(gsrobject.edropdown);
+//		waitFor(5);
+//		
+//		if (isEnabled(gsrobject.allemployees))
+//		
+//		{
+//			click(gsrobject.allemployees);
+//			click(gsrobject.allemployees);
+//			waitFor(1);
+//			click(gsrobject.edone);
+//			
+//		}
+//	
+//		else
+//		{
+//			click(gsrobject.allemployees);
+//			waitFor(1);
+//			click(gsrobject.edone);
+//			
+//		}
+	
+		gsrobject.generatereport.click(); waitForJSandJQueryToLoad(driver);;
+		if(gsrobject.printButton1.size()==0)
+		{
+			String mesg = gsrobject.norecords.getText();
+			if(mesg.equals("Sorry, No records found."))
+			{
+				if(i==1){
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+				}
+				else if(i==2){
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+				}
+				else if(i==3){
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+				}
+				//htmlToExtent(cName,mName,extLogger,driver, "+mesg+;;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+			//Report_AddStep("testcase", ""+mesg+"","","", "");
+			gsrobject.close.click();
+			waitFor(5);
+			gsrobject.generategapscanreport.click();
+			waitFor(5);
+			gsrobject.generategapscanreport.click();
+			waitFor(5);
+			//##waitForJSandJQueryToLoad(driver);;
+			
+			}
+		
+		}	else
+			{
+
+				if(i==1)
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+					printPage(gsrobject,driver);
+					dbpartial_both_reviewonly(gsrobject,resultsam,driver);//AM
+//					dbpartial_am_reviewonly(gsrobject, resultsam,driver);//AM
+					//public void dbpartial_am_reviewonly(GapscanReportObjects gsrobject,List<List<Object>> resultsam) throws IOException, ParseException
+				}
+				
+				if(i==2)
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+					printPage(gsrobject,driver);
+					dbpartial_both_reviewonly(gsrobject,resultspm,driver);//AM
+//					dbvalidation_both_reviewonly(gsrobject,resultsboth,driver);
+//					dbpartial_pm_reviewonly(gsrobject,resultspm,driver);//PM
+				}
+				
+				
+				
+				if(i==3)
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+					printPage(gsrobject,driver);
+					dbpartial_both_reviewonly(gsrobject,resultsboth,driver);//AM
+//					dbvalidation_both_reviewonly(gsrobject,resultsboth,driver);//Both
+				}
+			}
+	
+}
+	}}
+public void dbpartial_am_reviewonly(GapscanReportObjects gsrobject,List<List<Object>> resultsam,WebDriver driver) throws IOException, ParseException 
+
+{
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	temp = getValuesFromTable(gsrobject.firstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	
+	int  listsize = gsrobject.listsize.size()-1;
+	int resultsamsize = resultsam.size();
+	
+	/*if(listsize==resultsamsize)
+		
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultsamsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		 
+	}
+	
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultsamsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Pass");	
+	}*/
+	
+	
+	String artno = resultsam.get(0).get(0).toString();
+	String promo_ind = resultsam.get(0).get(13).toString();
+    String description = resultsam.get(0).get(1).toString();
+	String last_received_date = resultsam.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = resultsam.get(0).get(11).toString();
+	 String last_received_orderno = resultsam.get(0).get(10).toString();
+	 
+	 String OM = resultsam.get(0).get(15).toString();
+	 String SOH = decimalFormat(resultsam.get(0).get(8).toString());
+	 String UOM = resultsam.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = resultsam.get(0).get(16).toString();
+	 String LTO = resultsam.get(0).get(6).toString();
+	 String comment = resultsam.get(0).get(4).toString();
+	 String actioned = resultsam.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	 htmlToExtent(cName,mName,extLogger,driver, "" + tempdb + ";;;Pass");
+		waitFor(5);
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	
+
+}
+
+
+
+
+public void dbpartial_pm_reviewonly(GapscanReportObjects gsrobject,List<List<Object>>  resultspm,WebDriver driver) throws IOException, ParseException 
+
+{
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	temp = getValuesFromTable(gsrobject.firstvaluerevOnly);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	//## temp->[[2924, 0, Peroni Nastro Azzurro 330ml, 0, 0, 0, 24, -160 EA, 0, 0, SOH ADJUSTED TODAY (OFF LOCATED )]]
+	int  listsize = gsrobject.listsizerevonly.size()-1;
+	int resultspmsize = resultspm.size();
+	
+	/*if(listsize==resultspmsize)
+		
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultspmsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		 
+	}
+	
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultspmsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Pass");	
+	}*/
+	
+	
+	String artno = resultspm.get(0).get(0).toString();
+	String promo_ind = resultspm.get(0).get(13).toString();
+	
+	
+ String description = resultspm.get(0).get(1).toString();
+ 
+	 
+	 
+	 String last_received_date = resultspm.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = resultspm.get(0).get(11).toString();
+	 String last_received_orderno = resultspm.get(0).get(10).toString();
+	 
+	 String OM = resultspm.get(0).get(15).toString();
+	 String SOH = decimalFormat(resultspm.get(0).get(8).toString());
+	 String UOM = resultspm.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = resultspm.get(0).get(16).toString();
+	 String LTO = resultspm.get(0).get(6).toString();
+	 String comment = resultspm.get(0).get(4).toString();
+	 String actioned = resultspm.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	 ltoReportArtScenarios.put(ltoReportArttestname, "" + tempdb + ";;;Pass");
+	 
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	
+
+	
+}
+
+
+public void dbvalidation_both_reviewonly(GapscanReportObjects gsrobject,List<List<Object>>resultsboth,WebDriver driver) throws IOException, ParseException 
+
+{
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	int totalRecordCount=0;
+	int resultssize = resultsboth.size();
+	temp = getValuesFromTable(gsrobject.firstvaluerevOnly);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	
+	if(gsrobject.lastPagesize.size()!=0){
+		
+		gsrobject.lastPage.click();
+		String webPageCount = gsrobject.lastPage.getText();
+		int pageCount = Integer.parseInt(webPageCount)-1;
+		int  listsize = gsrobject.listsize.size();
+		int  listsizePage = gsrobject.listsizeinpage.size();
+		int exactCount = listsizePage - 2;
+		totalRecordCount = (pageCount * 10) + exactCount;
+		//System.out.println(totalRecordCount);
+		if(totalRecordCount==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+	}
+
+else{
+		int  listsizePage = gsrobject.listsizeinpage.size();
+		int exactCount = listsizePage - 2;
+		totalRecordCount = exactCount;
+		if(totalRecordCount==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+
+}
+	
+	
+	String artno = resultsboth.get(0).get(0).toString();
+	String promo_ind = resultsboth.get(0).get(13).toString();	
+    String description = resultsboth.get(0).get(1).toString(); 
+	String last_received_date = resultsboth.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = resultsboth.get(0).get(11).toString();
+	 String last_received_orderno = resultsboth.get(0).get(10).toString();
+	 
+	 String OM = resultsboth.get(0).get(15).toString();
+	 String SOH = decimalFormat(resultsboth.get(0).get(8).toString());
+	 String UOM = resultsboth.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = resultsboth.get(0).get(16).toString();
+	 String LTO = resultsboth.get(0).get(6).toString();
+	 String comment = resultsboth.get(0).get(4).toString();
+	 String actioned = resultsboth.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	 htmlToExtent(cName,mName,extLogger,driver, "" + tempdb + ";;;Pass");
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	
+		
+	
+}
+
+public void gapscanbothpartial(GapscanReportObjects gsrobject,List<List<Object>>resultsam,List<List<Object>>resultspm,List<List<Object>>results,WebDriver driver) throws IOException, ParseException {
+	
+
+	int reasontypesize = gsrobject.reasontypelist.size();
+	int timesize = gsrobject.timelist.size();
+	
+	
+	for(int i=3;i<=3;i++)
+	{
+		
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.reasontypesdyn,i,driver);//Reasondynamic
+		click(ele);
+		
+		String date = common.addDaystoCurrentDate(0);
+		gsrobject.date.clear();
+		gsrobject.date.sendKeys(date);
+		
+		for(i=1;i<=timesize;i++)
+		{
+		
+		WebElement timeele = prepareWebElementWithDynamicXpathWithInt(gsrobject.timedynamic,i,driver);//timeDynamic
+		waitFor(1);
+		verticalinternalscroll(gsrobject.dept_dropdown, driver);
+		click(timeele);
+		
+		
+//		PartialDepartment(gsrobject,driver);
+//		waitFor(5);
+//		click(gsrobject.done);
+//		waitFor(5);
+//		click(gsrobject.edropdown);
+		
+		
+//		if (isEnabled(gsrobject.allemployees))
+//		
+//		{
+//			click(gsrobject.allemployees);
+//			click(gsrobject.allemployees);
+//			waitFor(1);
+//			click(gsrobject.edone);
+//			
+//		}
+//	
+//		else
+//		{
+//			click(gsrobject.allemployees);
+//			waitFor(1);
+//			click(gsrobject.edone);
+//			
+//		}
+	
+		gsrobject.generatereport.click();
+        waitForJSandJQueryToLoad(driver);
+        
+
+        if(gsrobject.close2.size()!=0){
+				String mesg1 = gsrobject.norecords.getText();
+				waitFor(2);
+				if(mesg1.equalsIgnoreCase("Sorry, No records found for \"Review Only\".") || mesg1.equalsIgnoreCase("Sorry, No records found for \"Action Required\".")){
+				gsrobject.close.click();
+//				htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+				}
+        }
+        
+		if(gsrobject.printButton1.size()==0)
+		{
+			String mesg = gsrobject.norecords.getText();
+			if(mesg.contains("Sorry, No records found"))
+			{
+				if(i==1){
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+				}
+				else if(i==2){
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+				}
+				else if(i==3){
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+				}
+				//htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+			//Report_AddStep("testcase", ""+mesg+"","","", "");
+			gsrobject.close.click();
+			waitFor(3);
+			gsrobject.generategapscanreport.click();
+			gsrobject.generategapscanreport.click();
+			waitFor(3);
+			//##waitForJSandJQueryToLoad(driver);;
+			
+			}
+		}	
+			else
+			{
+
+				if(i==1)
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as AM ;;;Pass");
+					printPage(gsrobject,driver);
+					dbvalidationalldeptpm_both(gsrobject,resultsam,driver);
+		//			dbpartial_both_actionrequired(gsrobject,resultsam,driver); sv
+//					dbpartial_am_both(gsrobject, resultsam,driver);//AM
+					
+				}
+				
+				if(i==2)
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as PM ;;;Pass");
+					printPage(gsrobject,driver);
+					dbvalidationalldeptpm_both(gsrobject,resultspm,driver);
+		//			dbpartial_both_actionrequired(gsrobject,resultspm,driver);sv
+//					dbpartial_pm_both(gsrobject,resultspm,driver);//PM
+				}
+				
+				
+				
+				if(i==3)
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "The Time Selected as BOTH ;;;Pass");
+					printPage(gsrobject,driver);
+					dbvalidationalldeptpm_both(gsrobject,results,driver);
+//					dbpartial_both_actionrequired(gsrobject,results,driver); sv
+//					dbpartial_both_both(gsrobject,results,driver);//Both
+				}
+				
+			}
+	
+
+		
+		}}}
+
+
+
+
+
+public void gapscanprimary(GapscanReportObjects gsrobject,WebDriver driver) throws IOException, ParseException {
+	
+
+	int reasontypesize = gsrobject.reasontypelist.size();
+	int timesize = gsrobject.timelist.size();
+	
+	
+	for(int i=3;i<=3;i++)
+	{
+		
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.reasontypesdyn,i,driver);//Reasondynamic
+		click(ele);
+		
+		String date = common.addDaystoCurrentDate(0);
+		gsrobject.date.clear();
+		waitFor(1);
+		gsrobject.date.sendKeys(date);
+		waitFor(1);
+		
+		
+		primarydepartment123(gsrobject,driver);
+		
+		
+	}}
+
+		
+
+public void primarydepartment123(GapscanReportObjects gsrobject,WebDriver driver)
+		throws IOException {
+	List<String> deptNameListApp = new ArrayList<String>();
+
+	click(gsrobject.dept_dropdown);
+	waitForJSandJQueryToLoad(driver);;
+
+	int deptsize = gsrobject.innerDD.size();
+	for (int i = 2; i <= 16; i++) {
+		WebElement deptCheckbox = prepareWebElementWithDynamicXpathWithInt(
+				gsrobject.partialdeptselectiondynamic, i,driver);
+
+		Coordinates coordinate = ((Locatable) deptCheckbox)
+				.getCoordinates();
+		coordinate.onPage();
+		coordinate.inViewPort();
+
+		if (isSelected(deptCheckbox)) {
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(
+					gsrobject.partialdeptselectiondynamic, i,driver);
+			String dptName = element.getText().trim();
+			deptNameListApp.add(dptName);
+			
+		}
+
+	}
+}
+
+public void dbvalidationalldept(GapscanReportObjects gsrobject,List<List<Object>> results,WebDriver driver) throws IOException  
+{
+	int totalRecordCount=0;
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	List<Object> tempValues = new ArrayList<Object>();
+	
+	temp = getValuesFromTable(gsrobject.firstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	int resultssize = results.size();
+	//System.out.println(resultssize);
+	int i = gsrobject.lastPagesize1.size();
+	
+	if(gsrobject.lastPagesize.size()!=0){
+				WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.lastPage1,i,driver);
+				String webPageCount = ele.getText();
+				verticalinternalscroll(ele, driver);
+				click(ele);
+//				gsrobject.lastPage.click();
+//				String webPageCount = gsrobject.lastPage.getText();
+				int pageCount = Integer.parseInt(webPageCount)-1;
+				int  listsize = gsrobject.listsize.size();
+				int  listsizePage = gsrobject.listsizeinpage.size();
+				int exactCount = listsizePage - 2;
+				totalRecordCount = (pageCount * 10) + exactCount;
+				//System.out.println(totalRecordCount);
+				if(totalRecordCount==resultssize)
+				{
+					 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+					 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+					 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+				}
+				else
+				{
+					 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+					 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+					 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+				}
+			}
+		
+	else{
+				int  listsizePage = gsrobject.listsizeinpage.size();
+				int exactCount = listsizePage - 2;
+				totalRecordCount = exactCount;
+				//System.out.println(totalRecordCount);
+				if(totalRecordCount==resultssize)
+				{
+					 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+					 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+					 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+				}
+				else
+				{
+					 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+					 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+					 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+				}
+		
+	}
+
+	
+	String artno = results.get(0).get(0).toString();
+	String promo_ind = results.get(0).get(13).toString();	
+    String description = results.get(0).get(1).toString();
+	 
+	 
+	 String last_received_date = results.get(0).get(9).toString();
+	 String last_received_qty = decimalFormat(results.get(0).get(11).toString());
+	 String last_received_orderno = results.get(0).get(9).toString();
+	 
+	 String OM = results.get(0).get(15).toString();
+	 String SOH = decimalFormat(results.get(0).get(8).toString());
+	 String UOM = results.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = results.get(0).get(16).toString();
+	 String LTO = results.get(0).get(6).toString();
+	 String comment = results.get(0).get(4).toString();
+	 String actioned = results.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 
+	 roundOff(tempdb, 7, 1);
+	 
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	 //[[28730, 0, Bundaberg Rum & Cola Can 6x375ml, 0, 0, 0, 24, 24 EA, 4 EA, 0, FILL REPORT, No]]
+	 //[[28730, 0, Bundaberg Rum & Cola Can 6x375ml, 0, 0, 0, 24, 24 EA, 4 EA, 0, FILL REPORT, No]]
+	 
+	 //[[28730, 0, Bundaberg Rum & Cola Can 6x375ml, 0, 0, 0, 24, 24 EA, 4 EA, 0, FILL REPORT, No]]
+	 //[[28730, 0, Bundaberg Rum & Cola Can 6x375ml, 0, 0, 0, 24, 24 EA, 4 EA, 0, FILL REPORT, No]]
+	 }
+
+
+
+public void dbvalidationalldept_reviewonly(GapscanReportObjects gsrobject,List<List<Object>> results,WebDriver driver) throws IOException  
+{
+	
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	temp = getValuesFromTable(gsrobject.reviewonlyfirstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	
+	int  listsize = gsrobject.listsize.size()-1;
+	int resultssize = results.size();
+	int totalRecordCount=0;
+	int i = gsrobject.lastPagesize1.size();
+	
+	
+if(gsrobject.lastPagesizereviewonly.size()!=0){
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.lastPage1,i,driver);
+		String webPageCount = ele.getText();
+		verticalinternalscroll(ele, driver);
+		ele.click();
+//		gsrobject.lastPageReviewButton.click();
+//		String webPageCount = gsrobject.lastPageReviewButton.getText();
+		int pageCount = Integer.parseInt(webPageCount)-1;
+	//	int  listsize = gsrobject.listsize.size();
+		int  listsizePage = gsrobject.listsizeinpage.size();
+		int exactCount = listsizePage - 2;
+		totalRecordCount = (pageCount * 10) + exactCount;
+		//System.out.println(totalRecordCount);
+		if(totalRecordCount==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+	}
+
+else{
+		int  listsizePage = gsrobject.listsizeinpage.size();
+		int exactCount = listsizePage - 2;
+		totalRecordCount = exactCount;
+		if(totalRecordCount==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+
+}
+	
+	
+	
+	
+	
+	
+	
+	/*if(listsize==resultssize)
+		
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		 
+	}
+	
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Pass");	
+	}*/
+	
+	
+	String artno = results.get(0).get(0).toString();
+	String promo_ind = results.get(0).get(13).toString();
+	
+	
+ String description = results.get(0).get(1).toString();
+	 
+	 
+	 String last_received_date = results.get(0).get(9).toString();
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 try {	
+		 //System.out.println("*************Date Before Formatting********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 
+	 String last_received_qty = decimalFormat(results.get(0).get(11).toString());
+	 String last_received_orderno = results.get(0).get(9).toString();
+	 
+	 String OM = results.get(0).get(15).toString();
+	 String SOH = decimalFormat(results.get(0).get(8).toString());
+	 String UOM = results.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = results.get(0).get(16).toString();
+	 String LTO = results.get(0).get(6).toString();
+	 String comment = results.get(0).get(4).toString();
+	 //String actioned = results.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 //System.out.println(comment);
+	 //dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	 ltoReportArtScenarios.put(ltoReportArttestname, "" + tempdb + ";;;Pass");
+	 
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	 
+	 
+	 }
+
+
+
+
+
+
+public List<List<Object>> removesixzero(List<List<Object>> one,
+		int position) throws IOException {
+
+	for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+		List<Object> elem = it.next();
+		for (int i = 0; i < elem.size(); i++) {
+			if (i == position) {
+				String s1 = elem.get(i).toString()
+						.replaceAll(".000000", "");
+				elem.set(i, s1);
+			}
+		}
+	}
+	return one;
+}	
+
+public List<List<Object>> removetriplezero(List<List<Object>> one,
+		int position) throws IOException {
+
+	for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+		List<Object> elem = it.next();
+		for (int i = 0; i < elem.size(); i++) {
+			if (i == position) {
+				String s1 = elem.get(i).toString()
+						.replaceAll(".000", "");
+				elem.set(i, s1);
+			}
+		}
+	}
+	return one;
+}	
+
+public List<List<Object>> removeconvertion(List<List<Object>> one,int position) throws IOException {
+
+	for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+		List<Object> elem = it.next();
+		for (int i = 0; i < elem.size(); i++) {
+			if (i == position) {
+				
+				String s2 = elem.get(i).toString();
+				float s3 = Float.valueOf(s2);
+				int y=Math.round(s3);
+				String s1 = String.valueOf(y);
+				elem.set(i, s1);
+			}
+		}
+	}
+	return one;
+}
+
+
+public List<List<Object>> replaceonetostar(List<List<Object>> one,
+		int position) throws IOException {
+
+	for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+		List<Object> elem = it.next();
+		for (int i = 0; i < elem.size(); i++) {
+			if (i == position) {
+				String s1 = elem.get(i).toString()
+						.replaceAll("1", "*");
+				elem.set(i, s1);
+			}
+		}
+	}
+	return one;
+}	
+
+public List<List<Object>> replaceNo(List<List<Object>> one,
+		int position) throws IOException {
+
+	for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+		List<Object> elem = it.next();
+		for (int i = 0; i < elem.size(); i++) {
+			if (i == position) {
+				String s1 = elem.get(i).toString()
+						.replaceAll("N", "No");
+				elem.set(i, s1);
+			}
+		}
+	}
+	return one;
+}	
+
+
+public List<List<Object>> replaceYes(List<List<Object>> one,
+		int position) throws IOException {
+
+	for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+		List<Object> elem = it.next();
+		for (int i = 0; i < elem.size(); i++) {
+			if (i == position) {
+				String s1 = elem.get(i).toString()
+						.replaceAll("Y", "Yes");
+				elem.set(i, s1);
+			}
+		}
+	}
+	return one;
+}	
+
+public void dbpartial_am_both(GapscanReportObjects gsrobject,List<List<Object>> resultsam,WebDriver driver) throws IOException, ParseException 
+
+{
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	temp = getValuesFromTable(gsrobject.firstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	
+	int  listsize = gsrobject.listsize.size()-1;
+	int resultsamsize = resultsam.size();
+	
+	/*if(listsize==resultsamsize)
+		
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultsamsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		 
+	}
+	
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultsamsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Pass");	
+	}*/
+	
+	
+	String artno = resultsam.get(0).get(0).toString();
+	String promo_ind = resultsam.get(0).get(13).toString();
+    String description = resultsam.get(0).get(1).toString();
+	String last_received_date = resultsam.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = resultsam.get(0).get(11).toString();
+	 String last_received_orderno = resultsam.get(0).get(10).toString();
+	 
+	 String OM = resultsam.get(0).get(15).toString();
+	 String SOH = decimalFormat(resultsam.get(0).get(8).toString());
+	 String UOM = resultsam.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = resultsam.get(0).get(16).toString();
+	 String LTO = resultsam.get(0).get(6).toString();
+	 String comment = resultsam.get(0).get(4).toString();
+	 String actioned = resultsam.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	 htmlToExtent(cName,mName,extLogger,driver, "" + tempdb + ";;;Pass");
+		waitFor(5);
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	
+
+}
+
+
+
+
+public void dbpartial_pm_both(GapscanReportObjects gsrobject,List<List<Object>>  resultspm,WebDriver driver) throws IOException, ParseException 
+
+{
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	temp = getValuesFromTable(gsrobject.firstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	
+	//System.out.println(gsrobject);
+	//System.out.println(resultspm);
+	
+	int  listsize = gsrobject.listsize.size()-1;
+	//System.out.println(listsize);
+	int resultspmsize = resultspm.size();
+	//System.out.println(resultspmsize);
+	
+	if(listsize==resultspmsize)
+		
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		 
+	}
+	
+	else
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+	}
+	
+	
+	String artno = resultspm.get(0).get(0).toString();
+	String promo_ind = resultspm.get(0).get(13).toString();
+	
+	
+    String description = resultspm.get(0).get(1).toString();
+ 
+	 
+	 
+	 String last_received_date = resultspm.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = resultspm.get(0).get(11).toString();
+	 String last_received_orderno = resultspm.get(0).get(10).toString();
+	 
+	 String OM = resultspm.get(0).get(15).toString();
+	 String SOH = decimalFormat(resultspm.get(0).get(8).toString());
+	 String UOM = resultspm.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = resultspm.get(0).get(16).toString();
+	 String LTO = resultspm.get(0).get(6).toString();
+	 String comment = resultspm.get(0).get(4).toString();
+	 String actioned = resultspm.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	 ltoReportArtScenarios.put(ltoReportArttestname, "" + tempdb + ";;;Pass");
+	 
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	 //temp[[360335, *, Mini Cinnamon Donut 8pk, 0, 0, 0, 0, 0 EA, 0, 0, ITEM IS NOT PERPETUAL ITEM, No]]
+	//tempdb[[9016, *, Zafarelli Pasta Elicoidale No57 500g, 0, 0, 0, 12, 25 EA, 4 EA, 0, FILL REPORT, No]]
+	
+	
+	
+	
+}
+
+
+public void dbpartial_both_both(GapscanReportObjects gsrobject,List<List<Object>>  resultsboth,WebDriver driver) throws IOException, ParseException 
+
+{
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	temp = getValuesFromTable(gsrobject.firstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	
+	//System.out.println(resultsboth);
+	String artno = resultsboth.get(0).get(0).toString();
+	//System.out.println(resultsboth);
+	String promo_ind = resultsboth.get(0).get(13).toString();	
+    String description = resultsboth.get(0).get(1).toString(); 
+	String last_received_date = resultsboth.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = resultsboth.get(0).get(11).toString();
+	 String last_received_orderno = resultsboth.get(0).get(10).toString();
+	 
+	 String OM = resultsboth.get(0).get(15).toString();
+	 String SOH = decimalFormat(resultsboth.get(0).get(8).toString());
+	 String UOM = resultsboth.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = resultsboth.get(0).get(16).toString();
+	 String LTO = resultsboth.get(0).get(6).toString();
+	 String comment = resultsboth.get(0).get(4).toString();
+	 String actioned = resultsboth.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	 htmlToExtent(cName,mName,extLogger,driver, "" + tempdb + ";;;Pass");
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	//[[360335, *, Mini Cinnamon Donut 8pk, 0, 0, 0, 0, 0 EA, 0, 0, ITEM IS NOT PERPETUAL ITEM, No]]
+	 //[[9016, *, Zafarelli Pasta Elicoidale No57 500g, 0, 0, 0, 12, 25 EA, 4 EA, 0, FILL REPORT, No]]
+		
+	
+}
+
+
+public void dbvalidationalldeptam(GapscanReportObjects gsrobject,List<List<Object>> results1,WebDriver driver) throws IOException  
+{
+	
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	temp = getValuesFromTable(gsrobject.firstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	//temp->[[16520, 0, Prawn Meat Green Frzn 1kg, 0, 0, 0, 10, 20 EA, 4 EA, 0, FILL REPORT, No]]
+	int  listsize = gsrobject.listsize.size()-1;
+	int results1size = results1.size();
+	
+	/*if(listsize==results1size)
+		
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ results1size + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		 
+	}
+	
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ results1size + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Pass");	
+	}*/
+	
+	
+	
+	
+	
+	String artno = results1.get(0).get(0).toString();
+	String promo_ind = results1.get(0).get(13).toString();	
+    String description = results1.get(0).get(1).toString();
+	String last_received_date = results1.get(0).get(9).toString();
+	
+	 
+	 try {		
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 
+	 String last_received_qty = results1.get(0).get(11).toString();//error
+	 String last_received_orderno = results1.get(0).get(10).toString();
+	 
+	 String OM = results1.get(0).get(15).toString();
+	 String SOH = decimalFormat(results1.get(0).get(8).toString());
+	 String UOM = results1.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = results1.get(0).get(16).toString();
+	 String LTO = results1.get(0).get(6).toString();
+	 String comment = results1.get(0).get(4).toString();
+	 String actioned = results1.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	
+	 
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	 //[[100102, 0, Good Health Magazine, 0, 0, 0, 1, 60 EA, 4 EA, Miscellaneous 2.2, FILL REPORT, No]]
+	 //[[100102, 0, Good Health Magazine, 0, 0, 0, 1, 60 EA, 4 EA, Miscellaneous 2.2-4.00-EA, FILL REPORT, No]]
+	 }
+
+
+
+
+
+public void dbvalidationalldeptam_reviewonly(GapscanReportObjects gsrobject,List<List<Object>> results1,WebDriver driver) throws IOException  
+{
+	
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	int totalRecordCount=0;
+	int resultssize = results1.size();
+	
+	temp = getValuesFromTable(gsrobject.firstvalue);//First value from teh report is captured
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	
+	int  listsize = gsrobject.listsize.size()-1;
+	int results1size = results1.size();
+	
+	/*if(listsize==results1size)
+		
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ results1size + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		 
+	}
+	
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ results1size + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Pass");	
+	}*/
+	
+if(gsrobject.lastPageReview.size()!=0){
+		
+		gsrobject.lastPageReviewButton.click();
+		String webPageCount = gsrobject.lastPageReviewButton.getText();
+		//System.out.println(webPageCount);
+		int pageCount = Integer.parseInt(webPageCount)-1;
+	//	int  listsize = gsrobject.listsize.size();
+		int  listsizePage = gsrobject.listsizeinpage.size();
+		int exactCount = listsizePage - 2;
+		totalRecordCount = (pageCount * 10) + exactCount;
+		//System.out.println(totalRecordCount);
+		if(totalRecordCount==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+	}
+
+else{
+		int  listsizePage = gsrobject.listsizeinpage.size();
+		int exactCount = listsizePage - 2;
+		totalRecordCount = exactCount;
+		if(totalRecordCount==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+
+}
+	
+	
+	String artno = results1.get(0).get(0).toString();
+	String promo_ind = results1.get(0).get(13).toString();	
+    String description = results1.get(0).get(1).toString();	 
+	String last_received_date = results1.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = results1.get(0).get(11).toString();
+	 String last_received_orderno = results1.get(0).get(10).toString();
+	 
+	 String OM = results1.get(0).get(15).toString();
+	 String SOH = decimalFormat(results1.get(0).get(8).toString());
+	 String UOM = results1.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = results1.get(0).get(16).toString();
+	 String LTO = results1.get(0).get(6).toString();
+	 String comment = results1.get(0).get(4).toString();
+	 //String actioned = results1.get(0).get(14).toString();
+	  
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 //dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	 htmlToExtent(cName,mName,extLogger,driver, "" + tempdb + ";;;Pass");
+	 
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	 }
+
+public void dbvalidationalldeptpm_reviewonly(GapscanReportObjects gsrobject,List<List<Object>> results1,WebDriver driver) throws IOException  
+{
+	
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+
+	temp = getValuesFromTable(gsrobject.reviewonlyfirstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+//	int  listsize = gsrobject.listsize.size()-1;
+//	int results1size = results1.size();
+	int totalRecordCount=0;
+	int resultssize = results1.size();
+	//System.out.println(resultssize);
+	
+	
+	//lastPage(gsrobject, driver);
+	/*if(listsize==results1size)
+		
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ results1size + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		 
+	}
+	
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ results1size + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Pass");	
+	}*/
+	
+	if(gsrobject.lastPagesizereviewonly.size()!=0){
+		int i = gsrobject.lastPagesize1.size();
+		//System.out.println(i);
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.lastPage1,i,driver);
+		String webPageCount = ele.getText();
+		//System.out.println(webPageCount);
+		verticalinternalscroll(ele, driver);
+		ele.click();
+		
+		
+//		gsrobject.lastPageReviewButton.click();
+//		String webPageCount = gsrobject.lastPageReviewButton.getText();
+//		//System.out.println(webPageCount);
+		int pageCount = Integer.parseInt(webPageCount)-1;
+	//	int  listsize = gsrobject.listsize.size();
+		int  listsizePage = gsrobject.listsizeinpage.size();
+		int exactCount = listsizePage - 2;
+		totalRecordCount = (pageCount * 10) + exactCount;
+		//System.out.println(totalRecordCount);
+		if(totalRecordCount==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+	}
+
+else{
+		int  listsizePage = gsrobject.listsizeinpage.size();
+		int exactCount = listsizePage - 2;
+		totalRecordCount = exactCount;
+		if(totalRecordCount==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+
+}
+	
+	if(gsrobject.printButton1.size() ==0)
+	{
+		String mesg = gsrobject.norecords.getText();
+		if(mesg.equals("Sorry, No records found."))
+		{
+			
+			//htmlToExtent(cName,mName,extLogger,driver, "+mesg+;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+		//Report_AddStep("testcase", ""+mesg+"","","", "");
+		gsrobject.close.click();
+		gsrobject.generategapscanreport.click();
+		gsrobject.generategapscanreport.click();
+		waitForJSandJQueryToLoad(driver);;
+		waitFor(5);
+		
+		}
+	}
+		
+	else
+	{
+
+	String artno = results1.get(0).get(0).toString();//##Fail
+	String promo_ind = results1.get(0).get(13).toString();	
+    String description = results1.get(0).get(1).toString();	 
+	String last_received_date = results1.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 try {		
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 
+	 String last_received_qty = results1.get(0).get(11).toString();
+	 String last_received_orderno = results1.get(0).get(10).toString();
+	 
+	 String OM = results1.get(0).get(15).toString();
+	 String SOH = decimalFormat(results1.get(0).get(8).toString());
+	 String UOM = results1.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = results1.get(0).get(16).toString();
+	 String LTO = results1.get(0).get(6).toString();
+	 String comment = results1.get(0).get(4).toString();
+	 String actioned = results1.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+//	 dbvalue.add(actioned);
+//	 //System.out.println(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 //System.out.println(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 //System.out.println(tempdb);
+	roundOff(tempdb, 7, 1);
+	 ltoReportArtScenarios.put(ltoReportArttestname, "" + tempdb + ";;;Pass");
+	 
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+}
+	}
+
+
+
+//public void lastPage(GapscanReportObjects gsrobject,WebDriver driver){
+//	int pageSize = gsrobject.lastPS.size();
+//	//System.out.println(pageSize);
+//	
+//}
+
+public void dbvalidationalldeptam_both(GapscanReportObjects gsrobject,List<List<Object>> results1,WebDriver driver) throws IOException, ParseException 
+
+{
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	//temp = getValuesFromTable(gsrobject.firstvalue);
+	temp = getValuesFromTable(gsrobject.firstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+    int  listsize = gsrobject.listsize.size()-1;
+	int results1size = results1.size();
+	
+	//[[16520, 0, Prawn Meat Green Frzn 1kg, 0, 0, 0, 10, 20 EA, 4 EA, 0, FILL REPORT, No]]
+	
+	/*if(listsize==results1size)
+		
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		 
+	}
+	
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Pass");	
+	}*/
+	
+	
+	String artno = results1.get(0).get(0).toString();
+	String promo_ind = results1.get(0).get(13).toString();
+    String description = results1.get(0).get(1).toString();	 
+	String last_received_date = results1.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = results1.get(0).get(11).toString();
+	 String last_received_orderno = results1.get(0).get(10).toString();
+	 String OM = results1.get(0).get(15).toString();
+	 String SOH = decimalFormat(results1.get(0).get(8).toString());
+	 String UOM = results1.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = results1.get(0).get(16).toString();
+	 String LTO = results1.get(0).get(6).toString();
+	 String comment = results1.get(0).get(4).toString();
+	 String actioned = results1.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	 htmlToExtent(cName,mName,extLogger,driver, "" + tempdb + ";;;Pass");
+	 
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	
+	
+	
+	
+	
+}
+
+public void dbvalidationalldeptpm_both(GapscanReportObjects gsrobject,List<List<Object>> resultspm,WebDriver driver) throws IOException, ParseException 
+
+{
+	int totalRecordCount=0;
+	int totalRecordCount1=0;
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	temp = getValuesFromTable(gsrobject.firstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	System.out.println(temp);
+	
+//	int  listsize = gsrobject.listsize.size()-1;
+//	int resultspmsize = resultspm.size();
+	int resultssize = resultspm.size();
+	System.out.println(resultssize);
+//	int i = gsrobject.lastPagesize1.size();
+	
+	
+	if(gsrobject.lastPagesize.size()!=0){
+		int i = gsrobject.actionRequiredLastPage.size()-1;
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.lastPageAction,i,driver);
+		//System.out.println(i);
+		String webPageCount = ele.getText();
+		System.out.println(webPageCount);
+		verticalinternalscroll(ele, driver);
+		click(ele);
+//		gsrobject.lastPage.click();
+//		String webPageCount = gsrobject.lastPage.getText();
+//		click(ele);
+		
+		int pageCount = Integer.parseInt(webPageCount)-1;
+//		int  listsize = gsrobject.listsize.size();
+		int  listsizePage = gsrobject.lastPageSizeAction.size();
+		//System.out.println(listsizePage);
+		int exactCount = listsizePage;
+		totalRecordCount = (pageCount * 10) + exactCount;
+		System.out.println(totalRecordCount);
+		
+		if(gsrobject.reviewTab.isDisplayed()){
+			verticalinternalscroll(gsrobject.reviewTab, driver);
+			gsrobject.reviewTab.click();
+			if(gsrobject.lastPagesizereviewonly.size()!=0){
+				int j = gsrobject.reviewOnlyLastPage.size()-1;
+				WebElement ele1 = prepareWebElementWithDynamicXpathWithInt(gsrobject.lastPageReviewOnly,j,driver);
+				String webPageCount1 = ele1.getText();
+				System.out.println(webPageCount1);
+				verticalinternalscroll(ele1, driver);
+				click(ele1);
+				
+				int pageCount1 = Integer.parseInt(webPageCount1)-1;
+//				int  listsize1 = gsrobject.listsize.size();
+				int  listsizePage1 = gsrobject.lastPageSizeReview.size();
+				System.out.println(listsizePage1);
+				int exactCount1 = listsizePage1;
+				totalRecordCount1 = (pageCount1 * 10) + exactCount1;
+				//System.out.println(totalRecordCount1);
+			}
+			else{
+				int  listsizePage1 = gsrobject.lastPageSizeReview.size();
+				System.out.println(listsizePage1);
+				int exactCount1 = listsizePage1;
+				totalRecordCount1 = exactCount1;
+				System.out.println(totalRecordCount1);
+		}
+		
+		}
+		
+		int totalRecordCountFinal = totalRecordCount + totalRecordCount1;
+		//System.out.println(totalRecordCountFinal);
+
+		if(totalRecordCountFinal==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCountFinal + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCountFinal + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+	}
+
+else{
+		int  listsizePage = gsrobject.listsizeinpage.size();
+		System.out.println(listsizePage);
+		int exactCount = listsizePage-2;
+		totalRecordCount = exactCount;
+		
+		if(gsrobject.reviewTab.isDisplayed()){
+			verticalinternalscroll(gsrobject.reviewTab, driver);
+			gsrobject.reviewTab.click();
+			if(gsrobject.lastPagesizereviewonly.size()!=0){
+				int j = gsrobject.reviewOnlyLastPage.size()-1;
+				WebElement ele1 = prepareWebElementWithDynamicXpathWithInt(gsrobject.lastPageReviewOnly,j,driver);
+				String webPageCount1 = ele1.getText();
+				//System.out.println(webPageCount1);
+				verticalinternalscroll(ele1, driver);
+				click(ele1);
+				
+				int pageCount1 = Integer.parseInt(webPageCount1)-1;
+//				int  listsize1 = gsrobject.listsize.size();
+				int  listsizePage1 = gsrobject.lastPageSizeReview.size();
+				//System.out.println(listsizePage1);
+				int exactCount1 = listsizePage1;
+				totalRecordCount1 = (pageCount1 * 10) + exactCount1;
+				System.out.println(totalRecordCount1);
+			}
+			else{
+				int  listsizePage1 = gsrobject.lastPageSizeReview.size();
+				//System.out.println(listsizePage1);
+				int exactCount1 = listsizePage1-2;
+				totalRecordCount1 = exactCount1;
+				//System.out.println(totalRecordCount1);
+		}
+		
+		}
+		
+		int totalRecordCountFinal = totalRecordCount + totalRecordCount1;
+		System.out.println(totalRecordCountFinal);
+		
+		if(totalRecordCountFinal==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+		
+		
+		
+
+}
+	
+	/*if(listsize==resultspmsize)
+		
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultspmsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		 
+	}
+	
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultspmsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Pass");	
+	}*/
+	
+	
+	
+	String artno = resultspm.get(0).get(0).toString();
+	String promo_ind = resultspm.get(0).get(13).toString();
+	
+	
+	String description = resultspm.get(0).get(1).toString();
+ 
+	 
+	 
+	 String last_received_date = resultspm.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = resultspm.get(0).get(11).toString();
+	 String last_received_orderno = resultspm.get(0).get(10).toString();
+	 
+	 String OM = resultspm.get(0).get(15).toString();
+	 String SOH = decimalFormat(resultspm.get(0).get(8).toString());
+	 String UOM = resultspm.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = resultspm.get(0).get(16).toString();
+	 String LTO = resultspm.get(0).get(6).toString();
+	 String comment = resultspm.get(0).get(4).toString();
+	 String actioned = resultspm.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	 htmlToExtent(cName,mName,extLogger,driver, "" + tempdb + ";;;Pass");
+	 
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	
+	
+}
+	
+
+public void dbvalidationalldept_both(GapscanReportObjects gsrobject,List<List<Object>> results,WebDriver driver) throws IOException, ParseException 
+
+{
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	temp = getValuesFromTable(gsrobject.firstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	
+	int  listsize = gsrobject.listsize.size()-1;
+	int resultssize = results.size();
+	
+	/*if(listsize==resultssize)
+		
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		 
+	}
+	
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Pass");	
+	}*/
+	
+	
+	String artno = results.get(0).get(0).toString();
+	String promo_ind = results.get(0).get(13).toString();
+    String description = results.get(0).get(1).toString();
+    String last_received_date = results.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = results.get(0).get(11).toString();
+	 String last_received_orderno = results.get(0).get(10).toString();
+	 
+	 String OM = results.get(0).get(15).toString();
+	 String SOH = decimalFormat(results.get(0).get(8).toString());
+	 String UOM = results.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = results.get(0).get(16).toString();
+	 String LTO = results.get(0).get(6).toString();
+	 String comment = results.get(0).get(4).toString();
+	 String actioned = results.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	 htmlToExtent(cName,mName,extLogger,driver, "" + tempdb + ";;;Pass");
+	 
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	
+	
+}
+
+public void dbpartial_am_actionrequired(GapscanReportObjects gsrobject,List<List<Object>>  resultsam,WebDriver driver) throws IOException, ParseException 
+
+{
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	temp = getValuesFromTable(gsrobject.firstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	
+	int  listsize = gsrobject.listsize.size()-1;
+	int resultsamsize = resultsam.size();//##
+	
+	/*if(listsize==resultsamsize)
+		
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultsamsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		 
+	}
+	
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultsamsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Pass");	
+	}
+	*/
+	
+	String artno = resultsam.get(0).get(0).toString();
+	String promo_ind = resultsam.get(0).get(13).toString();
+    String description = resultsam.get(0).get(1).toString();
+	String last_received_date = resultsam.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = resultsam.get(0).get(11).toString();
+	 String last_received_orderno = resultsam.get(0).get(10).toString();
+	 
+	 String OM = resultsam.get(0).get(15).toString();
+	 String SOH = decimalFormat(resultsam.get(0).get(8).toString());
+	 String UOM = resultsam.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = resultsam.get(0).get(16).toString();
+	 String LTO = resultsam.get(0).get(6).toString();
+	 String comment = resultsam.get(0).get(4).toString();
+	 String actioned = resultsam.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	 htmlToExtent(cName,mName,extLogger,driver, "" + tempdb + ";;;Pass");
+		waitFor(5);
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	
+
+}
+
+
+
+
+public void dbpartial_pm_actionrequired(GapscanReportObjects gsrobject,List<List<Object>>  resultspm,WebDriver driver) throws IOException, ParseException 
+
+{
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	temp = getValuesFromTable(gsrobject.firstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	//[[337153, *, Bread Roll Cheese 4pk, 0, 0, 0, 0, 0 EA, 0, 0, ITEM IS NOT PERPETUAL ITEM, No]]
+	int  listsize = gsrobject.listsize.size()-1;
+	int resultspmsize = resultspm.size();
+	//System.out.println(resultspmsize);
+	
+	/*if(listsize==resultspmsize)
+		
+	{
+		 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultspmsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		 
+	}
+	
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ listsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultspmsize + ";;;Pass");
+		 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Pass");	
+	}*/
+	
+	
+	String artno = resultspm.get(0).get(0).toString();
+	//System.out.println(artno);
+	String promo_ind = resultspm.get(0).get(13).toString();
+	String description = resultspm.get(0).get(1).toString();
+ 
+	 
+	 
+	 String last_received_date = resultspm.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = resultspm.get(0).get(11).toString();
+	 String last_received_orderno = resultspm.get(0).get(10).toString();
+	 
+	 String OM = resultspm.get(0).get(15).toString();
+	 String SOH = decimalFormat(resultspm.get(0).get(8).toString());
+	 String UOM = resultspm.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = resultspm.get(0).get(16).toString();
+	 String LTO = resultspm.get(0).get(6).toString();
+	 String comment = resultspm.get(0).get(4).toString();
+	 String actioned = resultspm.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 
+	 ltoReportArtScenarios.put(ltoReportArttestname, "" + tempdb + ";;;Pass");
+	 
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	 //[[337153, *, Bread Roll Cheese 4pk, 0, 0, 0, 0, 0 EA, 0, 0, ITEM IS NOT PERPETUAL ITEM, No]]
+	 //[[337153, *, Bread Roll Cheese 4pk, 0, 0, 0, 0, 0 EA, 0, 0, ITEM IS NOT PERPETUAL ITEM, No]]
+	 //tempdb[[1690, 0, Kp Liquid Colour Pink 1l, 0, 0, 0, 0, 50.3 L, 0 L, 0, FILL REPORT, No]]
+	 //temp-->[[337153, *, Bread Roll Cheese 4pk, 0, 0, 0, 0, 0 EA, 0, 0, ITEM IS NOT PERPETUAL ITEM, No]]
+	
+}
+
+public  void fnNoRecords(GapscanReportObjects gsrobject,WebDriver driver){
+	
+	
+	String mesg = gsrobject.msgtext.getText();
+	if(mesg.equals("Sorry, No records found."))
+	{
+		//htmlToExtent(cName,mName,extLogger,driver, "Sorry no records found;"+mesg+";;Pass");
+		htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+		//Report_AddStep("testcase", ""+mesg+"","","", "");
+		gsrobject.close.click();
+		waitFor(2);
+		gsrobject.generategapscanreport.click();
+		waitFor(2);
+		gsrobject.generategapscanreport.click();
+		waitFor(1);
+		
+	}
+
+}
+
+public void dbpartial_both_actionrequired(GapscanReportObjects gsrobject,List<List<Object>>  resultsboth,WebDriver driver) throws IOException, ParseException 
+
+{
+	int totalRecordCount=0;
+	int resultssize = resultsboth.size();
+	//System.out.println(resultssize);
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	temp = getValuesFromTable(gsrobject.firstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	int i = gsrobject.lastPagesize1.size();
+	
+	
+	
+	if(gsrobject.lastPagesize.size()!=0){
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.lastPage1,i,driver);
+		String webPageCount = ele.getText();
+		//System.out.println(webPageCount);
+		verticalinternalscroll(ele, driver);
+		click(ele);
+//		gsrobject.lastPage.click();
+//		String webPageCount = gsrobject.lastPage.getText();
+		int pageCount = Integer.parseInt(webPageCount)-1;
+		//System.out.println(pageCount);
+		int  listsize = gsrobject.listsize.size();
+		int  listsizePage = gsrobject.listsizeinpage.size();
+		int exactCount = listsizePage - 2;
+		totalRecordCount = (pageCount * 10) + exactCount;
+		//System.out.println(totalRecordCount);
+		if(totalRecordCount==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+	}
+
+else{
+		int  listsizePage = gsrobject.listsizeinpage.size();
+		int exactCount = listsizePage - 2;
+		totalRecordCount = exactCount;
+		if(totalRecordCount==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+
+}
+	
+	String artno = resultsboth.get(0).get(0).toString();
+	String promo_ind = resultsboth.get(0).get(13).toString();	
+    String description = resultsboth.get(0).get(1).toString(); 
+	String last_received_date = resultsboth.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = resultsboth.get(0).get(11).toString();
+	 String last_received_orderno = resultsboth.get(0).get(10).toString();
+	 
+	 String OM = resultsboth.get(0).get(15).toString();
+	 String SOH = decimalFormat(resultsboth.get(0).get(8).toString());
+	 String UOM = resultsboth.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = resultsboth.get(0).get(16).toString();
+	 String LTO = resultsboth.get(0).get(6).toString();
+	 String comment = resultsboth.get(0).get(4).toString();
+	 String actioned = resultsboth.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 //[[1690, 0, Kp Liquid Colour Pink 1l, 0, 0, 0, 0, 50.3 L, 0 L, 0, FILL REPORT, No]]
+	 
+	 htmlToExtent(cName,mName,extLogger,driver, "" + tempdb + ";;;Pass");
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	
+		
+	
+}
+public void dbpartial_both_reviewonly(GapscanReportObjects gsrobject,List<List<Object>>  resultsboth,WebDriver driver) throws IOException, ParseException 
+
+{
+	int totalRecordCount=0;
+	int resultssize = resultsboth.size();
+	//System.out.println(resultssize);
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> dbvalue = new ArrayList<Object>();
+	List<List<Object>> tempdb = new ArrayList<List<Object>>();
+	
+	temp = getValuesFromTable(gsrobject.firstvalue);
+	replaceblankspaceToZero(temp);
+	removetriplezero(temp,7);
+	removetriplezero(temp,8);
+	int i = gsrobject.lastPagesize1.size();
+	
+	
+	
+	if(gsrobject.lastPagesizereviewonly.size()!=0){
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(gsrobject.lastPage1,i,driver);
+		String webPageCount = ele.getText();
+		//System.out.println(webPageCount);
+		verticalinternalscroll(ele, driver);
+		click(ele);
+//		gsrobject.lastPage.click();
+//		String webPageCount = gsrobject.lastPage.getText();
+		int pageCount = Integer.parseInt(webPageCount)-1;
+		//System.out.println(pageCount);
+		int  listsize = gsrobject.listsize.size();
+		int  listsizePage = gsrobject.listsizeinpage.size();
+		int exactCount = listsizePage - 2;
+		totalRecordCount = (pageCount * 10) + exactCount;
+		//System.out.println(totalRecordCount);
+		if(totalRecordCount==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+	}
+
+else{
+		int  listsizePage = gsrobject.listsizeinpage.size();
+		int exactCount = listsizePage - 2;
+		totalRecordCount = exactCount;
+		if(totalRecordCount==resultssize)
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		}
+		else
+		{
+			 htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultssize + ";;;Pass");
+			 htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Aplication count are not matched ;;;Fail");	
+		}
+
+}
+	
+	String artno = resultsboth.get(0).get(0).toString();
+	String promo_ind = resultsboth.get(0).get(13).toString();	
+    String description = resultsboth.get(0).get(1).toString(); 
+	String last_received_date = resultsboth.get(0).get(9).toString();
+	
+	 if(!last_received_date.equalsIgnoreCase("0"))
+	 {
+	 
+	 try {		
+		 //System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+         DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+         Date startDate = df.parse(last_received_date);
+         DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+         last_received_date = df2.format(startDate);
+         //System.out.println("Date in format dd/MM/yy: " + last_received_date);
+	 } catch (ParseException e) {
+	     e.printStackTrace();
+	 }
+	 }
+	 String last_received_qty = resultsboth.get(0).get(11).toString();
+	 String last_received_orderno = resultsboth.get(0).get(10).toString();
+	 
+	 String OM = resultsboth.get(0).get(15).toString();
+	 String SOH = decimalFormat(resultsboth.get(0).get(8).toString());
+	 String UOM = resultsboth.get(0).get(20).toString();
+	 String SOH1 = SOH + " " + UOM;
+	 String Units_to_fill = resultsboth.get(0).get(16).toString();
+	 String LTO = resultsboth.get(0).get(6).toString();
+	 String comment = resultsboth.get(0).get(4).toString();
+	 String actioned = resultsboth.get(0).get(14).toString();
+	 
+	
+	 
+	 dbvalue.add(artno);
+	 dbvalue.add(promo_ind);
+	 dbvalue.add(description);
+	 dbvalue.add(last_received_date);
+	 dbvalue.add(last_received_qty);
+	 dbvalue.add(last_received_orderno);
+	 dbvalue.add(OM);
+	 dbvalue.add(SOH1);
+	 dbvalue.add(Units_to_fill);
+	 dbvalue.add(LTO);
+	 dbvalue.add(comment);
+	 dbvalue.add(actioned);
+	 
+	 tempdb.add(dbvalue);
+	 removeExtraSpaces(tempdb,1);
+	 //[[1690, 0, Kp Liquid Colour Pink 1l, 0, 0, 0, 0, 50.3 L, 0 L, 0, FILL REPORT, No]]
+	 
+	 htmlToExtent(cName,mName,extLogger,driver, "" + tempdb + ";;;Pass");
+	 ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+	
+		
+	
+}
+
+		public void printPage(GapscanReportObjects gsrobject,WebDriver driver) {
+				try{
+					//gsrobject.printButton.click();
+					
+					String winHandleBefore = driver.getWindowHandle();
+					//System.out.println(winHandleBefore);
+					// Perform the click operation that opens new window
+					waitFor(2);
+					gsrobject.printButton.click();
+					waitFor(2);
+					
+					for(String winHandle : driver.getWindowHandles()){
+					    driver.switchTo().window(winHandle);
+					}
+					driver.close();
+					driver.switchTo().window(winHandleBefore);
+					htmlToExtent(cName, mName, extLogger, driver, "Print Page Navigated Successfully;;;Pass");
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				
+			}
+
+}
+
+
+

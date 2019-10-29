@@ -1,0 +1,200 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class OrderCreationObjects {
+	
+	
+	@FindBy(xpath="//*[@id='orders']/a")
+	public WebElement orders;
+	
+	@FindBy(xpath="//*[@id='orders']/ul/li[2]/a")
+	public WebElement orderEnquiry;
+	
+	@FindBy(xpath="//*[@id='over_due_tbl_table']")
+	public WebElement overDueTable;
+	
+	@FindBy(xpath="//*[@id='error_msg']")
+	public WebElement errorMessage;
+	
+	@FindBy(xpath="//*[@id='orderNo']")
+	public WebElement orderNoSend;
+	
+	@FindBy(xpath="//*[contains(@id,'tbl_table')]/tbody")
+	public WebElement filteredOrder; 
+	
+	@FindBy(xpath="//*[contains(@class,'goButton')]")
+	public WebElement goBtn; 
+	
+	@FindBy(xpath="//*[@id='ui-id-30']")
+	public WebElement createOrder;
+	
+	@FindBy(xpath="//*[@id='md_addActionBtn']")
+	public WebElement addArticleBtn;
+	
+	@FindBy(xpath="//*[@name='iv_article']")
+	public WebElement articleSend;
+	
+	@FindBy(xpath="//*[@name='oredrQty']")
+	public WebElement orderQty;
+	
+	@FindBy(xpath="//*[@id='searchAndAdd']")
+	public WebElement searchBtn;
+	
+	@FindBy(xpath="//*[@name='deliveryDate']")
+	public WebElement delDate;
+	
+	@FindBy(xpath="//*[@id='dialog-alert-conf']/div/div[1]")
+	public WebElement createOrderPopUp;
+	
+	@FindBy(xpath="//*[@id='no']/label")
+	public WebElement noBtn;
+	
+	public static final String previousOrder = "//*[@id='datatable']/tbody/tr[dynamic]//strong";
+	
+	@FindBy(xpath="//*[@id='datatable']/tbody/tr")
+	public List<WebElement> alreadyCreatedOrderList;
+	
+	public static final String expander = "//*[contains(@class,'expandTd expander row')]";
+	
+	public static final String deleteArticle = "(//*[contains(@id,'datatable_dynamic')])/tbody/tr/td[18]";
+	
+	//@FindBy(xpath="(//*[contains(@id,'datatable_dynamic')])/tbody/tr/td[18]")
+	//public List<WebElement> deleteList;
+	
+	@FindBy(xpath="(//*[@id='message'])[1]")
+	public WebElement deletePopUp;
+	
+	@FindBy(xpath="//*[@id='message']//following::div//label")
+	public WebElement deleteYesBtn;
+	
+	@FindBy(xpath="//*[text()='Validate']")
+	public List<WebElement> validateBtn;
+	
+	@FindBy(xpath="//*[text()='Validate']")
+	public WebElement singelValidateBtn;
+	
+	public static final String validate = "(//*[text()='Validate'])[dynamic]";
+	
+	
+	@FindBy(xpath="//*[text()='Create']")
+	public List<WebElement> createBtn;
+	
+	@FindBy(xpath="//*[text()='Create']")
+	public WebElement singelcreateBtn;
+	
+	public static final String create = "(//*[text()='Create'])[dynamic]";
+	
+	@FindBy(xpath="//*[@id='dialog-delivery-result-content']")
+	public WebElement rosterpopup;
+	
+	@FindBy(xpath="(//*[contains(@class,'VendorNoRoasterDDMsg')])[1]")
+	public WebElement rosterMessage;
+	
+	@FindBy(xpath="(//*[contains(@class,'vendorEmerDDMsg')])[1]")
+	public WebElement rosterMessageManualPreq;
+	
+	@FindBy(xpath="(//*[contains(@class,'whEmerDDMsg')])[1]")
+	public WebElement rosterMessageManualPreqDC;
+			
+	@FindBy(xpath="//*[@name='deliveryDatecheckbox']")
+	public WebElement emergencyCheckBox;
+		
+	@FindBy(xpath="//*[@value='Emergency']")
+	public WebElement emergencyRadio;
+	
+	@FindBy(xpath="//*[@id='submitDeliveryDateList']")
+	public WebElement proceedToCreateRoster;
+	
+	@FindBy(xpath="//*[@value='Available']")
+	public WebElement availableRadio;
+	
+	@FindBy(xpath="//*[@id='validRostrSeltn']")
+	public WebElement selectRoster; 
+	
+	@FindBy(xpath="//*[@class='success']")
+	public WebElement status;
+	
+//	@FindBy(xpath="//*[text()='Create']")
+//	public WebElement createBtn;
+	
+	@FindBy(xpath="//*[@id='datatable']/tbody/tr")
+	public List<WebElement> afterCreationList;
+	
+	public static final String afterCreation = "//*[@id='datatable']/tbody/tr[dynamic]//strong";
+	
+	public static final String afterCreationExp = "//*[@id='datatable']/tbody/tr[dynamic]/td[1]";
+	
+	@FindBy(xpath="//*[@id='success_msg']")
+	public WebElement successMsg;
+	
+	@FindBy(xpath="//*[contains(@id,'order_status')]")
+	public WebElement orderStatus;
+	
+	@FindBy(xpath="//*[@id='article_search_result_table']")
+	public WebElement pbdPopUp;
+	
+	public static final String pbdCheckBox = "//*[@id='article_search_result_table']/tbody/tr[1]/td[4]";
+	
+	@FindBy(xpath="//*[@id='article_search_result_table']/tbody/tr")
+	public List<WebElement> pbdList;
+	
+	@FindBy(xpath="//*[@id='article_search_result_table']/following::div/following::div//label[2]")
+	public WebElement pbdArticleAddToList;
+	
+	@FindBy(xpath="(//*[@id='error_msg']/li)")
+	public List<WebElement> errorArticleList;
+	
+	public static final String errorArticle = "(//*[@id='error_msg']/li)[dynamic]";
+	
+	@FindBy(xpath="//*[@id='dialog-delivery-result']/div/div[2]/span/label[1]")
+	public WebElement cancelCreation;
+	
+	public static final String errorArticleDelete = "//*[@data-tt-id='dynamic_value']/td[18]";
+	
+	@FindBy(xpath="//*[@id='open_order_tbl_table']/tbody/tr")
+	public List<WebElement> openOrderDetail;
+	
+	@FindBy(xpath="//*[@class='roasterDate noRoasterAvailable']")
+	public WebElement availableRosterDate;
+	
+	public static final String del = "//*[contains(@id,'dynamic')]/tbody/tr";
+
+	
+	public static final String deliveryDateDync = "//*[contains(@id,'dynamic')]/tbody/tr[value]/td[9]/input";
+	
+	public static final String articledync = "//*[contains(@id,'dynamic')]/tbody/tr[value]/td[2]";
+	
+	@FindBy(xpath="//*[@class='quickHelpWrapper']")
+	public WebElement deliverDateNotValidMessage;
+	
+	public static final String articleDetails = "//*[@id='datatable_dynamic']/tbody/tr";
+	
+	@FindBy(xpath="//*[contains(@class,'editSupplier')]")
+	public WebElement alternateVendorEdit;
+	
+	@FindBy(xpath="//*[@id='alternate_supp_tbl_table']/tbody/tr")
+	public List<WebElement> alternateVendors;
+	
+	@FindBy(xpath="//*[@id='alternate_supp_tbl_head_page']//li")
+	public List<WebElement> alternateVendorPagination;
+	
+	public static final String altPage = "(//*[@id='alternate_supp_tbl_head_page']//li)[dynamic]";
+	
+	public static final String article = "//*[@id='datatable_dynamic']/tbody/tr[value]/td[1]/span";
+	
+	public static final String artSize = "//*[@id='datatable_dynamic']/tbody/tr";
+	
+	public static final String randVendor = "//*[@id='alternate_supp_tbl_table']/tbody/tr[dynamic]";
+	
+	public static final String vendorDetails = "//*[@id='alternate_supp_tbl_table']/tbody/tr[dynamic]/td[value]";
+	
+	public static final String vendorSelect = "//*[@id='alternate_supp_tbl_table']/tbody/tr[dynamic]/td[3]/label";
+	
+	@FindBy(xpath="//*[contains(@class,'expanded')]//strong")
+	public WebElement alternateVendeorExp;
+	
+}

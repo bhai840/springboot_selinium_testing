@@ -1,0 +1,4149 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.SendKeysAction;
+import org.openqa.selenium.support.PageFactory;
+
+import com.relevantcodes.extentreports.ExtentTest;
+import com.thoughtworks.selenium.webdriven.commands.IsVisible;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbomain.objects.ArticleLookUpObjects;
+import au.wow.ngbomain.pages.EnhancedArticleLookUpPage;
+import au.wow.ngbomain.objects.EnhancedArticleLookUpObjects;
+import au.wow.ngbomain.objects.StockAdjObjects;
+import au.wow.ngbomain.tests.AdjustmentLogReportTests;
+import au.wow.ngbomain.tests.StockAdjustmentTests;
+public class StockAdjPage extends BasePage{
+	EnhancedArticleLookUpPage objEnhancedarticleLookUpPage;
+	EnhancedArticleLookUpObjects objEnhancedArticleLookup;
+	WebDriver driver ;
+    public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+	CommonFunctions common = PageFactory.initElements(driver,
+			CommonFunctions.class);
+	private Logger log = LogManager.getLogger(StockAdjustmentTests.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	StockAdjustmentTests stockAdjTests;
+	int random_orderno=0;
+	ExtentTest extLogger=StockAdjustmentTests.extLogger;
+	String cName= StockAdjustmentTests.cName;
+	String mName=StockAdjustmentTests.mName;
+
+	public void clickOnArticle(StockAdjObjects objStockAdj,WebDriver driver) throws AWTException{
+		waitForJSandJQueryToLoad(driver);
+		waitFor(1);
+		Point coordinates = objStockAdj.Lookup.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+
+		Actions action = new Actions(driver);
+		action.moveToElement(objStockAdj.Lookup).click().build().perform();	
+		waitFor(1);
+
+		Point coordinates1 = objStockAdj.Article.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(),coordinates1.getY()+100);
+
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objStockAdj.Article).click().build().perform();
+		waitFor(1);
+		robot.mouseMove(5,5);
+	}
+
+	public String fnStockAdjustment(StockAdjObjects objStockAdj,List myList, String ran,WebDriver driver) throws IOException {
+
+
+		String randomArticle = myList.get(0).toString();
+		String randomArtDesc = myList.get(1).toString();
+		String storeSOH = myList.get(2).toString();
+		String lastrcvdqty = myList.get(9).toString();
+		String lastrcvdqtyappl= "0";
+		int count = 1;
+
+		String articleNum=randomArticle, sohdbDeci=null,cs="";
+		objStockAdj.sohSearchBox.sendKeys(ran);
+		waitFor(1);
+		click(objStockAdj.sohArticleSearch);
+		if(objStockAdj.noClaimList.size()!=0){
+			cs="1";
+			click(objStockAdj.noClaim);
+		}
+		waitForJSandJQueryToLoad(driver);
+		if(objStockAdj.selectOneArtDescList.size()!=0){
+			{
+				for(WebElement art_no:objStockAdj.selectArticle){
+					if(art_no.getText().contains(articleNum))
+					{
+						htmlToExtent(cName,mName,extLogger,driver, "Article number matches;"+articleNum+";"+art_no.getText()+";Pass");
+						//Report_AddStep("testcase", "Article number matches", articleNum, art_no.getText(), "Pass");
+						//Report_AddStep("testcase", "Article number matches", articleNum, art_no.getText(), "Pass");
+						//htmlToExtent(cName,mName,extLogger,driver, "Article number matches; "+articleNum+"; "+art_no.getText()+";Pass");
+
+						//Report_AddStep("testcase", "Article number matches", articleNum, art_no.getText(), "Pass");
+						//System.out.println("Article number matches and the article no"+articleNum.toString());
+						break;
+					}
+					count++;
+				}
+			}
+			clickSelect(objStockAdj, count,driver);
+			waitForJSandJQueryToLoad(driver);
+		}
+		if(isDisplayed(objStockAdj.adjSohWt)){
+			click(objStockAdj.enterWeightAlert);
+		}
+		String sohTitle = getText(objStockAdj.sohArticleTitle);
+		sohTitle = sohTitle.replaceAll("\\s+","");
+		randomArtDesc = randomArtDesc.replaceAll("\\s+","");
+		String[] parts = sohTitle.split("-");
+		if(lastrcvdqty.equals("0")){
+			htmlToExtent(cName,mName,extLogger,driver, "Thers is no Last received quantity for this article;;;Pass");
+			//Report_AddStep("testcase", "Thers is no Last received quantity for this article", "", "", "Pass");
+		}
+		else{
+			lastrcvdqtyappl = getText(objStockAdj.lastrcvdqty);
+		}
+
+		if(randomArticle.contains(parts[0]) && randomArtDesc.contains(parts[1]) && lastrcvdqty.equals(lastrcvdqtyappl)){
+			htmlToExtent(cName,mName,extLogger,driver, "Article header:"+sohTitle+";;;Pass");
+			//Report_AddStep("testcase", "Article header:"+sohTitle,"","", "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Article number is not correct.Article_no : ;"+randomArticle+";"+parts[0]+";Fail");
+			//Report_AddStep("testcase", "Article number is not correct.Article_no : "+randomArticle,randomArticle,parts[0], "Fail");
+			htmlToExtent(cName,mName,extLogger,driver, "Article desc/Last received qty is not correct.Article_desc :; "+randomArtDesc+";"+parts[1]+";Fail");
+			//Report_AddStep("testcase", "Article desc/Last received qty is not correct.Article_desc : "+randomArtDesc,parts[1],"", "Fail");
+		}
+		String sohApp = getText(objStockAdj.sohApp);
+		if(sohApp.contains("KG") && sohApp.contains("EA")){//change
+			String part[] = sohApp.split(" EA & ");
+			String EAvalue = part[0];
+			String val = part[1];
+			String[] part2 = val.split(" KG");
+			sohApp = part2[0];
+			sohdbDeci = storeSOH.concat(".000");
+		}
+		else{
+			sohApp= sohApp.substring(0, sohApp.indexOf(" "));
+			sohdbDeci = storeSOH.concat(".000");
+		}
+
+		if(sohApp.equals(storeSOH) || sohApp.equals(sohdbDeci)){
+			htmlToExtent(cName,mName,extLogger,driver, "Article soh: "+storeSOH+";SOH in Applic : "+sohApp+";SOH in DB : "+storeSOH+";Pass");
+
+			//Report_AddStep("testcase","Article soh: "+storeSOH,"SOH in Applic : "+sohApp,"SOH in DB : "+storeSOH, "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Article soh: "+storeSOH+";SOH in Applic : "+sohApp+";SOH in DB : "+storeSOH+";Fail");
+
+			//Report_AddStep("testcase","Article soh: "+storeSOH,"SOH in Applic : "+sohApp,"SOH in DB : "+storeSOH, "Fail");
+		}
+		waitFor(2);
+		return cs;
+	}
+
+	public void clickSelect(StockAdjObjects objStockAdj, int count,WebDriver driver) {
+		driver.findElement(By.xpath("(//*[@id='0']/label)["+count+"]")).click();
+	}
+
+	public void fnHistory(StockAdjObjects objStockAdj,List<List<Object>> historyListDB,WebDriver driver) throws IOException, NumberFormatException, ParseException {
+		/*objStockAdj.sohSearchBox.sendKeys("31203");
+		waitFor(1);
+		click(objStockAdj.sohArticleSearch);
+		waitForJSandJQueryToLoad(driver);*/
+		click(objStockAdj.sohHistory);
+		if(isDisplayed(objStockAdj.sohHistoryTable)){
+			List<List<Object>> historyListappl = getValuesFromTable(objStockAdj.sohHistoryTableList);
+			waitFor(2);
+			historyListappl = removeAndReplaceIndex(historyListappl, "1,splitspaces");
+			ElementContains1(cName, mName,extLogger,driver,  historyListappl, historyListDB);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "No Stock Adjustment history exists for this article;;;Pass");
+
+			//Report_AddStep("testcase", "No Stock Adjustment history exists for this article","","", "Pass");
+			click(objStockAdj.noStockAdj);
+			waitFor(1);
+		}
+	}
+
+	public void History(StockAdjObjects objStockAdj,List myList,List<List<Object>> historyListDB,WebDriver driver) throws IOException, NumberFormatException, ParseException, AWTException {
+		htmlToExtent(cName,mName,extLogger,driver, "*****History details and comparing with DB*****;;;Pass");
+
+		//Report_AddStep("testcase", "*****History details and comparing with DB*****","","", "Pass");
+		clickOnArticleReportReport(objStockAdj, driver);
+		String randomArticle = myList.get(0).toString();
+		objStockAdj.sohSearchBox.clear();
+		objStockAdj.sohSearchBox.sendKeys(randomArticle);
+		click(objStockAdj.sohArticleSearch);
+		waitForJSandJQueryToLoad(driver);
+		if(objStockAdj.noClaimList.size()!=0){
+		if(objStockAdj.noClaim.isDisplayed())
+		{
+			objStockAdj.noClaim.click();
+			waitFor(2);
+		}}
+		if(objStockAdj.whseWarnCloseList.size()>0){
+		if(objStockAdj.whseWarnClose.isDisplayed())
+		{
+			click(objStockAdj.whseWarnClose);
+		}}
+		waitFor(1);
+		//objStockAdj.adjSOHlabel.click();waitFor(1);
+		objStockAdj.sohHistory.click();
+		//if(isDisplayed(objStockAdj.History)){
+		if(objStockAdj.History1.size()!=0){
+			List<List<Object>> historyListappl = getValuesFromTable(objStockAdj.sohHistoryTableList);
+			waitFor(2);
+			historyListappl = removeAndReplaceIndex(historyListappl, "1,splitspaces");
+			replacenullToZero(historyListDB);
+
+			//ElementContains1( null, randomArticle, historyListDB,historyListappl);
+
+			//ElementContains1( historyListDB,historyListappl);
+
+			ElementContains1(cName, mName,extLogger,driver,   historyListDB,historyListappl);
+
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "No Stock Adjustment history exists for this article;;;Pass");
+
+			//Report_AddStep("testcase", "No Stock Adjustment history exists for this article","","", "Pass");
+			click(objStockAdj.noStockAdj);
+			waitFor(1);
+		}
+		click(objStockAdj.backBtn);
+	}
+
+
+	public void fnAdjustSoh(StockAdjObjects objStockAdj,List myList,String test,String enteredSoh,String cs,WebDriver driver) throws IOException {
+
+		int i= 0;
+		String msg=null;
+		String reason = myList.get(5).toString();
+		String charity = myList.get(8).toString();
+		String UOM = myList.get(4).toString();
+
+		objStockAdj.reasonsForSOH.click();
+		selectByVisibleText(objStockAdj.reasonsForSOH, reason);
+		if(!cs.equals("1")){
+			if(objStockAdj.noClaimList.size()!=0){
+				click(objStockAdj.noClaim);
+			}}
+		if(isDisplayed(objStockAdj.selectCharity)){
+			//click(objStockAdj.selectCharity);
+			selectByVisibleText(objStockAdj.selectCharity, charity);
+		}waitFor(1);
+		if(UOM.equals("KG")){
+			KGCalculation(objStockAdj,myList,driver);
+		}
+		else{
+			if(test.equals("article") || test.equals("PLU")){
+				objStockAdj.EA.sendKeys(enteredSoh);
+			}
+			else if(test.equals("Description")){
+				objStockAdj.EA.sendKeys(enteredSoh);
+			}
+
+			else{
+				objStockAdj.EA.sendKeys(enteredSoh);
+			}
+
+			if(objStockAdj.CA1List.size()!=0){
+				i = 1;
+				objStockAdj.CA1.sendKeys("1");
+			}
+			if((objStockAdj.CARList.size()!=0)){
+				i=1;
+				objStockAdj.CAR.sendKeys("1");
+			}
+			if((objStockAdj.MPKList.size()!=0)){
+				i = 2;
+				objStockAdj.MPK.sendKeys("1");
+			}
+			//System.out.println("::::i="+i);
+			String endSOHAppl = getText(objStockAdj.endSOHValue);
+			if(!test.equals("EAN")){
+				fnCalculation(objStockAdj,myList,i,test,driver);
+			}
+			click(objStockAdj.saveSOH);
+			if(test.equals("Description")){
+				click(objStockAdj.warning99);
+				htmlToExtent(cName,mName,extLogger,driver, "Warning message displayed for exceeding SOH value 99.\nEntered SOH is: 100;;;Pass");
+
+				//Report_AddStep("testcase", "Warning message displayed for exceeding SOH value 99.\nEntered SOH is: 100","","","Pass");
+				waitFor(1);
+			}
+			waitForJSandJQueryToLoad(driver);
+			if(objStockAdj.stockAdjFailList.size()!=0){
+				msg = getText(objStockAdj.success_msg);
+				if(msg.contains("Stocktake")){
+					scrolltoElement(objStockAdj.stockAdjFail,driver);
+					htmlToExtent(cName,mName,extLogger,driver, ""+msg+" ;;;Fail");
+
+					//Report_AddStep("testcase",msg ,"","","Fail");
+					click(objStockAdj.stockAdjFail);
+
+				}}
+			else
+				if(isDisplayed(objStockAdj.adjContinue)){
+					scrolltoElement(objStockAdj.adjContinue,driver);
+					click(objStockAdj.adjContinue);
+				}
+			waitFor(1);
+			if(objStockAdj.success_msgList.size()!=0 && !msg.contains("Stocktake")){
+				String successMsg = getText(objStockAdj.successmsg);
+				click(objStockAdj.closeSohReport);
+				waitFor(1);
+				String[] parts = successMsg.split("from ");
+				String s = parts[1];
+				String[] parts1 = s.split(" to ");
+				String fromSOH = parts1[0];
+				String toSOH = parts1[1];
+				String initialSOH = myList.get(2).toString();
+				if(initialSOH.equals(fromSOH) && endSOHAppl.equals(toSOH)){
+					htmlToExtent(cName,mName,extLogger,driver, " From and To SOH in success message; From SOH:"+fromSOH+" \nTo SOH:"+endSOHAppl+"; From SOH:"+initialSOH+"\nTo SOH:"+toSOH+";Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, " From and To SOH in success message; From SOH:"+fromSOH+" \nTo SOH:"+endSOHAppl+"; From SOH:"+initialSOH+"\nTo SOH:"+toSOH+";Fail");
+				}
+			}
+
+			else  if(test.equals("EAN")){
+				click(objStockAdj.warning999);
+				waitFor(1);
+				htmlToExtent(cName,mName,extLogger,driver, "Error message displayed for exceeding SOH value 999.\nEntered SOH is: 1000;;;Pass");
+
+				//Report_AddStep("testcase", "Error message displayed for exceeding SOH value 999.\nEntered SOH is: 1000","","","Pass");
+			}
+		}}
+
+
+
+	public void KGCalculation(StockAdjObjects objStockAdj,List myList,WebDriver driver) throws IOException {
+		double d,d1;
+		String sohold =  myList.get(2).toString();
+		String soholdEA =  myList.get(3).toString();
+
+		d = Double.parseDouble(sohold);
+		d1=0.002 + d;
+		String soh = Double.toString(d1);
+		objStockAdj.KG.sendKeys(soh);
+		String endSOHAppl = getText(objStockAdj.endSOHValueKG);
+		String[] part = endSOHAppl.split("End SOH : ");
+		String endSOH_Appl = part[1];
+		String initialSOH = getText(objStockAdj.sohApp);
+		click(objStockAdj.saveSOH);
+		if(isDisplayed(objStockAdj.adjContinue)){
+			scrolltoElement(objStockAdj.adjContinue,driver);
+			click(objStockAdj.adjContinue);
+		}
+		waitFor(1);
+		String successMsg = getText(objStockAdj.success_msgKG);
+		String[] parts = successMsg.split("from ");
+		String s = parts[1];
+		String[] parts1 = s.split(" to ");
+		String fromSOH = parts1[0];
+		String toSOH = parts1[1];
+
+		if(initialSOH.equals(fromSOH) && endSOH_Appl.equals(toSOH)){
+
+			htmlToExtent(cName,mName,extLogger,driver, " From and To SOH in success message; From SOH:"+fromSOH+" \nTo SOH:"+endSOHAppl+"; From SOH:"+initialSOH+"\nTo SOH:"+toSOH+";Pass");
+
+			//Report_AddStep("testcase", "From and To SOH in success message",fromSOH+"\nTo "+endSOH_Appl,initialSOH+"\nTo "+toSOH, "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, " From and To SOH in success message; From SOH:"+fromSOH+" \nTo SOH:"+endSOHAppl+"; From SOH:"+initialSOH+"\nTo SOH:"+toSOH+";Fail");
+
+			//Report_AddStep("testcase", "From and To SOH in success message",fromSOH+"\nTo "+endSOH_Appl,initialSOH+"\nTo "+toSOH, "Fail");
+		}
+		click(objStockAdj.closeSohReport);
+		waitFor(1);
+	}
+
+
+	public String[] recentHistoryCheck(StockAdjObjects objStockAdj,List myList,List<List<Object>> recentHisListDB ,WebDriver driver) throws IOException {
+
+		String randomArticle = myList.get(0).toString();
+		//objStockAdj.sohSearchBox.click();
+		objStockAdj.sohSearchBox.sendKeys(randomArticle);
+		click(objStockAdj.sohArticleSearch);
+		waitForJSandJQueryToLoad(driver);
+		//if(objStockAdj.noClaimList.size()!=0)
+		waitFor(2);
+		try
+		{
+			if(objStockAdj.noClaim.isDisplayed())
+			{
+				objStockAdj.noClaim.click();
+				waitFor(2);
+			}
+		}
+		catch(WebDriverException noclaim)
+		{
+
+		}
+		waitFor(3);
+		try
+		{
+			if(isDisplayed(objStockAdj.adjSohWt)){
+				click(objStockAdj.enterWeightAlert);
+			}
+		}
+		catch(WebDriverException adjSoh){
+
+		}
+		String recentHistoryText = getText(objStockAdj.sohRecentHistory);
+		String[] parts = recentHistoryText.split(": ");
+		String[] partOne = parts[1].split(" - ");
+		String code= partOne[0]; 
+		String[] partTwo = partOne[1].split("from ");
+		String[] partthree = partTwo[1].split(" to ");
+		String[] partFour = partthree[1].split(" by ");
+		String[] partFive = partFour[1].split(" on ");
+		String[] partSix = partFive[1].split(" ");
+		String[] partSeven = partSix[1].split(" ");
+		String fromSOH = partthree[0];
+		fromSOH=decimalFormat(fromSOH);
+		String toSOH = partFour[0];
+		toSOH=decimalFormat(toSOH);
+		String usrname = partFive[0];
+		String adjDate = partSix[0];
+		String adjTime = partSeven[0];
+		adjTime = adjTime.replace(":".toString(), "");
+		adjTime.trim();
+		List recentHistoryListAppl = new ArrayList();
+		recentHistoryListAppl.add(code);
+		recentHistoryListAppl.add(fromSOH);
+		recentHistoryListAppl.add(toSOH);
+		recentHistoryListAppl.add(usrname);
+		recentHistoryListAppl.add(adjDate);
+		recentHistoryListAppl.add(adjTime);
+		List<List<Object>> recentHisListAppl = new ArrayList<List<Object>>();
+		recentHisListAppl.add(recentHistoryListAppl);
+
+		ElementContains1(cName, mName,extLogger,driver,  recentHisListAppl, recentHisListDB);
+		htmlToExtent(cName,mName,extLogger,driver, "Recent History details ;;;Pass");
+
+		//Report_AddStep("testcase", "Recent History details ", "", "", "Pass");
+		if(objStockAdj.KGList.size()!=0){
+			objStockAdj.KG.sendKeys("2");
+		}
+		else{
+			objStockAdj.EA.sendKeys("1");
+		}
+		click(objStockAdj.backBtn);
+		waitFor(1);
+		click(objStockAdj.back);
+		htmlToExtent(cName,mName,extLogger,driver, "Page returned after pressing 'Back' once warning message displayed for unsaved changes;;;Pass");
+
+		//Report_AddStep("testcase", "Page returned after pressing 'Back' once warning message displayed for unsaved changes","","","Pass");
+		click(objStockAdj.backBtn);
+		waitFor(1);
+		click(objStockAdj.discard);
+		htmlToExtent(cName,mName,extLogger,driver, "Page returned to home page after pressing 'discard' once error message displayed for unsaved changes;;;Pass");
+
+		//Report_AddStep("testcase", "Page returned to home page after pressing 'discard' once error message displayed for unsaved changes","","","Pass");
+		return new String[] {adjDate,adjTime};
+	}
+
+	private void ElementContains(List<List<Object>> recentHisListAppl,
+			List<List<Object>> recentHisListDB) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void fnCalculation(StockAdjObjects objStockAdj,List myList,int i,String test,WebDriver driver) throws IOException {
+
+		int totalAdjQty = 0,adjQty_EA,adjQty_CA1=1,adjQty_CAR=1,adjQty_MPK=1,pack_size=0;
+		String packsize=null;
+		if(test.equals("article")){
+			adjQty_EA = 1;
+		}
+		else if(test.equals("Description")){
+			adjQty_EA = 100;
+		}
+		else{
+			adjQty_EA = 1000;
+		}
+		if(!test.equals("EAN")){
+			packsize = myList.get(10).toString();
+			pack_size = Integer.parseInt(packsize);
+		}
+
+		String endSOHAppl = getText(objStockAdj.endSOHValue);
+		String initialSOH = myList.get(2).toString();
+		String MultFac =  myList.get(6).toString();
+		String artOM =  myList.get(7).toString();
+
+		int iniSOH = Integer.parseInt(initialSOH);
+		int mulFact = Integer.parseInt(MultFac);
+		int artiOM = doubleToInt(artOM);
+
+		switch (i) {
+		case 1:  totalAdjQty = (adjQty_EA + (adjQty_CA1*artiOM));
+		break;
+		case 2: totalAdjQty = (adjQty_EA + (adjQty_CA1*artiOM) + (adjQty_MPK*pack_size));
+		break;
+		default: totalAdjQty = adjQty_EA;
+		break;
+		}
+		int endSOH = (iniSOH+(totalAdjQty*mulFact));
+		String end_SOH = Integer.toString(endSOH);
+		if(endSOHAppl.equals(end_SOH)){
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH value: "+end_SOH+";;;Pass");
+
+			//Report_AddStep("testcase", "End SOH value: "+end_SOH, "", "", "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH value is calculated wrongly: "+end_SOH+";"+end_SOH+"; "+endSOHAppl+"; Fail");
+
+
+			//Report_AddStep("testcase", "End SOH value is calculated wrongly: "+end_SOH, end_SOH, endSOHAppl, "Fail");
+		}
+
+	}
+
+
+	public void test() {
+		//System.out.println("testing");
+	}
+
+	public List<WebElement> prepareWebElementWithDynamicXpath(
+			String xpathValue, String substitutionValue,WebDriver driver) {
+		return driver.findElements(By.xpath(xpathValue.replace("dynamic",
+				substitutionValue)));
+	}
+
+	public WebElement prepareWebElementWithDynamicXpathWithInt(
+			String xpathValue, int i,WebDriver driver) {
+		return driver.findElement(By.xpath(xpathValue
+				.replace("dynamic", "" + i)));
+	}
+
+	public void clickOnArticleReportReport(StockAdjObjects objStockAdj,WebDriver driver) throws AWTException{
+		//		waitForJSandJQueryToLoad(driver);
+		waitFor(1);
+		Point coordinates = objStockAdj.stockAdjTab.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+
+		Actions action = new Actions(driver);
+		action.moveToElement(objStockAdj.stockAdjTab).click().build().perform();	
+		waitFor(1);
+
+		Point coordinates1 = objStockAdj.stockAdjSubTab.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(),coordinates1.getY()+100);
+
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objStockAdj.stockAdjSubTab).click().build().perform();
+		waitFor(1);
+		robot.mouseMove(5,5);	
+	}
+
+	public boolean fnNullCheck(String strVal, String Desc,WebDriver driver) throws IOException {
+		if(strVal==""){
+			htmlToExtent(cName,mName,extLogger,driver, " "+Desc +" is EMPTY;;;Fail");
+
+			//Report_AddStep("testcase", Desc +" is EMPTY","","", "Fail");
+			return false;
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, ""+Desc +":  + strVal;;;Pass");
+
+			//Report_AddStep("testcase", Desc +": " + strVal,"","", "Pass");
+			return true;
+		}
+	}
+
+
+	public String orderListTable(StockAdjObjects objStockAdj,int deliv,String ranArticle,String o_no,WebDriver driver) throws IOException, ParseException
+	{
+		List<WebElement> ORDERList = objStockAdj.orderList;
+		int ORDERsize=ORDERList.size();
+		String order_no=null;
+		if(ORDERsize>0)		{	
+
+			htmlToExtent(cName,mName,extLogger,driver, "List of orders for warehouse are populated;;;Pass");
+
+			//Report_AddStep("testcase", "List of orders for warehouse are populated","","", "Pass"); //--3			
+			if(deliv == 1)
+			{
+				/*random_orderno = random_no(ORDERsize);
+				if(random_orderno==0)
+				{
+					random_orderno=random_orderno+1;
+				}*/
+				//random_orderno=6;
+				ordersort(objStockAdj,ORDERsize,driver);
+				for(int i=1;i<=ORDERsize;i++)
+				{
+					WebElement order_nos =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.clickORDER, i,driver);
+					order_no=order_nos.getText();		
+					if(order_no.equals(o_no))
+					{
+						WebElement orderselect=  prepareWebElementWithDynamicXpathWithInt(objStockAdj.orderselect, i,driver);
+						orderselect.click();
+						break;
+					}
+				}
+			}
+			if(deliv==2)
+			{
+				ordersort(objStockAdj,ORDERsize,driver);
+				for(int i=1;i<=ORDERsize;i++)
+				{
+					WebElement order_nos =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.clickORDER, i,driver);
+					order_no=order_nos.getText();		
+					if(order_no.equals(o_no))
+					{
+						WebElement orderselect=  prepareWebElementWithDynamicXpathWithInt(objStockAdj.orderselect, i,driver);
+						orderselect.click();
+						break;
+					}
+				}
+			}			
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "No orders are populated for article - "+ranArticle+" ;;;Pass");
+
+			//Report_AddStep("testcase", "No orders are populated for article - "+ranArticle+"","","", "Pass"); //-- 17
+		}
+		return order_no;
+	}
+
+	public void ordersort(StockAdjObjects objStockAdj,int ORDERsize,WebDriver driver) throws IOException, ParseException
+	{
+		ArrayList<String> ordno_obtainedList = new ArrayList<>(); //-----4
+		ArrayList<String> segno_obtainedList = new ArrayList<>(); 
+		ArrayList<String> rdate_obtainedList = new ArrayList<>(); 
+		ArrayList<String> supplier_obtainedList = new ArrayList<>(); 
+		ArrayList<String> ordno_sortedList = new ArrayList<>();
+		ArrayList<String> segno_sortedList = new ArrayList<>();
+		ArrayList<String> rdate_sortedList = new ArrayList<>();
+		ArrayList<String> supplier_sortedList = new ArrayList<>();
+		for(int s=1;s<=ORDERsize;s++)
+		{
+			WebElement orderno =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.orderno_sort, s,driver);
+			String order_no = orderno.getText();
+			ordno_obtainedList.add(order_no);
+			WebElement segno =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.segno_sort, s,driver);
+			String seg_no = segno.getText();
+			segno_obtainedList.add(seg_no);
+			WebElement rdate =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.rdate_sort, s,driver);
+			String r_date = rdate.getText();
+			//SimpleDateFormat df = new SimpleDateFormat("dd/MM/YYYY");
+			//String Wednes_date = r_date;
+			//Date Wednes_date1=df.parse(Wednes_date);
+			rdate_obtainedList.add(r_date);
+			WebElement supplier =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.supplier_sort, s,driver);
+			String supp = supplier.getText();
+			supplier_obtainedList.add(supp);
+		}
+
+		WebElement orderno_sort =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.ordersort, 1,driver);
+		orderno_sort.click();
+		for(int s=1;s<=ORDERsize;s++)
+		{
+			WebElement orderno_sort1 =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.orderno_sort, s,driver);
+			String order_no = orderno_sort1.getText();
+			ordno_sortedList.add(order_no);
+		}
+		Collections.sort(ordno_obtainedList);
+		if(ordno_sortedList.equals(ordno_obtainedList))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Order sorted succesfully;;;Pass");
+		}
+		else
+		{
+			if(objStockAdj.orderPage.size()>0)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Order sorted succesfully;;;Pass");
+			}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Order not sorted;;;Fail");}
+		}
+
+		WebElement segno_sort =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.ordersort, 2,driver);
+		segno_sort.click();
+		for(int s=1;s<=ORDERsize;s++)
+		{
+			WebElement segno_sort1 =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.segno_sort, s,driver);
+			String seg_no = segno_sort1.getText();
+			segno_sortedList.add(seg_no);
+		}		
+		Collections.sort(segno_obtainedList);
+		if(segno_sortedList.equals(segno_obtainedList))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Segment no sorted succesfully;;;Pass");
+		}
+		else
+		{
+			if(objStockAdj.orderPage.size()>0)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Segment no sorted succesfully;;;Pass");
+			}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Segment no not sorted;;;Fail");}
+		}
+
+		WebElement rdate_sort =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.ordersort, 3,driver);
+		rdate_sort.click();		
+		for(int s=1;s<=ORDERsize;s++)
+		{
+			WebElement rdate_sort1 =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.rdate_sort, s,driver);
+			String rdate_no = rdate_sort1.getText();
+			//Date date1=new SimpleDateFormat("dd/MM/yyyy").parse(rdate_no); 
+			rdate_sortedList.add(rdate_no);
+		}
+		Collections.sort(rdate_obtainedList);
+		if(rdate_sortedList.equals(rdate_obtainedList))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Received date sorted succesfully;;;Pass");
+		}
+		else
+		{
+			if(objStockAdj.orderPage.size()>0)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Received date sorted succesfully;;;Pass");
+			}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Received date not sorted succesfully;;;Fail");}
+		}
+
+		WebElement supp_sort =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.ordersort, 4,driver);
+		supp_sort.click();
+		for(int s=1;s<=ORDERsize;s++)
+		{
+			WebElement supp_sort1 =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.supplier_sort, s,driver);
+			String supp_no = supp_sort1.getText();
+			supplier_sortedList.add(supp_no);
+		}
+		Collections.sort(supplier_obtainedList);
+		if(supplier_sortedList.equals(supplier_obtainedList))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Supplier sorted succesfully;;;Pass");
+		}
+		else
+		{
+			if(objStockAdj.orderPage.size()>0)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Supplier sorted succesfully;;;Pass");
+			}else{
+			htmlToExtent(cName,mName,extLogger,driver, "Supplier not sorted;;;Fail");}
+		}		
+
+	}
+
+	public int adjustSOH_whDelivery(StockAdjObjects objStockAdj,String dispatch_qty,String UOM,int k,int endSOHvalue,
+			String UOMname,int pack_size,int deliver_qty,WebDriver driver) throws IOException
+	{
+		int SOH_tbe=0;
+		if(k==1)
+		{
+			if(UOMname.equals(UOM))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by UOM is same as that of dispatched UOM for the selected order;;;Pass");
+
+				//Report_AddStep("testcase", "Adjusted SOH by UOM is same as that of dispatched UOM for the selected order","","", "Pass"); //--5
+				int SOH99 = warning99check(objStockAdj,pack_size,1,0,deliver_qty,k,driver); //99check //meenusha
+				warning999check(objStockAdj,pack_size,1,0,deliver_qty,k,driver); //999check //meenusha
+				int d_qty=(Integer.parseInt(dispatch_qty))+5;
+				String adjSOHvalue=""+(random_no(d_qty));// entering adjusted SOH value more/less than dispatch quantity -- overdelivery	
+				int adjsoh=Integer.parseInt(adjSOHvalue);
+				if(adjsoh>=SOH99)
+				{
+					adjSOHvalue=""+(random_no(SOH99));
+					if(adjSOHvalue.equals("0"))
+					{
+						adjSOHvalue="1";
+					}
+				}
+				if(adjsoh==0)
+				{
+					adjsoh=1;
+					if(adjsoh<=deliver_qty)
+					{
+						adjSOHvalue="1";
+					}
+					else
+					{
+						htmlToExtent(cName,mName,extLogger,driver, "SOH cannot be provided since delivery quantity is zero;;;Pass");
+
+						//Report_AddStep("testcase", "SOH cannot be provided since delivery quantity is zero","","", "Pass");
+					}
+				}
+				SOH_tbe=Integer.parseInt(adjSOHvalue);
+				objStockAdj.adjSOHvalue.clear();
+				objStockAdj.adjSOHvalue.sendKeys(adjSOHvalue);
+				String afterendSOH=objStockAdj.endSOHValue.getText();
+				int afterendSOHvalue = Integer.parseInt(afterendSOH);
+				if(afterendSOHvalue>endSOHvalue)
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "End SOH increased before save;;;Pass");
+
+					//Report_AddStep("testcase", "End SOH increased before save","","", "Pass");
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "End SOH not increased before save;;;Fail");
+
+					//Report_AddStep("testcase", "End SOH not increased before save","","", "Fail");
+				}
+			}
+			SOH_tbe=SOH_tbe+deliver_qty;			
+		}
+
+		if(k==2)
+		{
+			if(UOMname.equals(UOM))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by UOM is same as that of dispatched UOM for the selected order;;;Pass");
+
+				//Report_AddStep("testcase", "Adjusted SOH by UOM is same as that of dispatched UOM for the selected order","","", "Pass"); //--5
+				int SOH99 = warning99check(objStockAdj,pack_size,1,0,deliver_qty,k,driver); //99check
+				warning999check(objStockAdj,pack_size,1,0,deliver_qty,k,driver); //999check
+				int SOHerror =deliver_qty+4; if(SOHerror==0){SOHerror=1;}
+				String[] q = splitString(objStockAdj.recQtyCheck.getText(), " ");
+				if(q[0].contains("."))
+				{
+					q[0] = q[0].replaceAll("\\.?0+$","");
+					SOHerror = doubleToInt(q[0])+2;
+				}else{
+					SOHerror = doubleToInt(q[0])+2;
+				}
+				String adjSOHvalue=""+SOHerror;
+				int adjsoh=Integer.parseInt(adjSOHvalue); //check
+				if(adjsoh>=SOH99)
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "SOH cannot be greater than order dispatch for Warehouse under delivery,warning 99 message should be displayed as SOH is greater than or equal to 99;;;Pass");
+
+					//Report_AddStep("testcase", "SOH cannot be greater than order dispatch for Warehouse under delivery,warning 99 message should be displayed as SOH is greater than or equal to 99","","", "Pass"); 
+					SOH99 = warning99check(objStockAdj,pack_size,1,0,deliver_qty,k,driver); 
+				}	
+				else
+				{
+					objStockAdj.adjSOHvalue.clear();
+					objStockAdj.adjSOHvalue.sendKeys(adjSOHvalue);
+					authcode(objStockAdj,500);
+					objStockAdj.saveSOH.click();
+					waitForJSandJQueryToLoad(driver);
+					try{
+					if(objStockAdj.SOHUDerror.isDisplayed())
+					{
+						String msg=objStockAdj.SOHUDerror.getText();
+						if(msg.equals("Errors"))
+						{
+							String SOH=objStockAdj.SOHUDerrormsg.getText();	
+							htmlToExtent(cName,mName,extLogger,driver, "SOH cannot be greater than order dispatch for Warehouse under delivery;;;Pass");
+
+							//Report_AddStep("testcase", "SOH cannot be greater than order dispatch for Warehouse under delivery","","", "Pass"); //----6
+							String[] SOHvalue =  underdeliverySOHerror(SOH,UOM);
+							String s=SOHvalue[0];
+							int value=Integer.parseInt(s);
+							if(value==deliver_qty)
+							{
+								htmlToExtent(cName,mName,extLogger,driver, "value matched with DB;;;Pass");
+
+								//Report_AddStep("testcase", "value matched with DB","","", "Pass"); //----6
+							}
+							else
+							{
+								htmlToExtent(cName,mName,extLogger,driver, "value conflicts with DB;;;Fail");
+
+								//Report_AddStep("testcase", "value conflicts with DB","","", "Fail");
+							}				
+							objStockAdj.noStockAdj.click();
+
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "SOH should not be greater than order dispatch for Warehouse under delivery;;;Fail");
+
+							//Report_AddStep("testcase", "SOH should not be greater than order dispatch for Warehouse under delivery","","", "Fail");
+						}
+
+					}}catch(Exception e)
+					{
+						try{
+						if(objStockAdj.newErrormsg.isDisplayed())
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Under received quantity is greater than the received quantity - warning displayed;;;Pass");
+							objStockAdj.newErrormsgOK.click();
+						}}catch(Exception e1){}
+					}
+				}
+				/*if(deliver_qty==0)
+			{
+				Report_AddStep("testcase", " Warehouse under delivery cannot be performed, since it is equal to dispatch  quantity.Please perform overdelivery now to continue!!","","", "Pass");
+			}
+			else
+			{*/
+				adjSOHvalue=""+(random_no(deliver_qty));
+				adjsoh=Integer.parseInt(adjSOHvalue);		
+				//}
+				if(adjsoh>=SOH99)
+				{
+					adjSOHvalue=""+(random_no(SOH99-1));
+					adjsoh=Integer.parseInt(adjSOHvalue);
+					if(adjSOHvalue.equals("0"))
+					{
+						adjSOHvalue="1";
+					}
+					SOH_tbe=Integer.parseInt(adjSOHvalue);
+					objStockAdj.adjSOHvalue.clear();
+					objStockAdj.adjSOHvalue.sendKeys(adjSOHvalue);
+					String afterendSOH=objStockAdj.endSOHValue.getText();
+					int afterendSOHvalue = Integer.parseInt(afterendSOH);
+					if(afterendSOHvalue<endSOHvalue)
+					{
+						htmlToExtent(cName,mName,extLogger,driver, "End SOH decrease before save;;;Pass");
+
+						//Report_AddStep("testcase", "End SOH decrease before save","","", "Pass");
+					}
+					else
+					{
+						htmlToExtent(cName,mName,extLogger,driver, "End SOH not decreased before save;;;Fail");
+
+						//Report_AddStep("testcase", "End SOH not decreased before save","","", "Fail");
+					}
+				}
+				if(adjsoh==0)
+				{
+					adjsoh=1;
+					if(adjsoh<=deliver_qty)
+					{
+						adjSOHvalue="1";
+						SOH_tbe=Integer.parseInt(adjSOHvalue);
+						objStockAdj.adjSOHvalue.clear();
+						objStockAdj.adjSOHvalue.sendKeys(adjSOHvalue);
+						String afterendSOH=objStockAdj.endSOHValue.getText();
+						int afterendSOHvalue = Integer.parseInt(afterendSOH);
+						if(afterendSOHvalue<endSOHvalue)
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "End SOH decrease before save;;;Pass");
+
+							//Report_AddStep("testcase", "End SOH decrease before save","","", "Pass");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "End SOH not decreased before save;;;Fail");
+
+							//Report_AddStep("testcase", "End SOH not decreased before save","","", "Fail");
+						}
+					}
+					else
+					{
+						htmlToExtent(cName,mName,extLogger,driver, "SOH cannot be provided since delivery quantity is zero;;;Pass");
+
+						//Report_AddStep("testcase", "SOH cannot be provided since delivery quantity is zero","","", "Pass");
+						SOH_tbe=0;
+					}				
+				}
+				if((adjsoh<SOH99)&&(adjsoh!=0))
+				{
+					adjSOHvalue=""+adjsoh;
+					SOH_tbe=Integer.parseInt(adjSOHvalue);
+					objStockAdj.adjSOHvalue.clear();
+					objStockAdj.adjSOHvalue.sendKeys(adjSOHvalue);
+					String afterendSOH=objStockAdj.endSOHValue.getText();
+					int afterendSOHvalue = Integer.parseInt(afterendSOH);
+					if(afterendSOHvalue<endSOHvalue)
+					{
+						htmlToExtent(cName,mName,extLogger,driver, "End SOH decrease before save;;;Pass");
+
+						//Report_AddStep("testcase", "End SOH decrease before save","","", "Pass");
+					}
+					else
+					{
+						htmlToExtent(cName,mName,extLogger,driver, "End SOH not decreased before save;;;Fail");
+
+						//Report_AddStep("testcase", "End SOH not decreased before save","","", "Fail");
+					}
+				}
+				SOH_tbe=SOH_tbe;			
+			}
+		}
+		return SOH_tbe;
+	}
+
+	public int warning99check(StockAdjObjects objStockAdj,int pack_size,int s,int v,int deliver_qty,int k,WebDriver driver) throws IOException
+	{
+		int SOH_tbe=((int) Math.round(((99)/pack_size)))+1;
+		String SOH99=""+SOH_tbe;
+		if(v==0)
+		{
+			objStockAdj.adjSOHvalue.sendKeys(SOH99);
+		}
+		if(v==1)
+		{
+			SOH99 = SOH99+".";
+			objStockAdj.adjSOHvalue_wt.sendKeys(SOH99);
+		}
+		if(s==1)
+		{
+			authcode(objStockAdj,500);
+		}
+		objStockAdj.saveSOH.click();
+		waitForJSandJQueryToLoad(driver);
+		/*if(k==2){
+			if(SOH_tbe>deliver_qty)
+			{
+				objStockAdj.warningClose.click();
+				htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by 99 --- warning message displayed as SOH exceeds deliver quantity ;;;Pass");
+			}}
+		else
+		{*/
+		try{
+			if(objStockAdj.back.isDisplayed())
+			{
+				objStockAdj.back.click();//99 warning alert
+				htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by 99--- Warning Message displayed;;;Pass");
+
+				//Report_AddStep("testcase", "Adjusted SOH by 99--- Warning Message displayed","","", "Pass"); //--9
+			}}catch(Exception e){/*
+			else
+			{*/
+				htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by 99--- Warning Message not displayed;;;Fail");
+				String msg=objStockAdj.stockAdjFail.getText();
+				if(msg.equals("Stock Adjustment Successful"))
+				{objStockAdj.msgclose.click();}
+			}
+		//}
+		return SOH_tbe;
+	}
+
+	public void warning999check(StockAdjObjects objStockAdj,int pack_size,int s,int v,int deliver_qty,int k,WebDriver driver) throws IOException
+	{
+		int SOH_tbe=((int) Math.round(((999)/pack_size)))+1;
+		String SOH999=""+SOH_tbe;		
+		if(v==0)
+		{
+			objStockAdj.adjSOHvalue.clear();
+			objStockAdj.adjSOHvalue.sendKeys(SOH999);
+		}
+		if(v==1)
+		{
+			objStockAdj.adjSOHvalue_wt.clear();
+			objStockAdj.adjSOHvalue_wt.sendKeys("1");
+			objStockAdj.adjSOHvalue_wt.sendKeys("0");
+			objStockAdj.adjSOHvalue_wt.sendKeys("0");
+			objStockAdj.adjSOHvalue_wt.sendKeys("0");
+			objStockAdj.adjSOHvalue_wt.sendKeys("0");
+			objStockAdj.adjSOHvalue_wt.sendKeys("0");
+			objStockAdj.adjSOHvalue_wt.sendKeys("0");
+			/*
+			SOH999 = SOH999+"."+"000";
+			objStockAdj.adjSOHvalue_wt.sendKeys(SOH999);	*/		
+		}
+		if(s==1)
+		{
+			objStockAdj.authcodevalue.clear();
+			authcode(objStockAdj,500);
+		}		
+		objStockAdj.saveSOH.click();
+		waitForJSandJQueryToLoad(driver);
+		/*if(k==2)
+		{
+			if(SOH_tbe>deliver_qty)
+			{
+				objStockAdj.warningClose.click();
+				htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by 999 --- warning message displayed as SOH exceeds deliver quantity ;;;Pass");
+			}
+		}
+		else
+		{*/
+		try{
+			if(objStockAdj.warning999.isDisplayed())
+			{
+				objStockAdj.warning999.click();//99 warning alert
+				htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by 999--- Warning Message displayed;;;Pass");
+				//Report_AddStep("testcase", "Adjusted SOH by 999--- Warning Message displayed","","", "Pass"); //--8
+			}}catch(Exception e){/*
+			else
+			{*/
+				htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by 999--- Warning Message not displayed;;;Fail");
+				//Report_AddStep("testcase", "Adjusted SOH by 999--- Warning Message not displayed","","", "Fail");
+			}
+		//}
+	}
+
+	public void warning25check(StockAdjObjects objStockAdj,int pack_size,int IDT_size,int v,WebDriver driver) throws IOException
+	{
+		int SOH_tbe=((int) Math.round(((IDT_size)/pack_size)))+1;
+		String SOH25=""+SOH_tbe;
+		if(v==0)
+		{
+			objStockAdj.adjSOHvalue.sendKeys(SOH25);
+		}
+		if(v==1)
+		{
+			SOH25 = SOH25+".";
+			objStockAdj.adjSOHvalue_wt.sendKeys(SOH25);
+		}	
+		objStockAdj.saveSOH.click();
+		waitForJSandJQueryToLoad(driver);
+		if(objStockAdj.back.isDisplayed())
+		{
+			objStockAdj.back.click();//IDT limit warning alert
+			htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by IDT limit--- Warning Message displayed;;;Pass");
+
+			//Report_AddStep("testcase", "Adjusted SOH by IDT limit--- Warning Message displayed","","", "Pass"); //--9
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by IDT limit--- Warning Message not displayed;;;Fail");
+
+			//Report_AddStep("testcase", "Adjusted SOH by IDT limit--- Warning Message not displayed","","", "Fail");
+		}
+	}
+
+	public int random_no(int max)
+	{
+		if(max<=0){max=1;}
+		Random rand = new Random();
+		int n = rand.nextInt(max);
+		return n;
+	}
+
+	public void authcode(StockAdjObjects objStockAdj,int max)
+	{
+		int Auth_code = random_no(500);
+		String auth_codevalue=""+Auth_code;
+		objStockAdj.authcodevalue.clear();
+		objStockAdj.authcodevalue.sendKeys(auth_codevalue);	
+	}
+
+	public String[] fromtoSOH(String SOH)
+	{
+		//System.out.println(SOH);
+		waitFor(2);
+		String[] fromto = SOH.split("from ");
+		String value=fromto[1];
+		String[] SOHvalue=value.split(" to ");
+		return SOHvalue;
+	}
+
+	public String[] underdeliverySOHerror(String SOH,String UOM)
+	{
+		//String[] fromto = SOH.split("dispatch Qty. ");
+		String[] fromto = SOH.split("received Qty. ");
+		String value=fromto[1];
+		String[] SOHval=value.split(UOM);
+		String SOHval1=SOHval[0];
+		String[] SOHvalue=SOHval1.split(" ");
+		return SOHvalue;
+	}
+
+	public void saveSOH(StockAdjObjects objStockAdj,int p,WebDriver driver) throws IOException
+	{
+		//authcode(objStockAdj,500);	
+		try{objStockAdj.saveSOH.click();	}catch(Exception e){
+		waitFor(1);
+		WebElement ele = driver.findElement(By.id("saveSOH"));
+		JavascriptExecutor executor = (JavascriptExecutor)driver;
+		executor.executeScript("arguments[0].click();", ele);}
+		waitForJSandJQueryToLoad(driver);
+		int count=0;
+		int IDT=0;
+		int RIDT=0;
+		if(objStockAdj.stockAdjFail.isDisplayed())
+		{
+			if((p==1)||(p==4)||(p==2))
+			{		
+				String msg=objStockAdj.stockAdjFail.getText();
+				if(msg.equals("Stock Adjustment Successful"))
+				{
+					String SOH=objStockAdj.successmsg.getText();
+					String[] SOHvalue = fromtoSOH(SOH);
+					if(p==1)
+					{
+						waitFor(4);
+						objStockAdj.msgclose.click();
+						htmlToExtent(cName,mName,extLogger,driver, "Order #,Adjust by SOH, Authorization code is mandatory;;;Pass");
+
+						//Report_AddStep("testcase", "Order #,Adjust by SOH, Authorization code is mandatory","","", "Pass"); //--2
+						htmlToExtent(cName,mName,extLogger,driver, "Entered Adjust SOH value more than dispatch quantity for Warehouse over delivery;"+SOHvalue[0]+";"+SOHvalue[1]+";Pass");
+
+						//Report_AddStep("testcase", "Entered Adjust SOH value more than dispatch quantity for Warehouse over delivery",SOHvalue[0],SOHvalue[1], "Pass");
+					}
+					if(p==4)
+					{
+						waitFor(4);
+						objStockAdj.msgclose.click();
+						count++;
+						htmlToExtent(cName,mName,extLogger,driver, "Reverse IDT performed for IDT purchased article;;;Pass");
+
+						//Report_AddStep("testcase", "Reverse IDT performed for IDT purchased article","","", "Pass");
+					}
+					if(p==2)
+					{
+						try{if(objStockAdj.newErrormsg.isDisplayed())
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Order #,Adjust by SOH, Authorization code is mandatory;;;Pass");
+							htmlToExtent(cName,mName,extLogger,driver, "Under received quantity is greater than the received quantity - warning displayed and stock adjusted;;;Pass");
+							objStockAdj.newErrormsgOK1.click();
+						}else{
+							waitFor(4);
+							objStockAdj.msgclose.click();
+							count++;
+							htmlToExtent(cName,mName,extLogger,driver, "Order #,Adjust by SOH, Authorization code is mandatory;;;Pass");
+							htmlToExtent(cName,mName,extLogger,driver, "Entered Adjust SOH value less than deliver quantity for Warehouse under delivery;"+SOHvalue[0]+";"+SOHvalue[1]+";Pass");
+						}
+							}catch(Exception e){
+						waitFor(4);
+						objStockAdj.msgclose.click();
+						count++;
+						htmlToExtent(cName,mName,extLogger,driver, "Order #,Adjust by SOH, Authorization code is mandatory;;;Pass");
+
+						//Report_AddStep("testcase", "Order #,Adjust by SOH, Authorization code is mandatory","","", "Pass"); //--2
+						htmlToExtent(cName,mName,extLogger,driver, "Entered Adjust SOH value less than deliver quantity for Warehouse under delivery;"+SOHvalue[0]+";"+SOHvalue[1]+";Pass");
+						}
+						//Report_AddStep("testcase", "Entered Adjust SOH value less than deliver quantity for Warehouse under delivery",SOHvalue[0],SOHvalue[1], "Pass");
+					}
+				}
+				else
+				{
+					if(p==1)
+					{
+						waitFor(4);
+						objStockAdj.msgclose.click();
+						htmlToExtent(cName,mName,extLogger,driver, "Adjust SOH value cannot be entered more than dispatch quantity for Warehouse over delivery;;;Fail");
+
+						//Report_AddStep("testcase", "Adjust SOH value cannot be entered more than dispatch quantity for Warehouse over delivery","","", "Fail");
+					}
+					if(p==4)
+					{
+						waitFor(4);
+						objStockAdj.msgclose.click();
+						count++;
+						htmlToExtent(cName,mName,extLogger,driver, "Reverse IDT could not be performed for IDT purchased article;;;Fail");
+
+						//Report_AddStep("testcase", "Reverse IDT could not be performed for IDT purchased article","","", "Fail");
+					}
+					if(p==2)
+					{
+						try{if(objStockAdj.newErrormsg.isDisplayed())
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Under received quantity is greater than the received quantity - warning displayed and stock adjusted;;;Pass");
+							objStockAdj.newErrormsgOK1.click();
+						}else{
+							waitFor(4);
+							objStockAdj.msgclose.click();
+							count++;
+							htmlToExtent(cName,mName,extLogger,driver, "Adjust SOH value cannot be entered less than deliver quantity for Warehouse under delivery;;;Fail");
+							}}catch(Exception e){
+						waitFor(4);
+						objStockAdj.msgclose.click();
+						count++;
+						htmlToExtent(cName,mName,extLogger,driver, "Adjust SOH value cannot be entered less than deliver quantity for Warehouse under delivery;;;Fail");
+						}
+						//Report_AddStep("testcase", "Adjust SOH value cannot be entered less than deliver quantity for Warehouse under delivery","","", "Fail");
+					}
+				}
+			}
+		}
+		if(count!=1)
+		{
+			if((p==2)||(p==3)||(p==4))
+			{
+				if(objStockAdj.warning99List.size()>0){
+				try
+				{
+				if(objStockAdj.warning99.isDisplayed())
+				{
+					objStockAdj.warning99.click();//IDT limit warning alert
+				}}
+				catch(WebDriverException e)
+				{
+					
+				}
+				try{
+				if(objStockAdj.stockAdjFail1.isDisplayed())
+				{
+					String msg=objStockAdj.stockAdjFail1.getText();
+					if(msg.equals("Stock Adjustment Successful"))
+					{
+						String SOH=objStockAdj.successmsg.getText();
+						String[] SOHvalue = fromtoSOH(SOH);
+						if(p==2)
+						{
+							try{if(objStockAdj.newErrormsg.isDisplayed())
+							{
+								htmlToExtent(cName,mName,extLogger,driver, "Order #,Adjust by SOH, Authorization code is mandatory;;;Pass");
+								htmlToExtent(cName,mName,extLogger,driver, "Under received quantity is greater than the received quantity - warning displayed and stock adjusted;;;Pass");
+								objStockAdj.newErrormsgOK1.click();
+							}else{
+								waitFor(4);
+								objStockAdj.msgclose.click();
+								count++;
+								htmlToExtent(cName,mName,extLogger,driver, "Order #,Adjust by SOH, Authorization code is mandatory;;;Pass");
+								htmlToExtent(cName,mName,extLogger,driver, "Entered Adjust SOH value less than deliver quantity for Warehouse under delivery;"+SOHvalue[0]+";"+SOHvalue[1]+";Pass");
+								}}catch(Exception e){
+							waitFor(4);
+							objStockAdj.msgclose.click();
+							htmlToExtent(cName,mName,extLogger,driver, "Order #,Adjust by SOH, Authorization code is mandatory;;;Pass");
+
+							//Report_AddStep("testcase", "Order #,Adjust by SOH, Authorization code is mandatory","","", "Pass"); //--2
+							htmlToExtent(cName,mName,extLogger,driver, "Entered Adjust SOH value less than deliver quantity for Warehouse under delivery;"+SOHvalue[0]+";"+SOHvalue[1]+";Pass");
+							}
+							//Report_AddStep("testcase", "Entered Adjust SOH value less than deliver quantity for Warehouse under delivery",SOHvalue[0],SOHvalue[1], "Pass");
+						}
+						if(p==4)
+						{
+							waitFor(4);
+							objStockAdj.msgclose.click();
+							htmlToExtent(cName,mName,extLogger,driver, "Reverse IDT performed for IDT purchased article;;;Pass");
+
+							//Report_AddStep("testcase", "Reverse IDT performed for IDT purchased article","","", "Pass");
+						}
+						if(p==3)
+						{
+							waitFor(4);
+							objStockAdj.msgclose.click();
+							htmlToExtent(cName,mName,extLogger,driver, "Entered Adjust SOH value is successfull;"+SOHvalue[0]+";"+SOHvalue[1]+";Pass");
+
+							//Report_AddStep("testcase", "Entered Adjust SOH value is successfull",SOHvalue[0],SOHvalue[1], "Pass");
+						}
+					}
+					else
+					{
+						if(p==2)
+						{
+							try{if(objStockAdj.newErrormsg.isDisplayed())
+							{
+								htmlToExtent(cName,mName,extLogger,driver, "Under received quantity is greater than the received quantity - warning displayed and stock adjusted;;;Pass");
+								htmlToExtent(cName,mName,extLogger,driver, "Adjust SOH value cannot be entered less than deliver quantity for Warehouse under delivery;;;Fail");
+								objStockAdj.newErrormsgOK1.click();
+							}else{
+								waitFor(4);
+								objStockAdj.msgclose.click();
+								count++;
+								htmlToExtent(cName,mName,extLogger,driver, "Adjust SOH value cannot be entered less than deliver quantity for Warehouse under delivery;;;Fail");
+								}}catch(Exception e){
+							waitFor(4);
+							objStockAdj.msgclose.click();
+							htmlToExtent(cName,mName,extLogger,driver, "Adjust SOH value cannot be entered less than deliver quantity for Warehouse under delivery;;;Fail");
+							}
+							//Report_AddStep("testcase", "Adjust SOH value cannot be entered less than deliver quantity for Warehouse under delivery","","", "Fail");
+						}
+						if(p==3)
+						{
+							waitFor(4);
+							objStockAdj.msgclose.click();
+							htmlToExtent(cName,mName,extLogger,driver, "Entered Adjust SOH value is not successfull;;;Fail");
+
+							//Report_AddStep("testcase", "Entered Adjust SOH value is not successfull","","", "Fail");
+						}
+						if(p==4)
+						{
+							waitFor(4);
+							objStockAdj.msgclose.click();
+							htmlToExtent(cName,mName,extLogger,driver, "Reverse IDT could not be performed for IDT purchased article;;;Fail");
+
+							//Report_AddStep("testcase", "Reverse IDT could not be performed for IDT purchased article","","", "Fail");
+						}
+					}
+				}}catch(Exception e){
+					if(objStockAdj.stockAdjFail.isDisplayed())
+					{
+						String msg=objStockAdj.stockAdjFail.getText();
+						if(msg.equals("Stock Adjustment Successful"))
+						{
+							String SOH=objStockAdj.successmsg.getText();
+							String[] SOHvalue = fromtoSOH(SOH);
+							if(p==2)
+							{
+								try{if(objStockAdj.newErrormsg.isDisplayed())
+								{
+									htmlToExtent(cName,mName,extLogger,driver, "Order #,Adjust by SOH, Authorization code is mandatory;;;Pass");
+									htmlToExtent(cName,mName,extLogger,driver, "Under received quantity is greater than the received quantity - warning displayed and stock adjusted;;;Pass");
+									objStockAdj.newErrormsgOK1.click();
+								}else{
+									waitFor(4);
+									objStockAdj.msgclose.click();
+									htmlToExtent(cName,mName,extLogger,driver, "Order #,Adjust by SOH, Authorization code is mandatory;;;Pass");
+									htmlToExtent(cName,mName,extLogger,driver, "Entered Adjust SOH value less than deliver quantity for Warehouse under delivery;"+SOHvalue[0]+";"+SOHvalue[1]+";Pass");									
+								}
+									}catch(Exception e1){
+								waitFor(4);
+								objStockAdj.msgclose.click();
+								htmlToExtent(cName,mName,extLogger,driver, "Order #,Adjust by SOH, Authorization code is mandatory;;;Pass");
+
+								//Report_AddStep("testcase", "Order #,Adjust by SOH, Authorization code is mandatory","","", "Pass"); //--2
+								htmlToExtent(cName,mName,extLogger,driver, "Entered Adjust SOH value less than deliver quantity for Warehouse under delivery;"+SOHvalue[0]+";"+SOHvalue[1]+";Pass");
+								}
+								//Report_AddStep("testcase", "Entered Adjust SOH value less than deliver quantity for Warehouse under delivery",SOHvalue[0],SOHvalue[1], "Pass");
+							}
+							if(p==4)
+							{
+								waitFor(4);
+								objStockAdj.msgclose.click();
+								htmlToExtent(cName,mName,extLogger,driver, "Reverse IDT performed for IDT purchased article;;;Pass");
+
+								//Report_AddStep("testcase", "Reverse IDT performed for IDT purchased article","","", "Pass");
+							}
+							if(p==3)
+							{
+								waitFor(4);
+								objStockAdj.msgclose.click();
+								htmlToExtent(cName,mName,extLogger,driver, "Entered Adjust SOH value is successfull;"+SOHvalue[0]+";"+SOHvalue[1]+";Pass");
+
+								//Report_AddStep("testcase", "Entered Adjust SOH value is successfull",SOHvalue[0],SOHvalue[1], "Pass");
+							}
+						}
+						else
+						{
+							if(p==2)
+							{
+								try{if(objStockAdj.newErrormsg.isDisplayed())
+								{
+									htmlToExtent(cName,mName,extLogger,driver, "Under received quantity is greater than the received quantity - warning displayed and stock adjusted;;;Pass");
+									objStockAdj.newErrormsgOK1.click();
+								}else{
+									waitFor(4);
+									objStockAdj.msgclose.click();
+									htmlToExtent(cName,mName,extLogger,driver, "Adjust SOH value cannot be entered less than deliver quantity for Warehouse under delivery;;;Fail");
+								}								
+								}catch(Exception e1){
+								waitFor(4);
+								objStockAdj.msgclose.click();
+								htmlToExtent(cName,mName,extLogger,driver, "Adjust SOH value cannot be entered less than deliver quantity for Warehouse under delivery;;;Fail");
+								}
+								//Report_AddStep("testcase", "Adjust SOH value cannot be entered less than deliver quantity for Warehouse under delivery","","", "Fail");
+							}
+							if(p==3)
+							{
+								waitFor(4);
+								objStockAdj.msgclose.click();
+								htmlToExtent(cName,mName,extLogger,driver, "Entered Adjust SOH value is not successfull;;;Fail");
+
+								//Report_AddStep("testcase", "Entered Adjust SOH value is not successfull","","", "Fail");
+							}
+							if(p==4)
+							{
+								waitFor(4);
+								objStockAdj.msgclose.click();
+								htmlToExtent(cName,mName,extLogger,driver, "Reverse IDT could not be performed for IDT purchased article;;;Fail");
+
+								//Report_AddStep("testcase", "Reverse IDT could not be performed for IDT purchased article","","", "Fail");
+							}
+						}
+					}
+				}					
+			}
+		}
+
+	}
+	}
+
+	public int endSOHvalue(StockAdjObjects objStockAdj,List<List<Object>> storeSOH_results,WebDriver driver) throws IOException
+	{
+		String endSOH=objStockAdj.endSOHValue.getText();
+		String endSOH_DB = null;
+		if(storeSOH_results.size()==0)
+		{
+			endSOH_DB="0";
+		}
+		else
+		{
+			endSOH_DB=storeSOH_results.get(0).get(2).toString(); 
+		}
+		endSOH_DB = decimalFormat(endSOH_DB);
+		endSOH = decimalFormat(endSOH);
+		if(endSOH.equals(endSOH_DB))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH matches with DB;"+endSOH+";"+endSOH_DB+";Pass");
+
+			//Report_AddStep("testcase", "End SOH matches with DB",endSOH,endSOH_DB, "Pass"); 
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH conflicts with DB;"+endSOH+";"+endSOH_DB+";Fail");
+
+			//Report_AddStep("testcase", "End SOH conflicts with DB",endSOH,endSOH_DB, "Fail"); 
+		}
+		int endSOHvalue=0;
+		if(endSOH.contains("-"))
+		{
+			endSOH = endSOH.replace("-", "");
+			endSOH=decimalFormat(endSOH);
+			if(endSOH.contains("."))
+			{
+				endSOHvalue = (int)Math.round(Float.parseFloat(endSOH));
+			}
+			else
+			{
+				endSOHvalue = Integer.parseInt(endSOH);
+			}
+			endSOHvalue = -endSOHvalue;
+		}
+		else if(endSOH.contains("."))
+		{
+			endSOHvalue = (int)Math.round(Float.parseFloat(endSOH));
+		}
+		else
+		{
+			endSOHvalue = Integer.parseInt(endSOH);
+		}
+		return endSOHvalue;
+	}
+
+	public String baseUOM(StockAdjObjects objStockAdj,List<List<Object>> baseUOM_results,WebDriver driver) throws IOException
+	{
+		String baseUOM=objStockAdj.endSOHUom.getText();
+		String baseUOM_DB=baseUOM_results.get(0).get(1).toString();
+		if(baseUOM.equals(baseUOM_DB))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Base UOM matches with DB;"+baseUOM+";"+baseUOM_DB+";Pass");
+
+			//Report_AddStep("testcase", "Base UOM matches with DB",baseUOM,baseUOM_DB, "Pass"); //--12
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Base UOM conflicts with DB;"+baseUOM+";"+baseUOM_DB+";Fail");
+			//Report_AddStep("testcase", "Base UOM conflicts with DB",baseUOM,baseUOM_DB, "Fail");
+		}
+		return baseUOM;
+	}
+
+	public List<List<Object>> RHdetails(List<List<Object>> results)
+	{
+		List recentHistoryList = new ArrayList();
+		List<List<Object>> recentHisList = new ArrayList<List<Object>>();
+
+		String recentHissohOrig = results.get(0).get(1).toString();
+		String recentHisAdjusted = results.get(0).get(2).toString();
+		String recentHisReason = results.get(0).get(4).toString();
+		String recentHisusrname = results.get(0).get(6).toString();
+		String recentHisadjDate = results.get(0).get(7).toString();
+		String recentHisadjTime = results.get(0).get(8).toString();
+		recentHissohOrig = decimalFormat(recentHissohOrig);
+		recentHisAdjusted =decimalFormat(recentHisAdjusted);
+
+		recentHistoryList.add(recentHisReason);
+		recentHistoryList.add(recentHissohOrig);
+		recentHistoryList.add(recentHisAdjusted);
+		recentHistoryList.add(recentHisusrname);
+		recentHistoryList.add(recentHisadjDate);
+		recentHistoryList.add(recentHisadjTime);
+		recentHisList.add(recentHistoryList);
+
+		return recentHisList;
+	}
+
+	public String IDTDDvalue(StockAdjObjects objStockAdj,List<List<Object>> DDresults,int opt,String ddsel,WebDriver driver) throws IOException
+	{
+		String to_dept=null;
+		if(DDresults.size()!=0)// to get DD values from DB
+		{
+			List myList = new ArrayList();
+			String DDvalue=null;
+			for(int m=0;m<DDresults.size();m++)
+			{
+				String IDT_TO_SC=DDresults.get(m).get(2).toString();
+				String IDT_Deptname=DDresults.get(m).get(3).toString();
+				if(opt == 1)
+				{
+					DDvalue=IDT_TO_SC+"-"+IDT_Deptname;	
+				}
+				if(opt==2)
+				{
+					DDvalue=IDT_Deptname + " | " +IDT_TO_SC;	
+				}
+				//FOODSERVICES | 007
+				myList.add(DDvalue);
+			}
+			int DDsize=myList.size();
+			int DD = random_no(DDsize);
+			if(DD>0)
+			{
+				DD=DD-1;
+			}
+			String DDtoSelect =(String) myList.get(DD);
+			if(opt == 1)
+			{
+				selectByVisibleText(objStockAdj.subcatDD,DDtoSelect);	
+				String[] dept=DDtoSelect.split("-");
+				to_dept=DDtoSelect;
+				/*List<String> options = getOptionsText(objStockAdj.subcatDD);
+				if(options.contains(DDtoSelect))
+				{
+					selectByVisibleText(objStockAdj.subcatDD,DDtoSelect);	
+					String[] dept=DDtoSelect.split("-");
+					to_dept=dept[0];
+					Report_AddStep("testcase", "Dropdown displays all the values maintained in IDT configuration table when performing IDT","","", "Pass"); //--4
+					Report_AddStep("testcase", "Able to select sub cateogary from drop down menu","","", "Pass"); //--3
+				}
+				else
+				{
+					Report_AddStep("testcase", "Dropdown does not displays all the values maintained in IDT configuration table when performing IDT","","", "Fail"); //--4
+					selectByIndex(objStockAdj.subcatDD, 1);
+					//selectByVisibleText(objStockAdj.subcatDD1,DDvalue);	
+					Report_AddStep("testcase", "Able to select sub cateogary from drop down menu","","", "Pass"); //--3
+					String[] dept=DDvalue.split(" | " );
+					to_dept=dept[2];
+				}	*/			
+			}
+			if(opt==2)
+			{
+				List<String> options = getOptionsText(objStockAdj.subcatDD1);
+				String[] y = ddsel.split("-");
+				int h = y.length;
+				if(h==3)
+				{
+					DDtoSelect = y[1] + "-" + y[2] + " | " +y[0];
+				}
+				else
+				{
+					DDtoSelect = y[1] + " | " +y[0];
+				}
+				if(options.contains(DDtoSelect))
+				{
+					selectByVisibleText(objStockAdj.subcatDD1,DDtoSelect);	
+					String[] dept=DDtoSelect.split(" | " );
+					to_dept=dept[2];
+					htmlToExtent(cName,mName,extLogger,driver, "Dropdown displays all the values maintained in IDT configuration table when performing RIDT;;;Pass");
+
+					//Report_AddStep("testcase", "Dropdown displays all the values maintained in IDT configuration table when performing RIDT","","", "Pass"); //--4
+					htmlToExtent(cName,mName,extLogger,driver, "Able to select sub cateogary from drop down menu;;;Pass");
+
+					//Report_AddStep("testcase", "Able to select sub cateogary from drop down menu","","", "Pass"); //--3
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "Dropdown does not displays all the values maintained in IDT configuration table when performing RIDT;;;Fail");
+					//Report_AddStep("testcase", "Dropdown does not displays all the values maintained in IDT configuration table when performing RIDT","","", "Fail"); //--4
+					selectByIndex(objStockAdj.subcatDD1, 1);
+					//selectByVisibleText(objStockAdj.subcatDD1,DDvalue);	
+					htmlToExtent(cName,mName,extLogger,driver, "Able to select sub cateogary from drop down menu;;;Pass");
+
+					//Report_AddStep("testcase", "Able to select sub cateogary from drop down menu","","", "Pass"); //--3
+					String[] dept=DDvalue.split(" | " );
+					//to_dept=dept[2];
+					to_dept="fail";
+				}
+			}
+		}				
+		return to_dept;		
+	}
+
+	public WebElement lvalue(StockAdjObjects objStockAdj,int l) throws IOException, SQLException
+	{
+		WebElement SOHenter =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.adjSOH, l,driver);
+		return SOHenter;
+	}
+
+	public WebElement mvalue(StockAdjObjects objStockAdj,int m) throws IOException, SQLException
+	{
+		WebElement SOHenter =  prepareWebElementWithDynamicXpathWithInt(objStockAdj.adjSOH1, m,driver);
+		return SOHenter;
+	}
+
+	public String checkreverseIDT(StockAdjObjects objStockAdj,int endSOHvalue,int afterendSOHvalue,String ranArticle,String baseUOM,List<List<Object>> DDresults,int art,String ddselect,WebDriver driver) throws IOException
+	{
+		int totalSOH = endSOHvalue-afterendSOHvalue;
+		objStockAdj.sohSearchBox.clear();
+		objStockAdj.sohSearchBox.sendKeys(ranArticle);
+		click(objStockAdj.sohArticleSearch);
+		waitForJSandJQueryToLoad(driver);
+		if(objStockAdj.noClaimList.size()!=0)
+		{
+			if(objStockAdj.noClaim.isDisplayed()){
+			objStockAdj.noClaim.click();
+			waitFor(2);}
+		}
+		String recentHistoryText = getText(objStockAdj.sohRecentHistory);
+		String[] part = recentHistoryText.split("on ");
+		String revIDTDDvalue = part[1]+" (0 &" +totalSOH+baseUOM+")";
+		String tranid= part[1];
+
+		//08/05/2017 00:40:48 (0 &26EA)
+		selectByVisibleText(objStockAdj.reasonsForSOH,"Rvse IDT");	
+		//if(!objStockAdj.SOHUDerror.isDisplayed())
+		if((objStockAdj.SOHUDerrorlist.size()==1)||(objStockAdj.SOHUDerrorlist.size()==0))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Reverse IDT can be done since IDT is performed for the article "+ranArticle+";;;Pass");
+
+			//Report_AddStep("testcase", "Reverse IDT can be done since IDT is performed for the article "+ranArticle+"","","", "Pass"); //--9
+			waitFor(1);
+			objStockAdj.saveSOH.click();
+			waitFor(3);
+			if(objStockAdj.noStockAdj1.size()==1)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "prompted for Sub cateogary field and IDT purchase quantity needs to be selected;;;Pass");
+
+				//Report_AddStep("testcase", "prompted for Sub cateogary field and IDT purchase quantity needs to be selected","","", "Pass"); 
+				waitFor(2);
+				click(objStockAdj.noStockAdj);
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Sub cateogary field and IDT purchase quantity needs to be selected;;;Fail");
+
+				//Report_AddStep("testcase", "Sub cateogary field and IDT purchase quantity needs to be selected","","", "Fail"); 
+				waitFor(2);
+				click(objStockAdj.noStockAdj);
+			}
+			String a = IDTDDvalue(objStockAdj, DDresults,2,ddselect,driver);	
+			if(a.equals("fail"))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Reverse IDT cannot be performed, since dropdown is not available;;;Fail");
+
+				//Report_AddStep("testcase", "Reverse IDT cannot be performed, since dropdown is not available","","", "Fail"); 
+			}
+			else
+			{
+				if(art==0)
+				{				
+					selectByVisibleText(objStockAdj.idtToQtyList,revIDTDDvalue);
+				}
+				if(art==1)
+				{
+					selectByIndex(objStockAdj.idtToQtyList, 0);
+				}
+				objStockAdj.IDTcomments.sendKeys("comments for "+ranArticle+"");
+				saveSOH(objStockAdj,4,driver);		
+			}
+		}
+		else
+		{
+			String reverseIDTerrormsg=objStockAdj.cannotrvsemsg.getText();
+			if(reverseIDTerrormsg.equals("Item cannot be reversed, no purchase found."))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Reverse IDT cannot be done since IDT is not performed for the article "+ranArticle+";;;Pass");
+
+				//Report_AddStep("testcase", "Reverse IDT cannot be done since IDT is not performed for the article "+ranArticle+"","","", "Pass"); //--9
+			}
+			click(objStockAdj.noStockAdj);
+
+		}
+		return tranid;
+	}
+
+	public String checkreverseIDT1(StockAdjObjects objStockAdj,int endSOHvalue,int afterendSOHvalue,String ranArticle,
+			String baseUOM,int art,String dd,WebDriver driver) throws IOException
+	{
+		int totalSOH = endSOHvalue-afterendSOHvalue;
+		objStockAdj.sohSearchBox.clear();
+		objStockAdj.sohSearchBox.sendKeys(ranArticle);
+		click(objStockAdj.sohArticleSearch);
+		waitForJSandJQueryToLoad(driver);
+		String recentHistoryText = getText(objStockAdj.sohRecentHistory);
+		String[] part = recentHistoryText.split("on ");
+		String revIDTDDvalue = part[1]+" (0 &" +totalSOH+baseUOM+")";
+		String tranid= part[1];
+
+		//08/05/2017 00:40:48 (0 &26EA)
+		selectByVisibleText(objStockAdj.reasonsForSOH,"Rvse IDT");	
+		//if(!objStockAdj.SOHUDerror.isDisplayed())
+		if((objStockAdj.SOHUDerrorlist.size()==1)||(objStockAdj.SOHUDerrorlist.size()==0))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Reverse IDT can be done since IDT is performed for the article "+ranArticle+";;;Pass");
+
+			//Report_AddStep("testcase", "Reverse IDT can be done since IDT is performed for the article "+ranArticle+"","","", "Pass"); //--9
+			try{
+				waitFor(1);
+				objStockAdj.saveSOH.click();
+			}catch(Exception e){
+			waitFor(1);
+			WebElement ele = driver.findElement(By.id("saveSOH"));
+			JavascriptExecutor executor = (JavascriptExecutor)driver;
+			executor.executeScript("arguments[0].click();", ele);
+			}
+			/*waitFor(4);
+			objStockAdj.saveSOH1.click();*/
+			if(objStockAdj.noStockAdj.isDisplayed())
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "prompted for Sub cateogary field and IDT purchase quantity needs to be selected;;;Pass");
+
+				//Report_AddStep("testcase", "prompted for Sub cateogary field and IDT purchase quantity needs to be selected","","", "Pass"); 
+				waitFor(2);
+				click(objStockAdj.noStockAdj);
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Sub cateogary field and IDT purchase quantity needs to be selected;;;Fail");
+
+				//Report_AddStep("testcase", "Sub cateogary field and IDT purchase quantity needs to be selected","","", "Fail"); 
+				waitFor(2);
+				click(objStockAdj.noStockAdj);
+			}
+			String[] y = dd.split("-");
+			int h = y.length;
+			if(h==3)
+			{
+				dd = y[1] + "-" + y[2] + " | " +y[0];
+			}
+			else
+			{
+				dd = y[1] + " | " +y[0];
+			}
+			selectByVisibleText(objStockAdj.subcatDD1, dd);
+			//selectByIndex(objStockAdj.subcatDD1,1);
+			if(art==0)
+			{
+				selectByVisibleText(objStockAdj.idtToQtyList,revIDTDDvalue);
+			}
+			if(art==1)
+			{
+				selectByIndex(objStockAdj.idtToQtyList, 1);
+			}
+			objStockAdj.IDTcomments.sendKeys("comments for "+ranArticle+"");
+			saveSOH(objStockAdj,4,driver);		
+		}
+		else
+		{
+			String reverseIDTerrormsg=objStockAdj.cannotrvsemsg.getText();
+			if(reverseIDTerrormsg.equals("Item cannot be reversed, no purchase found."))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Reverse IDT cannot be done since IDT is not performed for the article "+ranArticle+";;;Pass");
+
+				//Report_AddStep("testcase", "Reverse IDT cannot be done since IDT is not performed for the article "+ranArticle+"","","", "Pass"); //--9
+			}
+			click(objStockAdj.noStockAdj);
+
+		}
+		return tranid;
+	}
+
+	public void RIDT(StockAdjObjects objStockAdj,List<List<Object>> DDresults) throws IOException
+	{
+		//IDTDDvalue(objStockAdj, DDresults,2);
+		selectByIndex(objStockAdj.subcatDD1, 1);
+		selectByIndex(objStockAdj.idtToQtyList, 1);
+		saveSOH(objStockAdj,4,driver);
+	}
+
+	public void backendverification(StockAdjObjects objStockAdj,String ranArticle,String store_no,String tranID,String SAPid,String RC,String BWART,String fromdept,List<List<Object>> article_results,List<List<Object>> code_results,List<List<Object>> UN_results,int endSOHvalue,int afterendSOHvalue,String baseUOM,String to_dept_appl,WebDriver driver, String userName) throws IOException 
+	{
+		int success=0;
+		article_results = replacenullToZero(article_results);
+		//replaceStringtoInt(article_results,1);
+		//	replaceStringtoInt(code_results,0);
+		code_results = replacenullToZero(code_results);
+		UN_results = replacenullToZero(UN_results);
+		//article_results = replaceElementNew(article_results,1);
+		//code_results = replaceElementNew(code_results,0);
+		String MATNR_DB  = article_results.get(0).get(0).toString();
+		String MENGE_DB = article_results.get(0).get(1).toString();
+
+		String MEINS_DB = article_results.get(0).get(2).toString();
+		String BWART_DB = article_results.get(0).get(3).toString();
+		String MAINT_PLANT_RIG_DB = article_results.get(0).get(4).toString();
+		String SOH_ORIGINAL_DB = code_results.get(0).get(0).toString();
+
+		String RE_CODE_DB = code_results.get(0).get(1).toString();
+		String CHARITY_PGM_DB = code_results.get(0).get(2).toString();
+		String CHARITY_PGM_DESC_DB = code_results.get(0).get(3).toString();
+		String RND_WGT_QTY = code_results.get(0).get(4).toString();
+		String RND_WGT_DB = code_results.get(0).get(5).toString();
+		String TRD_DEPT_DB = code_results.get(0).get(6).toString();
+		String MESFCT_DB = UN_results.get(0).get(0).toString();
+		String UPDATED_USER_DB = UN_results.get(0).get(1).toString();
+		String USR_NAME_DB = UN_results.get(0).get(2).toString();
+		String COMMENTS_DB = UN_results.get(0).get(3).toString();
+		String TO_DEPT_DB = UN_results.get(0).get(4).toString();
+		int adjQty1 = endSOHvalue-afterendSOHvalue;
+		//String adjQty = ""+adjQty1+".000";
+		int soh_org=afterendSOHvalue;
+		//String soh = ""+soh_org+".000";
+		List myList_appl1 = new ArrayList();
+		List myList_DB1 = new ArrayList();
+
+		myList_DB1.add(MATNR_DB); myList_DB1.add(MENGE_DB); myList_DB1.add(MEINS_DB);  myList_DB1.add(BWART_DB); myList_DB1.add(MAINT_PLANT_RIG_DB); myList_DB1.add(SOH_ORIGINAL_DB); myList_DB1.add(RE_CODE_DB);
+		myList_DB1.add(CHARITY_PGM_DB);	myList_DB1.add(CHARITY_PGM_DESC_DB); myList_DB1.add(TRD_DEPT_DB); myList_DB1.add(MESFCT_DB); myList_DB1.add(UPDATED_USER_DB); myList_DB1.add(USR_NAME_DB); myList_DB1.add(TO_DEPT_DB); 
+
+		myList_appl1.add(ranArticle); myList_appl1.add(adjQty1); myList_appl1.add(baseUOM); myList_appl1.add(BWART); myList_appl1.add(store_no); myList_appl1.add(soh_org);
+		myList_appl1.add(RC);	myList_appl1.add("0"); myList_appl1.add("0"); myList_appl1.add(fromdept); myList_appl1.add("SDJ"); myList_appl1.add("111222"); myList_appl1.add("admin admin");
+		myList_appl1.add(to_dept_appl);
+/*myList_appl1.add("0"); myList_appl1.add("0"); myList_appl1.add(fromdept); myList_appl1.add("SDJ"); myList_appl1.add("tester90"); myList_appl1.add("tester90"); myList_appl1.add(to_dept_appl);
+myList_appl1.add("0"); myList_appl1.add("0"); myList_appl1.add(fromdept); myList_appl1.add("SDJ"); myList_appl1.add(userName); myList_appl1.add(USR_NAME_DB); myList_appl1.add(to_dept_appl);
+*/List<List<Object>> myList_appl = new ArrayList<List<Object>>();
+		myList_appl.add(myList_appl1);
+		List<List<Object>> myList_DB = new ArrayList<List<Object>>();
+		myList_DB.add(myList_DB1);
+
+		ElementContains1(cName, mName,extLogger,driver,  myList_appl, myList_DB);		
+	}
+
+	public void fnStockAdjustmentLinkedArticles(StockAdjObjects objStockAdj,List myList, String ran, String test,WebDriver driver) throws IOException 
+	{		
+		String randomArticle = myList.get(0).toString();
+		String randomArtDesc = myList.get(1).toString();
+		String storeSOH = myList.get(2).toString();
+		String lastrcvdqty = myList.get(9).toString();
+		String lastrcvdqtyappl= "0";
+		int count = 1;
+
+		String articleNum=randomArticle, sohdbDeci=null;
+		objStockAdj.sohSearchBox.sendKeys(ran);
+		waitFor(1);
+		click(objStockAdj.sohArticleSearch);
+		waitForJSandJQueryToLoad(driver);
+		try{
+			if(objStockAdj.check.isDisplayed() && ran.length()==4)
+			{
+				String linked_articles_sql = testdata.getText("linkedarticlesPLU").replace("pluvalue", ran);
+				List<List<Object>> results = sql.executeQuery(getContext(), linked_articles_sql);				
+				String art = results.get(0).get(0).toString();
+				for(int i=1;i<=objStockAdj.check1.size();i++)
+				{
+					WebElement e = prepareWebElementWithDynamicXpathWithInt(objStockAdj.check2, i, driver);
+					if(e.getText().equals(art))
+					{
+						 e = prepareWebElementWithDynamicXpathWithInt(objStockAdj.check3, i, driver);
+						 e.click();
+						 waitForJSandJQueryToLoad(driver);waitFor(0.5);
+						 break;
+					}
+				}
+			}
+		}catch(Exception e){}
+		if(test.equals("LinkedDescription"))
+		{
+			if(isDisplayed(objStockAdj.LinkedArticleDescSearchBox))
+				click(objStockAdj.LinkedArticleDescSelect);
+		}
+
+		waitForJSandJQueryToLoad(driver);
+
+		if(isDisplayed(objStockAdj.adjSohWt)){
+			click(objStockAdj.enterWeightAlert);
+		}
+		String sohTitle = getText(objStockAdj.sohArticleTitle);
+		sohTitle = sohTitle.replaceAll("\\s+","");
+		randomArtDesc = randomArtDesc.replaceAll("\\s+","");
+		String[] parts = sohTitle.split("-");
+		if(lastrcvdqty.equals("0")){
+			htmlToExtent(cName,mName,extLogger,driver, "Thers is no Last received quantity for this article;;;Pass");
+
+			//Report_AddStep("testcase", "Thers is no Last received quantity for this article", "", "", "Pass");
+		}
+		else{
+			lastrcvdqtyappl = getText(objStockAdj.lastrcvdqty);
+		}
+
+		if(randomArticle.trim().contains(parts[0].trim()) && randomArtDesc.trim().contains(parts[1].trim()) && lastrcvdqty.trim().equals(lastrcvdqtyappl.trim())){
+			htmlToExtent(cName,mName,extLogger,driver, "Article header:"+sohTitle+";;;Pass");
+
+			//Report_AddStep("testcase", "Article header:"+sohTitle,"","", "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Article number is not correct.Article_no : "+randomArticle+";"+randomArticle+";"+parts[0]+";Fail");
+
+			//Report_AddStep("testcase", "Article number is not correct.Article_no : "+randomArticle,randomArticle,parts[0], "Fail");
+			htmlToExtent(cName,mName,extLogger,driver, "Article desc/Last received qty is not correct.Article_desc : "+randomArtDesc+";"+parts[1]+";;Fail");
+
+			//Report_AddStep("testcase", "Article desc/Last received qty is not correct.Article_desc : "+randomArtDesc,parts[1],"", "Fail");
+		}
+		String sohApp = getText(objStockAdj.sohApp);
+
+
+		sohApp= sohApp.substring(0, sohApp.indexOf(" "));
+
+		if(isDecimalEquals(sohApp,storeSOH)){
+			htmlToExtent(cName,mName,extLogger,driver, "Article soh: ;SOH in Applic : "+sohApp+";SOH in DB : "+storeSOH+";Pass");
+
+			//Report_AddStep("testcase","Article soh: "+storeSOH,"SOH in Applic : "+sohApp,"SOH in DB : "+storeSOH, "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Article soh: ;SOH in Applic : "+sohApp+";SOH in DB : "+storeSOH+";Fail");
+
+			//Report_AddStep("testcase","Article soh: "+storeSOH,"SOH in Applic : "+sohApp,"SOH in DB : "+storeSOH, "Fail");
+		}
+		waitFor(2);
+
+	}
+
+	public void fnAdjustSohLinkedArticles(StockAdjObjects objStockAdj,List myList,String enteredSoh, String test,WebDriver driver) throws IOException {
+
+		String msg=null;
+		String reason = myList.get(5).toString();
+		String charity = myList.get(8).toString();
+		String UOM = myList.get(4).toString();
+
+		//click(objStockAdj.reasonsForSOH);
+		selectByVisibleText(objStockAdj.reasonsForSOH, reason);
+
+		if(isDisplayed(objStockAdj.selectCharity)){
+			click(objStockAdj.selectCharity);
+			selectByVisibleText(objStockAdj.selectCharity, charity);
+		}
+		if(UOM.equals("KG"))
+			objStockAdj.KG.sendKeys(enteredSoh);
+		else 
+			objStockAdj.EA.sendKeys(enteredSoh);
+
+		String endSOHAppl = getText(objStockAdj.endSOHValue);
+		fnCalculationLinkedArticles(objStockAdj,myList,enteredSoh,driver);
+		click(objStockAdj.saveSOH);
+		if(test.equals("LinkedDescription")){
+			click(objStockAdj.warning99);
+			htmlToExtent(cName,mName,extLogger,driver, "Warning message displayed for exceeding SOH value 99.\nEntered SOH is: 100;;;Pass");
+
+			//Report_AddStep("testcase", "Warning message displayed for exceeding SOH value 99.\nEntered SOH is: 100","","","Pass");
+			waitFor(1);
+		}
+
+		waitForJSandJQueryToLoad(driver);
+		if(objStockAdj.stockAdjFailList.size()!=0){
+			msg = getText(objStockAdj.success_msg);
+			if(msg.contains("Stocktake")){
+				scrolltoElement(objStockAdj.stockAdjFail,driver);
+				htmlToExtent(cName,mName,extLogger,driver, ""+msg+";;;Fail");
+
+				//Report_AddStep("testcase",msg ,"","","Fail");
+				click(objStockAdj.stockAdjFail);
+
+			}}
+		else
+			if(isDisplayed(objStockAdj.adjContinue)){
+				scrolltoElement(objStockAdj.adjContinue,driver);
+				click(objStockAdj.adjContinue);
+			}
+		waitFor(1);
+		if(objStockAdj.success_msgList.size()!=0 && !msg.contains("Stocktake")){
+			String successMsg = getText(objStockAdj.successmsg);
+			String[] parts = successMsg.split("from ");
+			String s = parts[1];
+			String[] parts1 = s.split(" to ");
+			String fromSOH = parts1[0];
+			String toSOH = parts1[1];
+			String initialSOH = myList.get(2).toString();
+
+			if(isDecimalEquals(initialSOH,fromSOH) && isDecimalEquals(endSOHAppl,toSOH)){
+				htmlToExtent(cName,mName,extLogger,driver, "From and To SOH in success message; From SOH:"+fromSOH+"\nTo SOH:"+toSOH+";From SOH:"+initialSOH+"\nTo SOH:"+endSOHAppl+";Pass");
+
+				//Report_AddStep("testcase", "From and To SOH in success message", "From SOH:"+fromSOH+"\nTo SOH:"+toSOH, "From SOH:"+initialSOH+"\nTo SOH:"+endSOHAppl, "Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "From and To SOH in success message; From SOH:"+fromSOH+"\nTo SOH:"+toSOH+";From SOH:"+initialSOH+"\nTo SOH:"+endSOHAppl+";Fail");
+				//Report_AddStep("testcase", "From and To SOH in success message", "From SOH:"+fromSOH+"\nTo SOH:"+toSOH, "From SOH:"+initialSOH+"\nTo SOH:"+endSOHAppl, "Fail");
+			}
+			click(objStockAdj.closeSohReport);
+			waitFor(1);
+		}
+
+	}
+
+	public void verify999Validation(StockAdjObjects objStockAdj,List myList,String highSoh, String test,WebDriver driver) throws IOException {
+
+		String UOM = myList.get(4).toString();
+
+		if(UOM.equals("KG"))
+			objStockAdj.KG.sendKeys(highSoh);
+		else 
+			objStockAdj.EA.sendKeys(highSoh);
+
+		click(objStockAdj.saveSOH);
+
+		waitForJSandJQueryToLoad(driver);	
+		waitFor(1);
+		if(test.equals("LinkedEAN")){
+			click(objStockAdj.warning999);
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver, "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+highSoh+";;;Pass");
+
+			//Report_AddStep("testcase", "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+highSoh,"","","Pass");
+		}
+	}
+
+	public String fnMaxDecimalRound(String Value, int round) {
+		Locale locale = Locale.ENGLISH;
+		NumberFormat nf = NumberFormat.getNumberInstance(locale);
+		nf.setMinimumFractionDigits(round);
+		nf.setMaximumFractionDigits(round);
+		Double d1 = Double.parseDouble(Value);
+		String stValue = nf.format(d1);
+		return stValue;
+	}
+
+
+	public void fnCalculationLinkedArticles(StockAdjObjects objStockAdj,List myList, String enteredSoh,WebDriver driver) throws IOException {
+
+		int totalAdjQty = 0,adjQty_EA,adjQty_CA1=1,adjQty_CAR=1,adjQty_MPK=1,pack_size=0;
+		String packsize=null;
+		adjQty_EA = 1;
+
+		String endSOHAppl = getText(objStockAdj.endSOHValue);
+		String initialSOH = myList.get(2).toString();
+		String MultFac =  myList.get(6).toString();
+
+		/*float iniSOH = Float.parseFloat(initialSOH);
+	int adjSOH = Integer.parseInt(enteredSoh);
+	float endSOH = 0;
+	int mulFact = Integer.parseInt(MultFac);
+
+
+	endSOH = (iniSOH +(adjSOH * mulFact));
+	String end_SOH = Float.toString(endSOH);
+		 */
+		Float iniSOH = Float.parseFloat(initialSOH);
+		int adjSOH = Integer.parseInt(enteredSoh);
+		float endSOH = 0;
+		int mulFact = Integer.parseInt(MultFac);
+
+
+		Float end_SOH1 = (iniSOH +(adjSOH * mulFact));
+
+		String end_SOH = removeLastChars(end_SOH1, ".0");
+
+
+
+		if(isDecimalEquals(endSOHAppl,end_SOH)){
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH value: "+end_SOH+" ;;;Pass");
+
+			//Report_AddStep("testcase", "End SOH value: "+end_SOH, "", "", "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH value is calculated wrongly: "+end_SOH+"; "+end_SOH+"; "+endSOHAppl+";Fail");
+
+			//Report_AddStep("testcase", "End SOH value is calculated wrongly: "+end_SOH, end_SOH, endSOHAppl, "Fail");
+		}
+
+	}
+
+	private String removeLastChars(Float eval, String text){
+
+		String res = String.valueOf(eval);
+		int length = text.length();
+
+		if (res.length() > length){
+			res = res.substring((res.length() - length), res.length()).equals(text)
+					? res.substring(0, (res.length() - length)) : res;
+		}
+
+		return res;
+	}
+	public void fnStockAdjustmentLinkedArticlesChild(StockAdjObjects objStockAdj,String storeSOH, String childArticle, String test,WebDriver driver) throws IOException {
+
+
+		String sohdbDeci=null,msg;
+
+		objStockAdj.sohSearchBox.sendKeys(childArticle);
+		waitFor(1);
+		click(objStockAdj.sohArticleSearch);
+		waitForJSandJQueryToLoad(driver);
+		String sohTitleChild = getText(objStockAdj.sohArticleTitle);
+		sohTitleChild = sohTitleChild.replaceAll("\\s+","");
+		String[] partsChild = sohTitleChild.split("-");
+		if(childArticle.contains(partsChild[0])){
+			htmlToExtent(cName,mName,extLogger,driver, "Stock adjustment detail screen displayed for Child Article Number:"+childArticle+";;;Pass");
+
+			//Report_AddStep("testcase", "Stock adjustment detail screen displayed for Child Article Number:"+childArticle,"","", "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Stock adjustment detail screen is Not displayed for Child Article Number:"+childArticle+";;;Fail");
+
+			//Report_AddStep("testcase","Stock adjustment detail screen is Not displayed for Child Article Number:"+childArticle,"","", "Fail");
+		}
+		if(isDisplayed(objStockAdj.linkageFactorLabel))
+		{
+			String linkageValue = getText(objStockAdj.linkageFactorValue);
+			htmlToExtent(cName,mName,extLogger,driver, "Linkage factor value for the Child Article :"+childArticle+ " is " +linkageValue+";;;Pass");
+
+			//Report_AddStep("testcase", "Linkage factor value for the Child Article :"+childArticle+ " is " +linkageValue,"","", "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Linkage factor value for the Child Article :"+childArticle+ "is Not displayed ;;;Fail");
+
+			//Report_AddStep("testcase","Linkage factor value for the Child Article :"+childArticle+ "is Not displayed ","","", "Fail");
+		}
+
+		selectByVisibleText(objStockAdj.reasonsForSOH,"PI Verify"); 
+		if(objStockAdj.childArticleErrorList.size()!=0){
+			String error = getText(objStockAdj.childArticleError);
+			htmlToExtent(cName,mName,extLogger,driver, "PI Verify adjustment cannot be done for child Article Number: "+childArticle+ ". Warning Message :"+error+" is displayed;;;Pass");
+
+			//Report_AddStep("testcase", "PI Verify adjustment cannot be done for child Article Number: "+childArticle+ ". Warning Message :"+error+" is displayed","","", "Pass");
+			click(objStockAdj.childArticleErrorOkButton);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "PI Verify adjustment is possible for child Article Number: "+childArticle+";;;Fail");
+
+			//Report_AddStep("testcase","PI Verify adjustment is possible for child Article Number: "+childArticle,"","", "Fail");
+		}	
+		waitFor(1);
+		selectByVisibleText(objStockAdj.reasonsForSOH,"+Stock Correction"); 
+		waitFor(1);
+		if(objStockAdj.linkedChildErrors.size()!=0){
+			msg = getText(objStockAdj.linkedChildError);waitFor(1);
+			if(msg.contains("Stock Adjustment")){
+				scrolltoElement(objStockAdj.linkedChildError,driver);
+				htmlToExtent(cName,mName,extLogger,driver, "Expected Error Message "+msg+" is Displayed;;;Pass");
+
+				//Report_AddStep("testcase","Expected Error Message '"+msg+"' is Displayed" ,"","","Pass");
+				waitFor(1);
+				click(objStockAdj.linkedChildError);
+			}
+			else
+				htmlToExtent(cName,mName,extLogger,driver, "Expected Error is not Displayed ;;;Fail");
+
+			//Report_AddStep("testcase","Expected Error is not Displayed" ,"","","Fail"); 
+		}
+		selectByVisibleText(objStockAdj.reasonsForSOH,"-Stock Correction"); 
+		waitFor(1);
+		if(objStockAdj.linkedChildErrors.size()!=0){
+			msg = getText(objStockAdj.linkedChildError);waitFor(1);
+			if(msg.contains("Stock Adjustment")){
+				scrolltoElement(objStockAdj.linkedChildError,driver);
+				htmlToExtent(cName,mName,extLogger,driver, "Expected Error Message "+msg+" is Displayed;;;Pass");
+				//Report_AddStep("testcase","Expected Error Message '"+msg+"' is Displayed" ,"","","Pass");
+				waitFor(1);
+				click(objStockAdj.linkedChildError);
+			}
+			else
+				htmlToExtent(cName,mName,extLogger,driver, "Expected Error is not Displayed ;;;Fail");
+			//Report_AddStep("testcase","Expected Error is not Displayed" ,"","","Fail"); 
+		}
+
+
+
+	}
+
+
+	public String fnAdjustSohLinkedArticlesChild(StockAdjObjects objStockAdj,List myList,String adjustSoh,String recentDBSOH,  String test,WebDriver driver) throws IOException {
+
+		String msg=null;
+		String reason = myList.get(5).toString();
+		String charity = myList.get(8).toString();
+		String UOM = myList.get(4).toString();
+
+		click(objStockAdj.reasonsForSOH);
+		selectByVisibleText(objStockAdj.reasonsForSOH, reason);
+
+		if(isDisplayed(objStockAdj.selectCharity)){
+			click(objStockAdj.selectCharity);
+			selectByVisibleText(objStockAdj.selectCharity, charity);
+		}
+		if(UOM.equals("KG"))
+			objStockAdj.KG.sendKeys(adjustSoh);
+		else 
+			objStockAdj.EA.sendKeys(adjustSoh);
+
+		//String endSOHAppl = getText(objStockAdj.endSOHValue);
+		String childSOH = fnCalculationLinkedArticlesChild(objStockAdj,myList,adjustSoh,recentDBSOH,driver);
+		click(objStockAdj.saveSOH);
+
+		if(test.equals("LinkedDescription")){
+			click(objStockAdj.warning99);
+			htmlToExtent(cName,mName,extLogger,driver, "Warning message displayed for exceeding SOH value 99.\nEntered SOH is: 100;;;Pass");
+
+			//Report_AddStep("testcase", "Warning message displayed for exceeding SOH value 99.\nEntered SOH is: 100","","","Pass");
+			waitFor(1);
+		}
+
+		waitForJSandJQueryToLoad(driver);
+		if(objStockAdj.stockAdjFailList.size()!=0){
+			msg = getText(objStockAdj.success_msg);
+			if(msg.contains("Stocktake")){
+				scrolltoElement(objStockAdj.stockAdjFail,driver);
+				htmlToExtent(cName,mName,extLogger,driver,  " "+msg+";;;Fail");
+
+				//Report_AddStep("testcase",msg ,"","","Fail");
+				click(objStockAdj.stockAdjFail);
+
+			}}
+		else
+			if(isDisplayed(objStockAdj.adjContinue)){
+				scrolltoElement(objStockAdj.adjContinue,driver);
+				click(objStockAdj.adjContinue);
+			}
+		waitFor(1);
+		if(objStockAdj.success_msgList.size()!=0 && !msg.contains("Stocktake")){
+			String successMsg = getText(objStockAdj.successmsg);
+			htmlToExtent(cName,mName,extLogger,driver, "Success message "+successMsg+" is Displayed;;;Pass");
+
+			//Report_AddStep("testcase", "Success message "+successMsg+" is Displayed","","","Pass");
+			click(objStockAdj.closeSohReport);
+			waitFor(1);
+		}
+
+		return childSOH;
+
+	}
+	public String fnCalculationLinkedArticlesChild(StockAdjObjects objStockAdj,List myList, String enteredSoh, String recentDBSOH,WebDriver driver) throws IOException {
+
+		//String endSOHAppl = getText(objStockAdj.endSOHValue);
+		String MultFac =  myList.get(6).toString();
+		String linkageFactor = myList.get(12).toString();
+
+		float iniSOH = Float.parseFloat(recentDBSOH);
+		int adjSOH = Integer.parseInt(enteredSoh);
+		int mulFact = Integer.parseInt(MultFac);
+		float linkageValue = Float.parseFloat(linkageFactor);
+		float endSOH = 0;
+
+		endSOH = (iniSOH +(adjSOH * mulFact * linkageValue ));
+
+		String end_SOH = Float.toString(endSOH);
+
+		htmlToExtent(cName,mName,extLogger,driver, "Adjustment Soh given for Child is : "+enteredSoh+";;;Pass");
+
+		//Report_AddStep("testcase", "Adjustment Soh given for Child is : "+enteredSoh, "", "", "Pass");
+		htmlToExtent(cName,mName,extLogger,driver, "End SOH value calculated for Child is: "+end_SOH+" ;;;Pass");
+
+		//Report_AddStep("testcase", "End SOH value calculated for Child is: "+end_SOH, "", "", "Pass");
+
+		return end_SOH;
+
+	}	
+	public void verifyFinalSOH(StockAdjObjects objStockAdj,String childSOH,WebDriver driver) throws IOException {
+
+		String parentArticle = getText(objStockAdj.sohSearchBox);
+		waitFor(1);
+		click(objStockAdj.sohArticleSearch);
+
+		waitForJSandJQueryToLoad(driver);
+
+		String initialSOHParentAppl = getText(objStockAdj.sohApp);
+
+		initialSOHParentAppl= initialSOHParentAppl.substring(0, initialSOHParentAppl.indexOf(" "));
+
+		if(isDecimalEquals(initialSOHParentAppl,childSOH)){
+			htmlToExtent(cName,mName,extLogger,driver, "Child SOH Adjustment reflected in Parent Article  " +parentArticle+" ;"+initialSOHParentAppl+" ;"+childSOH+" ;Pass");
+
+			//Report_AddStep("testcase", "Child SOH Adjustment reflected in Parent Article  " +parentArticle ,initialSOHParentAppl ,childSOH , "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Child SOH Adjustment is Not reflected in Parent Article  " +parentArticle+" ;"+initialSOHParentAppl+" ;"+childSOH+" ;Fail");
+
+			//Report_AddStep("testcase", "Child SOH Adjustment is Not reflected in Parent Article  " +parentArticle,initialSOHParentAppl ,childSOH , "Fail");
+		}
+
+	}
+
+
+
+	public void fnDisplayParentArticleValidation(StockAdjObjects objStockAdj,String parentArticle,String searchText, String test,WebDriver driver) throws IOException {
+
+
+		String sohdbDeci=null, msg;
+
+		objStockAdj.sohSearchBox.sendKeys(searchText);
+		waitFor(1);
+		click(objStockAdj.sohArticleSearch);
+
+		if(test.equals("DisplayDescription"))
+		{
+			if(isDisplayed(objStockAdj.LinkedArticleDescSearchBox))
+				click(objStockAdj.LinkedArticleDescSelect);
+		}
+
+		waitForJSandJQueryToLoad(driver);
+		String sohTitleChild = getText(objStockAdj.sohArticleTitle);
+		sohTitleChild = sohTitleChild.replaceAll("\\s+","");
+		String[] partsChild = sohTitleChild.split("-");
+		if(parentArticle.contains(partsChild[0])){
+			htmlToExtent(cName,mName,extLogger,driver, "Stock adjustment detail screen displayed for Parent Article Number:"+parentArticle+";;;Pass");
+
+			//Report_AddStep("testcase", "Stock adjustment detail screen displayed for Parent Article Number:"+parentArticle,"","", "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Stock adjustment detail screen is Not displayed for Parent Article Number:"+parentArticle+";;;Fail");
+
+			//Report_AddStep("testcase","Stock adjustment detail screen is Not displayed for Parent Article Number:"+parentArticle,"","", "Fail");
+		}
+
+		selectByVisibleText(objStockAdj.reasonsForSOH,"PI Verify"); 
+		waitFor(1);
+		if(objStockAdj.stockAdjFailList.size()!=0){
+			msg = getText(objStockAdj.success_msg);
+			if(msg.contains("Stock Adjustment")){
+				scrolltoElement(objStockAdj.stockAdjFail,driver);
+				htmlToExtent(cName,mName,extLogger,driver, "Expected Error Message '"+msg+"' is Displayed ;;;Pass");
+
+				//Report_AddStep("testcase","Expected Error Message '"+msg+"' is Displayed" ,"","","Pass");
+				click(objStockAdj.stockAdjFail);
+			}
+			else
+				htmlToExtent(cName,mName,extLogger,driver, "Expected Error is not Displayed;;;Fail");
+
+			//Report_AddStep("testcase","Expected Error is not Displayed" ,"","","Fail"); 
+		}
+		selectByVisibleText(objStockAdj.reasonsForSOH,"+Stock Correction"); 
+		waitFor(1);
+		if(objStockAdj.stockAdjFailList.size()!=0){
+			msg = getText(objStockAdj.success_msg);
+			if(msg.contains("Stock Adjustment")){
+				scrolltoElement(objStockAdj.stockAdjFail,driver);
+				htmlToExtent(cName,mName,extLogger,driver, "Expected Error Message '"+msg+"' is Displayed;;;Pass");
+
+				//Report_AddStep("testcase","Expected Error Message '"+msg+"' is Displayed" ,"","","Pass");
+				click(objStockAdj.stockAdjFail);
+			}
+			else
+				htmlToExtent(cName,mName,extLogger,driver, "Expected Error is not Displayed ;;;Fail");
+
+			//Report_AddStep("testcase","Expected Error is not Displayed" ,"","","Fail"); 
+		}
+		selectByVisibleText(objStockAdj.reasonsForSOH,"-Stock Correction"); 
+		waitFor(1);
+		if(objStockAdj.stockAdjFailList.size()!=0){
+			msg = getText(objStockAdj.success_msg);
+			if(msg.contains("Stock Adjustment")){
+				scrolltoElement(objStockAdj.stockAdjFail,driver);
+				htmlToExtent(cName,mName,extLogger,driver, "Expected Error Message '"+msg+"' is Displayed;;;Pass");
+
+
+				//Report_AddStep("testcase","Expected Error Message '"+msg+"' is Displayed" ,"","","Pass");
+				click(objStockAdj.stockAdjFail);
+			}
+			else
+				htmlToExtent(cName,mName,extLogger,driver, "Expected Error is not Displayed ;;;Fail");
+
+			//Report_AddStep("testcase","Expected Error is not Displayed" ,"","","Fail"); 
+		}
+
+	}
+
+	public void fnAdjustSohDisplayArticles(StockAdjObjects objStockAdj,List myList, List<List<Object>> childDetails,String enteredSoh, String childsoh,String test,WebDriver driver) throws IOException {
+
+		String msg=null;
+		List<List<Object>> results;
+		List<List<Object>> recentchildDetails;
+
+
+		String reason = myList.get(1).toString();
+		String charity = myList.get(3).toString();
+
+		click(objStockAdj.reasonsForSOH);
+		selectByVisibleText(objStockAdj.reasonsForSOH, reason);
+
+		if(isDisplayed(objStockAdj.selectCharity)){
+			click(objStockAdj.selectCharity);
+			selectByVisibleText(objStockAdj.selectCharity, charity);
+		}
+		objStockAdj.EA.sendKeys(enteredSoh);
+		click(objStockAdj.saveSOH);
+
+		if(test.equals("DisplayDescription")){
+			click(objStockAdj.warning99);
+			htmlToExtent(cName,mName,extLogger,driver, "Warning message displayed for exceeding SOH value 99.\nEntered SOH is: 100;;;Pass");
+
+			//Report_AddStep("testcase", "Warning message displayed for exceeding SOH value 99.\nEntered SOH is: 100","","","Pass");
+			waitFor(1);
+		}
+		waitForJSandJQueryToLoad(driver);
+		if(objStockAdj.stockAdjFailList.size()!=0){
+			msg = getText(objStockAdj.success_msg);
+			if(msg.contains("Stocktake")){
+				scrolltoElement(objStockAdj.stockAdjFail,driver);
+				htmlToExtent(cName,mName,extLogger,driver,  " "+msg+";;;Fail");
+
+				//Report_AddStep("testcase",msg ,"","","Fail");
+				click(objStockAdj.stockAdjFail);
+
+			}}
+
+		else if(isDisplayed(objStockAdj.adjContinue)){
+			scrolltoElement(objStockAdj.adjContinue,driver);
+			click(objStockAdj.adjContinue);
+		}
+		waitFor(1);
+		if(objStockAdj.success_msgList.size()!=0 && !msg.contains("Stocktake"))
+		{
+			String successMsg = getText(objStockAdj.successmsg);
+			htmlToExtent(cName,mName,extLogger,driver, "Success message "+successMsg+" is Displayed;;;Pass");
+
+			//Report_AddStep("testcase", "Success message "+successMsg+" is Displayed","","","Pass");
+			click(objStockAdj.closeSohReport);
+			waitFor(1);
+		}
+
+
+		recentchildDetails = fnCalculationDisplayArticles(objStockAdj,myList,childDetails,enteredSoh);
+		validateDisplayChildArticles(objStockAdj,recentchildDetails,driver);
+		validateIndividualDisplayArticles(objStockAdj,myList, recentchildDetails,childsoh,test,driver);
+
+
+	}
+	public void verifyDisplay999Validation(StockAdjObjects objStockAdj,String highSoh, String test,WebDriver driver) throws IOException {
+
+		objStockAdj.EA.sendKeys(highSoh);
+		click(objStockAdj.saveSOH);
+
+		if(test.equals("DisplayEAN")){
+			click(objStockAdj.warning999);
+			htmlToExtent(cName,mName,extLogger,driver, "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+ highSoh+";;;Pass");
+
+			//Report_AddStep("testcase", "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+ highSoh,"","","Pass");
+
+		}
+
+	}
+
+
+	public List<List<Object>> fnCalculationDisplayArticles(StockAdjObjects objStockAdj,List myList, List<List<Object>> childDetails, String enteredSoh) throws IOException {
+
+		int totalAdjQty = 0,adjQty_EA,adjQty_CA1=1,adjQty_CAR=1,adjQty_MPK=1,pack_size=0;
+		String packsize=null;
+		adjQty_EA = 1;
+		List<List<Object>> recentChildDetails = new ArrayList<List<Object>>();;
+		List endsohallChild; 
+		String MultFac =  myList.get(2).toString();
+
+		for (Iterator<List<Object>> it = childDetails.iterator(); it.hasNext();) {
+			List<Object> elem = it.next(); 
+			for(Iterator it1 = elem.iterator(); it1.hasNext();) {
+				String Num = it1.next().toString();
+				String qty = it1.next().toString();
+				String initialsoh = it1.next().toString();
+
+				float iniSOH = Float.parseFloat(initialsoh);
+				float quanity = Float.parseFloat(qty);
+				int adjSOH = Integer.parseInt(enteredSoh);
+				int mulFact = Integer.parseInt(MultFac);
+				float endSOH = 0;
+
+				endSOH = (iniSOH +(adjSOH *quanity * mulFact));
+				int endSOHValue = (int)endSOH;
+
+				String endsoh = Integer.toString(endSOHValue);
+				endsohallChild = new ArrayList();
+				endsohallChild.add(Num);
+				endsohallChild.add(endsoh);
+				recentChildDetails.add(endsohallChild);
+			}
+
+		}
+
+		return recentChildDetails;
+	}
+
+	public void validateDisplayChildArticles(StockAdjObjects objStockAdj,List<List<Object>> recentChildDetails,WebDriver driver) throws IOException {
+
+		for (Iterator<List<Object>> it = recentChildDetails.iterator(); it.hasNext();) {
+			List<Object> elem = it.next(); 
+			for(Iterator it1 = elem.iterator(); it1.hasNext();) {
+				String childNum = it1.next().toString();
+				String endSoh = it1.next().toString();
+				htmlToExtent(cName, mName, extLogger, driver, "Below details is for Child article - "+childNum+";;;Info");
+				objStockAdj.sohSearchBox.sendKeys(childNum);
+				click(objStockAdj.sohArticleSearch);
+				waitForJSandJQueryToLoad(driver);
+				try{
+				String SOHChildAppl = getText(objStockAdj.sohApp);
+
+				String[] partsChild = SOHChildAppl.split(" ");
+				SOHChildAppl = partsChild[0];
+
+				if(isDecimalEquals(SOHChildAppl,endSoh)){
+					htmlToExtent(cName,mName,extLogger,driver, "Parent SOH Adjustment reflected in child article: "+childNum+" Succesfully;"+SOHChildAppl+" ;"+endSoh+";Pass");
+
+					//Report_AddStep("testcase", "Parent SOH Adjustment reflected in child article: "+childNum+" Succesfully",SOHChildAppl ,endSoh , "Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Parent SOH Adjustment is not reflected in child article: "+childNum+" ;"+SOHChildAppl+" ;"+endSoh+";Pass");
+
+					//Report_AddStep("testcase", "Parent SOH Adjustment is not reflected in child article: " +childNum + "",SOHChildAppl ,endSoh , "Pass");
+				}
+				click(objStockAdj.backBtn);
+				waitForJSandJQueryToLoad(driver);
+
+				objStockAdj.sohSearchBox.clear();
+
+			}catch(Exception e){
+				if(objStockAdj.cannotrvsemsg.isDisplayed())
+				{waitFor(1);
+					objStockAdj.idtErrorClose.click();
+					htmlToExtent(cName, mName, extLogger, driver, "No result found for - "+childNum+";;;Fail");
+					objStockAdj.sohSearchBox.clear();
+				}
+			}
+				}
+			}
+	}
+	public void validateIndividualDisplayArticles(StockAdjObjects objStockAdj,List myList,
+			List<List<Object>> recentChildDetails,String childsoh, String test,WebDriver driver) throws IOException {
+
+		String msg=null,childNum1 =null ;
+		List<List<Object>> results;
+		//List<List<Object>> recentchildDetails;
+
+		if(recentChildDetails.size()!=0)
+		{
+			List<Object> firstChildDetail = recentChildDetails.get(0);
+			if(firstChildDetail.size()!=0)
+			{
+				childNum1 = firstChildDetail.get(0).toString();
+			}
+
+		}
+		htmlToExtent(cName, mName, extLogger, driver, "Below details is for - "+childNum1+";;;Pass");
+		objStockAdj.sohSearchBox.sendKeys(childNum1);
+		waitFor(1);
+		click(objStockAdj.sohArticleSearch);
+		waitForJSandJQueryToLoad(driver);
+		try{
+		String reason = myList.get(1).toString();
+		String charity = myList.get(3).toString();
+
+		click(objStockAdj.reasonsForSOH);
+		selectByVisibleText(objStockAdj.reasonsForSOH, reason);
+
+		if(isDisplayed(objStockAdj.selectCharity)){
+			click(objStockAdj.selectCharity);
+			selectByVisibleText(objStockAdj.selectCharity, charity);
+		}
+		objStockAdj.EA.sendKeys(childsoh);
+		click(objStockAdj.saveSOH);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockAdj.closeSohReport);
+		waitFor(1);
+		htmlToExtent(cName,mName,extLogger,driver, "Child Article 1 - "+childNum1+" is adjusted with Adjustmet value "+childsoh+";;;Pass");
+
+		//Report_AddStep("testcase", "Child Article 1 - "+childNum1+" is adjusted with Adjustmet value "+childsoh ,"" ,"" , "Pass");
+
+
+		//Verify the SOH for 2nd child.
+		String childNum2 = null, soh2=null;
+		if(recentChildDetails.size()>1)
+		{
+			List<Object> secondChildDetail = recentChildDetails.get(1);
+			if(secondChildDetail.size()!=0)
+			{
+				childNum2 = secondChildDetail.get(0).toString();
+				soh2 = secondChildDetail.get(1).toString();
+			}
+
+			objStockAdj.sohSearchBox.sendKeys(childNum2);
+			waitFor(1);
+			click(objStockAdj.sohArticleSearch);
+			waitForJSandJQueryToLoad(driver);
+			try{
+
+			String SOHChildAppl = getText(objStockAdj.sohApp);
+
+			String[] partsChild = SOHChildAppl.split(" ");
+			SOHChildAppl = partsChild[0];
+
+			if(isDecimalEquals(SOHChildAppl,soh2)){
+				htmlToExtent(cName,mName,extLogger,driver, "Child Article 1 - "+childNum1+" Adjustment is not affecting the SOH of Child Article 2 - "+childNum2+";"+SOHChildAppl+";"+soh2+";Pass");
+
+				//Report_AddStep("testcase", "Child Article 1 - "+childNum1+" Adjustment is not affecting the SOH of Child Article 2 - "+childNum2,SOHChildAppl ,soh2 , "Pass");
+			}
+
+			click(objStockAdj.backBtn);
+			waitForJSandJQueryToLoad(driver);
+
+			objStockAdj.sohSearchBox.clear();
+			}catch(Exception e){
+				if(objStockAdj.cannotrvsemsg.isDisplayed())
+				{
+					waitFor(1);
+					htmlToExtent(cName, mName, extLogger, driver, "No result found for - "+objStockAdj.cannotrvsemsg.getText()+";;;Fail");
+					objStockAdj.idtErrorClose.click();
+					objStockAdj.sohSearchBox.clear();
+				}
+			}
+		}
+
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "This Display article doesn't has more than one child article. So validating individual child adjustment scenario is NA;;;Pass");
+
+			//Report_AddStep("testcase","This Display article doesn't has more than one child article. So validating individual child adjustment scenario is NA","" ,"" , "Pass");
+
+		}}catch(Exception e){
+			if(objStockAdj.cannotrvsemsg.isDisplayed())
+			{
+				waitFor(1);
+				htmlToExtent(cName, mName, extLogger, driver, "No result found for - "+objStockAdj.cannotrvsemsg.getText()+";;;Fail");
+				objStockAdj.idtErrorClose.click();
+				objStockAdj.sohSearchBox.clear();
+			}
+		}
+	}
+
+	public void fnStockAdjustmentWeighedArticles(StockAdjObjects objStockAdj,List myList, String ran,WebDriver driver) throws IOException {
+
+
+		String randomArticle = myList.get(0).toString();
+		String randomArtDesc = myList.get(1).toString();
+		String storeSOH = myList.get(2).toString();
+
+		int count = 1;
+
+		String articleNum=randomArticle, sohdbDeci=null;
+		objStockAdj.sohSearchBox.sendKeys(ran);
+		waitFor(1);
+		click(objStockAdj.sohArticleSearch);
+
+		waitForJSandJQueryToLoad(driver);
+
+		if(isDisplayed(objStockAdj.adjSohWt)){
+			click(objStockAdj.enterWeightAlert);
+		}
+		String sohTitle = getText(objStockAdj.sohArticleTitle);
+		sohTitle = sohTitle.replaceAll("\\s+","");
+		randomArtDesc = randomArtDesc.replaceAll("\\s+","");
+		String[] parts = sohTitle.split("-");
+
+
+		if(randomArticle.contains(parts[0]) && randomArtDesc.contains(parts[1])){
+			htmlToExtent(cName,mName,extLogger,driver, "Article details are displayed in Stock Adjustment Screen"+sohTitle+";;;Pass");
+
+			//Report_AddStep("testcase", "Article details are displayed in Stock Adjustment Screen"+sohTitle,"","", "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Article number is not correct: "+randomArticle+";"+randomArticle+";"+parts[0]+";Fail");
+
+			//Report_AddStep("testcase", "Article number is not correct: "+randomArticle,randomArticle,parts[0], "Fail");
+		}
+		String sohApp = getText(objStockAdj.sohApp);
+
+
+		sohApp= sohApp.substring(0, sohApp.indexOf(" "));
+
+		if(isDecimalEquals(sohApp,storeSOH)){
+			htmlToExtent(cName,mName,extLogger,driver, "Article soh: "+storeSOH+";SOH in Applic : "+sohApp+" ;SOH in DB : "+storeSOH+" ;Pass");
+
+			//Report_AddStep("testcase","Article soh: "+storeSOH,"SOH in Applic : "+sohApp,"SOH in DB : "+storeSOH, "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Article soh: "+storeSOH+";SOH in Applic : "+sohApp+" ;SOH in DB : "+storeSOH+" ;Fail");
+
+			//Report_AddStep("testcase","Article soh: "+storeSOH,"SOH in Applic : "+sohApp,"SOH in DB : "+storeSOH, "Fail");
+		}
+		waitFor(2);
+
+	}
+
+	public void fnAdjustSohWeighedArticles(StockAdjObjects objStockAdj,List myList, String validation99, String validation999 ,WebDriver driver) throws IOException {
+
+		String msg=null;
+		String reason = myList.get(4).toString();
+		String charity = myList.get(7).toString();
+
+		click(objStockAdj.reasonsForSOH);
+		selectByVisibleText(objStockAdj.reasonsForSOH, reason);
+
+		if(isDisplayed(objStockAdj.selectCharity)){
+			click(objStockAdj.selectCharity);
+			selectByVisibleText(objStockAdj.selectCharity, charity);
+		}
+		verify999Validation(objStockAdj ,validation999,driver);
+		objStockAdj.KG.clear();
+		objStockAdj.KG.sendKeys(validation99);
+
+		String endSOHAppl = getText(objStockAdj.endSOHValue);
+		fnCalculationWeighedArticles(objStockAdj,myList,validation99,driver);
+
+		click(objStockAdj.saveSOH);
+		click(objStockAdj.warning99);
+		htmlToExtent(cName,mName,extLogger,driver, "Warning message displayed for exceeding SOH value 99.Entered SOH is: 100;;;Pass");
+
+		//Report_AddStep("testcase", "Warning message displayed for exceeding SOH value 99.Entered SOH is: 100","","","Pass");
+		waitFor(1);
+
+		if(reason.equals("+Stock Correction") || reason.equals("-Stock Correction"))
+		{
+			String message = getText(objStockAdj.unReceivedPopup);
+			if(message.contains("Unreceived")){
+				click(objStockAdj.continueBtn);
+				waitFor(1);
+			}}
+
+		waitForJSandJQueryToLoad(driver);
+		if(objStockAdj.stockAdjFailList.size()!=0){
+			msg = getText(objStockAdj.success_msg);
+			if(msg.contains("Stocktake")){
+				scrolltoElement(objStockAdj.stockAdjFail,driver);
+				htmlToExtent(cName,mName,extLogger,driver, " "+msg+" ;;;Fail");
+
+				//Report_AddStep("testcase",msg ,"","","Fail");
+				click(objStockAdj.stockAdjFail);
+
+			}}
+		else
+			if(isDisplayed(objStockAdj.adjContinue)){
+				scrolltoElement(objStockAdj.adjContinue,driver);
+				click(objStockAdj.adjContinue);
+			}
+		waitFor(1);
+		if(objStockAdj.success_msgList.size()!=0 && !msg.contains("Stocktake")){
+			String successMsg = getText(objStockAdj.successmsg);
+			String[] parts = successMsg.split("from ");
+			String s = parts[1];
+			String[] parts1 = s.split(" to ");
+			String fromSOH = parts1[0];
+			String toSOH = parts1[1];
+			String initialSOH = myList.get(2).toString();
+
+			if(isDecimalEquals(initialSOH,fromSOH) && isDecimalEquals(endSOHAppl,toSOH)){
+				htmlToExtent(cName,mName,extLogger,driver, "From and To SOH in success message; From SOH:"+fromSOH+"\nTo SOH:"+toSOH+"; From SOH:"+initialSOH+"\nTo SOH:"+endSOHAppl+";Pass");
+
+				//Report_AddStep("testcase", "From and To SOH in success message", "From SOH:"+fromSOH+"\nTo SOH:"+toSOH, "From SOH:"+initialSOH+"\nTo SOH:"+endSOHAppl, "Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "From and To SOH in success message; From SOH:"+fromSOH+"\nTo SOH:"+toSOH+"; From SOH:"+initialSOH+"\nTo SOH:"+endSOHAppl+";Fail");
+
+				//Report_AddStep("testcase", "From and To SOH in success message", "From SOH:"+fromSOH+"\nTo SOH:"+toSOH, "From SOH:"+initialSOH+"\nTo SOH:"+endSOHAppl, "Fail");
+			}
+			click(objStockAdj.closeSohReport);
+			waitFor(1);
+		}
+
+	}
+	public void fnCalculationWeighedArticles(StockAdjObjects objStockAdj,List myList, String enteredSoh,WebDriver driver) throws IOException {
+
+		int totalAdjQty = 0,adjQty_EA,adjQty_CA1=1,adjQty_CAR=1,adjQty_MPK=1,pack_size=0;
+		String packsize=null;
+		adjQty_EA = 1;
+
+		//enteredSoh = enteredSoh.substring(0, enteredSoh.length() - 3);
+		String endSOHAppl = getText(objStockAdj.endSOHValue);
+		String initialSOH = myList.get(2).toString();
+		String MultFac =  myList.get(5).toString();
+
+		Float iniSOH = Float.parseFloat(initialSOH);
+		float adjSOH = Float.parseFloat(enteredSoh);
+		float endSOH = 0;
+		int mulFact = Integer.parseInt(MultFac);
+
+
+		Float end_SOH1 = iniSOH +(adjSOH * mulFact);
+
+		String end_SOH = Float.toString(end_SOH1);
+
+		if(isDecimalEquals(endSOHAppl,end_SOH)){
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH value is calculated correctly: "+end_SOH+"; "+end_SOH+"; "+endSOHAppl+";Pass");
+
+			//Report_AddStep("testcase", "End SOH value is calculated correctly: "+end_SOH, end_SOH, endSOHAppl, "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH value is calculated wrongly: "+end_SOH+"; "+end_SOH+"; "+endSOHAppl+";Fail");
+			//Report_AddStep("testcase", "End SOH value is calculated wrongly: "+end_SOH, end_SOH, endSOHAppl, "Fail");
+		}
+
+	}
+	public void verify999Validation(StockAdjObjects objStockAdj,String validation999,WebDriver driver) throws IOException {
+
+		objStockAdj.KG.sendKeys(validation999);
+
+		click(objStockAdj.saveSOH);
+
+		waitForJSandJQueryToLoad(driver);	
+		waitFor(1);
+		click(objStockAdj.warning999);
+		waitFor(1);
+		htmlToExtent(cName,mName,extLogger,driver, "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+1000+";;;Pass");
+
+		//Report_AddStep("testcase", "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+1000,"","","Pass");
+
+	}
+
+	public void fnAdjustSohWeighedArticlesEAandCAR(StockAdjObjects objStockAdj,List myList,String EAValue, String CARValue,WebDriver driver) throws IOException {
+
+		String article = myList.get(0).toString();
+		objStockAdj.sohSearchBox.sendKeys(article);
+		waitFor(1);
+		click(objStockAdj.sohArticleSearch);
+
+		waitForJSandJQueryToLoad(driver);
+		String msg=null;
+		String reason = myList.get(4).toString();
+		String charity = myList.get(7).toString();
+
+		click(objStockAdj.reasonsForSOH);
+		selectByVisibleText(objStockAdj.reasonsForSOH, reason);
+
+		if(isDisplayed(objStockAdj.selectCharity)){
+			click(objStockAdj.selectCharity);
+			selectByVisibleText(objStockAdj.selectCharity, charity);
+		}
+
+		String initialSOHAppl = getText(objStockAdj.sohApp);
+
+		initialSOHAppl = initialSOHAppl.substring(0, initialSOHAppl.indexOf(" "));
+		objStockAdj.KG.sendKeys(EAValue);
+		objStockAdj.CAR.sendKeys(CARValue);
+
+		String endSOHAppl = getText(objStockAdj.endSOHValue);
+		fnCalculationWeighedArticlesEAandCAR(objStockAdj,myList,EAValue,CARValue,driver);
+
+		click(objStockAdj.saveSOH);
+
+		if(reason.equals("+Stock Correction") || reason.equals("-Stock Correction"))
+		{
+			String message = getText(objStockAdj.unReceivedPopup);
+			if(message.contains("Unreceived")){
+				click(objStockAdj.continueBtn);
+				waitFor(1);
+			}}
+
+		waitForJSandJQueryToLoad(driver);
+
+		if(objStockAdj.stockAdjFailList.size()!=0){
+			msg = getText(objStockAdj.success_msg);
+			if(msg.contains("Stocktake")){
+				scrolltoElement(objStockAdj.stockAdjFail,driver);
+				htmlToExtent(cName,mName,extLogger,driver," "+msg+" ;;;Pass");
+
+				//Report_AddStep("testcase",msg ,"","","Fail");
+				click(objStockAdj.stockAdjFail);
+
+			}}
+		else
+			if(isDisplayed(objStockAdj.adjContinue)){
+				scrolltoElement(objStockAdj.adjContinue,driver);
+				click(objStockAdj.adjContinue);
+			}
+		waitFor(1);
+		if(objStockAdj.success_msgList.size()!=0 && !msg.contains("Stocktake")){
+			String successMsg = getText(objStockAdj.successmsg);
+			String[] parts = successMsg.split("from ");
+			String s = parts[1];
+			String[] parts1 = s.split(" to ");
+			String fromSOH = parts1[0];
+			String toSOH = parts1[1];
+
+
+			if(isDecimalEquals(initialSOHAppl,fromSOH) && isDecimalEquals(endSOHAppl,toSOH)){
+				htmlToExtent(cName,mName,extLogger,driver, "From and To SOH in success message; From SOH:"+fromSOH+"\nTo SOH:"+toSOH+"; From SOH:"+initialSOHAppl+"\nTo SOH:"+endSOHAppl+";Pass");
+				//Report_AddStep("testcase", "From and To SOH in success message", "From SOH:"+fromSOH+"\nTo SOH:"+toSOH, "From SOH:"+initialSOHAppl+"\nTo SOH:"+endSOHAppl, "Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "From and To SOH in success message; From SOH:"+fromSOH+"\nTo SOH:"+toSOH+"; From SOH:"+initialSOHAppl+"\nTo SOH:"+endSOHAppl+";Fail");
+				//Report_AddStep("testcase", "From and To SOH in success message", "From SOH:"+fromSOH+"\nTo SOH:"+toSOH, "From SOH:"+initialSOHAppl+"\nTo SOH:"+endSOHAppl, "Fail");
+			}
+			click(objStockAdj.closeSohReport);
+			waitFor(1);
+		}
+
+	}
+
+	public void fnCalculationWeighedArticlesEAandCAR(StockAdjObjects objStockAdj,List myList, String EAValue, String CARValue,WebDriver driver) throws IOException {
+
+
+		String packsize=null;
+
+		String endSOHAppl = getText(objStockAdj.endSOHValue);
+		String initialSOH = getText(objStockAdj.sohApp);
+
+		initialSOH = initialSOH.substring(0, initialSOH.indexOf(" "));
+		EAValue = EAValue.substring(0, EAValue.length() - 3);
+
+		String MultFac =  myList.get(5).toString();
+		String articleOM =  myList.get(6).toString();
+
+		Float iniSOH = Float.parseFloat(initialSOH);
+		Float adjSOHEA = Float.parseFloat(EAValue);
+		int adjSOHCAR = Integer.parseInt(CARValue);
+
+		int mulFact = Integer.parseInt(MultFac);
+		Float oMValue = Float.parseFloat(articleOM );
+
+		Float totalAdjQty = adjSOHEA + (adjSOHCAR * oMValue);
+
+		Float end_SOH1 = iniSOH +(totalAdjQty * mulFact);
+
+		String end_SOH = Float.toString(end_SOH1);
+
+		if(isDecimalEquals(endSOHAppl,end_SOH)){
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH(with KG : "+EAValue+" and CAR : "+CARValue+") value is calculated correctly: "+end_SOH+"; "+end_SOH+"; "+endSOHAppl+";Pass");
+
+			//Report_AddStep("testcase", "End SOH(with KG : "+EAValue+" and CAR : "+CARValue+") value is calculated correctly: "+end_SOH, end_SOH, endSOHAppl, "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH(with KG : "+EAValue+" and CAR : "+CARValue+") value is calculated wrongly: "+end_SOH+"; "+end_SOH+"; "+endSOHAppl+";Fail");
+			//Report_AddStep("testcase", "End SOH(with KG : "+EAValue+" and CAR : "+CARValue+") value is calculated wrongly: "+end_SOH, end_SOH, endSOHAppl, "Fail");
+		}
+
+	}
+
+	public void fnAdjustSohWeighedArticleForPIVerify(StockAdjObjects objStockAdj,List myList, String endSOH,WebDriver driver) throws IOException {
+
+		String msg=null;
+		Float adjustsoh, initialsoh;
+
+		String article = myList.get(0).toString();
+		objStockAdj.sohSearchBox.sendKeys(article);
+		waitFor(1);
+		click(objStockAdj.sohArticleSearch);
+		waitForJSandJQueryToLoad(driver);
+
+		String initialSOHAppl = getText(objStockAdj.sohApp);
+		initialSOHAppl = initialSOHAppl.substring(0, initialSOHAppl.indexOf(" "));
+		initialsoh = Float.parseFloat(initialSOHAppl);
+
+		waitForJSandJQueryToLoad(driver);
+
+		click(objStockAdj.reasonsForSOH);
+		selectByVisibleText(objStockAdj.reasonsForSOH, "PI Verify");
+
+		objStockAdj.KG.sendKeys(endSOH);
+		String adjustSOHAppl = getText(objStockAdj.endSOHValue);
+
+		adjustsoh = Float.parseFloat(adjustSOHAppl);
+		click(objStockAdj.saveSOH);
+
+		if(adjustsoh < 999.000)
+		{
+
+			if(adjustsoh > 99.000)
+			{
+				fnCalculationWeighedArticlesForPIVerify(objStockAdj,myList,endSOH,driver);
+				click(objStockAdj.warning99);
+				htmlToExtent(cName,mName,extLogger,driver, "Warning message displayed for exceeding SOH value 99.Entered SOH is: "+adjustsoh+";;;Pass");
+
+				//Report_AddStep("testcase", "Warning message displayed for exceeding SOH value 99.Entered SOH is: "+adjustsoh,"","","Pass");
+				waitFor(1);
+			}
+			else
+			{
+				fnCalculationWeighedArticlesForPIVerify(objStockAdj,myList,endSOH,driver);
+				waitForJSandJQueryToLoad(driver);	
+			}
+
+			String message = getText(objStockAdj.unReceivedPopup);
+			if(message.contains("Unreceived")){
+				click(objStockAdj.continueBtn);
+				waitFor(1);
+			}
+
+			waitForJSandJQueryToLoad(driver);
+			if(objStockAdj.stockAdjFailList.size()!=0){
+				msg = getText(objStockAdj.success_msg);
+				if(msg.contains("Stocktake")){
+					scrolltoElement(objStockAdj.stockAdjFail,driver);
+					htmlToExtent(cName,mName,extLogger,driver, "" + msg+ " ;;;Pass");
+
+					//Report_AddStep("testcase",msg ,"","","Fail");
+					click(objStockAdj.stockAdjFail);
+
+				}}
+			else
+				if(isDisplayed(objStockAdj.adjContinue)){
+					scrolltoElement(objStockAdj.adjContinue,driver);
+					click(objStockAdj.adjContinue);
+				}
+			waitFor(1);
+			if(objStockAdj.success_msgList.size()!=0 && !msg.contains("Stocktake")){
+				String successMsg = getText(objStockAdj.successmsg);
+				String[] parts = successMsg.split("from ");
+				String s = parts[1];
+				String[] parts1 = s.split(" to ");
+				String fromSOH = parts1[0];
+				String toSOH = parts1[1];
+				endSOH = endSOH.substring(0, endSOH.length() - 3);
+
+				if(isDecimalEquals(initialSOHAppl,fromSOH) && isDecimalEquals(endSOH,toSOH)){
+					htmlToExtent(cName,mName,extLogger,driver, "From and To SOH in success message; From SOH:"+fromSOH+"\nTo SOH:"+toSOH+"; From SOH:"+initialSOHAppl+"\nTo SOH:"+endSOH+";Pass");
+					//Report_AddStep("testcase", "From and To SOH in success message", "From SOH:"+fromSOH+"\nTo SOH:"+toSOH, "From SOH:"+initialSOHAppl+"\nTo SOH:"+endSOH, "Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "From and To SOH in success message; From SOH:"+fromSOH+"\nTo SOH:"+toSOH+"; From SOH:"+initialSOHAppl+"\nTo SOH:"+endSOH+";Fail");
+					//Report_AddStep("testcase", "From and To SOH in success message", "From SOH:"+fromSOH+"\nTo SOH:"+toSOH, "From SOH:"+initialSOHAppl+"\nTo SOH:"+endSOH, "Fail");
+				}
+				click(objStockAdj.closeSohReport);
+				waitFor(1);
+			}
+		}
+		else
+		{
+			click(objStockAdj.warning999);
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver, "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+adjustsoh+";;;Pass");
+
+			//Report_AddStep("testcase", "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+adjustsoh,"","","Pass");
+			click(objStockAdj.backBtn);
+			waitFor(1);
+			click(objStockAdj.discard);
+			objStockAdj.sohSearchBox.clear();
+		}
+
+	}
+	public void fnCalculationWeighedArticlesForPIVerify(StockAdjObjects objStockAdj,List myList, String endSoh,WebDriver driver) throws IOException {
+
+		String packsize=null;
+
+		endSoh = endSoh.substring(0, endSoh.length() - 3);
+		String adjustSOHAppl = getText(objStockAdj.endSOHValue);
+		String initialSOH = getText(objStockAdj.sohApp);
+
+		initialSOH = initialSOH.substring(0, initialSOH.indexOf(" "));
+
+		Float iniSOH = Float.parseFloat(initialSOH);
+		float endSOH = Float.parseFloat(endSoh);
+		float adjustSOH = 0;
+
+
+		Float adjust_SOH1 = endSOH- iniSOH ;
+
+		String adjust_SOH = Float.toString(adjust_SOH1);
+
+		if(isDecimalEquals(adjustSOHAppl, adjust_SOH )){
+			htmlToExtent(cName,mName,extLogger,driver, "Adjust SOH value is calculated correctly: "+adjust_SOH+"; "+adjust_SOH+"; "+adjustSOHAppl+";Pass");
+
+			//Report_AddStep("testcase", "Adjust SOH value is calculated correctly: "+adjust_SOH, adjust_SOH, adjustSOHAppl, "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Adjust SOH value is calculated correctly: "+adjust_SOH+"; "+adjust_SOH+"; "+adjustSOHAppl+";Fail");
+			//Report_AddStep("testcase", "Adjust SOH value is calculated wrongly: "+adjust_SOH, adjust_SOH, adjustSOHAppl, "Fail");
+		}
+
+	}
+
+	public void fnStockAdjustmentRandomWeighedArticles(StockAdjObjects objStockAdj,List myList, String ran,WebDriver driver) throws IOException {
+
+
+		String randomArticle = myList.get(0).toString();
+		String randomArtDesc = myList.get(1).toString();
+		String kgSOH = myList.get(4).toString();
+		String eaSOH = myList.get(5).toString();
+
+		int count = 1;
+
+		String articleNum=randomArticle, sohdbDeci=null;
+		objStockAdj.sohSearchBox.sendKeys(ran);
+		waitFor(1);
+		click(objStockAdj.sohArticleSearch);
+
+		waitForJSandJQueryToLoad(driver);
+
+		if((objStockAdj.stockAdjFailList.size()!=0))
+			click(objStockAdj.stockAdjFail);
+
+		if(isDisplayed(objStockAdj.adjSohWt)){
+			if(isEnabled(objStockAdj.adjSohWt))
+				htmlToExtent(cName,mName,extLogger,driver, "Random weight article Quantity is not diabled ;;;Fail");
+
+			//Report_AddStep("testcase", "Random weight article Quantity is not diabled","","", "Fail");
+			else
+			{
+				String qtyValue = getValueAttribute(objStockAdj.adjSohWt);
+				htmlToExtent(cName,mName,extLogger,driver, "Random weight article Quantity is  diabled;;;Pass");
+
+				//Report_AddStep("testcase", "Random weight article Quantity is  diabled","","", "Pass");
+				htmlToExtent(cName,mName,extLogger,driver, "Random weight article Quantity is " + qtyValue+" ;;;Pass");
+
+				//Report_AddStep("testcase", "Random weight article Quantity is " + qtyValue,"","", "Pass");
+			}
+
+		}
+		String sohTitle = getText(objStockAdj.sohArticleTitle);
+		sohTitle = sohTitle.replaceAll("\\s+","");
+		randomArtDesc = randomArtDesc.replaceAll("\\s+","");
+		String[] parts = sohTitle.split("-");
+
+
+		if(randomArticle.contains(parts[0]) && randomArtDesc.contains(parts[1])){
+			htmlToExtent(cName,mName,extLogger,driver, "Random weight Article details are displayed in Stock Adjustment Screen"+sohTitle+";;;Pass");
+
+			//Report_AddStep("testcase", "Random weight Article details are displayed in Stock Adjustment Screen"+sohTitle,"","", "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Random weight Article number is not correct: "+randomArticle+";"+randomArticle+";"+parts[0]+";Fail");
+
+			//Report_AddStep("testcase", "Random weight Article number is not correct: "+randomArticle,randomArticle,parts[0], "Fail");
+		}
+		String sohApp = getText(objStockAdj.sohApp);
+		String[] sohValues = sohApp.split("&");
+
+		String eaSOHApp = sohValues[0];
+		eaSOHApp = eaSOHApp.substring(0, eaSOHApp.indexOf(" "));
+
+		String kgSOHApp = sohValues[1];
+		kgSOHApp = kgSOHApp.substring(1, kgSOHApp.indexOf("K")-1);
+
+
+		if(isDecimalEquals(eaSOHApp,eaSOH) && isDecimalEquals(kgSOHApp,kgSOH)){
+			htmlToExtent(cName,mName,extLogger,driver, "Article SOH(EA) and Article SOH(KG); EA SOH: "+eaSOH+"\nKG SOH: "+kgSOH+"; EA SOH: "+eaSOHApp+"\nKG SOH:"+kgSOHApp+";Pass");
+
+			//Report_AddStep("testcase", "Article SOH(EA) and Article SOH(KG)", "EA SOH: "+eaSOH+"\nKG SOH: "+kgSOH, "EA SOH: "+eaSOHApp+"\nKG SOH:"+kgSOHApp, "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Article SOH(EA) and Article SOH(KG); EA SOH: "+eaSOH+"\nKG SOH: "+kgSOH+"; EA SOH: "+eaSOHApp+"\nKG SOH:"+kgSOHApp+";Fail");
+			//Report_AddStep("testcase", "Article SOH(EA) and Article SOH(KG)", "EA SOH: "+eaSOH+"\nKG SOH: "+kgSOH, "EA SOH: "+eaSOHApp+"\nKG SOH:"+kgSOHApp, "Fail");
+		}
+		waitFor(2);
+
+	}
+
+	public void fnAdjustSohRandomWeighedArticles(StockAdjObjects objStockAdj,List myList, String validation99, String validation999,WebDriver driver ) throws IOException {
+
+		String msg=null;
+		String reason = myList.get(6).toString();
+		String charity = myList.get(8).toString();
+
+		click(objStockAdj.reasonsForSOH);
+		selectByVisibleText(objStockAdj.reasonsForSOH, reason);
+
+		if(isDisplayed(objStockAdj.selectCharity)){
+			click(objStockAdj.selectCharity);
+			selectByVisibleText(objStockAdj.selectCharity, charity);
+		}
+
+		verify999Validation(objStockAdj ,validation999,driver);
+		objStockAdj.KG.clear();
+		objStockAdj.KG.sendKeys(validation99);
+
+		String endEASOH = getText(objStockAdj.endEASOHValue);
+		String endKGSOH = getText(objStockAdj.endSOHValue);
+
+		fnCalculationRandomWeighedArticles(objStockAdj,myList,validation99,driver);
+
+		click(objStockAdj.saveSOH);
+		click(objStockAdj.warning99);
+		htmlToExtent(cName,mName,extLogger,driver, "Warning message displayed for exceeding SOH value 99.Entered SOH is: 100;;;Pass");
+
+		//Report_AddStep("testcase", "Warning message displayed for exceeding SOH value 99.Entered SOH is: 100","","","Pass");
+		waitFor(1);
+
+		if(reason.equals("+Stock Correction") || reason.equals("-Stock Correction"))
+		{
+			String message = getText(objStockAdj.unReceivedPopup);
+			if(message.contains("Unreceived")){
+				click(objStockAdj.continueBtn);
+				waitFor(1);
+			}}
+
+		waitForJSandJQueryToLoad(driver);
+		if(objStockAdj.stockAdjFailList.size()!=0){
+			msg = getText(objStockAdj.success_msg);
+			if(msg.contains("Stocktake")){
+				scrolltoElement(objStockAdj.stockAdjFail,driver);
+				htmlToExtent(cName,mName,extLogger,driver, " " + msg + " ;;;Fail");
+
+				//Report_AddStep("testcase",msg ,"","","Fail");
+				click(objStockAdj.stockAdjFail);
+
+			}}
+		else
+			if(isDisplayed(objStockAdj.adjContinue)){
+				scrolltoElement(objStockAdj.adjContinue,driver);
+				click(objStockAdj.adjContinue);
+			}
+		waitFor(1);
+		if(objStockAdj.success_msgList.size()!=0 && !msg.contains("Stocktake")){
+			String successMsg = getText(objStockAdj.successmsg);
+			String[] parts = successMsg.split("from ");
+			String s = parts[1];
+			String[] parts1 = s.split(" to ");
+			String fromSOH = parts1[0];
+			String toSOH = parts1[1];
+			String initialKGSOH = myList.get(4).toString();
+
+			String[] fromSOHValue = splitEAandKGSOH(fromSOH);
+			String fromKGSOH = fromSOHValue[1];
+
+			String[] toSOHValue = splitEAandKGSOH(toSOH);
+			String toKGSOH = toSOHValue[1];		
+
+			if(isDecimalEquals(initialKGSOH,fromKGSOH) && isDecimalEquals(endKGSOH,toKGSOH)){
+				htmlToExtent(cName,mName,extLogger,driver, "From and To SOH in success message; From SOH:"+fromKGSOH+"\nTo SOH:"+toKGSOH+"; From SOH:"+initialKGSOH+"\nTo SOH:"+endKGSOH+";Pass");
+				//Report_AddStep("testcase", "From and To SOH (KG) in success message", "From SOH:"+fromKGSOH+"\nTo SOH:"+toKGSOH, "From SOH:"+initialKGSOH+"\nTo SOH:"+endKGSOH, "Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "From and To SOH in success message; From SOH:"+fromKGSOH+"\nTo SOH:"+toKGSOH+"; From SOH:"+initialKGSOH+"\nTo SOH:"+endKGSOH+";Fail");
+				//Report_AddStep("testcase", "From and To SOH (KG) in success message", "From SOH:"+fromKGSOH+"\nTo SOH:"+toKGSOH, "From SOH:"+initialKGSOH+"\nTo SOH:"+endKGSOH, "Fail");
+			}
+			click(objStockAdj.closeSohReport);
+			waitFor(1);
+		}
+
+	}
+	public void fnCalculationRandomWeighedArticles(StockAdjObjects objStockAdj,List myList, String KGValue,WebDriver driver) throws IOException {
+
+		int totalAdjQty = 0,adjQty_EA,adjQty_CA1=1,adjQty_CAR=1,adjQty_MPK=1,pack_size=0;
+		String packsize=null;
+		adjQty_EA = 1;
+
+		String initialSOHAppl = getText(objStockAdj.sohApp);
+		String endKGSOHAppl = getText(objStockAdj.endSOHValue);
+
+		String[] initialSOHApplValue = splitEAandKGSOH(initialSOHAppl);
+		String initialKGSOHAppl = initialSOHApplValue[1];
+
+		String MultFac =  myList.get(7).toString();	
+		Float iniSOHKG = Float.parseFloat(initialKGSOHAppl);
+		Float adjSOHKG = Float.parseFloat(KGValue);
+
+		int mulFact = Integer.parseInt(MultFac);   
+
+		Float endSOHKG = iniSOHKG +(adjSOHKG * mulFact);
+
+		String endSOH_KG = Float.toString(endSOHKG);
+
+		if(isDecimalEquals(endKGSOHAppl,endSOH_KG)){
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH(KG) is calculated correctly with Adjust SOH(KG):; "+ KGValue+"; "+endSOH_KG+";Pass");
+
+			//Report_AddStep("testcase", "End SOH(KG) is calculated correctly with Adjust SOH(KG): "+ KGValue, endSOH_KG, "", "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH(KG) is calculated In correctly with Adjust SOH(KG):; "+ KGValue+"; "+endSOH_KG+";Fail");
+
+			//Report_AddStep("testcase", "End SOH(KG) is calculated In correctly with Adjust SOH(KG): "+ KGValue, endSOH_KG, "", "Fail");
+
+		}
+
+
+
+	}
+	public void fnAdjustSohRandomWeighedArticlesKGandCAR(StockAdjObjects objStockAdj,List myList,String KGValue, String CARValue,WebDriver driver) throws IOException {
+
+		String article = myList.get(0).toString();
+		objStockAdj.sohSearchBox.sendKeys(article);
+		waitFor(1);
+		click(objStockAdj.sohArticleSearch);
+		waitForJSandJQueryToLoad(driver);
+		String msg=null;
+		String reason = myList.get(6).toString();
+		String charity = myList.get(8).toString();
+
+		//reason = "+Stock Correction";
+
+		if((objStockAdj.stockAdjFailList.size()!=0))
+			click(objStockAdj.stockAdjFail);
+
+		//click(objStockAdj.reasonsForSOH);
+		selectByVisibleText(objStockAdj.reasonsForSOH,reason);
+
+		if(isDisplayed(objStockAdj.selectCharity)){
+			//click(objStockAdj.selectCharity);
+			selectByVisibleText(objStockAdj.selectCharity, charity);
+		}
+
+		String initialSOHAppl = getText(objStockAdj.sohApp);
+		String[] initialSOHValue = splitEAandKGSOH(initialSOHAppl);
+		String initialEASOH = initialSOHValue[0];
+		String initialKGSOH = initialSOHValue[1];
+
+		enterText(objStockAdj.KG,KGValue,driver);
+		if((objStockAdj.CARList.size()!=0))
+			enterText(objStockAdj.CAR,CARValue,driver);
+		else if((objStockAdj.CA1List.size()!=0))
+			enterText(objStockAdj.CA1,CARValue,driver);
+
+		String endEASOH = getText(objStockAdj.endEASOHValue);
+		String endKGSOH = getText(objStockAdj.endSOHValue);
+
+		fnCalculationRandomWeighedArticlesKGandCAR(objStockAdj,myList,KGValue,CARValue,driver);
+
+		click(objStockAdj.saveSOH);
+
+		waitForJSandJQueryToLoad(driver);
+
+		if(reason.equals("+Stock Correction") || reason.equals("-Stock Correction"))
+		{
+			String message = getText(objStockAdj.unReceivedPopup);
+			if(message.contains("Unreceived")){
+				click(objStockAdj.continueBtn);
+				waitFor(1);
+			}}
+
+		waitForJSandJQueryToLoad(driver);
+
+		if(objStockAdj.stockAdjFailList.size()!=0){
+			msg = getText(objStockAdj.success_msg);
+			if(msg.contains("Stocktake")){
+				scrolltoElement(objStockAdj.stockAdjFail,driver);
+				htmlToExtent(cName,mName,extLogger,driver, " " + msg + " ;;;Fail");
+
+				//Report_AddStep("testcase",msg ,"","","Fail");
+				click(objStockAdj.stockAdjFail);
+
+			}}
+		else
+			if(isDisplayed(objStockAdj.adjContinue)){
+				scrolltoElement(objStockAdj.adjContinue,driver);
+				click(objStockAdj.adjContinue);
+			}
+		waitFor(1);
+		if(objStockAdj.success_msgList.size()!=0 && !msg.contains("Stocktake")){
+			String successMsg = getText(objStockAdj.successmsg);
+			String[] parts = successMsg.split("from ");
+			String s = parts[1];
+			String[] parts1 = s.split(" to ");
+			String fromSOH = parts1[0];
+			String toSOH = parts1[1];
+
+			String[] fromSOHValue = splitEAandKGSOH(fromSOH);
+			String fromEASOH = fromSOHValue[0];
+			String fromKGSOH = fromSOHValue[1];
+
+			String[] toSOHValue = splitEAandKGSOH(toSOH);
+			String toEASOH = toSOHValue[0];
+			String toKGSOH = toSOHValue[1];		
+
+
+			if(isDecimalEquals(initialEASOH,fromEASOH) && isDecimalEquals(initialKGSOH,fromKGSOH) &&
+					isDecimalEquals(endEASOH,toEASOH) && isDecimalEquals(endKGSOH,toKGSOH)){
+				htmlToExtent(cName,mName,extLogger,driver, "From and To SOH (EA) in success message; From SOH:"+fromEASOH+"\nTo SOH:"+toEASOH+"; From SOH:"+initialEASOH+"\nTo SOH:"+endEASOH+";Pass");
+
+				//Report_AddStep("testcase", "From and To SOH (EA) in success message", "From SOH:"+fromEASOH+"\nTo SOH:"+toEASOH, "From SOH:"+initialEASOH+"\nTo SOH:"+endEASOH, "Pass");
+				htmlToExtent(cName,mName,extLogger,driver, "From and To SOH (KG) in success message; From SOH:"+fromKGSOH+"\nTo SOH:"+toKGSOH+"; From SOH:"+initialKGSOH+"\nTo SOH:"+endKGSOH+";Pass");
+				//Report_AddStep("testcase", "From and To SOH (KG) in success message", "From SOH:"+fromKGSOH+"\nTo SOH:"+toKGSOH, "From SOH:"+initialKGSOH+"\nTo SOH:"+endKGSOH, "Pass");
+
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "From and To SOH (EA) in success message; From SOH:"+fromEASOH+"\nTo SOH:"+toEASOH+"; From SOH:"+initialEASOH+"\nTo SOH:"+endEASOH+";Fail");
+				//Report_AddStep("testcase", "From and To SOH (EA) in success message", "From SOH:"+fromEASOH+"\nTo SOH:"+toEASOH, "From SOH:"+initialEASOH+"\nTo SOH:"+endEASOH, "Fail");
+				htmlToExtent(cName,mName,extLogger,driver, "From and To SOH (KG) in success message; From SOH:"+fromKGSOH+"\nTo SOH:"+toKGSOH+"; From SOH:"+initialKGSOH+"\nTo SOH:"+endKGSOH+";Fail");
+				//Report_AddStep("testcase", "From and To SOH (KG) in success message", "From SOH:"+fromKGSOH+"\nTo SOH:"+toKGSOH, "From SOH:"+initialKGSOH+"\nTo SOH:"+endKGSOH, "Fail");
+			}
+			click(objStockAdj.closeSohReport);
+			waitFor(1);
+		}
+
+	}
+	public String[]  splitEAandKGSOH(String sohValue)
+	{
+
+		String[] sohValues = sohValue.split("&");
+
+		String eaSOH = sohValues[0];
+		eaSOH = eaSOH.substring(0, eaSOH.indexOf(" "));
+
+		String kgSOH = sohValues[1];
+		kgSOH = kgSOH.substring(1, kgSOH.indexOf("K")-1);
+
+
+		return new String[] {eaSOH,kgSOH};
+
+	}
+
+	public void fnCalculationRandomWeighedArticlesKGandCAR(StockAdjObjects objStockAdj,List myList, String KGValue, String CARValue,WebDriver driver) throws IOException {
+
+
+		String packsize=null;
+
+		String initialSOHAppl = getText(objStockAdj.sohApp);
+		String endEASOHAppl = getText(objStockAdj.endEASOHValue);
+		String endKGSOHAppl = getText(objStockAdj.endSOHValue);
+
+		String[] initialSOHApplValue = splitEAandKGSOH(initialSOHAppl);
+		String initialEASOHAppl = initialSOHApplValue[0];
+		String initialKGSOHAppl = initialSOHApplValue[1];
+
+		String MultFac =  myList.get(7).toString();
+		String articleOM =  myList.get(2).toString();
+		String piOM =  myList.get(3).toString();
+
+		Float iniSOHEA = Float.parseFloat(initialEASOHAppl);
+		Float iniSOHKG = Float.parseFloat(initialKGSOHAppl);
+		Float adjSOHKG = Float.parseFloat(KGValue);
+		int adjSOHCAR = Integer.parseInt(CARValue);
+
+		int mulFact = Integer.parseInt(MultFac);
+		Float oMValue = Float.parseFloat(articleOM );
+		Float piValue = Float.parseFloat(piOM);
+
+		Float totalAdjQtyEA = 1+ (adjSOHCAR * piValue);
+		Float totalAdjQtyKG = adjSOHKG + (adjSOHCAR * oMValue);
+
+		Float endSOHEA = iniSOHEA +(totalAdjQtyEA * mulFact);
+		Float endSOHKG = iniSOHKG +(totalAdjQtyKG * mulFact);
+
+		String endSOH_EA = Float.toString(endSOHEA);
+		String endSOH_KG = Float.toString(endSOHKG);
+
+		if(isDecimalEquals(endEASOHAppl,endSOH_EA) && isDecimalEquals(endKGSOHAppl,endSOH_KG)){
+			//Report_AddStep("testcase", "End SOH(EA) is calculated correctly with Adjust SOH(CAR) "+ CARValue, endSOH_EA, "", "Pass");
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH(EA) is calculated correctly with Adjust SOH(CAR): "+ CARValue+"; "+endSOH_EA+";;Pass");
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH(KG) is calculated correctly with Adjust SOH(KG):"+ KGValue+" and  Adjust SOH(CAR): "+ CARValue+"; "+endSOH_KG+";;Pass");
+			//Report_AddStep("testcase", "End SOH(KG) is calculated correctly with Adjust SOH(KG): "+ KGValue+" and  Adjust SOH(CAR): "+ CARValue, endSOH_KG, "", "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH(EA) is calculated incorrectly with Adjust SOH(CAR): "+ CARValue+"; "+endSOH_EA+";;Fail");
+			//Report_AddStep("testcase", "End SOH(EA) is calculated incorrectly with Adjust SOH(CAR) "+ CARValue, endSOH_EA, "", "Fail");
+			htmlToExtent(cName,mName,extLogger,driver, "End SOH(KG) is calculated correctly with Adjust SOH(KG):"+ KGValue+" and  Adjust SOH(CAR): "+ CARValue+"; "+endSOH_KG+";;Fail");
+			//Report_AddStep("testcase", "End SOH(KG) is calculated incorrectly with Adjust SOH(KG): "+ KGValue+" and  Adjust SOH(CAR): "+ CARValue, endSOH_KG, "", "Fail");
+
+		}
+
+	}
+
+	public void fnAdjustSohRandomWeighedArticleForPIVerify(StockAdjObjects objStockAdj,List myList,String endEASOH, String endKGSOH,WebDriver driver) throws IOException {
+
+		String msg=null;
+		Float adjustKGSoh, endKGsoh,endEAsoh,endsoh;
+
+		String article = myList.get(0).toString();
+		objStockAdj.sohSearchBox.sendKeys(article);
+		waitFor(1);
+		click(objStockAdj.sohArticleSearch);
+		waitForJSandJQueryToLoad(driver);
+
+		if((objStockAdj.stockAdjFailList.size()!=0))
+			click(objStockAdj.stockAdjFail);
+
+
+		String initialSOHAppl = getText(objStockAdj.sohApp);
+
+		String[] initialSOHApplValue = splitEAandKGSOH(initialSOHAppl);
+		String initialEASOH = initialSOHApplValue[0];
+		String initialKGSOH = initialSOHApplValue[1];
+
+
+		waitForJSandJQueryToLoad(driver);
+
+		click(objStockAdj.reasonsForSOH);
+		selectByVisibleText(objStockAdj.reasonsForSOH, "PI Verify");
+
+		//Verify EA=5 and KG has zero value and verify the error message
+		enterText(objStockAdj.adjSohWt,"5",driver);
+		enterText(objStockAdj.KG,endKGSOH,driver);
+
+		String adjustKGSOHApplTemp = getText(objStockAdj.endSOHValue);
+		String firstLetter = adjustKGSOHApplTemp.substring(0, 1);
+		if(firstLetter.equals("-"))
+			adjustKGSOHApplTemp = adjustKGSOHApplTemp.substring(1, adjustKGSOHApplTemp.length()-1);
+
+		Float adjustKGSohTemp = Float.parseFloat(adjustKGSOHApplTemp);
+
+		click(objStockAdj.saveSOH);
+
+		waitForJSandJQueryToLoad(driver);	
+
+		if(adjustKGSohTemp < 999.000)
+		{
+
+			if(adjustKGSohTemp > 99.000)
+			{
+				click(objStockAdj.warning99);
+				htmlToExtent(cName,mName,extLogger,driver, "Warning message displayed for exceeding SOH value 99.Entered SOH is: "+adjustKGSohTemp+";;;Pass");
+
+				//Report_AddStep("testcase", "Warning message displayed for exceeding SOH value 99.Entered SOH is: "+adjustKGSohTemp,"","","Pass");
+				waitForJSandJQueryToLoad(driver);	
+			}
+
+			if(objStockAdj.stockAdjFailList.size()!=0){
+				String errorMsg= getText(objStockAdj.cannotrvsemsg);
+				scrolltoElement(objStockAdj.stockAdjFail3,driver);
+				htmlToExtent(cName,mName,extLogger,driver, "Expected Error message : "+errorMsg+";;;Pass");
+
+				//Report_AddStep("testcase","Expected Error message : "+errorMsg ,"","","Pass");
+				click(objStockAdj.stockAdjFail3);
+
+			}
+		}
+		else
+		{
+			click(objStockAdj.warning999);
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver, "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+adjustKGSohTemp+" ;;;Pass");
+
+			//Report_AddStep("testcase", "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+adjustKGSohTemp,"","","Pass");
+		}
+
+		//Verify EA=0 and KG has value and verify the error message
+		enterText(objStockAdj.adjSohWt,endEASOH,driver);
+		enterText(objStockAdj.KG,"5.000",driver);
+
+		String adjustKGSOHApplTemp1 = getText(objStockAdj.endSOHValue);
+		String firstLetter1 = adjustKGSOHApplTemp1.substring(0, 1);
+		if(firstLetter1.equals("-"))
+			adjustKGSOHApplTemp1 = adjustKGSOHApplTemp1.substring(1, adjustKGSOHApplTemp1.length()-1);
+
+		Float adjustKGSohTemp1 = Float.parseFloat(adjustKGSOHApplTemp1);
+
+		click(objStockAdj.saveSOH);
+		waitForJSandJQueryToLoad(driver);	
+
+		if(adjustKGSohTemp1 < 999.000)
+		{
+
+			if(adjustKGSohTemp1 > 99.000)
+			{
+				click(objStockAdj.warning99);
+				htmlToExtent(cName,mName,extLogger,driver, "Warning message displayed for exceeding SOH value 99.Entered SOH is: "+adjustKGSohTemp1+" ;;;Pass");
+
+				//Report_AddStep("testcase", "Warning message displayed for exceeding SOH value 99.Entered SOH is: "+adjustKGSohTemp1,"","","Pass");
+				waitForJSandJQueryToLoad(driver);	
+			}
+
+			waitForJSandJQueryToLoad(driver);
+			if(objStockAdj.stockAdjFailList.size()!=0){
+				String errorMsg= getText(objStockAdj.cannotrvsemsg);
+				scrolltoElement(objStockAdj.stockAdjFail3,driver);
+				htmlToExtent(cName,mName,extLogger,driver, "Expected Error message : "+errorMsg+" ;;;Pass");
+
+				//Report_AddStep("testcase","Expected Error message : "+errorMsg ,"","","Pass");
+				click(objStockAdj.stockAdjFail3);
+
+			}
+		}
+		else
+		{
+			click(objStockAdj.warning999);
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver, "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+adjustKGSohTemp+";;;Pass");
+
+			//Report_AddStep("testcase", "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+adjustKGSohTemp,"","","Pass");
+		}
+
+		//Proceed the calculation with the 0 and 0 values
+		enterText(objStockAdj.adjSohWt,endEASOH,driver);
+		enterText(objStockAdj.KG,endKGSOH,driver);
+
+		endEAsoh = Float.parseFloat(endEASOH);
+		endKGsoh = Float.parseFloat(endKGSOH);
+		endsoh=endEAsoh*endKGsoh;
+
+		String endSOH = Float.toString(endsoh);
+
+		String adjustEASOHAppl = getText(objStockAdj.endEASOHValue);
+		String adjustKGSOHAppl = getText(objStockAdj.endSOHValue);
+
+
+		adjustKGSoh = Float.parseFloat(adjustKGSOHAppl);
+		String firstLetter2 = adjustKGSOHAppl.substring(0, 1);
+		if(firstLetter2.equals("-"))
+			adjustKGSOHAppl = adjustKGSOHAppl.substring(1, adjustKGSOHAppl.length()-1);
+
+		adjustKGSoh = Float.parseFloat(adjustKGSOHAppl);
+
+		click(objStockAdj.saveSOH);
+		waitForJSandJQueryToLoad(driver);	
+
+		if(adjustKGSoh < 999.000)
+		{
+
+			if(adjustKGSoh > 99.000)
+			{
+				fnCalculationRandomWeighedArticlesForPIVerify(objStockAdj,myList,endEASOH,endKGSOH,driver);
+				click(objStockAdj.warning99);
+				htmlToExtent(cName,mName,extLogger,driver, "Warning message displayed for exceeding SOH value 99.Entered SOH is: "+adjustKGSoh+" ;;;Pass");
+
+				//Report_AddStep("testcase", "Warning message displayed for exceeding SOH value 99.Entered SOH is: "+adjustKGSoh,"","","Pass");
+				waitForJSandJQueryToLoad(driver);	
+			}
+			else
+			{
+				fnCalculationRandomWeighedArticlesForPIVerify(objStockAdj,myList,endEASOH,endKGSOH,driver);
+				waitForJSandJQueryToLoad(driver);	
+			}
+
+			String message = getText(objStockAdj.unReceivedPopup);
+			if(message.contains("Unreceived")){
+				click(objStockAdj.continueBtn);
+				waitFor(1);
+			}
+
+			waitForJSandJQueryToLoad(driver);
+			if(objStockAdj.stockAdjFailList.size()!=0){
+				msg = getText(objStockAdj.success_msg);
+				if(msg.contains("Stocktake")){
+					scrolltoElement(objStockAdj.stockAdjFail,driver);
+					htmlToExtent(cName,mName,extLogger,driver, " " + msg + " ;;;Fail");
+
+					//Report_AddStep("testcase",msg ,"","","Fail");
+					click(objStockAdj.stockAdjFail);
+
+				}}
+			else
+				if(isDisplayed(objStockAdj.adjContinue)){
+					scrolltoElement(objStockAdj.adjContinue,driver);
+					click(objStockAdj.adjContinue);
+				}
+			waitFor(1);
+			if(objStockAdj.success_msgList.size()!=0 && !msg.contains("Stocktake")){
+				String successMsg = getText(objStockAdj.successmsg);
+				String[] parts = successMsg.split("from ");
+				String s = parts[1];
+				String[] parts1 = s.split(" to ");
+				String fromSOH = parts1[0];
+				String toSOH = parts1[1];
+				String[] fromSOHValue = splitEAandKGSOH(fromSOH);
+				String fromKGSOH = fromSOHValue[1];
+
+				String[] toSOHValue = splitEAandKGSOH(toSOH);
+				String toKGSOH = toSOHValue[1];		
+
+				if(isDecimalEquals(initialKGSOH,fromKGSOH) && isDecimalEquals(endSOH,toKGSOH)){
+					htmlToExtent(cName,mName,extLogger,driver, "From and To SOH (KG) in success message; From SOH:"+fromKGSOH+"\nTo SOH:"+toKGSOH+"; From SOH:"+initialKGSOH+"\nTo SOH:"+endSOH+";Pass");
+
+					//Report_AddStep("testcase", "From and To SOH (KG) in success message", "From SOH:"+fromKGSOH+"\nTo SOH:"+toKGSOH, "From SOH:"+initialKGSOH+"\nTo SOH:"+endSOH, "Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "From and To SOH (KG) in success message; From SOH:"+fromKGSOH+"\nTo SOH:"+toKGSOH+"; From SOH:"+initialKGSOH+"\nTo SOH:"+endSOH+";Fail");
+					//Report_AddStep("testcase", "From and To SOH (KG) in success message", "From SOH:"+fromKGSOH+"\nTo SOH:"+toKGSOH, "From SOH:"+initialKGSOH+"\nTo SOH:"+endSOH, "Fail");
+				}
+				click(objStockAdj.closeSohReport);
+				waitFor(1);
+			}
+		}
+		else
+		{
+			click(objStockAdj.warning999);
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver, "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+adjustKGSoh+";;;Pass");
+
+			//Report_AddStep("testcase", "Error message displayed for exceeding SOH value 999.\nEntered SOH is: "+adjustKGSoh,"","","Pass");
+			click(objStockAdj.backBtn);
+			waitFor(1);
+			click(objStockAdj.discard);
+			objStockAdj.sohSearchBox.clear();
+		}
+
+	}
+	public void fnCalculationRandomWeighedArticlesForPIVerify(StockAdjObjects objStockAdj,List myList, String endEASOH, String endKGSOH,WebDriver driver) throws IOException {
+
+
+		String packsize=null;
+
+		//endKGSOH = endKGSOH.substring(0, endKGSOH.length() - 3);
+
+		String adjustEASOHAppl = getText(objStockAdj.endEASOHValue);
+		String adjustKGSOHAppl = getText(objStockAdj.endSOHValue);
+
+		String initialSOHAppl = getText(objStockAdj.sohApp);
+		String[] initialSOHApplValue = splitEAandKGSOH(initialSOHAppl);
+		String initialEASOH = initialSOHApplValue[0];
+		String initialKGSOH = initialSOHApplValue[1];
+
+		Float iniEASOH = Float.parseFloat(initialEASOH);
+		Float iniKGSOH = Float.parseFloat(initialKGSOH);
+		float eEASOH = Float.parseFloat(endEASOH);
+		float eKGSOH = Float.parseFloat(endKGSOH);
+
+
+		Float adjustEASOH = eEASOH- iniEASOH ;
+		Float adjustKGSOH = (eEASOH * eKGSOH)- iniKGSOH ;
+
+		String adjust_EA_SOH = Float.toString(adjustEASOH);
+		String adjust_KG_SOH = Float.toString(adjustKGSOH);
+
+		if(isDecimalEquals(adjustEASOHAppl, adjust_EA_SOH) && isDecimalEquals(adjustKGSOHAppl, adjust_KG_SOH)){
+			htmlToExtent(cName,mName,extLogger,driver, "Adjust SOH value is calculated correctly: ; "+adjust_EA_SOH+" && "+adjust_KG_SOH+"; "+adjustEASOHAppl+" && "+adjustKGSOHAppl+";Pass");
+
+			//Report_AddStep("testcase", "Adjust SOH value is calculated correctly: ",adjust_EA_SOH+" && "+adjust_KG_SOH, adjustEASOHAppl+" && "+adjustKGSOHAppl, "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Adjust SOH value is calculated wrongly: ; "+adjust_EA_SOH+" && "+adjust_KG_SOH+"; "+adjustEASOHAppl+" && "+adjustKGSOHAppl+";Fail");
+
+			//Report_AddStep("testcase", "Adjust SOH value is calculated wrongly: ",adjust_EA_SOH+" && "+adjust_KG_SOH, adjustEASOHAppl+" && "+adjustKGSOHAppl, "Fail");
+		}
+
+	}
+	public void warning99checkCPBD(StockAdjObjects objStockAdj,int pack_size,int pi,int soh,WebDriver driver) throws IOException
+	{
+		if(pi==0)
+		{
+			int SOH_tbe=((int) Math.round(((99)/pack_size)))+1;
+			String SOH99=""+SOH_tbe;
+			//objStockAdj.adjSOHvalue.clear();
+			objStockAdj.adjSOHvalue.sendKeys(SOH99);
+			//System.out.println("Adjusted by-Warning99:"+SOH99);
+		}
+		else
+		{
+			int sOHValue =  soh+100;
+			//System.out.println("Adjusted by-Warning99:"+sOHValue);
+			//objStockAdj.adjSOHvalue.clear();
+			objStockAdj.adjSOHvalue.sendKeys(Integer.toString(sOHValue));
+		}
+		objStockAdj.saveSOH.click();
+		waitForJSandJQueryToLoad(driver);
+		try{
+			if(objStockAdj.back.isDisplayed())
+			{
+				objStockAdj.back.click();//99 warning alert
+				htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by 99--- Warning Message displayed;;;Pass");
+
+				//Report_AddStep("testcase", "Adjusted SOH by 99--- Warning Message displayed","","", "Pass"); //--9
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by 99--- Warning Message not displayed;;;Fail");
+
+				//Report_AddStep("testcase", "Adjusted SOH by 99--- Warning Message not displayed","","", "Fail");
+			}
+		}
+		catch(WebDriverException pi99check)
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by 99--- Warning Message not displayed;;;Fail");
+		}
+	}
+	public void warning999checkCPBD(StockAdjObjects objStockAdj,int pack_size,int pi,int soh,WebDriver driver) throws IOException
+	{
+		if(pi==0)
+		{
+			int SOH_tbe=((int) Math.round(((999)/pack_size)))+1;
+			String SOH99=""+SOH_tbe;
+			//objStockAdj.adjSOHvalue.clear();
+			objStockAdj.adjSOHvalue.sendKeys(SOH99);
+		}
+		else
+		{
+			int sOHValue =  soh+1000;
+			waitFor(2);
+			objStockAdj.adjSOHvalue.sendKeys(Integer.toString(sOHValue));
+		}	
+		objStockAdj.saveSOH.click();
+		waitForJSandJQueryToLoad(driver);
+
+		try {
+			if(objStockAdj.warning999.isDisplayed())
+			{
+				objStockAdj.warning999.click();//99 warning alert
+				htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by 999--- Warning Message displayed;;;Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by 999--- Warning Message not displayed;;;Fail");
+			}
+		} catch (WebDriverException warn999) {
+			htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH by 999--- Warning Message not displayed;;;Fail");
+		}
+	}
+	public void sohSplit(StockAdjObjects objStockAdj,int carValue,int eaValue,WebDriver driver)
+	{
+		String[] soh = objStockAdj.soh.getText().split("EA");
+		String[] sohCarEA = soh[1].split("&");
+		String[] carUIArray = sohCarEA[0].split(" ");
+		String carUI = carUIArray[1].replaceAll("\\D", "").trim();
+		String eaUI = sohCarEA[1].replaceAll("\\D", "");
+		if(carValue==Integer.parseInt(carUI)&&eaValue==Integer.parseInt(eaUI))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "SOH split up in Article Lookup screen after posting the Stock Adjustment for CPBD Article;"+carUI+"&&"+eaUI+";"+carValue+"&&"+eaValue+";Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "SOH split up in Article Lookup screen after posting the Stock Adjustment for CPBD Article;"+carUI+"&&"+eaUI+";"+carValue+"&&"+eaValue+";Fail");
+		}
+	}
+
+	public void checkAllRC() {
+		waitFor(2);
+
+
+	}
+
+	public void orderCheck(StockAdjObjects objStockAdj,List<WebElement> unreceivedOrders,List<List<Object>> orders,WebDriver driver) throws IOException 
+	{
+		List ordersFromUI = new ArrayList();
+		List ordersFromDB = new ArrayList();
+		for (WebElement getUIOrders : unreceivedOrders) {
+			ordersFromUI.add(getUIOrders.getText().replaceAll("\\D", ""));
+		}
+		int i = orders.size();
+		for(int j = 0;j<i;j++)
+		{
+			String order = null;
+			Object order1 = orders.get(j).get(1);
+			if(order1!=null)
+
+			{
+				order = orders.get(j).get(1).toString();
+
+			}
+			if(order1==null)
+			{
+				order=orders.get(j).get(0).toString();
+			}
+			ordersFromDB.add(order);
+			//System.out.println(order);
+		}
+		List<List<Object>> orderDB = new ArrayList<List<Object>>();
+		orderDB.add(ordersFromDB);
+		//System.out.println("Order from DB: "+orderDB);
+		List<List<Object>> orderUI = new ArrayList<List<Object>>();
+		orderUI.add(ordersFromUI);
+		//System.out.println("Order from UI: "+orderUI);
+		htmlToExtent(cName,mName,extLogger,driver,"Unreceived orders from UI with DB;;;Info");
+		ElementContains1(cName, mName,extLogger,driver,  orderUI, orderDB);
+	}
+
+	public void adjustAndEndSOHCheck(StockAdjObjects objStockAdj,WebDriver driver) {
+
+		for (WebElement eachReasonCode : objStockAdj.reasonCodeOptions) {
+			String value1 = eachReasonCode.getAttribute("value").trim();
+			if(!value1.equals("PI"))
+				if(!value1.equals("83"))
+				{
+					selectByValue(objStockAdj.reasonsForSOH, value1);
+					//System.out.println("Value is:"+value1);
+					try
+					{
+						if(objStockAdj.success_msg.isDisplayed())
+						{
+							objStockAdj.idtErrorClose.click();
+						}
+					}
+					catch(WebDriverException idtMsg)
+					{
+
+					}
+
+				}
+			try
+			{
+				if(objStockAdj.adjustSohPI.isDisplayed())
+				{
+					//System.out.println("Adjusted");
+					if(objStockAdj.endSOHValue.isDisplayed())
+					{
+						//System.out.println("End SOH");
+					}
+				}
+			}
+			catch(WebDriverException reasonCodeOptions)
+			{
+
+			}
+
+		}
+		htmlToExtent(cName,mName,extLogger,driver,"All the reasonCodes are selectable;;;Pass");
+	}
+
+	public boolean warehouseCPBDSOHCalc(StockAdjObjects objStockAdj,String baseUOM,String om,String recv_qty,int i,WebDriver driver)
+	{
+		boolean adj=true;
+		int PackSize = doubleToInt(baseUOM)/doubleToInt(om);
+		int recvQty = doubleToInt(recv_qty); 
+		if(i==1)
+		{
+			if(recvQty<PackSize)
+			{
+				objStockAdj.adjustSohPI.sendKeys("1");
+			}
+			else
+			{
+				recvQty = ((int) Math.round((recvQty/PackSize)));
+				objStockAdj.adjustSohPI.sendKeys(""+recvQty+1);
+				//System.out.println("Received qty is:"+recvQty);
+			}
+		}
+		if(i==2)
+		{
+			if(recvQty<PackSize)
+			{
+				adj=false;
+			}
+			else
+			{
+				objStockAdj.adjustSohPI.sendKeys("1");
+				//System.out.println("Received qty is:"+recvQty);
+			}
+		}
+		//System.out.println("Boolean value"+adj);
+		return adj;
+	}
+	public void orderSelect(StockAdjObjects objStockAdj,String o_no,WebDriver driver)
+	{
+		waitFor(5);
+		//List<WebElement> ORDERList = objStockAdj.orderList;
+		int ORDERsize=objStockAdj.orderList.size();
+		//System.out.println("OrderSize: "+ORDERsize);
+		String order_no=null;
+		//System.out.println("Order no is : "+o_no);
+		int page = objStockAdj.orderPage.size()-2;
+		int count=0,test=0;
+		do
+		{
+			if(ORDERsize>0)		
+			{	
+				htmlToExtent(cName,mName,extLogger,driver, "List of orders for warehouse are populated;;;Pass");
+				for(int i=1;i<=ORDERsize;i++)
+				{
+					for(int j =1;j<3;j++)
+					{
+						waitFor(2);
+						WebElement orderNo =  prepareWebElementWithDynamicXpathWithIntInt(objStockAdj.orderSegmentSelect, i, j,driver);
+						order_no=orderNo.getText().trim();	
+						if(order_no.equals(o_no.trim()))
+						{
+							test=1;
+							WebElement orderselect=  prepareWebElementWithDynamicXpathWithInt(objStockAdj.orderselect, i,driver);
+							orderselect.click();
+							break;
+						}
+					}
+					if(test==1)
+					{
+						break;
+					}
+
+
+				}
+			}
+			count++;
+			if(page!=0&&test==0&&count<page)
+			{
+				click(objStockAdj.orderPage.get(count+1));
+			}
+		}
+		while(count<page&&test==0);
+
+	}
+
+	public WebElement generateDynamicWebElement(StockAdjObjects objStockAdj, String data, String type,WebDriver driver) {
+		WebElement wb = prepareWebElementWithDynamicXpathWithString(data, type,driver);
+		return wb;
+	}
+	
+	//Progression //Srivinith
+	
+	public void reasonCodeValidation(String articleNumber,List<List<Object>>reasonDBList,String store,String iteration,StockAdjObjects objStockAdj,EnhancedArticleLookUpObjects objEnhancedArticleLookup,WebDriver driver) throws IOException {
+		try{
+			if(iteration.equals("1")){
+			List<String>reasonList = new ArrayList<String>();
+			if(store.equals("SMKT") || store.equals("BigW") || store.equals("PEL")){
+			String reason1 = reasonDBList.get(0).get(0).toString();
+			String reason2 = reasonDBList.get(1).get(0).toString();
+			reasonList.add(reason1);
+			reasonList.add(reason2);
+			}
+			if(store.equals("SMKT") || store.equals("BigW") || store.equals("PEL")){
+				if(reasonDBList.size()!=0){
+					if(reasonList.contains("IDT Purchase")){
+						htmlToExtent(cName,mName,extLogger,driver,"IDT Purchase is available in DB in "+store+" store;;;Pass"); 
+					}else{
+						htmlToExtent(cName,mName,extLogger,driver,"IDT Purchase is Not available in DB in "+store+" store;;;Fail"); 
+					}
+					if(reasonList.contains("Rvse IDT")){
+						htmlToExtent(cName,mName,extLogger,driver,"Rvse IDT is available in DB in "+store+" store;;;Pass"); 
+					}else{
+						htmlToExtent(cName,mName,extLogger,driver,"IDT Purchase is Not available in DB in "+store+" store;;;Fail");
+					}
+				}
+			}
+			else if(store.equals("Petrol") || store.equals("BWS") ){
+				if(reasonDBList.size()==0){
+					htmlToExtent(cName,mName,extLogger,driver,"IDT Purchase and Rvse IDT is not available in DB in "+store+" store;;;Pass"); 
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver,"IDT Purchase and Rvse IDT is available in DB in "+store+" store;;;Fail");
+				}
+				
+			}
+			
+				waitFor(2);
+				objStockAdj.sohSearchBox.sendKeys(articleNumber);
+				waitFor(2);
+				objStockAdj.sohArticleSearch.click();
+				waitForJSandJQueryToLoad(driver);	
+				waitFor(1);
+				List<String> options = getOptionsText(objStockAdj.reasonsForSOH);
+			if(store.equals("SMKT") || store.equals("BigW") || store.equals("PEL")){
+				if(options.contains("Rvse IDT"))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Reverse IDT is available in drop down in "+store+" store in Stock Adjustment Screen;;;Pass"); 
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Reverse IDT is not available in "+store+" store in Stock Adjustment Screen;;;Fail");
+				}
+				
+				if(options.contains("IDT Purchase"))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"IDT purchase is available in drop down in "+store+" store in Stock Adjustment Screen;;;Pass");
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"IDT purchase is not available in drop down in "+store+" store in Stock Adjustment Screen;;;Fail");
+				}
+				
+			}
+			else if(store.equals("Petrol") || store.equals("BWS")){
+				if(options.contains("Rvse IDT"))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Reverse IDT is available in drop down in "+store+" store in Stock Adjustment Screen;;;Fail"); 
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Reverse IDT is not available in "+store+" store in Stock Adjustment Screen;;;Pass");
+				}
+				
+				if(options.contains("IDT Purchase"))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"IDT purchase is available in drop down in "+store+" store in Stock Adjustment Screen;;;Fail");
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"IDT purchase is not available in drop down in "+store+" store in Stock Adjustment Screen;;;Pass");
+				}
+			}
+			
+		}
+		
+		//Lookup Screen
+		else if(iteration.equals("2")){
+			List<String> options1 = getOptionsText(objEnhancedArticleLookup.adjReasonDD);
+			if(store.equals("SMKT") || store.equals("BigW") || store.equals("PEL")){
+				if(options1.contains("Rvse IDT"))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Reverse IDT is available in drop down in "+store+" store in LookUp Screen;;;Pass"); 
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Reverse IDT is not available in "+store+" store in  LookUp Screen;;;Fail");
+				}
+				
+				if(options1.contains("IDT Purchase"))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"IDT purchase is available in drop down in "+store+" store in LookUp Screen;;;Pass");
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"IDT purchase is not available in drop down in "+store+" store in LookUp Screen;;;Fail");
+				}
+			}
+			else if(store.equals("Petrol") || store.equals("BWS")){
+				if(options1.contains("Rvse IDT"))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Reverse IDT is available in drop down in "+store+" store in LookUp Screen;;;Fail"); 
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Reverse IDT is not available in "+store+" store in  LookUp Screen;;;Pass");
+				}
+				
+				if(options1.contains("IDT Purchase"))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"IDT purchase is available in drop down in "+store+" store in LookUp Screen;;;Fail");
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"IDT purchase is not available in drop down in "+store+" store in LookUp Screen;;;Pass");
+				}
+			}
+		
+		}
+		
+		}catch(Exception e){
+			htmlToExtent(cName,mName,extLogger,driver, "Exception occured Reason Validation;;;Fail");
+		}
+		
+		
+		
+		
+
+	}
+
+}

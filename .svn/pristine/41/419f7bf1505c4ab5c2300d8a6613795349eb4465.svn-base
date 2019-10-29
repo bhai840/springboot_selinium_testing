@@ -1,0 +1,46 @@
+<suite name="StoresCentral_TestSuite" configfailurepolicy="continue">
+	<test name="POC_tests" parallel="classes" thread-count="7">
+	<classes>
+		
+      	 <class name="au.wow.ngbomain.tests.Sampletest" />
+		<class name="au.wow.ngbomain.tests.ReceivingOrderTests" />
+		<class name="au.wow.ngbomain.tests.DSCandPLUReportTests" />
+		<class name="au.wow.ngbomain.tests.GapscanReportTests" />
+		<class name="au.wow.ngbomain.tests.oocreporttest" />
+		<class name="au.wow.ngbomain.tests.StockAdjustmentTests" />
+		<class name="au.wow.ngbomain.tests.InventoryReportTests" />
+		<class name="au.wow.ngbomain.tests.GoodsMovementTests" />
+		<!-- <class name="au.wow.ngbomain.tests.InstoreOMSTest" />
+		<class name="au.wow.ngbomain.tests.InstoreOMLTest" />
+		<class name="au.wow.ngbomain.tests.InstoreOMATest" />
+		<class name="au.wow.ngbomain.tests.InstoreOMATest1" />
+		<class name="au.wow.ngbomain.tests.InstoreDisplayPromoTests" />
+		<class name="au.wow.ngbomain.tests.InstoreClearanceTest" />
+		<class name="au.wow.ngbomain.tests.InstoreClearanceTest1" />
+		<class name="au.wow.ngbomain.tests.InstoreCompetitionTest" />
+		<class name="au.wow.ngbomain.tests.InstoreCompetitionTest1" />
+		<class name="au.wow.ngbomain.tests.StockTransferTests" />
+		<class name="au.wow.ngbomain.tests.ReceiveOrderTest" />
+		<class name="au.wow.ngbomain.tests.ReceivingOrderTests" />
+		<class name="au.wow.ngbomain.tests.ReceivingSegmentsTest" />	
+		<class name="au.wow.ngbomain.tests.ORTests" />				
+		<class name="au.wow.ngbomain.tests.EnhancedArticleLookUpTests" />
+        <class name="au.wow.ngbomain.tests.EnhancedArticleLookUpTests1" />
+		<class name="au.wow.ngbomain.tests.InventoryReportTests" />
+		<class name="au.wow.ngbomain.tests.DSCandPLUReportTests" />
+		<class name="au.wow.ngbomain.tests.AdjustmentLogReportTests" />
+		<class name="au.wow.ngbomain.tests.GapscanReportTests" />
+		<class name="au.wow.ngbomain.tests.StockAdjustmentTests" />
+		<class name="au.wow.ngbomain.tests.ltoreporttest" />
+		<class name="au.wow.ngbomain.tests.LTOAddOrEditTest" />
+		<class name="au.wow.ngbomain.tests.GoodsMovementTests" />
+		<class name="au.wow.ngbomain.tests.oocreporttest" />
+		<class name="au.wow.ngbomain.tests.OverstockReportsTest" />  -->
+		<!--<class name="au.wow.ngbomain.tests.OrderUpdationTest" /> 
+		 <class name="au.wow.ngbomain.tests.StockTakeTests" />
+			<listeners>
+				<listener class-name="au.wow.ngbo.utils.RetryListener" />
+			</listeners> --> 
+		</classes>
+	</test>
+</suite>

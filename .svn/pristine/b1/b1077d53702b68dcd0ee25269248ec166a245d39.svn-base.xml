@@ -1,0 +1,966 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+<TCName name="articleSearch">
+
+<randomArticleHawa>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='HAWA' and a.matnr=j.article and a.pbd_ind<>'Y' and d.article_om>'1' and d.vendor_return_flag='Y']]>
+</randomArticleHawa>
+<articleDetailsHawa>
+<![CDATA[select distinct a.matnr,k.article_desc,
+case when length(c.ean11)<'14'
+then c.ean11
+else '' end as ean,
+case when length(c.ean11)='14'
+then c.ean11
+else '' end as tun,d.article_om
+from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,
+saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j,ZWOWC_ARTICLE_MASTER_VIEW K where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='HAWA' and a.matnr=j.article and a.matnr=k.matnr
+and a.pbd_ind<>'Y' and d.article_om>'1' and a.matnr='articleNumber']]>
+</articleDetailsHawa>
+
+<hawaVendor>
+<![CDATA[select distinct a.matnr,k.lifnr,l.name1 from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j,ZWOWC_ART_LIST_PROCURE k,c_VENDOR L where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.matnr=k.matnr AND K.LIFNR=l.LIFNR and a.mtart='HAWA' and a.matnr=j.article and a.pbd_ind<>'Y' and d.article_om>'1' and d.vendor_return_flag='Y' AND K.prime_vendor_flG='Y' and a.matnr='articleNumber']]>
+</hawaVendor>
+
+<randomArticlePbd>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.pbd_ind='Y' and d.article_om<'24' and d.vendor_return_flag='Y']]>
+</randomArticlePbd>
+<articleDetailsPbd>
+<![CDATA[select distinct a.matnr,k.article_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,ZWOWC_ARTICLE_MASTER_VIEW K where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.pbd_ind='Y' and d.article_om<'24' and a.matnr=k.matnr and a.matnr='articleNumber']]>
+</articleDetailsPbd>
+
+<pbdVendor>
+<![CDATA[select distinct a.matnr,k.lifnr,l.name1 from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,ZWOWC_ART_LIST_PROCURE k,c_VENDOR L where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.matnr=k.matnr AND K.LIFNR=l.LIFNR and a.pbd_ind='Y' and d.article_om<'24' and d.vendor_return_flag='Y' AND K.prime_vendor_flG='Y' and a.matnr='articleNumber']]>
+</pbdVendor>
+
+<randomArticleLitre>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and b.meins='L' and d.article_om>'1']]>
+</randomArticleLitre>
+<articleDetailsLitre>
+<![CDATA[select distinct a.matnr,k.article_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,ZWOWC_ARTICLE_MASTER_VIEW K where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and b.meins='L' and d.article_om>'1' and a.matnr=k.matnr and a.matnr='articleNumber']]>
+</articleDetailsLitre>
+
+<litreVendor>
+<![CDATA[select distinct a.matnr,k.lifnr,l.name1 from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e, ZWOWC_ART_LIST_PROCURE k,c_VENDOR L where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.matnr=k.matnr AND K.LIFNR=l.LIFNR and b.meins='L' and d.article_om>'1' AND K.prime_vendor_flG='Y' and a.matnr='articleNumber']]>
+</litreVendor>
+
+<randomArticleWeighted>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.weighted_ind='Y' and d.article_om>'1']]>
+</randomArticleWeighted>
+<articleDetailsWeighted>
+<![CDATA[select distinct a.matnr,k.article_desc,plu_code,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,ZWOWC_ARTICLE_MASTER_VIEW K where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.weighted_ind='Y' and d.article_om>'1' and a.matnr=k.matnr and a.matnr='articleNumber']]>
+</articleDetailsWeighted>
+
+<randomArticleRandomWeighted>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.RANDOM_WEIGHT_FLg='Y' and d.pi_om>'1' and plu_code<>'']]>
+</randomArticleRandomWeighted>
+<articleDetailsRandomWeighted>
+<![CDATA[select distinct a.matnr,k.article_desc,plu_code,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,ZWOWC_ARTICLE_MASTER_VIEW K where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.RANDOM_WEIGHT_FLg='Y' and d.pi_om>'1' and plu_code<>'' and a.matnr=k.matnr and a.matnr='articleNumber']]>
+</articleDetailsRandomWeighted>
+
+<randomArticleCpbd>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,
+saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.COMPLEX_PACK_BRK_ARTICLE<>'']]>
+</randomArticleCpbd>
+<randomArticleCpbd1>
+<![CDATA[select distinct d.complex_pack_brk_article from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,
+saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr 
+and d.COMPLEX_PACK_BRK_ARTICLE<>'' and a.matnr='articleNumber']]>
+</randomArticleCpbd1>
+<articleDetailsCpbd>
+<![CDATA[select distinct a.matnr,k.article_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,ZWOWC_ARTICLE_MASTER_VIEW K where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.COMPLEX_PACK_BRK_ARTICLE<>'' and a.matnr=k.matnr and a.matnr='articleNumber']]>
+</articleDetailsCpbd>
+
+<randomArticleDisplay>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.display_item_ind='Y' and d.perpetual_flag='N']]>
+</randomArticleDisplay>
+<articleDetailsDisplay>
+<![CDATA[select distinct a.matnr,k.article_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,ZWOWC_ARTICLE_MASTER_VIEW K where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.display_item_ind='Y' and d.perpetual_flag='N' and a.matnr=k.matnr and a.matnr='articleNumber']]>
+</articleDetailsDisplay>
+
+<randomArticleDien>
+<![CDATA[select distinct a.matnr,c.ean11 from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='DIEN' and d.perpetual_flag='N']]>
+</randomArticleDien>
+<articleDetailsDien>
+<![CDATA[select distinct a.matnr,k.article_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,ZWOWC_ARTICLE_MASTER_VIEW K where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='DIEN' and d.perpetual_flag='N' and a.matnr=k.matnr and a.matnr='articleNumber']]>
+</articleDetailsDien>
+
+<randomArticleProduce>
+<![CDATA[select distinct a.matnr,c.ean11 from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='ZPRD' and d.perpetual_flag='N' and a.matnr not in (select distinct matnr from zwowc_art_list_department where seg_name in ('MARKET DAY POTTED','MARKET DAY FLORAL'))]]>
+</randomArticleProduce>
+<articleDetailsProduce>
+<![CDATA[select distinct a.matnr,k.article_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,ZWOWC_ARTICLE_MASTER_VIEW K where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='ZPRD' and d.perpetual_flag='N' and a.matnr not in (select distinct matnr from zwowc_art_list_department where seg_name in ('MARKET DAY POTTED','MARKET DAY FLORAL')) and a.matnr=k.matnr and a.matnr='articleNumber']]>
+</articleDetailsProduce>
+
+<randomArticleNonReturnHawa>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='HAWA' and a.matnr=j.article and a.pbd_ind<>'Y' and d.article_om>'1' and d.vendor_return_flag='N']]>
+</randomArticleNonReturnHawa>
+<articleDetailsNonReturnHawa>
+<![CDATA[select distinct a.matnr,k.article_desc,
+case when length(c.ean11)<'14'
+then c.ean11
+else '' end as ean,
+case when length(c.ean11)='14'
+then c.ean11
+else '' end as tun,d.article_om
+from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,
+saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j,ZWOWC_ARTICLE_MASTER_VIEW K where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='HAWA' and a.matnr=j.article 
+and a.pbd_ind<>'Y' and d.article_om>'1' and a.matnr=k.matnr and a.matnr='articleNumber']]>
+</articleDetailsNonReturnHawa>
+
+<randomArticleDisplayException>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.display_item_ind='Y' and a.matnr=j.article and d.perpetual_flag='Y' and d.complex_pacK_brk_article<'1' and d.article_om>'1' and vendor_return_flag='Y']]>
+</randomArticleDisplayException>
+<articleDetailsDisplayException>
+<![CDATA[select distinct a.matnr,k.article_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j,ZWOWC_ARTICLE_MASTER_VIEW K where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.display_item_ind='Y' and a.matnr=j.article and d.perpetual_flag='Y' and d.complex_pacK_brk_article<'1' and d.article_om>'1' and a.matnr=k.matnr and a.matnr='articleNumber']]>
+</articleDetailsDisplayException>
+
+<displayExceptionVendor>
+<![CDATA[select distinct a.matnr,k.lifnr,l.name1 from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j,ZWOWC_ART_LIST_PROCURE k,c_VENDOR L where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.matnr=k.matnr AND K.LIFNR=l.LIFNR and a.display_item_ind='Y' and a.matnr=j.article and d.perpetual_flag='Y' and d.complex_pacK_brk_article<'1' and d.article_om>'1' and vendor_return_flag='Y' AND K.prime_vendor_flG='Y' and a.matnr='articleNumber']]>
+</displayExceptionVendor>
+
+<pluArticleNumberSame>
+<![CDATA[select distinct a.plu_code from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and  a.plu_code>'1' and a.plu_code in (select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr)]]>
+</pluArticleNumberSame>
+
+</TCName>
+
+
+<TCName name="articleSearchPEL">
+<randomArticle>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.PBD_ind='Y' and vendor_return_flag='Y']]>
+</randomArticle>
+<articleDetails>
+<![CDATA[select distinct a.matnr,a.online_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.PBD_ind='Y' and vendor_return_flag='Y' and a.matnr='articleNumber']]>
+</articleDetails>
+<twoLevelVendor>
+<![CDATA[select distinct a.matnr,k.lifnr,l.name1 from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,ZWOWC_ART_LIST_PROCURE k,c_VENDOR L where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.matnr=k.matnr AND K.LIFNR=l.LIFNR and a.PBD_ind='Y' and vendor_return_flag='Y' AND K.prime_vendor_flG='Y' and a.matnr='articleNumber']]>
+</twoLevelVendor>
+</TCName>
+
+<TCName name="articleSearchbigW">
+<randomArticle>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.article_cat_id='02' and a.matnr=j.article and a.pbd_ind<>'Y' and d.article_om>'1' and d.perpetual_flag='Y' and vendor_return_flag='Y']]>
+</randomArticle>
+<articleDetails>
+<![CDATA[select distinct a.matnr,a.online_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.article_cat_id='02' and a.matnr=j.article and a.pbd_ind<>'Y' and d.article_om>'1' and d.perpetual_flag='Y' and a.matnr='articleNumber']]>
+</articleDetails>
+<genericVendor>
+<![CDATA[select distinct a.matnr,k.lifnr,l.name1 from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j,ZWOWC_ART_LIST_PROCURE k,c_VENDOR L where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.article_cat_id='02' and a.matnr=j.article and a.matnr=k.matnr AND K.LIFNR=l.LIFNR and a.pbd_ind<>'Y' and d.article_om>'1' and d.perpetual_flag='Y' and vendor_return_flag='Y' AND K.prime_vendor_flG='Y' a.matnr='articleNumber']]>
+</genericVendor>
+</TCName>
+
+<TCName name="articleSearchFieldsAndFinaliseValidations">
+<randomArticleHawa>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='HAWA' and a.matnr=j.article and a.pbd_ind<>'Y' and d.article_om>'1' and d.vendor_return_flag='Y']]>
+</randomArticleHawa>
+<articleDetailsHawa>
+<![CDATA[select distinct a.matnr,a.online_desc,
+case when length(c.ean11)<'14'
+then c.ean11
+else '' end as ean,
+case when length(c.ean11)='14'
+then c.ean11
+else '' end as tun,d.article_om
+from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,
+saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='HAWA' and a.matnr=j.article 
+and a.pbd_ind<>'Y' and d.article_om>'1' and a.matnr='articleNumber']]>
+</articleDetailsHawa>
+
+<randomArticleKG>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and b.meins='KG' and a.weighted_ind<>'Y' and d.article_om>'1' and d.random_weight_flg<>'Y']]>
+</randomArticleKG>
+
+
+<randomArticleHawa>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='HAWA' and a.matnr=j.article and a.pbd_ind<>'Y' and d.article_om>'1' and d.vendor_return_flag='Y']]>
+</randomArticleHawa>
+<articleDetailsHawa>
+<![CDATA[select distinct a.matnr,a.online_desc,
+case when length(c.ean11)<'14'
+then c.ean11
+else '' end as ean,
+case when length(c.ean11)='14'
+then c.ean11
+else '' end as tun,d.article_om
+from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,
+saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='HAWA' and a.matnr=j.article 
+and a.pbd_ind<>'Y' and d.article_om>'1' and a.matnr='articleNumber']]>
+</articleDetailsHawa>
+
+<randomArticlePbd>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.pbd_ind='Y' and d.article_om<'24' and d.vendor_return_flag='Y']]>
+</randomArticlePbd>
+<articleDetailsPbd>
+<![CDATA[select distinct a.matnr,a.online_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.pbd_ind='Y' and d.article_om<'24' and a.matnr='articleNumber']]>
+</articleDetailsPbd>
+
+<randomArticleLitre>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and b.meins='L' and d.article_om>'1']]>
+</randomArticleLitre>
+<articleDetailsLitre>
+<![CDATA[select distinct a.matnr,a.online_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and b.meins='L' and d.article_om>'1' and a.matnr='articleNumber']]>
+</articleDetailsLitre>
+
+<randomArticleDisplayException>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.display_item_ind='Y' and a.matnr=j.article and d.perpetual_flag='Y' and d.complex_pacK_brk_article<'1' and d.article_om>'1' and vendor_return_flag='Y']]>
+</randomArticleDisplayException>
+<articleDetailsDisplayException>
+<![CDATA[select distinct a.matnr,a.online_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.display_item_ind='Y' and a.matnr=j.article and d.perpetual_flag='Y' and d.complex_pacK_brk_article<'1' and d.article_om>'1'and a.matnr='articleNumber']]>
+</articleDetailsDisplayException>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+</TCName>
+
+<TCName name="articleDraftingValidations">
+<randomArticleHawa>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='HAWA' and a.matnr=j.article and a.pbd_ind<>'Y' and d.article_om>'1' and d.vendor_return_flag='Y']]>
+</randomArticleHawa>
+<articleDetailsHawa>
+<![CDATA[select distinct a.matnr,a.online_desc,
+case when length(c.ean11)<'14'
+then c.ean11
+else '' end as ean,
+case when length(c.ean11)='14'
+then c.ean11
+else '' end as tun,d.article_om
+from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,
+saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='HAWA' and a.matnr=j.article 
+and a.pbd_ind<>'Y' and d.article_om>'1' and a.matnr='articleNumber']]>
+</articleDetailsHawa>
+
+<randomArticlePbd>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.pbd_ind='Y' and d.article_om<'24' and d.vendor_return_flag='Y']]>
+</randomArticlePbd>
+<articleDetailsPbd>
+<![CDATA[select distinct a.matnr,a.online_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.pbd_ind='Y' and d.article_om<'24' and a.matnr='articleNumber']]>
+</articleDetailsPbd>
+
+<randomArticleLitre>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and b.meins='L' and d.article_om>'1']]>
+</randomArticleLitre>
+<articleDetailsLitre>
+<![CDATA[select distinct a.matnr,a.online_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and b.meins='L' and d.article_om>'1' and a.matnr='articleNumber']]>
+</articleDetailsLitre>
+
+<randomArticleDisplayException>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.display_item_ind='Y' and a.matnr=j.article and d.perpetual_flag='Y' and d.complex_pacK_brk_article<'1' and d.article_om>'1' and vendor_return_flag='Y']]>
+</randomArticleDisplayException>
+<articleDetailsDisplayException>
+<![CDATA[select distinct a.matnr,a.online_desc,case when length(c.ean11)<'14'then c.ean11 else '' end as ean,case when length(c.ean11)='14' then c.ean11 else '' end as tun,d.article_om from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e,saap.local_wow_soh j where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.display_item_ind='Y' and a.matnr=j.article and d.perpetual_flag='Y' and d.complex_pacK_brk_article<'1' and d.article_om>'1'and a.matnr='articleNumber']]>
+</articleDetailsDisplayException>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+</TCName>
+
+<TCName name="articleLimitAndVendorType">
+<vendorNumber>
+<![CDATA[select lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and lifnr in (select distinct  d.lifnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c,ZWOWC_ART_LIST_PROCURE d,zwowc_vendor_master e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and c.matnr=d.matnr and d.lifnr=e.lifnr and d.prime_vendor_flg='Y' and e.international_vendor<>'ZI'  and a.perpetual_flag='Y' and a.alc_status<>'ES' and b.mtart='HAWA' and b.plu_code='')  group by lifnr having count(matnr) >'150']]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[select distinct matnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and a.alc_status<>'ES' and b.mtart='HAWA' and b.DANGEROUS_GOODS_IND<>'Y'and b.plu_code='') and lifnr ='vendorNumber' and matnr in (select distinct matnr from mat_view_order_uom)]]>
+</vendorArticles>
+
+<supplierNumber>
+<![CDATA[select matnr,lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA')]]>
+</supplierNumber>
+
+<nextSupplierNumber>
+<![CDATA[select matnr,lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr <>'vendorNumber']]>
+</nextSupplierNumber>
+</TCName>
+
+<TCName name="articleDraftandFinalise">
+<vendorNumber>
+<![CDATA[select lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA' and a.random_weight_flg<>'Y' and b.weighted_ind<>'Y')]]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[select matnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr ='vendorNumber']]>
+</vendorArticles>
+
+<supplierNumber>
+<![CDATA[select matnr,lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr <>'vendorNumber']]>
+</supplierNumber>
+
+<supplierArticle>
+<![CDATA[SELECT DISTINCT A.MATNR ,A.ONLINE_DESC,a.ARTICLE_DESC,E.EAn11, E.MEINH, A.PLU_CODE, F.STORE_SOH,g.lifnr
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure G
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and a.matnr=g.matnr
+AND A.MTART='HAWA' and g.prime_vendor_flg='Y' and g.lifnr<>'' and a.matnr='articleNumber' ORDER BY A.MATNR, E.MEINH ASC]]>
+</supplierArticle>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<userName>
+<![CDATA[select first_name from usr where usr_id='userID']]>
+</userName>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+
+</TCName>
+
+<TCName name="articleDraftandCancel">
+<vendorNumber>
+<![CDATA[select lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA' and a.random_weight_flg<>'Y' and b.weighted_ind<>'Y')]]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[select matnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr ='vendorNumber']]>
+</vendorArticles>
+
+<supplierNumber>
+<![CDATA[select matnr,lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr <>'vendorNumber']]>
+</supplierNumber>
+
+<supplierArticle>
+<![CDATA[SELECT DISTINCT A.MATNR ,A.ONLINE_DESC,a.ARTICLE_DESC,E.EAn11, E.MEINH, A.PLU_CODE, F.STORE_SOH,g.lifnr
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure G
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and a.matnr=g.matnr
+AND A.MTART='HAWA' and g.prime_vendor_flg='Y' and g.lifnr<>'' and a.matnr='articleNumber' ORDER BY A.MATNR, E.MEINH ASC]]>
+</supplierArticle>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<userName>
+<![CDATA[select first_name from usr where usr_id='userID']]>
+</userName>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+
+</TCName>
+
+<TCName name="articleFinaliseValidationsConsignmentAndNonConsignment">
+<vendorNumber>
+<![CDATA[select distinct lifnr from zwowc_article_listing where source_of_supply='A' and lifnr in (
+SELECT DISTINCT b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr<>'' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y')]]>
+</vendorNumber>
+
+<consignmentArticles>
+<![CDATA[
+SELECT DISTINCT A.MATNR,b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr='vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</consignmentArticles>
+
+<nonConsignmentArticles>
+<![CDATA[SELECT DISTINCT A.MATNR,b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='A' and a.mtart='HAWA' and b.lifnr='vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</nonConsignmentArticles>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+</TCName>
+
+<TCName name="articleDraftandFinaliseConsignmentAndNonConsignment">
+<vendorNumber>
+<![CDATA[select distinct lifnr from zwowc_article_listing where source_of_supply='A' and lifnr in (
+SELECT DISTINCT b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr<>'' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y')]]>
+</vendorNumber>
+
+<consignmentArticles>
+<![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='A' and a.mtart='HAWA' and b.lifnr='vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</consignmentArticles>
+
+<nonConsignmentArticles>
+<![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr='vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</nonConsignmentArticles>
+
+<supplierArticle>
+<![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr<>'vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</supplierArticle>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<userName>
+<![CDATA[select first_name from usr where usr_id='userID']]>
+</userName>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+
+</TCName>
+
+<TCName name="articleDraftandCancelConsignmentAndNonConsignment">
+<vendorNumber>
+<![CDATA[select distinct lifnr from zwowc_article_listing where source_of_supply='A' and lifnr in (
+SELECT DISTINCT b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr<>'' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y')]]>
+</vendorNumber>
+
+<consignmentArticles>
+<![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='A' and a.mtart='HAWA' and b.lifnr='vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</consignmentArticles>
+
+<nonConsignmentArticles>
+<![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr='vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</nonConsignmentArticles>
+
+<supplierArticle>
+<![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr<>'vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</supplierArticle>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<userName>
+<![CDATA[select first_name from usr where usr_id='userID']]>
+</userName>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+
+</TCName>
+
+<TCName name="articleDuplicateMessageValidations">
+<vendorNumber>
+<![CDATA[select lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA' and a.random_weight_flg<>'Y' and b.weighted_ind<>'Y')]]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[select matnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr ='vendorNumber']]>
+</vendorArticles>
+
+<supplierNumber>
+<![CDATA[select matnr,lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr <>'vendorNumber']]>
+</supplierNumber>
+
+<supplierArticle>
+<![CDATA[SELECT DISTINCT A.MATNR ,A.ONLINE_DESC,a.ARTICLE_DESC,E.EAn11, E.MEINH, A.PLU_CODE, F.STORE_SOH,g.lifnr
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure G
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and a.matnr=g.matnr
+AND A.MTART='HAWA' and g.prime_vendor_flg='Y' and g.lifnr<>'' and a.matnr='articleNumber' ORDER BY A.MATNR, E.MEINH ASC]]>
+</supplierArticle>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<userName>
+<![CDATA[select first_name from usr where usr_id='userID']]>
+</userName>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+
+</TCName>
+
+<TCName name="articleDuplicateMessageValidationsConsignmentAndNonConsignment">
+<vendorNumber>
+<![CDATA[select distinct lifnr from zwowc_article_listing where source_of_supply='A' and lifnr in (
+SELECT DISTINCT b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr<>'' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y')]]>
+</vendorNumber>
+
+<consignmentArticles>
+<![CDATA[SELECT DISTINCT A.MATNR,b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr='vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</consignmentArticles>
+
+<nonConsignmentArticles>
+<![CDATA[SELECT DISTINCT A.MATNR,b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='A' and a.mtart='HAWA' and b.lifnr='vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</nonConsignmentArticles>
+
+</TCName>
+
+<TCName name="articleFinaliseValidationsDangerousArticle">
+<vendorNumber>
+<![CDATA[SELECT distinct  g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and a.mtart='HAWA' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and a.dangerous_goods_ind='Y']]>
+</vendorNumber>
+<dangerousArticles>
+<![CDATA[SELECT distinct a.matnr, g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and a.mtart='HAWA' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and a.dangerous_goods_ind='Y' and b.lifnr='vendorNumber']]>
+</dangerousArticles>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+</TCName>
+
+<TCName name="articleDraftandFinaliseDangerous">
+<vendorNumber>
+<![CDATA[SELECT TOP 1 count(distinct A.MATNR),g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and a.dangerous_goods_ind='Y'  group by g.lifnr order by count(distinct A.MATNR) desc]]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[SELECT distinct a.matnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and a.mtart='HAWA' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and a.dangerous_goods_ind='Y'  and b.lifnr='vendorNumber']]>
+</vendorArticles>
+
+<supplierNumber>
+<![CDATA[select matnr,lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr <>'vendorNumber']]>
+</supplierNumber>
+
+<supplierArticle>
+<![CDATA[SELECT DISTINCT A.MATNR ,A.ONLINE_DESC,a.ARTICLE_DESC,E.EAn11, E.MEINH, A.PLU_CODE, F.STORE_SOH,g.lifnr
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure G
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and a.matnr=g.matnr
+AND A.MTART='HAWA' and g.prime_vendor_flg='Y' and g.lifnr<>'' and a.matnr='articleNumber' ORDER BY A.MATNR, E.MEINH ASC]]>
+</supplierArticle>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<userName>
+<![CDATA[select first_name from usr where usr_id='userID']]>
+</userName>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+
+</TCName>
+
+<TCName name="articleFinaliseValidationsMarketDayFloral">
+<vendorNumber>
+<![CDATA[SELECT TOP 1 count(distinct A.MATNR),g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY FLORAL')  group by g.lifnr order by count(distinct A.MATNR) desc]]>
+</vendorNumber>
+<floralArticles>
+<![CDATA[SELECT a.matnr,g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY FLORAL') and g.lifnr='vendorNumber']]>
+</floralArticles>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+</TCName>
+
+<TCName name="articleFinaliseValidationsMarketDayPotted">
+<vendorNumber>
+<![CDATA[SELECT TOP 1 count(distinct A.MATNR),g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY POTTED')  group by g.lifnr order by count(distinct A.MATNR) desc]]>
+</vendorNumber>
+<pottedArticles>
+<![CDATA[SELECT a.matnr,g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY POTTED') and g.lifnr='vendorNumber']]>
+</pottedArticles>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+</TCName>
+
+<TCName name="articleDraftandFinalisemarketDayFloral">
+<vendorNumber>
+<![CDATA[SELECT TOP 1 count(distinct A.MATNR),g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY FLORAL')  group by g.lifnr order by count(distinct A.MATNR) desc]]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[SELECT a.matnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY FLORAL') and g.lifnr='vendorNumber']]>
+</vendorArticles>
+
+<vendorArticlesNot1>
+<![CDATA[SELECT a.matnr,g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY FLORAL') and g.lifnr='vendorNumber' and a.matnr<>'articleNumber1']]>
+</vendorArticlesNot1>
+
+<vendorArticlesNot2>
+<![CDATA[SELECT a.matnr,g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY FLORAL') and g.lifnr='vendorNumber' and a.matnr<>'articleNumber1' and a.matnr<>'articleNumber2']]>
+</vendorArticlesNot2>
+
+<supplierNumber>
+<![CDATA[select matnr,lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr <>'vendorNumber']]>
+</supplierNumber>
+
+<supplierArticle>
+<![CDATA[SELECT DISTINCT A.MATNR ,A.ONLINE_DESC,a.ARTICLE_DESC,E.EAn11, E.MEINH, A.PLU_CODE, F.STORE_SOH,g.lifnr
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure G
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and a.matnr=g.matnr
+AND A.MTART='HAWA' and g.prime_vendor_flg='Y' and g.lifnr<>'' and a.matnr='articleNumber' ORDER BY A.MATNR, E.MEINH ASC]]>
+</supplierArticle>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<userName>
+<![CDATA[select first_name from usr where usr_id='userID']]>
+</userName>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+</TCName>
+
+<TCName name="articleDraftandCancelmarketDayFloral">
+<vendorNumber>
+<![CDATA[SELECT TOP 1 count(distinct A.MATNR),g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY FLORAL')  group by g.lifnr order by count(distinct A.MATNR) desc]]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[SELECT a.matnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY FLORAL') and g.lifnr='vendorNumber']]>
+</vendorArticles>
+
+<vendorArticlesNot1>
+<![CDATA[SELECT a.matnr,g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY FLORAL') and g.lifnr='vendorNumber' and a.matnr<>'articleNumber1']]>
+</vendorArticlesNot1>
+
+<vendorArticlesNot2>
+<![CDATA[SELECT a.matnr,g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY FLORAL') and g.lifnr='vendorNumber' and a.matnr<>'articleNumber1' and a.matnr<>'articleNumber2']]>
+</vendorArticlesNot2>
+
+<supplierNumber>
+<![CDATA[select matnr,lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr <>'vendorNumber']]>
+</supplierNumber>
+
+<supplierArticle>
+<![CDATA[SELECT DISTINCT A.MATNR ,A.ONLINE_DESC,a.ARTICLE_DESC,E.EAn11, E.MEINH, A.PLU_CODE, F.STORE_SOH,g.lifnr
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure G
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and a.matnr=g.matnr
+AND A.MTART='HAWA' and g.prime_vendor_flg='Y' and g.lifnr<>'' and a.matnr='articleNumber' ORDER BY A.MATNR, E.MEINH ASC]]>
+</supplierArticle>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<userName>
+<![CDATA[select first_name from usr where usr_id='userID']]>
+</userName>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+</TCName>
+
+<TCName name="articleDraftandFinalisemarketDayPotted">
+<vendorNumber>
+<![CDATA[SELECT TOP 1 count(distinct A.MATNR),g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY POTTED')  group by g.lifnr order by count(distinct A.MATNR) desc]]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[SELECT a.matnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY POTTED') and g.lifnr='vendorNumber']]>
+</vendorArticles>
+
+<vendorArticlesNot1>
+<![CDATA[SELECT a.matnr,g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY POTTED') and g.lifnr='vendorNumber' and a.matnr<>'articleNumber1']]>
+</vendorArticlesNot1>
+
+<vendorArticlesNot2>
+<![CDATA[SELECT a.matnr,g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY POTTED') and g.lifnr='vendorNumber' and a.matnr<>'articleNumber1' and a.matnr<>'articleNumber2']]>
+</vendorArticlesNot2>
+
+<supplierNumber>
+<![CDATA[select matnr,lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr <>'vendorNumber']]>
+</supplierNumber>
+
+<supplierArticle>
+<![CDATA[SELECT DISTINCT A.MATNR ,A.ONLINE_DESC,a.ARTICLE_DESC,E.EAn11, E.MEINH, A.PLU_CODE, F.STORE_SOH,g.lifnr
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure G
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and a.matnr=g.matnr
+AND A.MTART='HAWA' and g.prime_vendor_flg='Y' and g.lifnr<>'' and a.matnr='articleNumber' ORDER BY A.MATNR, E.MEINH ASC]]>
+</supplierArticle>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<userName>
+<![CDATA[select first_name from usr where usr_id='userID']]>
+</userName>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+</TCName>
+
+<TCName name="articleDraftandCancelmarketDayPotted">
+<vendorNumber>
+<![CDATA[SELECT TOP 1 count(distinct A.MATNR),g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY POTTED')  group by g.lifnr order by count(distinct A.MATNR) desc]]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[SELECT a.matnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY POTTED') and g.lifnr='vendorNumber']]>
+</vendorArticles>
+
+<vendorArticlesNot1>
+<![CDATA[SELECT a.matnr,g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY POTTED') and g.lifnr='vendorNumber' and a.matnr<>'articleNumber1']]>
+</vendorArticlesNot1>
+
+<vendorArticlesNot2>
+<![CDATA[SELECT a.matnr,g.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, MAT_VIEW_ZWOW_ARTICLES_HIER C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y' and c.seg_name in ('MARKET DAY POTTED') and g.lifnr='vendorNumber' and a.matnr<>'articleNumber1' and a.matnr<>'articleNumber2']]>
+</vendorArticlesNot2>
+
+<supplierNumber>
+<![CDATA[select matnr,lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr <>'vendorNumber']]>
+</supplierNumber>
+
+<supplierArticle>
+<![CDATA[SELECT DISTINCT A.MATNR ,A.ONLINE_DESC,a.ARTICLE_DESC,E.EAn11, E.MEINH, A.PLU_CODE, F.STORE_SOH,g.lifnr
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure G
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and a.matnr=g.matnr
+AND A.MTART='HAWA' and g.prime_vendor_flg='Y' and g.lifnr<>'' and a.matnr='articleNumber' ORDER BY A.MATNR, E.MEINH ASC]]>
+</supplierArticle>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<userName>
+<![CDATA[select first_name from usr where usr_id='userID']]>
+</userName>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+</TCName>
+
+<TCName name="articleDraftandFinaliseAnotherUser">
+<vendorNumber>
+<![CDATA[select lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA' and a.random_weight_flg<>'Y' and b.weighted_ind<>'Y')]]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[select matnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr ='vendorNumber']]>
+</vendorArticles>
+
+<supplierNumber>
+<![CDATA[select matnr,lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr <>'vendorNumber']]>
+</supplierNumber>
+
+<supplierArticle>
+<![CDATA[SELECT DISTINCT A.MATNR ,A.ONLINE_DESC,a.ARTICLE_DESC,E.EAn11, E.MEINH, A.PLU_CODE, F.STORE_SOH,g.lifnr
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure G
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and a.matnr=g.matnr
+AND A.MTART='HAWA' and g.prime_vendor_flg='Y' and g.lifnr<>'' and a.matnr='articleNumber' ORDER BY A.MATNR, E.MEINH ASC]]>
+</supplierArticle>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<userName>
+<![CDATA[select first_name from usr where usr_id='userID']]>
+</userName>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+
+</TCName>
+
+<TCName name="articleDraftandCancelAnotherUser">
+<vendorNumber>
+<![CDATA[select lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA' and a.random_weight_flg<>'Y' and b.weighted_ind<>'Y')]]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[select matnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr ='vendorNumber']]>
+</vendorArticles>
+
+<supplierNumber>
+<![CDATA[select matnr,lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr <>'vendorNumber']]>
+</supplierNumber>
+
+<supplierArticle>
+<![CDATA[SELECT DISTINCT A.MATNR ,A.ONLINE_DESC,a.ARTICLE_DESC,E.EAn11, E.MEINH, A.PLU_CODE, F.STORE_SOH,g.lifnr
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure G
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and a.matnr=g.matnr
+AND A.MTART='HAWA' and g.prime_vendor_flg='Y' and g.lifnr<>'' and a.matnr='articleNumber' ORDER BY A.MATNR, E.MEINH ASC]]>
+</supplierArticle>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<userName>
+<![CDATA[select first_name from usr where usr_id='userID']]>
+</userName>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+
+</TCName>
+
+<TCName name="articleDraftandMandatoryCheck">
+<vendorNumber>
+<![CDATA[select lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA' and a.random_weight_flg<>'Y' and b.weighted_ind<>'Y')]]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[select matnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr ='vendorNumber']]>
+</vendorArticles>
+
+<supplierNumber>
+<![CDATA[select matnr,lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and b.mtart='HAWA') and lifnr <>'vendorNumber']]>
+</supplierNumber>
+
+<supplierArticle>
+<![CDATA[SELECT DISTINCT A.MATNR ,A.ONLINE_DESC,a.ARTICLE_DESC,E.EAn11, E.MEINH, A.PLU_CODE, F.STORE_SOH,g.lifnr
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure G
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and a.matnr=g.matnr
+AND A.MTART='HAWA' and g.prime_vendor_flg='Y' and g.lifnr<>'' and a.matnr='articleNumber' ORDER BY A.MATNR, E.MEINH ASC]]>
+</supplierArticle>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<userName>
+<![CDATA[select first_name from usr where usr_id='userID']]>
+</userName>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+
+</TCName>
+
+<TCName name="articleFinaliseValidationsInternationalVendors">
+<vendorNumber>
+<![CDATA[select distinct lifnr from zwowc_article_listing where source_of_supply='A' and lifnr in (
+SELECT DISTINCT b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr<>'' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y')]]>
+</vendorNumber>
+
+<consignmentArticles>
+<![CDATA[
+SELECT DISTINCT A.MATNR,b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr='vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</consignmentArticles>
+
+<nonConsignmentArticles>
+<![CDATA[SELECT DISTINCT A.MATNR,b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='A' and a.mtart='HAWA' and b.lifnr='vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</nonConsignmentArticles>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+</TCName>
+
+<TCName name="articleDraftValidationsInternationalVendors">
+<vendorNumber>
+<![CDATA[select distinct lifnr from zwowc_article_listing where source_of_supply='A' and lifnr in (
+SELECT DISTINCT b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr<>'' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y')]]>
+</vendorNumber>
+
+<consignmentArticles>
+<![CDATA[
+SELECT DISTINCT A.MATNR,b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='1' and a.mtart='HAWA' and b.lifnr='vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</consignmentArticles>
+
+<nonConsignmentArticles>
+<![CDATA[SELECT DISTINCT A.MATNR,b.lifnr FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E, SAAP.LOCAL_WOW_SOH F,zwowc_art_list_procure g
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND E.MATNR = F.ARTICLE and b.matnr=g.matnr and b.lifnr=g.lifnr
+and b.source_of_supply='A' and a.mtart='HAWA' and b.lifnr='vendorNumber' and b.perpetual_flag='Y' and b.alc_status<>'ES' and g.prime_vendor_flg='Y']]>
+</nonConsignmentArticles>
+
+<claim>
+<![CDATA[select werks,matnr,claim_no,created_user from LOCAL_WOW_FINALIZED_RTV where claim_no='claimNumber']]>
+</claim>
+
+<soh>
+<![CDATA[select store_soh from local_wow_soh where article='articleNumber']]>
+</soh>
+</TCName>
+
+<TCName name="articleLimitSmkt">
+<vendorNumber>
+<![CDATA[select lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and lifnr in (select distinct  d.lifnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c,ZWOWC_ART_LIST_PROCURE d,zwowc_vendor_master e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and c.matnr=d.matnr and d.lifnr=e.lifnr and d.prime_vendor_flg='Y' and e.international_vendor<>'ZI'  and a.perpetual_flag='Y' and a.alc_status<>'ES' and b.mtart='HAWA' and b.plu_code='')  group by lifnr having count(matnr) >'150']]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[select matnr from zwowc_article_master where matnr in ('637','30236','30996','31795','32006','34659','54082','59297','69455','83305','92089','93357','98176','157734','178888','179663','192217','196774','201055','203646','212822','213800','214830','231928','231929','258458','258878','260703','291474','300423','300441','303890','304740','322624','326656','326661','326669','326672','332285','333585','333586','343374','353185','360624','360626','367248','373355','376710','376711','376781','379709','379953','707697','717112','717612','720638','724482','724540','741135','741167','758271','762777','763106','783257','783268','783269','783282','783283','784970','790906','790907','790914','790915','790917','796468','796491','802162','829467','840774','841297','841307','841554','841702','841713','841714','841737','841903','843454','856797','859659','859720') and dangerous_goods_ind<>'Y']]>
+</vendorArticles>
+
+</TCName>
+
+<TCName name="articleLimitBigW">
+<vendorNumber>
+<![CDATA[select lifnr from zwowc_art_list_procure where prime_vendor_flg='Y' and lifnr in (select distinct  d.lifnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c,ZWOWC_ART_LIST_PROCURE d,zwowc_vendor_master e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and c.matnr=d.matnr and d.lifnr=e.lifnr and d.prime_vendor_flg='Y' and e.international_vendor<>'ZI'  and a.perpetual_flag='Y' and a.alc_status<>'ES' and b.mtart='HAWA' and b.plu_code='')  group by lifnr having count(matnr) >'180']]>
+</vendorNumber>
+
+<vendorArticles>
+<![CDATA[select distinct matnr from zwowc_art_list_procure where prime_vendor_flg='Y' and  matnr in (select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and a.alc_status<>'ES' and b.mtart='HAWA' and b.DANGEROUS_GOODS_IND<>'Y'and b.plu_code='') and lifnr ='vendorNumber' and matnr in (select distinct matnr from mat_view_order_uom)]]>
+</vendorArticles>
+
+</TCName>
+</configuration>

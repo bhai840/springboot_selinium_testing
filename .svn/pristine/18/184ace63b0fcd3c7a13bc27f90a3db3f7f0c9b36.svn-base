@@ -1,0 +1,1916 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.StockTakeObjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.StockTakePage;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+public class StockTakeTests extends TestBase {
+
+	private static final Object Counts = null;
+	private Logger log = LogManager.getLogger(StockTakeTests.class);
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	List<List<Object>> results2;
+	List<List<Object>> results3;
+	List<List<Object>> results4;
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	StockTakePage objStockTakePage;
+	StockTakeObjects objStockTakeObjects;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;
+	List<List<Object>> result;
+	public static XMLDataReader data;
+	List<List<Object>> result_temp;
+	int STakecount=0;
+	public static WebDriver driver;
+
+	public StockTakeTests() {
+		super.log = log;
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Create Unique level Adhoc Stocktake")
+	public void CreateUniqueAdhocStocktake() throws SQLException, AWTException,
+			ParseException, InterruptedException, IOException {
+		if(stockTakeArtpreCount2==-1){
+		STakecount=STakecount+6;}
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitFor(6);
+        click(objStockTakeObjects.CreateSTbutton);
+		waitFor(3);
+		
+		// *Stocktake Name*//
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy_hmmss");
+		String formattedDate = sdf.format(date);
+		enterText(objStockTakeObjects.STName, formattedDate,driver);
+		waitFor(1);
+		// *Stocktake Date*//
+		String frstdate = common.getCurrentDate();
+		enterText(objStockTakeObjects.StartDate, frstdate,driver);
+		waitFor(2);
+		click(objStockTakeObjects.STName);
+		waitFor(3);
+
+		// *Fetching Included articles*//
+		stockTakeArtScenarios.put(stockTakeArttestname, "Creating Stocktake with Name "+ formattedDate + " with Date " + frstdate+ " for the below articles :;;;Pass");
+		//Report_AddStep("testcase", "Creating Stocktake with Name "+ formattedDate + " with Date " + frstdate+ " for the below articles :", "", "", "");
+		String firstart = data.getText("Getarticle");
+		results = sql.executeQuery(getContext(), firstart);
+
+		for (int a = 1; a <= 3; a++) {
+			int num = common.RandomFromDB(results);
+			String art1 = objStockTakePage.randart(results, num);
+			objStockTakeObjects.includebox.sendKeys(art1);
+			objStockTakeObjects.includebox.sendKeys(Keys.ENTER);
+			waitFor(1);
+			objStockTakePage.scrolldown(driver);
+			//stockTakeArtScenarios.put(stockTakeArttestname, "testcase;; "+ art1+";Pass");
+			stockTakeArtScenarios.put(stockTakeArttestname, " "+ art1+";;;Pass");
+			//Report_AddStep("testcase", "" + art1 + "", "", "", "");
+		}
+		waitFor(2);
+
+		objStockTakeObjects.Created.click();
+		objStockTakePage.msg(objStockTakeObjects,driver);
+		waitFor(2);
+          log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		
+		status.assertAll();
+	}
+	
+	/*@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Create Unique level Adhoc Stocktake")
+	public void CreationValidations() throws SQLException, AWTException,
+			ParseException, InterruptedException, IOException {
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitFor(6);
+        click(objStockTakeObjects.CreateSTbutton);
+		waitFor(3);
+		
+		objStockTakeObjects.Created.click();
+		objStockTakePage.Mandatorymsg(objStockTakeObjects);
+		waitFor(2);
+		objStockTakeObjects.Message.click();
+		
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy_hmmss");
+		String formattedDate = sdf.format(date);
+		enterText(objStockTakeObjects.STName, formattedDate);
+		waitFor(1);
+		
+		objStockTakeObjects.Created.click();
+		objStockTakePage.Mandatorymsg(objStockTakeObjects);
+		waitFor(2);
+		objStockTakeObjects.Message.click();
+		
+		String frstdate = common.getCurrentDate();
+		enterText(objStockTakeObjects.StartDate, frstdate);
+		waitFor(2);
+		click(objStockTakeObjects.STName);
+		waitFor(1);
+		
+		objStockTakeObjects.Created.click();
+		objStockTakePage.Mandatorymsg(objStockTakeObjects);
+		waitFor(1);
+		objStockTakeObjects.Message.click();
+		
+		String endDate = common.AddDate(
+				common.ConvertdateFormatddmmyy(frstdate), 36);
+		objStockTakeObjects.EndDate.sendKeys(endDate);
+		click(objStockTakeObjects.STName);
+		waitFor(1);
+		
+		objStockTakeObjects.Created.click();
+		objStockTakePage.Mandatorymsg(objStockTakeObjects);
+		waitFor(1);
+		objStockTakeObjects.Message.click();
+
+		Report_AddStep("testcase", "Creating Stocktake with Name "
+				+ formattedDate + " with Date " + frstdate
+				+ " for the below articles :", "", "", "");
+		String firstart = data.getText("Getarticle");
+		results = sql.executeQuery(getContext(), firstart);
+
+		for (int a = 1; a <= 3; a++) {
+			int num = common.RandomFromDB(results);
+			String art1 = objStockTakePage.randart(results, num);
+			objStockTakeObjects.includebox.sendKeys(art1);
+			objStockTakeObjects.includebox.sendKeys(Keys.ENTER);
+			waitFor(1);
+			objStockTakePage.scrolldown(driver);
+			Report_AddStep("testcase", "" + art1 + "", "", "", "");
+		}
+		waitFor(2);
+
+		objStockTakeObjects.Created.click();
+		objStockTakePage.msg(objStockTakeObjects,driver);
+		waitFor(2);
+          log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+	}*/
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Create Unique level Online Stocktake")
+	public void CreateUniqueOnlineStocktake() throws SQLException,
+			AWTException, ParseException, InterruptedException, IOException {
+		if(stockTakeArtpreCount2==-1){
+		STakecount = STakecount+8;}
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitFor(6);
+		click(objStockTakeObjects.CreateSTbutton);
+		waitFor(3);
+		// *Stocktake Name*//
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy_hmmss");
+		String formattedDate = sdf.format(date);
+		enterText(objStockTakeObjects.STName, formattedDate,driver);
+		waitFor(1);
+		// *Stocktake Start Date*//
+		String frstdate = common.getCurrentDate();
+		enterText(objStockTakeObjects.StartDate, frstdate,driver);
+		waitFor(1);
+		click(objStockTakeObjects.STName);
+		waitFor(1);
+		// *Stocktake End Date*//
+		String endDate = common.AddDate(
+				common.ConvertdateFormatddmmyy(frstdate), 36);
+		objStockTakeObjects.EndDate.sendKeys(endDate);
+		click(objStockTakeObjects.STName);
+		waitFor(1);
+		stockTakeArtScenarios.put(stockTakeArttestname, "Creating Stocktake with Name "
+				+ formattedDate + " with Start Date as " + frstdate
+				+ " and End Date as " + endDate + " for the below articles :;;;Pass");
+		/*Report_AddStep("testcase", "Creating Stocktake with Name "
+				+ formattedDate + " with Start Date as " + frstdate
+				+ " and End Date as " + endDate + " for the below articles :",
+				"", "", "");*/
+		objStockTakePage.frequencyselection(objStockTakeObjects,driver);
+		waitFor(0.5);
+		// *Fetching Included articles*//
+		String firstart = data.getText("Getarticle");
+		results = sql.executeQuery(getContext(), firstart);
+
+		for (int a = 1; a <= 3; a++) {
+			int num = common.RandomFromDB(results);
+			String art1 = objStockTakePage.randart(results, num);
+			objStockTakeObjects.includebox.sendKeys(art1);
+			objStockTakeObjects.includebox.sendKeys(Keys.ENTER);
+			waitFor(1);
+			objStockTakePage.scrolldown(driver);
+			stockTakeArtScenarios.put(stockTakeArttestname, " "+ art1+";;;Pass");
+			//Report_AddStep("testcase", "" + art1 + "", "", "", "");
+		}
+		waitFor(2);
+
+		objStockTakeObjects.Created.click();
+		objStockTakePage.msg(objStockTakeObjects,driver);
+		waitFor(2);
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Create Department level Online Stocktake")
+	public void CreateDepartmentOnlineStocktake() throws SQLException,
+			AWTException, ParseException, InterruptedException, IOException {
+		if(stockTakeArtpreCount2==-1){
+		STakecount = STakecount+7;}
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitFor(6);
+		click(objStockTakeObjects.CreateSTbutton);
+		waitFor(3);
+		// *Stocktake Name*//
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy_hmmss");
+		String formattedDate = sdf.format(date);
+		enterText(objStockTakeObjects.STName, formattedDate,driver);
+		waitFor(1);
+		// *Stocktake Start Date*//
+		String frstdate = common.getCurrentDate();
+		enterText(objStockTakeObjects.StartDate, frstdate,driver);
+		waitFor(1);
+		click(objStockTakeObjects.STName);
+		waitFor(1);
+		// *Stocktake End Date*//
+		String endDate = common.AddDate(
+				common.ConvertdateFormatddmmyy(frstdate), 36);
+		objStockTakeObjects.EndDate.sendKeys(endDate);
+		click(objStockTakeObjects.STName);
+		waitFor(1);
+		stockTakeArtScenarios.put(stockTakeArttestname, "Creating Stocktake with Name "
+				+ formattedDate + " with Start Date as " + frstdate
+				+ " and End Date as " + endDate + ";;;Pass");
+		/*Report_AddStep("testcase", "Creating Stocktake with Name "
+				+ formattedDate + " with Start Date as " + frstdate
+				+ " and End Date as " + endDate + " ", "", "", "");*/
+		
+		objStockTakePage.frequencyselection(objStockTakeObjects,driver);
+		waitFor(0.5);
+		// *Fetching Department*//
+		click(objStockTakeObjects.SelectDepartment1);
+		String dep = data.getText("department");
+		objStockTakePage.selectDepartment(dep, results, objStockTakeObjects,
+				frstdate, formattedDate,driver);
+		waitForJSandJQueryToLoad(driver);
+		objStockTakeObjects.Done.click();
+		waitForJSandJQueryToLoad(driver);
+		objStockTakeObjects.Created.click();
+		stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake Created  Successfully!!! ;;;Pass");
+		/*Report_AddStep("testcase", "Stocktake Created  Successfully!!!", "",
+				"", "Pass");*/
+		waitFor(1);
+		/*objStockTakeObjects.close.click();
+		waitFor(1);*/
+		objStockTakePage.msg(objStockTakeObjects,driver);
+		waitFor(2);
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Create Department level Stocktake")
+	public void CreateDepartmentStocktake() throws SQLException, AWTException,
+			ParseException, InterruptedException, IOException {
+		if(stockTakeArtpreCount2==-1){
+		STakecount = STakecount+6;}
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitFor(6);
+		click(objStockTakeObjects.CreateSTbutton);
+		waitFor(3);
+		// *Stocktake Name*//
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy_hmmss");
+		String formattedDate = sdf.format(date);
+		enterText(objStockTakeObjects.STName, formattedDate,driver);
+		waitFor(1);
+		// *Stocktake Start Date*//
+		String frstdate = common.getCurrentDate();
+		enterText(objStockTakeObjects.StartDate, frstdate,driver);
+		waitFor(1);
+		click(objStockTakeObjects.STName);
+		waitFor(1);
+		// *Providing Department
+		click(objStockTakeObjects.SelectDepartment1);
+		String dep = data.getText("department");
+		objStockTakePage.selectDepartment(dep, results, objStockTakeObjects,
+				frstdate, formattedDate,driver);
+		waitForJSandJQueryToLoad(driver);
+		objStockTakeObjects.Done.click();
+		waitForJSandJQueryToLoad(driver);
+		objStockTakeObjects.Created.click();
+		stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake Created  Successfully!!! ;;;Pass");
+		/*Report_AddStep("testcase", "Stocktake Created  Successfully!!!", "",
+				"", "Pass");*/
+		waitFor(1);
+		/*objStockTakeObjects.close.click();
+		waitFor(1);*/
+		objStockTakePage.msg(objStockTakeObjects,driver);
+		waitFor(2);
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+	}
+
+
+	/*@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Selecting Hierarchy level")
+	public void CreateHierarchyStocktake() throws SQLException, IOException,
+			AWTException, NoSuchFieldException, SecurityException,
+			IllegalArgumentException, IllegalAccessException {
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.CreateSTbutton);
+		waitForJSandJQueryToLoad(driver);
+		// *Stocktake Name*
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy_hmmss");
+		String formattedDate = sdf.format(date);
+		enterText(objStockTakeObjects.STName, formattedDate);
+		waitForJSandJQueryToLoad(driver);
+		// *Stocktake Date*
+		String frstdate = common.getCurrentDate();
+		enterText(objStockTakeObjects.StartDate, frstdate);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.STName);
+		 waitFor(1.5);
+
+		click(objStockTakeObjects.CategorySelection);
+		 waitFor(1.5);
+
+		String DEP = data.getText("alldepartment");
+		results = sql.executeQuery(getContext(), DEP);
+
+		String dept_name = results.get(0).get(0).toString();
+		String cat_name = results.get(0).get(1).toString();
+		String subcat_name = results.get(0).get(2).toString();
+		System.out.println("started");
+		System.out.println(dept_name);
+		System.out.println(cat_name);
+		System.out.println(subcat_name);
+		System.out.println("Ended");
+		objStockTakePage.SelectHierarchy(objStockTakeObjects, dept_name,
+				cat_name, subcat_name);
+
+		waitForJSandJQueryToLoad(driver);
+		//objStockTakeObjects.Done.click();
+		//waitForJSandJQueryToLoad(driver);
+		objStockTakeObjects.Created.click();
+		stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake Created  Successfully!!! ;;;Pass");
+		Report_AddStep("testcase", "Stocktake Created  Successfully!!!", "",
+				"", "Pass");
+		waitForJSandJQueryToLoad(driver);
+		objStockTakeObjects.close.click();
+		waitForJSandJQueryToLoad(driver);
+		objStockTakePage.msg(objStockTakeObjects,driver);
+		waitForJSandJQueryToLoad(driver);
+
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+	}
+*/
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Base Count Report")
+	public void BasecountReport() throws SQLException, IOException,
+			AWTException, NoSuchFieldException, SecurityException,
+			IllegalArgumentException, IllegalAccessException {
+		if(stockTakeArtpreCount2==-1){
+		STakecount = STakecount+8;}
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitForJSandJQueryToLoad(driver);
+
+		click(objStockTakeObjects.DueNow);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.DueNowAllDepts);
+		
+		if(objStockTakeObjects.OpenSTATUS.size()!=0)
+		{
+		click(objStockTakeObjects.open);
+		waitForJSandJQueryToLoad(driver);
+		objStockTakePage.scrolldown(driver);
+		// objStockTakePage.Pagination(objStockTakeObjects);
+		// System.out.println("Pagination Started");
+		// Report_AddStep("testcase",
+		// "Able to see the records in all available pages", "", "", "Pass");
+		//
+		String countTotal = objStockTakeObjects.Countedarticles.getText();
+		String[] parts = countTotal.split("Completed Article Count: ");
+		String part1 = parts[0];
+		String part2 = parts[1];
+		String count = part2.trim();
+		System.out.println("Total count value is " + count);
+
+		String STName = objStockTakeObjects.StocktakeName.getText();
+		System.out.println("Stocktake name is " + STName);
+		String ST_ID = data.getText("STO").replace("STNAME", STName);
+		result = sql.executeQuery(getContext(), ST_ID);
+		BigDecimal a = (BigDecimal) result.get(0).get(0);
+		System.out.println("Stocktake id is " + a);
+		stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake ID is " + a + " ;;;Pass");
+		//Report_AddStep("testcase", "Stocktake ID is " + a + " ", "", "", "");
+
+		String b = data.getText("OtherLocation").replace("value", a.toString());
+		results = sql.executeQuery(getContext(), b);
+		Integer c = (Integer) results.get(0).get(0);
+		System.out.println("Counts from DB is " + c);
+		
+		String BasePer = objStockTakeObjects.BasePercentage.getText();
+		System.out.println("Base count percentage  is " + BasePer);
+		
+		 
+		  String[] partsper = BasePer.split("1. Base Count ");
+		  String partsper0 = partsper[0];
+		  String partsper1 = partsper[1]; // 004- String part2 = parts[1];
+		  String count1 = partsper1.replace("%)", ""); 
+		  count1 = count1.replace("(", "");
+		  System.out.println("Splitted value  is " + count1);
+		  
+	   String context1 = data.getText("Percentage").replace("value", a.toString());
+		results = sql.executeQuery(getContext(), context1);
+		BigDecimal Percent = (BigDecimal) results.get(0).get(0);
+		System.out.println(" Base count percentage value is " + Percent);
+		
+		if(count1.contains(Percent.toString())){
+			stockTakeArtScenarios.put(stockTakeArttestname, "Base Count Percentage value is matched in DB;;;Pass");
+			//Report_AddStep("testcase", "Base Count Percentage value is matched in DB", "", "","Pass");
+		}
+		else{
+			stockTakeArtScenarios.put(stockTakeArttestname, "Base Count Percentage value is not matched in DB;;;Fail");
+			//Report_AddStep("testcase", "Base Count Percentage value is not matched in DB", "", "","Fail");
+		}
+
+		System.out.println("Total counts in both location is " + c);
+     if (count.equals(c.toString())) {
+    		stockTakeArtScenarios.put(stockTakeArttestname, "Counts are matched in DB  ;;;Pass");
+			//Report_AddStep("testcase", "Counts are matched in DB  ", "", "","Pass");
+		} else {
+			stockTakeArtScenarios.put(stockTakeArttestname, "Counts are not matched in DB  ;;;Fail");
+			//Report_AddStep("testcase", "Counts are not matched in DB  ", "","", "Fail");
+		}
+
+		String Art_Num = objStockTakeObjects.Article_Number.getText();
+		System.out.println("Article Number is " + Art_Num);
+		String Art_uom = objStockTakeObjects.Article_UOM.getText();
+		System.out.println("Article UOM is " + Art_uom);
+
+		//String context = data.getText("Check").replace("STNAME", STName);
+		//results1 = sql.executeQuery(getContext(), context);
+
+		 /*click(objStockTakeObjects.BaseExport);
+		 Report_AddStep("testcase", "Able to Export the Report", "", "",
+		 "Pass");
+		 waitForJSandJQueryToLoad(driver);
+		  click(objStockTakeObjects.BasePrint);
+		 Report_AddStep("testcase", "Able to Print the Report", "", "",
+		 "Pass");
+		 waitForJSandJQueryToLoad(driver);*/
+		
+		}
+		else
+		{
+			stockTakeArtScenarios.put(stockTakeArttestname, "OPEN Status Stocktake was not available in Duenow Tab ;;;Pass");
+			 //Report_AddStep("testcase","OPEN Status Stocktake was not available in Duenow Tab " , "", "", "Pass");
+		}
+
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating an article in Base Count Report")
+	public void BasecountReportValidation() throws SQLException, IOException,AWTException, NoSuchFieldException, SecurityException,IllegalArgumentException, IllegalAccessException {
+		if(stockTakeArtpreCount2==-1){
+		STakecount = STakecount+6;}
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitForJSandJQueryToLoad(driver);
+        click(objStockTakeObjects.DueNow);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.DueNowAllDepts);
+
+if(objStockTakeObjects.OpenSTATUS.size()!=0)
+		{
+		//objStockTakePage.Pagination(objStockTakeObjects);
+		// System.out.println("Pagination Started");
+			 //Report_AddStep("testcase",
+		// "Able to see the records in all available pages", "", "", "Pass");
+		click(objStockTakeObjects.open);
+		waitForJSandJQueryToLoad(driver);
+		objStockTakePage.scrolldown(driver);
+	
+
+		String STName = objStockTakeObjects.StocktakeName.getText();
+		System.out.println("Stocktake name is " + STName);
+		stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake Name is " + STName + " ;;;Pass");
+
+		
+		//Report_AddStep("testcase", "Stocktake Name is " + STName + " ", "", "", "");
+		String ST_ID = data.getText("STO").replace("STNAME", STName);
+		result = sql.executeQuery(getContext(), ST_ID);
+		BigDecimal a = (BigDecimal) result.get(0).get(0);
+		System.out.println("Stocktake id is " + a);
+		stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake ID is " + a + " ;;;Pass");
+
+		//Report_AddStep("testcase", "Stocktake ID is " + a + " ", "", "", "");
+
+		String Art_Num = objStockTakeObjects.Article_Number.getText();
+		String Art_uom = objStockTakeObjects.Article_UOM.getText();
+		String Art_Des = objStockTakeObjects.Article_Description.getText();
+		String Art_om = objStockTakeObjects.Article_OM.getText();
+		String Art_count = objStockTakeObjects.BaseCount.getText();
+		String Art_Recount1 = objStockTakeObjects.Recount1.getText();
+		String Art_Recount2 = objStockTakeObjects.Recount2.getText();
+		String Art_Recount3 = objStockTakeObjects.Recount3.getText();
+		String Art_Recount4 = objStockTakeObjects.Recount4.getText();
+		System.out.println("Recount1 is " + Art_Recount1);
+		System.out.println("Recount2 is " + Art_Recount2);
+		System.out.println("Recount3 is " + Art_Recount3);
+		System.out.println("Recount4 is " + Art_Recount4);
+		String Art_count1 = null;
+		String Art_count2 = null;
+		String Art_count3 = null;
+	
+		List appl = new ArrayList();
+		List<List<Object>> applList = new ArrayList<List<Object>>();
+		appl.add(Art_Num);
+		appl.add(Art_uom);
+		appl.add(Art_Des);
+		appl.add(Art_om);
+		if (Art_count.contains("KG") && Art_count.contains("EA")) {
+
+			String part[] = Art_count.split(" EA & ");
+			String EAvalue1 = part[0];
+			String val = part[1];
+			String[] part2 = val.split(" KG");
+			Art_count1 = part2[0];
+			appl.add(EAvalue1);
+			appl.add(Art_count1);
+			appl.add(Art_Recount1);
+			
+			appl.add(Art_Recount2);
+			
+			appl.add(Art_Recount3);
+			
+			appl.add(Art_Recount4);
+
+		} else if (Art_count.contains("KG")) {
+			Double Counts = Double.parseDouble(Art_count.replaceAll(
+					"[^0-9\\.]+", ""));
+			System.out.println(Counts);
+			Art_count2 = Double.toString(Counts);
+			System.out.println("Base Count  is " + Art_count2);
+			appl.add(null);
+			appl.add(Art_count2);
+			appl.add(null);
+			if(Art_Recount1.equalsIgnoreCase(""))
+			{
+				appl.add(null);
+			}
+			else{
+				appl.add(Double.parseDouble(Art_Recount1.split(" ")[0]));
+			}
+			appl.add(null);
+			if(Art_Recount2.equalsIgnoreCase(""))
+			{
+				appl.add(null);
+			}
+			else{
+				appl.add(Double.parseDouble(Art_Recount2.split(" ")[0]));
+			}	
+			appl.add(null);
+			if(Art_Recount3.equalsIgnoreCase(""))
+			{
+				appl.add(null);	
+			}
+			else{
+				appl.add(Double.parseDouble(Art_Recount2.split(" ")[0]));
+			}
+			appl.add(null);
+			if(Art_Recount4.equalsIgnoreCase(""))
+			{
+				appl.add(null);
+					}
+			else{
+				appl.add(Double.parseDouble(Art_Recount4.split(" ")[0]));
+			}
+		
+			} else if (Art_count.contains("EA")) {
+			Double Counts = Double.parseDouble(Art_count.replaceAll(
+					"[^0-9\\.]+", ""));
+			System.out.println(Counts);
+			Art_count1 = Double.toString(Counts);
+			System.out.println("Base Count  is " + Art_count1);
+			appl.add(Art_count1);
+			appl.add(null);
+			
+			if(Art_Recount1.equalsIgnoreCase(""))
+			{
+				appl.add(null);
+			}
+			else{
+				appl.add(Double.parseDouble(Art_Recount1.split(" ")[0]));
+			}
+			appl.add(null);
+			if(Art_Recount2.equalsIgnoreCase(""))
+			{
+				appl.add(null);
+			}
+			else{
+				appl.add(Double.parseDouble(Art_Recount2.split(" ")[0]));
+			}	
+			appl.add(null);
+			if(Art_Recount3.equalsIgnoreCase(""))
+			{
+				appl.add(null);	
+			}
+			else{
+				appl.add(Double.parseDouble(Art_Recount2.split(" ")[0]));
+			}
+			appl.add(null);
+			if(Art_Recount4.equalsIgnoreCase(""))
+			{
+				appl.add(null);
+					}
+			else{
+				appl.add(Double.parseDouble(Art_Recount4.split(" ")[0]));
+			}
+			appl.add(null);
+			}
+
+
+		else if (Art_count.contains("L")) {
+			Double Counts = Double.parseDouble(Art_count.replaceAll(
+					"[^0-9\\.]+", ""));
+			System.out.println(Counts);
+			Art_count3 = Double.toString(Counts);
+			System.out.println("Base Count  is " + Art_count3);
+			appl.add(null);
+			appl.add(Art_count3);
+		}
+			
+		System.out.println(appl);
+		System.out.println(applList);
+		applList.add(appl);
+
+		String context1 = data.getText("Check").replace("value", a.toString())
+				.replace("Art", Art_Num);
+		results = sql.executeQuery(getContext(), context1);
+		System.out.println(results);
+		
+		
+		System.out.println(results.get(0).size());
+		System.out.println(applList.get(0).size());
+
+		for (int i = 0; i < results.size(); i++) {
+			for (int j = 0; j < results.get(i).size(); j++) {
+				System.out.println(i + "" + j);
+				if (results.get(i).get(j) != null
+						&& applList.get(i).get(j) != null) {
+					if(j>2)
+					{removeLastZero(results, j);}
+					if (results.get(i).get(j).equals(applList.get(i).get(j))) {
+						System.out.println("Matched");
+					} else {
+						System.out.println(results.get(i).get(j));
+						System.out.println(applList.get(i).get(j));
+						System.out.println("Not Matched");
+					}
+				}
+				else if(results.get(i).get(j) == null
+						&& applList.get(i).get(j) == null)
+				{
+					System.out.println("Both are null values : Matched");
+				}
+				else {
+					System.out.println("One of the value is null");
+				}
+
+			}
+		}
+
+		ElementContainsTemp(stockTakeArtScenarios, stockTakeArttestname, applList, results);
+		stockTakeArtScenarios.put(stockTakeArttestname, "Article detail is matched with DB and the article number is "
+						+ Art_Num + " and the UOM is " + Art_uom
+						+ " and the article description is " + Art_Des
+						+ " and the OM is " + Art_om
+						+ " and the Count value is " + Art_count + " ;;;Pass");
+
+		/*Report_AddStep("testcase",
+				"Article detail is matched with DB and the article number is "
+						+ Art_Num + " and the UOM is " + Art_uom
+						+ " and the article description is " + Art_Des
+						+ " and the OM is " + Art_om
+						+ " and the Count value is " + Art_count + "   ", "",
+				"", "Pass");*/
+		
+		/*click(objStockTakeObjects.VarianceReport);
+		objStockTakeObjects.VarianceMessage.click();
+		waitForJSandJQueryToLoad(driver);
+		Report_AddStep("testcase", "There were no Variance available currently", "",
+				"", "Pass");*/
+		}
+else
+{
+	stockTakeArtScenarios.put(stockTakeArttestname, "OPEN Status Stocktake was not available in Duenow Tab  ;;;Pass");
+	 //Report_AddStep("testcase","OPEN Status Stocktake was not available in Duenow Tab " , "", "", "Pass");
+}
+		
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+
+	}
+	
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating records for a page in  Base Count Report")
+	public void BasecountPageValidation() throws SQLException, IOException,AWTException, NoSuchFieldException, SecurityException,IllegalArgumentException, IllegalAccessException {
+		if(stockTakeArtpreCount2==-1){
+		STakecount = STakecount+6;}
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitForJSandJQueryToLoad(driver);
+        click(objStockTakeObjects.DueNow);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.DueNowAllDepts);
+		if(objStockTakeObjects.OpenSTATUS.size()!=0)
+		{
+        click(objStockTakeObjects.open);
+		waitForJSandJQueryToLoad(driver);
+		objStockTakePage.scrolldown(driver);
+		
+        String STName = objStockTakeObjects.StocktakeName.getText();
+		System.out.println("Stocktake name is " + STName);
+		stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake Name is " + STName + ";;;Pass");
+		//Report_AddStep("testcase", "Stocktake Name is " + STName + " ", "", "", "");
+		String ST_ID = data.getText("STO").replace("STNAME", STName);
+		result = sql.executeQuery(getContext(), ST_ID);
+		BigDecimal a = (BigDecimal) result.get(0).get(0);
+		System.out.println("Stocktake id is " + a);
+		stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake ID is " + a + ";;;Pass");
+		//Report_AddStep("testcase", "Stocktake ID is " + a + " ", "", "", "");
+		
+		String Art_Num = objStockTakeObjects.Article_Number.getText();
+		String Art_uom = objStockTakeObjects.Article_UOM.getText();
+		String Art_Des = objStockTakeObjects.Article_Description.getText();
+		String Art_om = objStockTakeObjects.Article_OM.getText();
+		String Art_count = objStockTakeObjects.BaseCount.getText();
+		String Source_Info=objStockTakeObjects.Source.getText();
+		String Created_User=objStockTakeObjects.CreatedUser.getText();
+		String Date_Created=objStockTakeObjects.CreatedDate.getText();
+	    String Freq=objStockTakeObjects.FrequencyName.getText();
+		String Ref=objStockTakeObjects.Refresh.getText();
+		String Stat=objStockTakeObjects.Status_ST.getText();
+		String SUB=objStockTakeObjects.SubCounted.getText();
+		
+		if(objStockTakeObjects.FewSub.isDisplayed())
+		{
+		String Te =objStockTakeObjects.FewSub.getText();
+		if(objStockTakeObjects.MORE.isDisplayed())
+		{
+			String Te1=Te+objStockTakeObjects.MORE.getAttribute("title");
+			
+		}
+				
+		}
+		
+		
+		System.out.println("Counted Sub category is " +SUB);
+		String[] items = SUB.split(",");
+		List<String> itemList = new ArrayList<String>(Arrays.asList(items));
+	      
+	      System.out.println(itemList);
+	      
+	      String Ais=objStockTakeObjects.PlanoCounted.getText();
+			System.out.println("Counted Aisles is " +Ais);
+			String[] Aisles = Ais.split(",");
+			List<Object> PlanoList = new ArrayList<Object>(Arrays.asList(Aisles));
+		    System.out.println(PlanoList);
+		    
+		    String Other=objStockTakeObjects.OtherLocCounted.getText();
+			System.out.println("Counted Other Location is " +Other);
+			String[] OtherLoc = Other.split(",");
+			List<Object> OtherLocList = new ArrayList<Object>(Arrays.asList(OtherLoc));
+		    System.out.println(OtherLocList);
+		    
+		    String USER=objStockTakeObjects.UsersCounted.getText();
+				System.out.println("Counted Other Location is " +USER);
+				String[] USER_COUNTED = USER.split(",");
+				List<Object> UsersList = new ArrayList<Object>(Arrays.asList(USER_COUNTED));
+			    System.out.println(UsersList);
+			    
+			    stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake Status is " + Stat + ";;;Pass");
+
+		//Report_AddStep("testcase", "Stocktake Status is " + Stat + " ", "", "", "");
+			    stockTakeArtScenarios.put(stockTakeArttestname, "Refresh Button is available " + Ref + ";;;Pass");
+		//Report_AddStep("testcase", "Refresh Button is available " + Ref + " ", "", "", "Pass");
+		
+        List<List<Object>> ApplList = getValuesFromTableST(objStockTakeObjects.ArticleRecords);
+        String context1 = data.getText("Check").replace("value", a.toString()).replace("Art", Art_Num);
+		results = sql.executeQuery(getContext(), context1);
+		System.out.println(results.get(0).size());
+		System.out.println(ApplList.get(0).size());
+		
+		String context4 = data.getText("SUBCAT").replace("value", a.toString());
+        result_temp = sql.executeQuery(getContext(), context4);
+        for (int m=0;m<result_temp.size();m++)
+        {
+        	if(result_temp.get(m).contains(itemList.get(m)))
+        		System.out.println("Sub Categories in DB is" +itemList);
+        	
+        }
+        stockTakeArtScenarios.put(stockTakeArttestname, "Sub-Categories are matched with DB " + itemList + ";;;Pass");
+        //Report_AddStep("testcase", "Sub-Categories are matched with DB " + itemList + " ", "", "", "Pass");
+        
+        String context5 = data.getText("Aisles").replace("value", a.toString());
+        result_temp = sql.executeQuery(getContext(), context5);
+        for (int m=0; m < result_temp.size(); m++)
+        {
+        	if(result_temp.get(m).contains(PlanoList.get(m)))
+        		System.out.println("Aisles in DB is" +PlanoList);
+        	
+        }
+        stockTakeArtScenarios.put(stockTakeArttestname, "Aisle Details are matched with DB " + PlanoList + ";;;Pass");
+       // Report_AddStep("testcase", "Aisle Details are matched with DB " + PlanoList + " ", "", "", "Pass");
+        
+        String context6 = data.getText("OtherLoc").replace("value", a.toString());
+        result_temp = sql.executeQuery(getContext(), context6);
+        for (int m=0; m < result_temp.size(); m++)
+        {
+        	if(result_temp.get(m).contains(OtherLocList.get(m)))
+        		System.out.println("Other Location in DB is" +OtherLocList);
+        	
+        }
+        stockTakeArtScenarios.put(stockTakeArttestname, "Other Location Details are matched with DB " + OtherLocList + ";;;Pass");
+        //Report_AddStep("testcase", "Other Location Details are matched with DB " + OtherLocList + " ", "", "", "Pass");
+        
+        String context7 = data.getText("UserName").replace("value", a.toString());
+        result_temp = sql.executeQuery(getContext(), context6);
+        for (int m=0; m < result_temp.size(); m++)
+        {
+        	if(result_temp.get(m).contains(UsersList.get(m)))
+        		System.out.println("Records of User counted is/are" +UsersList);
+        	
+        }
+        stockTakeArtScenarios.put(stockTakeArttestname, "Records of User counted is/are matched with DB " + UsersList + ";;;Pass");
+       // Report_AddStep("testcase", "Records of User counted is/are matched with DB " + UsersList + " ", "", "", "Pass");
+
+		for (int i = 0; i < results.size(); i++) {
+			for (int j = 0; j < results.get(i).size(); j++) {
+				System.out.println(i + "" + j);
+				if (results.get(i).get(j) != null
+						&& ApplList.get(i).get(j) != null) {
+					if(j>2)
+					{removeLastZero(results, j);}
+					if (results.get(i).get(j).equals(ApplList.get(i).get(j))) {
+						System.out.println("Matched");
+					} else {
+						System.out.println(results.get(i).get(j));
+						System.out.println(ApplList.get(i).get(j));
+						System.out.println("Not Matched");
+					}
+				}
+				else if(results.get(i).get(j) == null
+						&& ApplList.get(i).get(j) == null)
+				{
+					System.out.println("Both are null values : Matched");
+				}
+				else {
+					System.out.println("One of the value is null");
+				}
+
+			}
+		}
+        System.out.println("Comparing Started");
+        ElementContainsTemp(stockTakeArtScenarios, stockTakeArttestname, ApplList, results);
+        
+    
+        String context2 = data.getText("Details").replace("value", a.toString());
+		result = sql.executeQuery(getContext(), context2);
+		String SOURCE =(String) result.get(0).get(0);	
+		System.out.println("Source is " +SOURCE);
+        String User_Name =(String) result.get(0).get(1);
+        System.out.println("User Name is " +User_Name);
+        java.sql.Date CREATED_DATE =(java.sql.Date) result.get(0).get(2);
+        System.out.println("Date Created is " +CREATED_DATE);
+        
+        SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
+		String formattedDate1 = sd.format(CREATED_DATE);
+		System.out.println("Formatted Date is " +formattedDate1);
+       
+        if (Source_Info.equalsIgnoreCase(SOURCE) || Created_User.equalsIgnoreCase(User_Name) || Date_Created.equals(formattedDate1))  {
+        	stockTakeArtScenarios.put(stockTakeArttestname, "Details are matched with DB and the Source is " + SOURCE + " and Created User is "  +User_Name+ " and Date Created is " + Date_Created + ";;;Pass");
+        	//Report_AddStep("testcase", "Details are matched with DB and the Source is " + SOURCE + " and Created User is "  +User_Name+ " and Date Created is " + Date_Created + " ", "", "", "Pass");
+		} else {
+			stockTakeArtScenarios.put(stockTakeArttestname, "Details are not matched with DB and the Source is " + SOURCE + "and Created User is "  +User_Name+ " and Date Created is " + Date_Created + ";;;Pass");
+			//Report_AddStep("testcase", "Details are not matched with DB and the Source is " + SOURCE + "and Created User is "  +User_Name+ " and Date Created is " + Date_Created + " ", "", "", "Fail");
+		}
+        
+        String context3 = data.getText("FREQ").replace("value", a.toString());
+		results1 = sql.executeQuery(getContext(), context3);
+		String FREQUENCY =(String) results1.get(0).get(0);	
+		System.out.println("Frequency is " +FREQUENCY);
+		
+		 if (Freq.equalsIgnoreCase(FREQUENCY))   {
+			 stockTakeArtScenarios.put(stockTakeArttestname, "Details are matched with DB and the Frequency name is ;;;Pass");
+	        	//Report_AddStep("testcase", "Details are matched with DB and the Frequency name is " + FREQUENCY +  " ", "", "", "Pass");
+			} else {
+				stockTakeArtScenarios.put(stockTakeArttestname, "Details are not matched with DB and the Frequency name is " + FREQUENCY +  ";;;Pass");
+				//Report_AddStep("testcase", "Details are not matched with DB and the Frequency name is " + FREQUENCY +  " ", "", "", "Fail");
+			}
+	        
+		}
+		else
+		{
+			stockTakeArtScenarios.put(stockTakeArttestname, "OPEN Status Stocktake was not available in Duenow Tab ;;;Pass");
+			 //Report_AddStep("testcase","OPEN Status Stocktake was not available in Duenow Tab " , "", "", "Pass");
+		}
+
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+        }
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating records for a page in  Base Count Report")
+	public void BasecountFiltersWithRecords() throws SQLException, IOException,AWTException, NoSuchFieldException, SecurityException,IllegalArgumentException, IllegalAccessException {
+		if(stockTakeArtpreCount2==-1){
+		STakecount = STakecount+6;}
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.DueNow);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.DueNowAllDepts);
+		if(objStockTakeObjects.OpenSTATUS.size()!=0)
+		{
+        click(objStockTakeObjects.open);
+		//if(objStockTakeObjects.open.getText().equals("OPEN"))
+		waitForJSandJQueryToLoad(driver);
+		objStockTakePage.scrolldown(driver);
+		
+		 String STName = objStockTakeObjects.StocktakeName.getText();
+		    System.out.println("Stocktake name is " + STName);
+		    stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake Name is " + STName + " ;;;Pass");
+		    //Report_AddStep("testcase", "Stocktake Name is " + STName + " ", "", "", "");
+			String ST_ID = data.getText("STO").replace("STNAME",STName);
+			result = sql.executeQuery(getContext(), ST_ID);
+			
+			BigDecimal a = (BigDecimal) result.get(0).get(0);
+			System.out.println("Stocktake id is " + a);
+			stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake ID is " + a + " ;;;Pass");
+			//Report_AddStep("testcase", "Stocktake ID is " + a + " ", "", "", "");
+		
+		 String context = data.getText("FF").replace("value", a.toString());
+			results = sql.executeQuery(getContext(), context);
+			String Flag = (String) results.get(0).get(0);
+			System.out.println("FreshFood Flag is " + Flag);
+			stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake contains FreshFood Department " + Flag + ";;;Pass");
+			//Report_AddStep("testcase", "Stocktake contains FreshFood Department " + Flag + " ", "", "", "Pass");
+			if (Flag.equals("N"))
+			{
+				stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake contains Non Fresh Food Department/Departments " + a + ";;;Pass");
+				//Report_AddStep("testcase", "Stocktake contains Non Fresh Food Department/Departments " + a + " ", "", "", "Pass");
+			}
+			else if (Flag.equals("Y"))
+			{
+				stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake contains Fresh Food Department/Departments " + a + ";;;Pass");
+				//Report_AddStep("testcase", "Stocktake contains Fresh Food Department/Departments " + a + " ", "", "", "Pass");
+			}
+				
+			String Ais=objStockTakeObjects.PlanoCounted.getText();
+			System.out.println("Counted Aisles is " +Ais);
+	        String Other=objStockTakeObjects.OtherLocCounted.getText();
+			System.out.println("Counted Other Location is " +Other);
+			
+			 click(objStockTakeObjects.Filter);
+		        waitForJSandJQueryToLoad(driver);
+		     click(objStockTakeObjects.ApplyFilters);
+				waitFor(1.5);
+				
+				String AllRecords = data.getText("ALLRECORDS").replace("value", a.toString());
+				results = sql.executeQuery(getContext(), AllRecords);
+				
+				Integer AllCounts = (Integer) results.get(0).get(0);
+				System.out.println("Counts from DB for All records is " + AllCounts);
+				
+				waitFor(7);
+			
+		//objStockTakePage.Filters(objStockTakeObjects,driver);
+		
+		String contextA = data.getText("OTHERLOCCOUNT").replace("value", a.toString()).replace("OtherLocations", Other.toString());
+		results = sql.executeQuery(getContext(), contextA);
+		
+		Integer Counts = (Integer) results.get(0).get(0);
+		System.out.println("Counts from DB for Other Location alone is " + Counts);
+		waitFor(7);
+		
+		 /*String context1 = data.getText("AISLES").replace("value", a.toString());
+			results1 = sql.executeQuery(getContext(), context1);
+			System.out.println("Aisle values are " + results1);
+			
+			if (results1!=null)
+		
+			      {
+			
+			for(List<Object> innerList:results1)
+			{
+				for(Object innerListElement:innerList)
+				{
+				String tempAisSelect=objStockTakeObjects.AisSelection.replace("dynamic",innerListElement.toString());
+				driver.findElement(By.xpath(tempAisSelect)).click();
+
+				}
+				
+			}
+
+			click(objStockTakeObjects.AislesDone);
+			waitFor(1.5);
+			click(objStockTakeObjects.ApplyFilters);
+		     waitFor(1.5);
+			
+			}
+
+			waitFor(5);
+       
+			 String context2 = data.getText("OTHERLOC").replace("value", a.toString());
+				results2 = sql.executeQuery(getContext(), context2);
+				System.out.println("Other Location names are " + results2);
+
+				if (results2!=null)
+				{
+					click(objStockTakeObjects.Otherclick);
+					waitFor(1.5);
+					click(objStockTakeObjects.AllOtherclick);
+					waitFor(1.5);
+				for(List<Object> innerList:results2)
+				{
+					for(Object innerListElement:innerList)
+					{
+					String tempOtherSelect=objStockTakeObjects.OthersSelection.replace("dynamic",innerListElement.toString());
+					driver.findElement(By.xpath(tempOtherSelect)).click();
+				}
+					}
+				
+				
+				click(objStockTakeObjects.OthersDone);
+				waitFor(1.5);
+				click(objStockTakeObjects.ApplyFilters);
+			    waitFor(1.5);
+				}
+			    waitFor(4);
+			    
+			    objStockTakePage.Pagination1 (objStockTakeObjects);
+				 System.out.println("Pagination Started");
+					 Report_AddStep("testcase",
+				 "Able to see the records in all available pages", "", "", "Pass");
+		*/
+		
+		}
+		else
+		{
+			stockTakeArtScenarios.put(stockTakeArttestname, "OPEN Status Stocktake was not available in Duenow Tab ;;;Pass");
+			 //Report_AddStep("testcase","OPEN Status Stocktake was not available in Duenow Tab " , "", "", "Pass");
+		}
+
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+	}
+	
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating records for a page in  Base Count Report")
+	public void BasecountFilters() throws SQLException, IOException,AWTException, NoSuchFieldException, SecurityException,IllegalArgumentException, IllegalAccessException {
+		if(stockTakeArtpreCount2==-1){
+		STakecount = STakecount+4;}
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.DueNow);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.DueNowAllDepts);
+		if(objStockTakeObjects.open1.size()!=0)
+		{
+		click(objStockTakeObjects.open);
+		waitForJSandJQueryToLoad(driver);
+		objStockTakePage.scrolldown(driver);
+		
+		 String STName = objStockTakeObjects.StocktakeName.getText();
+		    System.out.println("Stocktake name is " + STName);
+		    stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake Name is " + STName + ";;;Pass");
+		    //Report_AddStep("testcase", "Stocktake Name is " + STName + " ", "", "", "");
+			String ST_ID = data.getText("STO").replace("STNAME",STName);
+			result = sql.executeQuery(getContext(), ST_ID);
+			
+			BigDecimal a = (BigDecimal) result.get(0).get(0);
+			System.out.println("Stocktake id is " + a);
+			stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake ID is " + a + " ;;;Pass");
+			//Report_AddStep("testcase", "Stocktake ID is " + a + " ", "", "", "");
+		
+		 String context = data.getText("FF").replace("value", a.toString());
+			results = sql.executeQuery(getContext(), context);
+			String Flag = (String) results.get(0).get(0);
+			System.out.println("FreshFood Flag is " + Flag);
+			stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake contains FreshFood Department " + Flag + ";;;Pass");
+			//Report_AddStep("testcase", "Stocktake contains FreshFood Department " + Flag + " ", "", "", "Pass");
+			if (Flag.equals("N"))
+			{
+				stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake contains Non Fresh Food Department/Departments " + a + ";;;Pass");
+				//Report_AddStep("testcase", "Stocktake contains Non Fresh Food Department/Departments " + a + " ", "", "", "Pass");
+			}
+			else if (Flag.equals("Y"))
+			{
+				stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake contains Fresh Food Department/Departments " + a + ";;;Pass");
+				//Report_AddStep("testcase", "Stocktake contains Fresh Food Department/Departments " + a + " ", "", "", "Pass");
+			}
+				
+			
+		objStockTakePage.Filters(objStockTakeObjects,driver);
+
+		 String context1 = data.getText("AISLES").replace("value", a.toString());
+			results1 = sql.executeQuery(getContext(), context1);
+			System.out.println("Aisle values are " + results1);
+			
+			if (results1!=null)
+		
+			      {
+			
+			for(List<Object> innerList:results1)
+			{
+				for(Object innerListElement:innerList)
+				{
+				String tempAisSelect=objStockTakeObjects.AisSelection.replace("dynamic",innerListElement.toString());
+				getDriver1().findElement(By.xpath(tempAisSelect)).click();
+
+				}
+				
+			}
+
+			click(objStockTakeObjects.AislesDone);
+			waitFor(1.5);
+			click(objStockTakeObjects.ApplyFilters);
+		     waitFor(1.5);
+			
+			}
+
+			waitFor(5);
+       
+			 String context2 = data.getText("OTHERLOC").replace("value", a.toString());
+				results2 = sql.executeQuery(getContext(), context2);
+				System.out.println("Other Location names are " + results2);
+
+				if (results2!=null)
+				{
+					click(objStockTakeObjects.Otherclick);
+					waitFor(1.5);
+					click(objStockTakeObjects.AllOtherclick);
+					waitFor(1.5);
+				for(List<Object> innerList:results2)
+				{
+					for(Object innerListElement:innerList)
+					{
+					String tempOtherSelect=objStockTakeObjects.OthersSelection.replace("dynamic",innerListElement.toString());
+					getDriver1().findElement(By.xpath(tempOtherSelect)).click();
+				}
+					}
+				
+				
+				click(objStockTakeObjects.OthersDone);
+				waitFor(1.5);
+				click(objStockTakeObjects.ApplyFilters);
+			    waitFor(1.5);
+				}
+			    waitFor(4);
+			    
+			    //objStockTakePage.Pagination1 (objStockTakeObjects);
+				 System.out.println("Pagination Started");
+				 stockTakeArtScenarios.put(stockTakeArttestname, "Able to see the records in all available pages;;;Pass");
+					 //Report_AddStep("testcase","Able to see the records in all available pages", "", "", "Pass");
+		}
+		else
+		{
+			stockTakeArtScenarios.put(stockTakeArttestname, "No Open Status Stocktake available;;;Pass");
+			//Report_AddStep("testcase","No Open Status Stocktake available" , "", "", "Pass");
+		}
+		
+
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Deleting Not Started Stocktakes in Duenow Tab")
+	public void DeleteNotStartedStocktakes() throws SQLException, IOException,AWTException, NoSuchFieldException, SecurityException,IllegalArgumentException, IllegalAccessException {
+		if(stockTakeArtpreCount2==-1){
+		STakecount = STakecount+4;}
+TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitForJSandJQueryToLoad(driver);
+        click(objStockTakeObjects.DueNow);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.DueNowAllDepts);
+		waitFor(1.5);
+		//click(objStockTakeObjects.Sort);
+		//waitFor(1.5);
+		while(true)
+		{
+		if(objStockTakeObjects.NotStartedSTATUS.size()!=0)
+			{
+			/*click(objStockTakeObjects.NotStartedST);
+			 waitFor(1.5);
+			
+			
+			String STName = objStockTakeObjects.StocktakeName.getText();
+		    System.out.println("Stocktake name is " + STName);
+		    stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake Name is " + STName + ";;;Pass");
+		    //Report_AddStep("testcase", "Stocktake Name is " + STName + " ", "", "", "");
+			String ST_ID = data.getText("STO").replace("STNAME",STName);
+			result = sql.executeQuery(getContext(), ST_ID);
+			
+			click(objStockTakeObjects.Back);
+			waitFor(1.5);*/
+		 click(objStockTakeObjects.NotStartedSTEdit);
+		 waitFor(1.5);
+		 stockTakeArtScenarios.put(stockTakeArttestname, "Selecting a NOT STARTED Status Stocktake to Delete ;;;Pass");
+		 //Report_AddStep("testcase","Selecting a NOT STARTED Status Stocktake to Delete " , "", "", "Pass");
+		 waitFor(1.5);
+		 
+		 /*
+			BigDecimal a = (BigDecimal) result.get(0).get(0);
+			System.out.println("Stocktake id is " + a);
+			stockTakeArtScenarios.put(stockTakeArttestname, "Stocktake ID is " + a + " ;;;Pass");
+			//Report_AddStep("testcase", "Stocktake ID is " + a + " ", "", "", "");
+*/			
+		 click(objStockTakeObjects.Del);
+		 stockTakeArtScenarios.put(stockTakeArttestname, "Deleting the Stocktake by clicking Delete button ;;;Pass"); 
+		 //Report_AddStep("testcase","Deleting the Stocktake by clicking Delete button " , "", "", "Pass");
+		 waitFor(1.5);
+		 click(objStockTakeObjects.DelSave);
+		 waitFor(1.5);
+		 click(objStockTakeObjects.Yes);
+		 waitFor(1.5);
+		 stockTakeArtScenarios.put(stockTakeArttestname, "Deleted a NOT STARTED Status Stocktake ;;;Pass");
+		// Report_AddStep("testcase","Deleted a NOT STARTED Status Stocktake " , "", "", "Pass");
+		 objStockTakePage.message(objStockTakeObjects,driver);
+		 break;
+		}
+		else
+		{
+			try{
+			if(getDriver1().findElement(By.xpath("//*[@id='Display_Stocktake_foot_page']/ul/li/a[text()='Next']")).isDisplayed())
+			{
+				getDriver1().findElement(By.xpath("//*[@id='Display_Stocktake_foot_page']/ul/li/a[text()='Next']")).click();
+			}
+		
+			}
+			catch (Exception e )
+			{
+				System.out.println("NO 'Not Started' Status Stocktakes available");
+			stockTakeArtScenarios.put(stockTakeArttestname, "NOT STARTED Status Stocktake was not available in Duenow Tab ;;;Pass");
+			break;
+			 //Report_AddStep("testcase","OPEN Status Stocktake was not available in Duenow Tab " , "", "", "Pass");
+			}
+		}
+		}
+		
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+        }
+		
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Deleting Open Stocktakes in Duenow Tab")
+	public void DeleteOpenStocktakes() throws SQLException, IOException,AWTException, NoSuchFieldException, SecurityException,IllegalArgumentException, IllegalAccessException {
+		if(stockTakeArtpreCount2==-1){
+		STakecount = STakecount+4;}
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitForJSandJQueryToLoad(driver);
+        click(objStockTakeObjects.DueNow);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.DueNowAllDepts);
+		 waitFor(1.5);
+		while(true)
+		{
+		if(objStockTakeObjects.OpenSTATUS.size()!=0)
+		{
+			click(objStockTakeObjects.OpenSTEdit);
+			stockTakeArtScenarios.put(stockTakeArttestname, "Selecting a OPEN Status Stocktake ;;;Pass");
+		//Report_AddStep("testcase","Selecting a OPEN Status Stocktake " , "", "", "Pass");
+		 waitFor(1.5);
+		click(objStockTakeObjects.Del);
+		 waitFor(1.5);
+		click(objStockTakeObjects.DelSave);
+		 waitFor(1.5);
+		click(objStockTakeObjects.Yes);
+		 waitFor(1.5);
+	
+		stockTakeArtScenarios.put(stockTakeArttestname, "Deleted a OPEN Status Stocktake ;;;Pass");
+		// Report_AddStep("testcase","Deleted a NOT STARTED Status Stocktake " , "", "", "Pass");
+		 objStockTakePage.message(objStockTakeObjects,driver);
+		 break;
+		}
+		else
+		{
+			try{
+			if(getDriver1().findElement(By.xpath("//*[@id='Display_Stocktake_foot_page']/ul/li/a[text()='Next']")).isDisplayed())
+			{
+				getDriver1().findElement(By.xpath("//*[@id='Display_Stocktake_foot_page']/ul/li/a[text()='Next']")).click();
+			}
+		
+			}
+			catch (Exception e )
+			{
+				System.out.println("No Open Stocktakes available");
+			stockTakeArtScenarios.put(stockTakeArttestname, "OPEN Status Stocktake was not available in Duenow Tab ;;;Pass");
+			break;
+			 //Report_AddStep("testcase","OPEN Status Stocktake was not available in Duenow Tab " , "", "", "Pass");
+			}
+		}
+		}
+		
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+        }
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Deleting Not Started Stocktakes in Duenow Tab")
+	public void OverrideNotStartedStocktakes() throws SQLException, IOException,AWTException, NoSuchFieldException, SecurityException,IllegalArgumentException, IllegalAccessException {
+		if(stockTakeArtpreCount2==-1){
+		STakecount = STakecount+5;}
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitForJSandJQueryToLoad(driver);
+        click(objStockTakeObjects.DueNow);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.DueNowAllDepts);
+		while(true)
+		{
+		if(objStockTakeObjects.NotStartedSTATUS.size()!=0)
+		{
+		 click(objStockTakeObjects.NotStartedSTEdit);
+		 waitFor(1.5);
+		 stockTakeArtScenarios.put(stockTakeArttestname, "Selecting a NOT STARTED Status Stocktake to Override ;;;Pass");
+		 //Report_AddStep("testcase","Selecting a NOT STARTED Status Stocktake to Override " , "", "", "Pass");
+		 click(objStockTakeObjects.Over);
+		 stockTakeArtScenarios.put(stockTakeArttestname, "Overriding the Stocktake by clicking Override button ;;;Pass");
+		 //Report_AddStep("testcase","Overriding the Stocktake by clicking Override button " , "", "", "Pass");
+		 waitFor(1.5);
+		 //click(objStockTakeObjects.DelSave);
+		 //waitFor(1.5);
+		 click(objStockTakeObjects.Yes);
+		 waitFor(1.5);
+		 objStockTakePage.ReasonSelection(objStockTakeObjects,driver);
+	     waitFor(0.5);
+	     click(objStockTakeObjects.DelSave);
+         waitFor(1.5);
+         stockTakeArtScenarios.put(stockTakeArttestname, "Overrided a NOT STARTED Status Stocktake ;;;Pass");
+		 //Report_AddStep("testcase","Overrided a NOT STARTED Status Stocktake " , "", "", "Pass");
+         break;
+		}
+		else
+		{
+			try{
+			if(getDriver1().findElement(By.xpath("//*[@id='Display_Stocktake_foot_page']/ul/li/a[text()='Next']")).isDisplayed())
+			{
+				getDriver1().findElement(By.xpath("//*[@id='Display_Stocktake_foot_page']/ul/li/a[text()='Next']")).click();
+			}
+		
+			}
+			catch (Exception e )
+			{
+				System.out.println("No Not Started Stocktakes available");
+			stockTakeArtScenarios.put(stockTakeArttestname, "NOT STARTED Status Stocktake was not available in Duenow Tab ;;;Pass");
+			break;
+			 //Report_AddStep("testcase","OPEN Status Stocktake was not available in Duenow Tab " , "", "", "Pass");
+			}
+		}
+		}
+		
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+        }
+		
+		
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Deleting Not Started Stocktakes in Duenow Tab")
+	public void OverrideOpenStocktakes() throws SQLException, IOException,AWTException, NoSuchFieldException, SecurityException,IllegalArgumentException, IllegalAccessException {
+		if(stockTakeArtpreCount2==-1){
+		STakecount = STakecount+6;}
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitForJSandJQueryToLoad(driver);
+        click(objStockTakeObjects.OverDue);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.DueNowAllDepts);
+		while(true)
+		{
+		if(objStockTakeObjects.OpenSTATUS.size()!=0)
+		{
+		 click(objStockTakeObjects.NotStartedSTEdit);
+		 waitFor(1.5);
+		 stockTakeArtScenarios.put(stockTakeArttestname, "Selecting a NOT STARTED Status Stocktake to Override ;;;Pass");
+
+		 //Report_AddStep("testcase","Selecting a NOT STARTED Status Stocktake to Override " , "", "", "Pass");
+		 click(objStockTakeObjects.Over);
+		 stockTakeArtScenarios.put(stockTakeArttestname, "Overriding the Stocktake by clicking Override button ;;;Pass");
+		 //Report_AddStep("testcase","Overriding the Stocktake by clicking Override button " , "", "", "Pass");
+		 waitFor(1.5);
+		 //click(objStockTakeObjects.DelSave);
+		 //waitFor(1.5);
+		 click(objStockTakeObjects.Yes);
+		 waitFor(1.5);
+		 objStockTakePage.ReasonSelection(objStockTakeObjects,driver);
+	     waitFor(0.5);
+	     click(objStockTakeObjects.DelSave);
+         waitFor(1.5);
+         stockTakeArtScenarios.put(stockTakeArttestname, "Overrided a Open Status Stocktake ;;;Pass");
+		// Report_AddStep("testcase","Overrided a Open Status Stocktake " , "", "", "Pass");
+		}
+		else
+		{
+			try{
+			if(getDriver1().findElement(By.xpath("//*[@id='Display_Stocktake_foot_page']/ul/li/a[text()='Next']")).isDisplayed())
+			{
+				getDriver1().findElement(By.xpath("//*[@id='Display_Stocktake_foot_page']/ul/li/a[text()='Next']")).click();
+			}
+		
+			}
+			catch (Exception e )
+			{
+				System.out.println("No Open Stocktakes available");
+			stockTakeArtScenarios.put(stockTakeArttestname, "OPEN Status Stocktake was not available in Duenow Tab ;;;Pass");
+			break;
+			 //Report_AddStep("testcase","OPEN Status Stocktake was not available in Duenow Tab " , "", "", "Pass");
+			}
+		}
+		}
+		
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+        }
+
+	
+	
+	/*@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating records for a page in  Base Count Report")
+	public void BasecountValidationOtherTabs() throws SQLException, IOException,AWTException, NoSuchFieldException, SecurityException,IllegalArgumentException, IllegalAccessException {
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitForJSandJQueryToLoad(driver);
+        click(objStockTakeObjects.DueNow);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.DueNowAllDepts);
+		click(objStockTakeObjects.open);
+		waitForJSandJQueryToLoad(driver);
+		objStockTakePage.scrolldown(driver);
+		
+        String STName = objStockTakeObjects.StocktakeName.getText();
+		System.out.println("Stocktake name is " + STName);
+		Report_AddStep("testcase", "Stocktake Name is " + STName + " ", "", "", "");
+		String ST_ID = data.getText("STO").replace("STNAME", STName);
+		result = sql.executeQuery(getContext(), ST_ID);
+		BigDecimal a = (BigDecimal) result.get(0).get(0);
+		System.out.println("Stocktake id is " + a);
+		Report_AddStep("testcase", "Stocktake ID is " + a + " ", "", "", "");
+		
+		String Art_Num = objStockTakeObjects.Article_Number.getText();
+		String Art_uom = objStockTakeObjects.Article_UOM.getText();
+		String Art_Des = objStockTakeObjects.Article_Description.getText();
+		String Art_om = objStockTakeObjects.Article_OM.getText();
+		String Art_count = objStockTakeObjects.BaseCount.getText();
+		String Source_Info=objStockTakeObjects.Source.getText();
+		String Created_User=objStockTakeObjects.CreatedUser.getText();
+		String Date_Created=objStockTakeObjects.CreatedDate.getText();
+	    String Freq=objStockTakeObjects.FrequencyName.getText();
+		String Ref=objStockTakeObjects.Refresh.getText();
+		String Stat=objStockTakeObjects.Status_ST.getText();
+		String SUB=objStockTakeObjects.SubCounted.getText();
+		System.out.println("Counted Sub category is " +SUB);
+		String[] items = SUB.split(",");
+		List<String> itemList = new ArrayList<String>(Arrays.asList(items));
+	      
+	      System.out.println(itemList);
+	      
+	      String Ais=objStockTakeObjects.PlanoCounted.getText();
+			System.out.println("Counted Aisles is " +Ais);
+			String[] Aisles = Ais.split(",");
+			List<Object> PlanoList = new ArrayList<Object>(Arrays.asList(Aisles));
+		    System.out.println(PlanoList);
+		    
+		    String Other=objStockTakeObjects.OtherLocCounted.getText();
+			System.out.println("Counted Other Location is " +Other);
+			String[] OtherLoc = Other.split(",");
+			List<Object> OtherLocList = new ArrayList<Object>(Arrays.asList(OtherLoc));
+		    System.out.println(OtherLocList);
+		    
+		    String USER=objStockTakeObjects.UsersCounted.getText();
+				System.out.println("Counted Other Location is " +USER);
+				String[] USER_COUNTED = USER.split(",");
+				List<Object> UsersList = new ArrayList<Object>(Arrays.asList(USER_COUNTED));
+			    System.out.println(UsersList);
+		
+		Report_AddStep("testcase", "Stocktake Status is " + Stat + " ", "", "", "");
+		Report_AddStep("testcase", "Refresh Button is available " + Ref + " ", "", "", "Pass");
+		
+        List<List<Object>> ApplList = getValuesFromTableST(objStockTakeObjects.ArticleRecords);
+        String context1 = data.getText("Check").replace("value", a.toString()).replace("Art", Art_Num);
+		results = sql.executeQuery(getContext(), context1);
+		System.out.println(results.get(0).size());
+		System.out.println(ApplList.get(0).size());
+		
+		String context4 = data.getText("SUBCAT").replace("value", a.toString());
+        result_temp = sql.executeQuery(getContext(), context4);
+        for (int m=0;m<result_temp.size();m++)
+        {
+        	if(result_temp.get(m).contains(itemList.get(m)))
+        		System.out.println("Sub Categories in DB is" +itemList);
+        	
+        }
+        Report_AddStep("testcase", "Sub-Categories are matched with DB " + itemList + " ", "", "", "Pass");
+        
+        String context5 = data.getText("Aisles").replace("value", a.toString());
+        result_temp = sql.executeQuery(getContext(), context5);
+        for (int m=0; m < result_temp.size(); m++)
+        {
+        	if(result_temp.get(m).contains(PlanoList.get(m)))
+        		System.out.println("Aisles in DB is" +PlanoList);
+        	
+        }
+        Report_AddStep("testcase", "Aisle Details are matched with DB " + PlanoList + " ", "", "", "Pass");
+        
+        String context6 = data.getText("OtherLoc").replace("value", a.toString());
+        result_temp = sql.executeQuery(getContext(), context6);
+        for (int m=0; m < result_temp.size(); m++)
+        {
+        	if(result_temp.get(m).contains(OtherLocList.get(m)))
+        		System.out.println("Other Location in DB is" +OtherLocList);
+        	
+        }
+        Report_AddStep("testcase", "Other Location Details are matched with DB " + OtherLocList + " ", "", "", "Pass");
+        
+        String context7 = data.getText("UserName").replace("value", a.toString());
+        result_temp = sql.executeQuery(getContext(), context6);
+        for (int m=0; m < result_temp.size(); m++)
+        {
+        	if(result_temp.get(m).contains(UsersList.get(m)))
+        		System.out.println("Records of User counted is/are" +UsersList);
+        	
+        }
+        Report_AddStep("testcase", "Records of User counted is/are matched with DB " + UsersList + " ", "", "", "Pass");
+
+		for (int i = 0; i < results.size(); i++) {
+			for (int j = 0; j < results.get(i).size(); j++) {
+				System.out.println(i + "" + j);
+				if (results.get(i).get(j) != null
+						&& ApplList.get(i).get(j) != null) {
+					if(j>2)
+					{removeLastZero(results, j);}
+					if (results.get(i).get(j).equals(ApplList.get(i).get(j))) {
+						System.out.println("Matched");
+					} else {
+						System.out.println(results.get(i).get(j));
+						System.out.println(ApplList.get(i).get(j));
+						System.out.println("Not Matched");
+					}
+				}
+				else if(results.get(i).get(j) == null
+						&& ApplList.get(i).get(j) == null)
+				{
+					System.out.println("Both are null values : Matched");
+				}
+				else {
+					System.out.println("One of the value is null");
+				}
+
+			}
+		}
+        System.out.println("Comparing Started");
+        ElementContainsTempST(ApplList, results);
+        
+    
+        String context2 = data.getText("Details").replace("value", a.toString());
+		result = sql.executeQuery(getContext(), context2);
+		String SOURCE =(String) result.get(0).get(0);	
+		System.out.println("Source is " +SOURCE);
+        String User_Name =(String) result.get(0).get(1);
+        System.out.println("User Name is " +User_Name);
+        java.sql.Date CREATED_DATE =(java.sql.Date) result.get(0).get(2);
+        System.out.println("Date Created is " +CREATED_DATE);
+        
+        SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
+		String formattedDate1 = sd.format(CREATED_DATE);
+		System.out.println("Formatted Date is " +formattedDate1);
+       
+        if (Source_Info.equalsIgnoreCase(SOURCE) || Created_User.equalsIgnoreCase(User_Name) || Date_Created.equals(formattedDate1))  {
+        	Report_AddStep("testcase", "Details are matched with DB and the Source is " + SOURCE + " and Created User is "  +User_Name+ " and Date Created is " + Date_Created + " ", "", "", "Pass");
+		} else {
+			Report_AddStep("testcase", "Details are not matched with DB and the Source is " + SOURCE + "and Created User is "  +User_Name+ " and Date Created is " + Date_Created + " ", "", "", "Fail");
+		}
+        
+        String context3 = data.getText("FREQ").replace("value", a.toString());
+		results1 = sql.executeQuery(getContext(), context3);
+		String FREQUENCY =(String) results1.get(0).get(0);	
+		System.out.println("Frequency is " +FREQUENCY);
+		
+		 if (Freq.equalsIgnoreCase(FREQUENCY))   {
+	        	Report_AddStep("testcase", "Details are matched with DB and the Frequency name is " + FREQUENCY +  " ", "", "", "Pass");
+			} else {
+				Report_AddStep("testcase", "Details are not matched with DB and the Frequency name is " + FREQUENCY +  " ", "", "", "Fail");
+			}
+	        
+
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+        }
+	*/
+	
+
+	/*@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating records for a page in  Base Count Report")
+	public void OverdueValidate() throws SQLException, IOException,AWTException, NoSuchFieldException, SecurityException,IllegalArgumentException, IllegalAccessException {
+		TestStatus status = getTestStatus();
+		navToStocktake(status);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.OverDue);
+		waitForJSandJQueryToLoad(driver);
+		click(objStockTakeObjects.DueNowAllDepts);
+		//click(objStockTakeObjects.open);
+		if(objStockTakeObjects.open1.size()!=0)
+		{
+			//click(objStockTakeObjects.open);
+			click(objStockTakeObjects.NotStartedSTEdit);
+			 waitFor(1.5);
+			 stockTakeArtScenarios.put(stockTakeArttestname, "Selecting a NOT STARTED Status Stocktake ;;;Pass");
+			 //Report_AddStep("testcase","Selecting a NOT STARTED Status Stocktake " , "", "", "Pass");
+			click(objStockTakeObjects.Del);
+			 waitFor(1.5);
+			click(objStockTakeObjects.DelSave);
+			 waitFor(1.5);
+			click(objStockTakeObjects.Yes);
+			 waitFor(1.5);
+			 stockTakeArtScenarios.put(stockTakeArttestname, "Deleting a NOT STARTED Status Stocktake ;;;Pass");
+			 //Report_AddStep("testcase","Deleting a NOT STARTED Status Stocktake " , "", "", "Pass");
+		}
+		
+		else
+		{
+			stockTakeArtScenarios.put(stockTakeArttestname, "No Open Status Stocktake available;;;Pass");
+			//Report_AddStep("testcase","No Open Status Stocktake available" , "", "", "Pass");
+		}
+		waitForJSandJQueryToLoad(driver);
+		objStockTakePage.scrolldown(driver);
+		
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(stockTakeArtScenarios, stockTakeArttestname,driver);
+		status.assertAll();
+        }
+	*/
+	public void navToStocktake(TestStatus status) throws IOException,
+			AWTException {
+		log.info("---------------Login into Application--------------------");
+		stockTakeArtScenarios.put(stockTakeArttestname, "---------------Login into Application--------------------;;;Pass");
+		/*Report_AddStep("testcase",
+				"---------------Login into Application--------------------",
+				"", "", "Pass");*/
+		loginPage = new WoWLoginPage().createPage(getDriver1(), getContext(),
+				log, status, data, WoWLoginPage.class);
+		if (System.getProperty("store") == null) {
+			StoreNo = getContext().getStringProperty("store");
+			stockTakeArtScenarios.put(stockTakeArttestname, "Login with the Store : "+ getContext().getStringProperty("store")+";;;Pass");
+		
+			//Report_AddStep("testcase", "Login with the Store : "+ getContext().getStringProperty("store"), "", "", "Pass");
+			// articleLookUpPage =
+			// loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objStockTakePage = loginPage.navToStocktake(getContext()
+					.getStringProperty("store"),driver);
+		} else {
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			stockTakeArtScenarios.put(stockTakeArttestname, "Login with the Store : " + store+";;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : " + store, "","", "Pass");
+			// articleLookUpPage = loginPage.navToArticlLookUp(store);
+			objStockTakePage = loginPage.navToStocktake(store,driver);
+		}
+
+		log.info("-------------Navigate to Stocktake Page------------");
+		stockTakeArtScenarios.put(stockTakeArttestname, "----------------Navigate to Stocktake Page--------------------;;;Pass");
+		/*Report_AddStep(
+				"testcase",
+				"----------------Navigate to Stocktake Page--------------------",
+				"", "", "Pass");*/
+		objStockTakePage.createStocktake(objStockTakeObjects,driver);
+	}
+
+	/*@BeforeMethod
+	public void setUp(Method m, ITestContext testcontext) throws IOException {
+		initializeTestcontext();
+		System.out.println("test1 - beforemethod");
+		log.info("Loading Testdata for the test case: "
+				+ m.getName().toString());
+		data.getTCNameFromChildren(m.getName().toString().trim());
+		createDriver(getContext().getStringProperty("baseURL"), getContext()
+				.getStringProperty("browser"));
+		testcontext.setAttribute("WebDriver", getDriver1());
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		moduledesc = m.getName().toString().trim();
+		dtmoduledesc = m.getAnnotation(Test.class).description();
+		testcasesttime = new Date();
+		// objArticleLookup = PageFactory.initElements(this.getDriver1(),
+		// ArticleLookUpObjects.class);
+		objStockTakeObjects = PageFactory.initElements(this.getDriver1(),
+				StockTakeObjects.class);
+		objStockTakePage = PageFactory.initElements(this.getDriver1(),
+				StockTakePage.class);
+		// objArticleDetail = PageFactory.initElements(this.getDriver1(),
+		// ArticleDetailsObjects.class);
+
+		BaseObj = PageFactory.initElements(this.getDriver1(), BasePage.class);
+		common = PageFactory.initElements(this.getDriver1(),
+				CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.getDriver1(),
+				StoreProperties.class);
+
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy_hmmss");
+		String formattedDate = sdf.format(date);
+		System.out.println(formattedDate); // 12/01/2011 4:48:16 PM
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String formattedDate1 = dateFormat.format(date);
+		System.out.println(formattedDate1); // 12/01/2011 4:48:16 PM
+		String dat = formattedDate1;
+		Report_Header("testcase", reportPath, moduledesc, dat);
+
+	}
+
+	@BeforeClass
+	public void loadXMLFile() {
+		// initializeTestcontext();
+		System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport = new CustomExtentReports();
+		log.info("Loading data for the class: ");
+		data.loadTestDataXML(System.getProperty("user.dir")
+				+ "\\TestData\\NGBO\\StockTake.xml");
+		customreport.createExtentReport();
+	}*/
+	
+	
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException{	
+		waitFor(2);
+		initializeTestcontext();
+		System.out.println("test1 - beforemethod");
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		//createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser")); 
+		//driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		setDriver(driver);
+		testcontext.setAttribute("WebDriver", getDriver1());
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		stockTakeArttestname = m9.getName().toString().trim();
+		stockTakeArttestdesc = m9.getAnnotation(Test.class).description();
+
+		objStockTakeObjects = PageFactory.initElements(this.getDriver1(),
+				StockTakeObjects.class);
+		objStockTakePage = PageFactory.initElements(this.getDriver1(),
+				StockTakePage.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.getDriver1(), InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.getDriver1(), BasePage.class);
+		common = PageFactory.initElements(this.getDriver1(), CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.getDriver1(), StoreProperties.class);
+		
+		Date ppStartdat1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String formattedDatepp = dateFormat.format(ppStartdat1);
+		System.out.println(formattedDatepp); // 12/01/2011 4:48:16 PM
+		stockTakeArtStartdat = formattedDatepp;
+	}
+	
+	@BeforeClass
+	public void loadXMLFile(){	
+		//initializeTestcontext();
+		System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir")
+				+ "\\TestData\\NGBO\\StockTake.xml");
+		customreport.createExtentReport();
+		
+		Date enhancedArtMod = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		stockTakeArtStdateex = dateFormat.format(enhancedArtMod);
+	}
+	
+	
+	
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitFor(1);
+		System.out.println("afterclass");
+		String Pp1className = this.getClass().getSimpleName().toString();
+		stockTakeArtModules.put(Pp1className, stockTakeArtScenarios);
+		waitFor(1);
+		moduleName.put("Modules", stockTakeArtModules);
+		waitFor(1);
+		Date ppModEnd2 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		stockTakeArtenddateex = dateFormat.format(ppModEnd2);
+
+		System.out.println(stockTakeArtenddateex);
+		waitFor(2);
+		int stockTakeArtM=STakecount;
+		stockTakeArtMC=""+stockTakeArtM;
+		waitFor(2);
+		System.out.println("stocktake - " +stockTakeArtMC);
+		waitFor(2);
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+		System.out.println("AffterMethod");
+		waitFor(1);
+		Date ppMEndDate1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		stockTakeArtMEndDate = dateFormat.format(ppMEndDate1);
+		System.out.println(stockTakeArtMEndDate); // 12/01/2011 4:48:16 PM
+		String EnhancedArtTime = stockTakeArttestdesc +";"+ stockTakeArtStartdat +";" + stockTakeArtMEndDate;
+
+		stockTakeArtTime.put(stockTakeArttestname, EnhancedArtTime);
+		//Report_AddStep("testcase", "Running Completed Status","","", getResultStatusName(result.getStatus()));
+		waitFor(4);
+		//closeDriver();
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")){
+			int cnt = stockTakeArtpreCount2+1;
+			stockTakeArtScenarios.put(stockTakeArttestname,"Completed Status : Iteration - "+ cnt +";;;Fail");
+			stockTakeArtpreCount2++;
+		}
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail") && stockTakeArtpreCount2!=reCount){
+			waitFor(1);
+			stockTakeArtTime.removeAll(stockTakeArttestname);
+			waitFor(1);
+			stockTakeArtScenarios.removeAll(stockTakeArttestname);
+		}
+		waitFor(1);
+		if(stockTakeArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+			stockTakeArtpreCount2=-1;
+		}
+		waitFor(2);
+		
+	}
+}

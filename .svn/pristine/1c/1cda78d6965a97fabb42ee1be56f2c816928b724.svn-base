@@ -1,0 +1,2726 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.GoodsMovementObjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.GoodsMovementPage;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+public class GoodsMovementTests extends TestBase {
+
+	private static final Object NULL = null;
+	private Logger log = LogManager.getLogger(GoodsMovementTests.class);
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	List<List<Object>> results2;
+	List<List<Object>> results3;
+	List<List<Object>> results4;
+	List<List<Object>> results5;
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	GoodsMovementPage objGoodsPage;
+	GoodsMovementTests objGoodsTest;
+	GoodsMovementObjects objGoodsObjects;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;
+	List<List<Object>> result;
+	List<List<Object>> result_temp;
+	public static XMLDataReader data;
+	private List<List<Object>> listDept;
+	StockAdjustmentTests stockAdjTests;
+	public GoodsMovementTests() {
+		super.log = log;
+	}
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+	int count=0;		
+	int MCcount=0;
+	public static WebDriver driver;
+	public static boolean isFirstTest=true;
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the Sale performed for a HAWA Article type in Goods Movement Summary Report")
+	public void VerifyGoodsSalesHAWA()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		TestStatus status = getTestStatus();
+		boolean NoRecords=true;
+		waitFor(1);
+		try{
+			navToGoods(status);
+			waitFor(1);
+			String all_articles_sql = data.getText("HAWA");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			String TradingDate = common.ConvertdateFormat1(0);
+			String MockRecords=data.getText("Mock").replace("Random",ranArticle).replace("TodayDate",TradingDate);
+			results1 = sql.executeQuery(getContext(),MockRecords);
+			String TriggerEvent=data.getText("Trigger");
+			results2 = sql.executeQuery(getContext(),TriggerEvent);
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			//waitFor(3);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver);
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the HAWA Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.25);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort); 
+				String tempNewSoh="";
+				String ApplnDetails=data.getText("MatnrDetails").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results = sql.executeQuery(getContext(),ApplnDetails);
+				String DBRecords=data.getText("DETAILS").replace("Date",FromDateF).replace("Random",ranArticle);
+				results3 = sql.executeQuery(getContext(),DBRecords);
+				objGoodsPage.ApplicationValuesAdjustment(objGoodsObjects, results,driver);
+				objGoodsPage.SOHValues(objGoodsObjects, results, results3, tempNewSoh,driver);
+				waitFor(1);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e2){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e2);
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the Sale performed for a Weighted Article type in Goods Movement Summary Report")
+	public void VerifyGoodsSalesWeighted() {
+
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		boolean NoRecords=true;
+		TestStatus status = getTestStatus();
+		try {
+			waitFor(1);
+			navToGoods(status);
+			String all_articles_sql = data.getText("Weighted");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			String TradingDate = common.ConvertdateFormat1(0);
+			String MockRecords=data.getText("Mock").replace("Random",ranArticle).replace("TodayDate",TradingDate);
+			results1 = sql.executeQuery(getContext(),MockRecords);
+			String TriggerEvent=data.getText("Trigger");
+			results2 = sql.executeQuery(getContext(),TriggerEvent);
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver); 
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Weighted Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.25);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String tempNewSoh="";
+				String ApplnDetails=data.getText("MatnrDetails").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results = sql.executeQuery(getContext(),ApplnDetails);
+				String DBRecords=data.getText("DETAILS").replace("Date",FromDateF).replace("Random",ranArticle);
+				results3 = sql.executeQuery(getContext(),DBRecords);
+				objGoodsPage.ApplicationValuesAdjustment(objGoodsObjects, results,driver);
+				objGoodsPage.SOHValues(objGoodsObjects, results, results3, tempNewSoh,driver);
+				waitFor(1);
+				waitFor(1);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+
+			}
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+
+		status.assertAll();
+	}
+
+
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the Sale performed for a RWT Article type in Goods Movement Summary Report")
+	public void VerifyGoodsRWT() 
+	{
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+4;}
+		TestStatus status = getTestStatus();
+		try{
+			boolean NoRecords=true;
+			waitFor(1);
+			navToGoods(status);
+			String all_articles_sql = data.getText("RandomWeighted");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			String TradingDate = common.ConvertdateFormat1(0);
+			String MockRecords=data.getText("Mock").replace("Random",ranArticle).replace("TodayDate",TradingDate);
+			results1 = sql.executeQuery(getContext(),MockRecords);
+			String TriggerEvent=data.getText("Trigger");
+			results2 = sql.executeQuery(getContext(),TriggerEvent);
+			waitFor(2);
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver); 
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Random Weighted Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.25);
+				String ApplnDetails=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results = sql.executeQuery(getContext(),ApplnDetails);
+				objGoodsPage.ValidationofRWTArticles(objGoodsObjects, results,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the Sale performed for a PBD Article type in Goods Movement Summary Report")
+	public void VerifyGoodsPBD()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+4;}
+		TestStatus status = getTestStatus();
+		try{
+			boolean NoRecords=true;
+			waitFor(1);
+			navToGoods(status);
+			String all_articles_sql = data.getText("PBD");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			String TradingDate = common.ConvertdateFormat1(0);
+			String MockRecords=data.getText("Mock").replace("Random",ranArticle).replace("TodayDate",TradingDate);
+			results1 = sql.executeQuery(getContext(),MockRecords);
+			String TriggerEvent=data.getText("Trigger");
+			results2 = sql.executeQuery(getContext(),TriggerEvent);
+			waitFor(2);
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver);
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the PBD Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.25);
+				String ApplnDetails=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results = sql.executeQuery(getContext(),ApplnDetails);
+				objGoodsPage.ValidationofPBDArticles(objGoodsObjects, results,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e2){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e2);
+		}
+		status.assertAll();
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the Sale performed for a Sales set Article type in Goods Movement Summary Report")
+	public void VerifyGoodsSales()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+4;}
+		TestStatus status = getTestStatus();
+		try{
+			String tempPrevSoh="";
+			String tempNewSoh="";
+			String tempPrevSoh1="";
+			String tempNewSoh1="";
+			String Childdb="";
+			String AdjQty="";
+			String count="";
+			String Salesadjusted="";
+			waitFor(1);
+			navToGoods(status);
+			waitFor(1);
+			boolean NoRecords=true;
+			String FromDateF = common.ConvertdateFormat(-6);
+			String Parent="337153";
+			objGoodsObjects.SearchBox.sendKeys("337153");
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver);
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Sales Set Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.25);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				List<List<Object>> temp = new ArrayList<List<Object>>();
+				for(int i=0;i<objGoodsObjects.RecordsSize.size();i++)
+				{
+					try{
+						List<Object> FirstValue = new ArrayList<Object>();
+						driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.replace("dynamic",Integer.toString(i)))).getText();
+						driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.replace("dynamic",Integer.toString(i)))).getText();
+						driver.findElement(By.xpath(objGoodsObjects.DynamicUOM.replace("dynamic",Integer.toString(i)))).getText();
+						driver.findElement(By.xpath(objGoodsObjects.DynamicPrevSoh.replace("dynamic",Integer.toString(i)))).getText();
+						driver.findElement(By.xpath(objGoodsObjects.DynamicNewSoh.replace("dynamic",Integer.toString(i)))).getText();
+						String tempArtNumber=driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.toString().replace("dynamic",Integer.toString(i)))).getText();
+						String tempArtDesc=driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+						String tempUOM=driver.findElement(By.xpath(objGoodsObjects.DynamicUOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+						tempPrevSoh=driver.findElement(By.xpath(objGoodsObjects.DynamicPrevSoh.toString().replace("dynamic",Integer.toString(i)))).getText();
+						tempNewSoh=driver.findElement(By.xpath(objGoodsObjects.DynamicNewSoh.toString().replace("dynamic",Integer.toString(i)))).getText();
+						FirstValue.add(tempArtNumber);
+						FirstValue.add(tempArtDesc);
+						FirstValue.add(tempUOM);
+						//FirstValue.add(tempPrevSoh);
+						//FirstValue.add(tempNewSoh);
+						temp.add(FirstValue);
+						//System.out.println(temp);
+					}
+					catch(Exception e)
+					{
+						//System.out.println(e);
+					}
+					//System.out.println("Listing the Application records for Parent Article Completed");
+				}
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF);
+				results = sql.executeQuery(getContext(),Records);
+				//System.out.println("Listing the DB records Started");
+				List<List<Object>> DB = new ArrayList<List<Object>>();
+				for (int j = 0; j < results.size(); j++)
+				{
+					List<Object> tempdb = new ArrayList<Object>();
+					{
+						results=removeExtraSpaces(results,1);
+						String Articledb = results.get(j).get(0).toString();
+						String ArticleDescdb = results.get(j).get(1).toString();
+						String ArticleUOMdb = results.get(j).get(2).toString();
+						String PrevSOHdb = results.get(j).get(3).toString();
+						String NewSOHdb = results.get(j).get(4).toString();
+						AdjQty = results.get(j).get(5).toString();
+						tempdb.add(Articledb);
+						tempdb.add(ArticleDescdb);
+						tempdb.add(ArticleUOMdb);
+						//tempdb.add(PrevSOHdb);
+						//tempdb.add(NewSOHdb);
+						DB.add(tempdb);
+						//System.out.println(DB);
+						//System.out.println("Listing the DB records for Parent Article Completed");
+						ElementContains1(cName, mName,extLogger,driver,  temp,DB);
+						//System.out.println("Comparing the records for Parent Article Completed");
+						for (int t=0;t<results.size();t++)
+						{	
+							if(tempPrevSoh!=PrevSOHdb && tempNewSoh != NewSOHdb)
+							{
+								////System.out.println("Listed articles are  "+tempPrevSoh+","+tempNewSoh+", "+PrevSOHdb+","+NewSOHdb+" ") ;
+								htmlToExtent(cName,mName,extLogger,driver, "Records are matching ;;;Pass");
+							}
+							waitFor(1);
+						}
+						waitForJSandJQueryToLoad(driver);
+						click(objGoodsObjects.ClickReport);
+						waitForJSandJQueryToLoad(driver);
+						click(objGoodsObjects.CloseArticle);
+						waitForJSandJQueryToLoad(driver);
+						String Articles=data.getText("CHILD").replace("PARENT",Parent);
+						results1 = sql.executeQuery(getContext(),Articles);
+						if(results1.size()!=0)
+						{
+							int num = common.RandomFromDB(results1);
+							Childdb = results1.get(num).get(0).toString();
+							objGoodsObjects.SearchBox.sendKeys(Childdb);
+							//waitFor(2);
+							objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+							//waitForJSandJQueryToLoad(driver);
+						}
+						waitFor(1);
+						click(objGoodsObjects.GenerateReport);    
+						waitForJSandJQueryToLoad(driver);
+						click(objGoodsObjects.Sort);
+						click(objGoodsObjects.Sort);
+						List<List<Object>> temp1 = new ArrayList<List<Object>>();
+						for(int i=0;i<objGoodsObjects.RecordsSize.size();i++)
+						{
+							try{
+								List<Object> ChildValue = new ArrayList<Object>();
+								driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.replace("dynamic",Integer.toString(i)))).getText();
+								driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.replace("dynamic",Integer.toString(i)))).getText();
+								driver.findElement(By.xpath(objGoodsObjects.DynamicUOM.replace("dynamic",Integer.toString(i)))).getText();
+								driver.findElement(By.xpath(objGoodsObjects.DynamicPrevSoh.replace("dynamic",Integer.toString(i)))).getText();
+								driver.findElement(By.xpath(objGoodsObjects.DynamicNewSoh.replace("dynamic",Integer.toString(i)))).getText();
+								String tempArtNumber1=driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.toString().replace("dynamic",Integer.toString(i)))).getText();
+								String tempArtDesc1=driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+								String tempUOM1=driver.findElement(By.xpath(objGoodsObjects.DynamicUOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+								tempPrevSoh1=driver.findElement(By.xpath(objGoodsObjects.DynamicPrevSoh.toString().replace("dynamic",Integer.toString(i)))).getText();
+								tempNewSoh1=driver.findElement(By.xpath(objGoodsObjects.DynamicNewSoh.toString().replace("dynamic",Integer.toString(i)))).getText();
+								ChildValue.add(tempArtNumber1);
+								ChildValue.add(tempArtDesc1);
+								ChildValue.add(tempUOM1);
+								//ChildValue.add(tempPrevSoh1);
+								//ChildValue.add(tempNewSoh1);
+								temp1.add(ChildValue);
+								//System.out.println(temp1);
+							}
+							catch(Exception e)
+							{
+								//System.out.println(e);
+							}
+							//System.out.println("Listing the Application records for Child Article Completed");
+						}
+						String Records1=data.getText("CHILDDETAILS").replace("Child",Childdb).replace("FILTERDATE",FromDateF);
+						results3 = sql.executeQuery(getContext(),Records1);
+						//System.out.println("Listing the DB records Started");
+						List<List<Object>> DB1 = new ArrayList<List<Object>>();
+						for (int l = 0; l < results3.size(); l++)
+						{
+							List<Object> tempdb1 = new ArrayList<Object>();
+							{
+								results3=removeExtraSpaces(results3,1);
+								String Articledb1 = results3.get(l).get(0).toString();
+								String ArticleDescdb1 = results3.get(l).get(1).toString();
+								String ArticleUOMdb1 = results3.get(l).get(2).toString();
+								String PrevSOHdb1 = results3.get(l).get(3).toString();
+								String NewSOHdb1 = results3.get(l).get(4).toString();
+								tempdb1.add(Articledb1);
+								tempdb1.add(ArticleDescdb1);
+								tempdb1.add(ArticleUOMdb1);
+								//tempdb1.add(PrevSOHdb1);
+								//tempdb1.add(NewSOHdb1);
+								DB1.add(tempdb1);
+								//System.out.println(DB1);
+								ElementContains1(cName, mName,extLogger,driver,  temp1,DB1);
+								//System.out.println("Listing the DB records for Child Article Completed");
+								for (int r=0;r<results3.size();r++)
+								{	
+									if(tempPrevSoh1 ==PrevSOHdb1)
+									{
+										htmlToExtent(cName,mName,extLogger,driver, "Records are matching ;;;Pass");
+										//System.out.println("Records are matching in both Application and DB");
+									}
+									waitFor(0.5);
+								}
+							}
+						}
+					}
+				}
+				String Num=data.getText("Numerator").replace("PARENT",Parent);
+				results5 = sql.executeQuery(getContext(),Num);
+
+				String Numerator =  results5.get(0).get(0).toString();
+				int NUM =Integer.parseInt(Numerator);
+				String Denominator =  results5.get(0).get(1).toString();
+				int DEN =Integer.parseInt(Denominator);
+
+				String Articles1=data.getText("CHILDQTY").replace("PARENT",Parent);
+				results2 = sql.executeQuery(getContext(),Articles1);
+				for (int m = 0; m < results2.size(); m++)
+				{
+					String ChildQty =  results2.get(m).get(0).toString();
+					count = decimalFormat(String.valueOf(Float.valueOf(AdjQty) *  (NUM/DEN) * Float.valueOf(ChildQty)) );
+					//System.out.println("Count Value is " +count);
+					waitFor(0.25);
+					htmlToExtent(cName,mName,extLogger,driver, "Calculated the Sales posted using Child Factor quantity "+count+" ;;;Pass");
+					//System.out.println("Calculated the Sales posted using Child Factor quantity");
+				}
+
+				String Articles2=data.getText("ChildAdjustedValue").replace("Child",Childdb).replace("FILTERDATE",FromDateF);
+				results4 = sql.executeQuery(getContext(),Articles2);
+				for (int n = 0; n < results4.size(); n++)
+				{
+					Salesadjusted =  decimalFormat(results4.get(n).get(1).toString());
+					//System.out.println("Adjusted Sale value is " +Salesadjusted);
+					waitFor(0.75);
+					htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH for the Child Article "+Salesadjusted+" ;;;Pass");
+					//System.out.println("Adjusted SOH for the Child Article");
+				}
+
+				if(count.equals(Salesadjusted))
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "Comparison of the Sales Posted and Adjusted SOH for the Child Article is MATCHING  ;;;Pass");
+				}else
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "Comparison of the Sales Posted and Adjusted SOH for the Child Article is NOT MATCHING  ;;;Fail");
+				}
+				//System.out.println("Comparing the records Completed");
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e2){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e2);
+		}
+		status.assertAll();
+
+	}
+
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the Sale performed for a Display Set Article type in Goods Movement Summary Report")
+	public void VerifyGoodsDisplay()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+4;}
+		TestStatus status = getTestStatus();
+		try{
+			String tempPrevSoh="";
+			String tempNewSoh="";
+			String tempPrevSoh1="";
+			String tempNewSoh1="";
+			String Childdb="";
+			String AdjQty="";
+			String count="";
+			String Salesadjusted="";
+			waitFor(1);
+			navToGoods(status);
+			waitFor(1);
+			boolean NoRecords=true;
+			String FromDateF = common.ConvertdateFormat(-6);
+			String Parent="406570";
+			//String MockData_sql = data.getText("InsertData");
+			//sql.executeQuery_CUD(getContext(), MockData_sql);
+			objGoodsObjects.SearchBox.sendKeys("406570");
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver);
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Display Set Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.25);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				List<List<Object>> temp = new ArrayList<List<Object>>();
+				for(int i=0;i<objGoodsObjects.RecordsSize.size();i++)
+				{
+					try{
+						List<Object> FirstValue = new ArrayList<Object>();
+						driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.replace("dynamic",Integer.toString(i)))).getText();
+						driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.replace("dynamic",Integer.toString(i)))).getText();
+						driver.findElement(By.xpath(objGoodsObjects.DynamicUOM.replace("dynamic",Integer.toString(i)))).getText();
+						driver.findElement(By.xpath(objGoodsObjects.DynamicPrevSoh.replace("dynamic",Integer.toString(i)))).getText();
+						driver.findElement(By.xpath(objGoodsObjects.DynamicNewSoh.replace("dynamic",Integer.toString(i)))).getText();
+						String tempArtNumber=driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.toString().replace("dynamic",Integer.toString(i)))).getText();
+						String tempArtDesc=driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+						String tempUOM=driver.findElement(By.xpath(objGoodsObjects.DynamicUOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+						tempPrevSoh=driver.findElement(By.xpath(objGoodsObjects.DynamicPrevSoh.toString().replace("dynamic",Integer.toString(i)))).getText();
+						tempNewSoh=driver.findElement(By.xpath(objGoodsObjects.DynamicNewSoh.toString().replace("dynamic",Integer.toString(i)))).getText();
+						FirstValue.add(tempArtNumber);
+						FirstValue.add(tempArtDesc);
+						FirstValue.add(tempUOM);
+						//FirstValue.add(tempPrevSoh);
+						//FirstValue.add(tempNewSoh);
+						temp.add(FirstValue);
+						//System.out.println(temp);
+					}
+					catch(Exception e)
+					{
+						//System.out.println(e);
+					}
+					//System.out.println("Listing the Application records for Parent Article Completed");
+				}
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF);
+				results = sql.executeQuery(getContext(),Records);
+				List<List<Object>> DB = new ArrayList<List<Object>>();
+				for (int j = 0; j < results.size(); j++)
+				{
+					List<Object> tempdb = new ArrayList<Object>();
+					{
+						results=removeExtraSpaces(results,1);
+						String Articledb = results.get(j).get(0).toString();
+						String ArticleDescdb = results.get(j).get(1).toString();
+						String ArticleUOMdb = results.get(j).get(2).toString();
+						String PrevSOHdb = results.get(j).get(3).toString();
+						String NewSOHdb = results.get(j).get(4).toString();
+						AdjQty = results.get(j).get(5).toString();
+						tempdb.add(Articledb);
+						tempdb.add(ArticleDescdb);
+						tempdb.add(ArticleUOMdb);
+						//tempdb.add(PrevSOHdb);
+						//tempdb.add(NewSOHdb);
+						DB.add(tempdb);
+						//System.out.println(DB);
+						//System.out.println("Listing the DB records for Parent Article Completed");
+						ElementContains1(cName, mName,extLogger,driver,  temp,DB);
+						//System.out.println("Comparing the records for Parent Article Completed");
+						for (int t=0;t<results.size();t++)
+						{	
+							if(tempPrevSoh!=PrevSOHdb && tempNewSoh != NewSOHdb)
+							{
+								////System.out.println("Listed articles are  "+tempPrevSoh+","+tempNewSoh+", "+PrevSOHdb+","+NewSOHdb+" ") ;
+								htmlToExtent(cName,mName,extLogger,driver, "Records are matching ;;;Pass");
+							}
+							waitFor(1);
+						}
+						click(objGoodsObjects.ClickReport);
+						waitForJSandJQueryToLoad(driver);
+						click(objGoodsObjects.CloseArticle);
+						waitForJSandJQueryToLoad(driver);
+						String Articles=data.getText("CHILD").replace("PARENT",Parent);
+						results1 = sql.executeQuery(getContext(),Articles);
+						if(results1.size()!=0)
+						{
+							int num = common.RandomFromDB(results1);
+							Childdb = results1.get(num).get(0).toString();
+							objGoodsObjects.SearchBox.sendKeys(Childdb);
+							objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+							//waitForJSandJQueryToLoad(driver);
+						}
+						waitFor(1);
+						click(objGoodsObjects.GenerateReport);    
+						waitForJSandJQueryToLoad(driver);
+						click(objGoodsObjects.Sort);
+						click(objGoodsObjects.Sort);
+						List<List<Object>> temp1 = new ArrayList<List<Object>>();
+						for(int i=0;i<objGoodsObjects.RecordsSize.size();i++)
+						{
+							try{
+								List<Object> ChildValue = new ArrayList<Object>();
+								driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.replace("dynamic",Integer.toString(i)))).getText();
+								driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.replace("dynamic",Integer.toString(i)))).getText();
+								driver.findElement(By.xpath(objGoodsObjects.DynamicUOM.replace("dynamic",Integer.toString(i)))).getText();
+								driver.findElement(By.xpath(objGoodsObjects.DynamicPrevSoh.replace("dynamic",Integer.toString(i)))).getText();
+								driver.findElement(By.xpath(objGoodsObjects.DynamicNewSoh.replace("dynamic",Integer.toString(i)))).getText();
+								String tempArtNumber1=driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.toString().replace("dynamic",Integer.toString(i)))).getText();
+								String tempArtDesc1=driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+								String tempUOM1=driver.findElement(By.xpath(objGoodsObjects.DynamicUOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+								tempPrevSoh1=driver.findElement(By.xpath(objGoodsObjects.DynamicPrevSoh.toString().replace("dynamic",Integer.toString(i)))).getText();
+								tempNewSoh1=driver.findElement(By.xpath(objGoodsObjects.DynamicNewSoh.toString().replace("dynamic",Integer.toString(i)))).getText();
+								ChildValue.add(tempArtNumber1);
+								ChildValue.add(tempArtDesc1);
+								ChildValue.add(tempUOM1);
+								//ChildValue.add(tempPrevSoh1);
+								//ChildValue.add(tempNewSoh1);
+								temp1.add(ChildValue);
+								//System.out.println(temp1);
+							}
+							catch(Exception e)
+							{
+								//System.out.println(e);
+							}
+							//System.out.println("Listing the Application records for Child Article Completed");
+						}
+						String Records1=data.getText("CHILDDETAILS").replace("Child",Childdb).replace("FILTERDATE",FromDateF);
+						results3 = sql.executeQuery(getContext(),Records1);
+						//System.out.println("Listing the DB records Started");
+						List<List<Object>> DB1 = new ArrayList<List<Object>>();
+						for (int l = 0; l < results3.size(); l++)
+						{
+							List<Object> tempdb1 = new ArrayList<Object>();
+							{
+								results3=removeExtraSpaces(results3,1);
+								String Articledb1 = results3.get(l).get(0).toString();
+								String ArticleDescdb1 = results3.get(l).get(1).toString();
+								String ArticleUOMdb1 = results3.get(l).get(2).toString();
+								String PrevSOHdb1 = results3.get(l).get(3).toString();
+								String NewSOHdb1 = results3.get(l).get(4).toString();
+								tempdb1.add(Articledb1);
+								tempdb1.add(ArticleDescdb1);
+								tempdb1.add(ArticleUOMdb1);
+								//tempdb1.add(PrevSOHdb1);
+								//tempdb1.add(NewSOHdb1);
+								DB1.add(tempdb1);
+								//System.out.println(DB1);
+								ElementContains1(cName, mName,extLogger,driver,  temp1,DB1);
+								//System.out.println("Listing the DB records for Child Article Completed");
+								for (int r=0;r<results3.size();r++)
+								{	
+									if(tempPrevSoh1 ==PrevSOHdb1)
+									{
+										htmlToExtent(cName,mName,extLogger,driver, "Records are matching ;;;Pass");
+										//System.out.println("Records are matching in both Application and DB");
+									}
+									waitFor(0.5);
+								}
+							}
+						}
+					}
+				}
+				String Num=data.getText("Numerator").replace("PARENT",Parent);
+				results5 = sql.executeQuery(getContext(),Num);
+
+				String Numerator =  results5.get(0).get(0).toString();
+				int NUM =Integer.parseInt(Numerator);
+				String Denominator =  results5.get(0).get(1).toString();
+				int DEN =Integer.parseInt(Denominator);
+
+				String Articles1=data.getText("CHILDQTY").replace("PARENT",Parent);
+				results2 = sql.executeQuery(getContext(),Articles1);
+				for (int m = 0; m < results2.size(); m++)
+				{
+					String ChildQty =  results2.get(m).get(0).toString();
+					count = decimalFormat(String.valueOf(Float.valueOf(AdjQty) *  (NUM/DEN) * Float.valueOf(ChildQty)) );
+					//System.out.println("Count Value is " +count);
+					waitFor(0.25);
+					htmlToExtent(cName,mName,extLogger,driver, "Calculated the Sales posted using Child Factor quantity "+count+" ;;;Pass");
+					//System.out.println("Calculated the Sales posted using Child Factor quantity");
+				}
+
+				String Articles2=data.getText("ChildAdjustedValue").replace("Child",Childdb).replace("FILTERDATE",FromDateF);
+				results4 = sql.executeQuery(getContext(),Articles2);
+				for (int n = 0; n < results4.size(); n++)
+				{
+					Salesadjusted =  decimalFormat(results4.get(n).get(1).toString());
+					//System.out.println("Adjusted Sale value is " +Salesadjusted);
+					waitFor(0.75);
+					htmlToExtent(cName,mName,extLogger,driver, "Adjusted SOH for the Child Article "+Salesadjusted+" ;;;Pass");
+					//System.out.println("Adjusted SOH for the Child Article");
+				}
+				if(count.equals(Salesadjusted))
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "Comparison of the Sales Posted and Adjusted SOH for the Child Article is MATCHING  ;;;Pass");
+				}else
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "Comparison of the Sales Posted and Adjusted SOH for the Child Article is NOT MATCHING  ;;;Fail");
+				}
+				//System.out.println("Comparing the records Completed");
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}catch (Exception e2){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e2);
+		}
+		status.assertAll();
+	}
+
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the Stock Adjustment performed for a HAWA Article type in Goods Movement Summary Report")
+	public void VerifyGoodsHAWAAdjustment()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+4;}
+		TestStatus status = getTestStatus();
+		try
+		{
+			navToGoods(status);
+			waitFor(3);
+			objGoodsPage.clickOnstockAdj(objGoodsObjects,driver);
+			waitFor(2);
+			String all_articles_sql = data.getText("HAWA");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			waitFor(2);
+			objGoodsObjects.sohSearchBox.clear();
+			objGoodsObjects.sohSearchBox.sendKeys(ranArticle);
+			objGoodsObjects.sohArticleSearch.click();
+			waitForJSandJQueryToLoad(driver);
+			selectByValue(objGoodsObjects.reasonsForSOH, "30");
+			objGoodsObjects.adjSOHvalue.sendKeys("1");
+			objGoodsObjects.saveSOH.click();
+			waitForJSandJQueryToLoad(driver);
+			try{
+				if(objGoodsObjects.unReceivedPopup.isDisplayed())
+				{
+					verticalScroll(driver);
+					objGoodsObjects.continueBtn.click();
+				}
+			}
+			catch(WebDriverException unrec)
+			{}
+			objGoodsObjects.CloseClick.click();
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			//waitFor(3);
+			String tempNewSoh="";
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver);  
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the HAWA Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results = sql.executeQuery(getContext(),Records);
+				objGoodsPage.ApplicationValuesAdjustment(objGoodsObjects, results,driver);
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results2 = sql.executeQuery(getContext(),Quantity);
+				objGoodsPage.SOHValues(objGoodsObjects, results, results2, tempNewSoh,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e2){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e2);
+		}
+		status.assertAll();
+	}
+
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the Stock Adjustment performed for a RWT Article type in Goods Movement Summary Report")
+	public void VerifyGoodsRWTAdjustment()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		TestStatus status = getTestStatus();
+		try{
+			navToGoods(status);
+			objGoodsPage.clickOnstockAdj(objGoodsObjects,driver);
+			String all_articles_sql = data.getText("RWT");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.sohSearchBox.clear();
+			objGoodsObjects.sohSearchBox.sendKeys(ranArticle);
+			objGoodsObjects.sohArticleSearch.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.WeightCloseClick.click();
+			selectByValue(objGoodsObjects.reasonsForSOH, "30");
+			objGoodsObjects.adjSOHvalue.sendKeys("1");
+			objGoodsObjects.saveSOH.click();
+			waitForJSandJQueryToLoad(driver);
+			try{
+				if(objGoodsObjects.unReceivedPopup.isDisplayed())
+				{
+					objGoodsObjects.continueBtn.click();
+				}
+			}
+			catch(WebDriverException unrec)
+			{}
+			objGoodsObjects.CloseClick.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+
+			String tempNewSoh="";
+			String CurrentSOHdb="";
+			String PrevSOHdb="";
+			String Adjusteddb="";
+			//Integer newSOHPIdb="";
+			String NewSOH="";
+			String CurrentSOHPIdb="";
+			String AdjQty="";
+			String FromDateF = common.ConvertdateFormat(-6);
+			//System.out.println(FromDateF);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver); 
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Random Weighted Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results = sql.executeQuery(getContext(),Records);
+				objGoodsPage.ApplicationRecordsAdjustmentRandomWeighted(objGoodsObjects, results,driver);
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results2 = sql.executeQuery(getContext(),Quantity);
+				objGoodsPage.SOHValuesIBTRandomWeighted(objGoodsObjects, results, results2, tempNewSoh,CurrentSOHPIdb,CurrentSOHdb,Adjusteddb,NewSOH,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e2){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e2);
+		}
+		status.assertAll();
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the Stock Adjustment performed for a Sales set Article type in Goods Movement Summary Report")
+	public void VerifyGoodsSalesSetAdjustmentforKG()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		TestStatus status = getTestStatus();
+		try{
+			navToGoods(status);
+			objGoodsPage.clickOnstockAdj(objGoodsObjects,driver);
+			String all_articles_sql = data.getText("BakerySalesSet");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.sohSearchBox.clear();
+			objGoodsObjects.sohSearchBox.sendKeys(ranArticle);
+			objGoodsObjects.sohArticleSearch.click();
+			waitForJSandJQueryToLoad(driver);
+			//objGoodsObjects.WeightCloseClick.click();
+			selectByValue(objGoodsObjects.reasonsForSOH, "89");
+			selectByValue(objGoodsObjects.selectCharity, "1");
+			objGoodsObjects.AdjustedDamagedValue.sendKeys("1");
+			objGoodsObjects.saveSOH.click();
+			waitForJSandJQueryToLoad(driver);
+			try{
+				if(objGoodsObjects.unReceivedPopup.isDisplayed())
+				{
+					objGoodsObjects.continueBtn.click();
+				}
+			}
+			catch(WebDriverException unrec)
+			{}
+			objGoodsObjects.CloseClick.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			String tempPrevSoh="";
+			String tempNewSoh="";
+			String tempPrevSoh1="";
+			String tempNewSoh1="";
+			String PrevSOHdb="";
+			String	PrevSOHdb1 ="";
+			String NewSOHdb="";
+			String Childdb="";
+			String AdjQty="";
+			String count="";
+			String Childadjusted="";
+			waitFor(1);
+			String FromDateF = common.ConvertdateFormat(-6);
+			//System.out.println(FromDateF);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver); 
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Sales Set Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				//System.out.println("Listing the Application records for Parent Article Started");
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results = sql.executeQuery(getContext(),Records);
+				int j = 0;
+				AdjQty = results.get(j).get(5).toString();
+				objGoodsPage.ApplicationRecords(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Articles=data.getText("CHILD").replace("Random",ranArticle);
+				results1 = sql.executeQuery(getContext(),Articles);
+				int num1 = common.RandomFromDB(results1);
+				//System.out.println(num1);
+				Childdb = results1.get(num1).get(0).toString();
+				//System.out.println(Childdb);
+				String Records1=data.getText("CHILDDETAILS").replace("Child",Childdb).replace("FILTERDATE",FromDateF);
+				results3 = sql.executeQuery(getContext(),Records1);
+				objGoodsPage.ChildRecords(objGoodsObjects, results, results1, results3, tempPrevSoh, PrevSOHdb, tempNewSoh, Childdb, NewSOHdb, tempPrevSoh1, tempNewSoh1, PrevSOHdb1,driver);
+				String Num=data.getText("Numerator").replace("Random",ranArticle);
+				results5 = sql.executeQuery(getContext(),Num);
+				String Articles1=data.getText("CHILDQTY").replace("Child",Childdb).replace("Random",ranArticle);
+				results2 = sql.executeQuery(getContext(),Articles1);
+				String Articles2=data.getText("ChildAdjustedValue").replace("Child",Childdb).replace("FILTERDATE",FromDateF);
+				results4 = sql.executeQuery(getContext(),Articles2);
+				objGoodsPage.AdjustmentCalculationSalesSet(objGoodsObjects,results, results2, results4,results5, AdjQty, count, Childadjusted, Childdb,driver);
+				//System.out.println("Comparing the records Completed");
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+	}
+
+	//@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the Stock Adjustment performed for a Sales set Article type in Goods Movement Summary Report")
+	public void VerifyGoodsSalesSetAdjustmentforEA()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+4;}
+		TestStatus status = getTestStatus();
+		try{
+			navToGoods(status);
+			objGoodsPage.clickOnstockAdj(objGoodsObjects,driver);
+			String all_articles_sql = data.getText("BakerySalesSet");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.sohSearchBox.clear();
+			objGoodsObjects.sohSearchBox.sendKeys(ranArticle);
+			objGoodsObjects.sohArticleSearch.click();
+			waitForJSandJQueryToLoad(driver);
+			//objGoodsObjects.WeightCloseClick.click();
+			selectByValue(objGoodsObjects.reasonsForSOH, "89");
+			selectByValue(objGoodsObjects.selectCharity, "1");
+			objGoodsObjects.adjSOHvalue.sendKeys("1");
+			objGoodsObjects.saveSOH.click();
+			waitForJSandJQueryToLoad(driver);
+			try{
+				if(objGoodsObjects.unReceivedPopup.isDisplayed())
+				{
+					objGoodsObjects.continueBtn.click();
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			catch(WebDriverException unrec)
+			{}
+			objGoodsObjects.CloseClick.click();
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			String tempPrevSoh="";
+			String tempNewSoh="";
+			String tempPrevSoh1="";
+			String tempNewSoh1="";
+			String PrevSOHdb="";
+			String	PrevSOHdb1 ="";
+			String NewSOHdb="";
+			String Childdb="";
+			String AdjQty="";
+			String count="";
+			String Childadjusted="";
+			waitFor(1);
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			waitForJSandJQueryToLoad(driver);
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Sales set Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results = sql.executeQuery(getContext(),Records);
+				int j = 0;
+				AdjQty = results.get(j).get(5).toString();
+				objGoodsPage.ApplicationRecords(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Articles=data.getText("CHILD").replace("Random",ranArticle);
+				results1 = sql.executeQuery(getContext(),Articles);
+				int num1 = common.RandomFromDB(results1);
+				Childdb = results1.get(num1).get(0).toString();
+				String Records1=data.getText("CHILDDETAILS").replace("Child",Childdb).replace("FILTERDATE",FromDateF);
+				results3 = sql.executeQuery(getContext(),Records1);
+				objGoodsPage.ChildRecords(objGoodsObjects, results, results1, results3, tempPrevSoh, PrevSOHdb, tempNewSoh, Childdb, NewSOHdb, tempPrevSoh1, tempNewSoh1, PrevSOHdb1,driver);
+				String Num=data.getText("Numerator").replace("Random",ranArticle);
+				results5 = sql.executeQuery(getContext(),Num);
+				String Articles1=data.getText("CHILDQTY").replace("Child",Childdb).replace("Random",ranArticle);
+				results2 = sql.executeQuery(getContext(),Articles1);
+				String Articles2=data.getText("ChildAdjustedValue").replace("Child",Childdb).replace("FILTERDATE",FromDateF);
+				results4 = sql.executeQuery(getContext(),Articles2);
+				objGoodsPage.AdjustmentCalculationSalesSet(objGoodsObjects,results, results2, results4,results5, AdjQty, count, Childadjusted, Childdb,driver);
+				//System.out.println("Comparing the records Completed");
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the Stock Adjustment performed for a Display set Article type in Goods Movement Summary Report")
+	public void VerifyGoodsDisplaySetAdjustment() {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+4;}
+		TestStatus status = getTestStatus();
+		try{
+			navToGoods(status);
+			objGoodsPage.clickOnstockAdj(objGoodsObjects,driver);
+			String all_articles_sql = data.getText("DisplaySalesSet");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.sohSearchBox.clear();
+			objGoodsObjects.sohSearchBox.sendKeys(ranArticle);
+			objGoodsObjects.sohArticleSearch.click();
+			waitForJSandJQueryToLoad(driver);
+			//objGoodsObjects.WeightCloseClick.click();
+			selectByValue(objGoodsObjects.reasonsForSOH, "89");
+			selectByValue(objGoodsObjects.selectCharity, "1");
+			objGoodsObjects.adjSOHvalue.sendKeys("1");
+			objGoodsObjects.saveSOH.click();
+			waitForJSandJQueryToLoad(driver);
+			try{
+				if(objGoodsObjects.unReceivedPopup.isDisplayed())
+				{
+					objGoodsObjects.continueBtn.click();
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			catch(WebDriverException unrec)
+			{}
+			objGoodsObjects.CloseClick.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			String tempNewSoh="";
+			String CurrentSOHdb="";
+			String PrevSOHdb="";
+			String NewSOHdb="";
+			String Adjusteddb="";
+			String tempPrevSoh="";
+			String Childdb="";
+			String NewSOH="";
+			String CurrentSOHPIdb="";
+			String AdjQty="";
+			String tempPrevSoh1="";
+			String tempNewSoh1="";
+			String PrevSOHdb1="";
+			String count="";
+			String Childadjusted="";
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver);  
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Display set Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				//System.out.println("Listing the Application records for Parent Article Started");
+
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results = sql.executeQuery(getContext(),Records);
+				int j = 0;
+				AdjQty = results.get(j).get(5).toString();
+				objGoodsPage.ApplicationRecords(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Articles=data.getText("CHILD").replace("Random",ranArticle);
+				results1 = sql.executeQuery(getContext(),Articles);
+				int num1 = common.RandomFromDB(results1);
+				//System.out.println(num1);
+				Childdb = results1.get(num1).get(0).toString();
+				//System.out.println(Childdb);
+				String Records1=data.getText("CHILDDETAILS").replace("Child",Childdb).replace("FILTERDATE",FromDateF);
+				results3 = sql.executeQuery(getContext(),Records1);
+				objGoodsPage.ChildRecords(objGoodsObjects, results, results1, results3, tempPrevSoh, PrevSOHdb, tempNewSoh, Childdb, NewSOHdb, tempPrevSoh1, tempNewSoh1, PrevSOHdb1,driver);
+				String Articles1=data.getText("CHILDQTY").replace("Child",Childdb).replace("Random",ranArticle);
+				results2 = sql.executeQuery(getContext(),Articles1);
+				String Articles2=data.getText("ChildAdjustedValue").replace("Child",Childdb).replace("FILTERDATE",FromDateF);
+				results4 = sql.executeQuery(getContext(),Articles2);
+
+
+				objGoodsPage.AdjustmentCalculation(objGoodsObjects,results, results2, results4,results5, AdjQty, count, Childadjusted, Childdb,driver);
+				//System.out.println("Comparing the records Completed");
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the Stock Adjustment performed for a Display Exception set Article type in Goods Movement Summary Report")
+	public void VerifyGoodsDisplayExceptionAdjustment()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+4;}
+		TestStatus status = getTestStatus();
+		try{
+			navToGoods(status);
+			objGoodsPage.clickOnstockAdj(objGoodsObjects,driver);
+			String all_articles_sql = data.getText("DisplayException");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.sohSearchBox.clear();
+			objGoodsObjects.sohSearchBox.sendKeys(ranArticle);
+			objGoodsObjects.sohArticleSearch.click();
+			waitForJSandJQueryToLoad(driver);
+			//objGoodsObjects.WeightCloseClick.click();
+			selectByValue(objGoodsObjects.reasonsForSOH, "30");
+			objGoodsObjects.adjSOHvalue.sendKeys("1");
+			objGoodsObjects.saveSOH.click();
+			waitForJSandJQueryToLoad(driver);
+			try{
+				if(objGoodsObjects.unReceivedPopup.isDisplayed())
+				{
+					objGoodsObjects.continueBtn.click();
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			catch(WebDriverException unrec)
+			{
+
+			}
+			objGoodsObjects.CloseClick.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			String tempNewSoh="";
+			String CurrentSOHdb="";
+			String PrevSOHdb="";
+			String Adjusteddb="";
+			//Integer newSOHPIdb="";
+			String NewSOH="";
+			String CurrentSOHPIdb="";
+			String AdjQty="";
+			String FromDateF = common.ConvertdateFormat(-6);
+			//System.out.println(FromDateF);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver);  
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Display Exception Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results = sql.executeQuery(getContext(),Records);
+				objGoodsPage.ApplicationValuesAdjustment(objGoodsObjects, results,driver);
+
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results2 = sql.executeQuery(getContext(),Quantity);
+				objGoodsPage.SOHValues(objGoodsObjects, results, results2, tempNewSoh,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the IBT performed for a HAWA article type in Goods Movement Summary Report")
+	public void VerifyGoodsIBTHAWA()   {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		TestStatus status = getTestStatus();
+		try{
+			navToGoods(status);
+			objGoodsPage.clickOnStockTranfer(objGoodsObjects,driver);
+			waitFor(3); 
+			String all_articles_sql = data.getText("HAWA");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.EnterStoreNumber.sendKeys("3200");
+			objGoodsObjects.SearchAnd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.CreateButton.click();
+			waitForJSandJQueryToLoad(driver);
+			if (objGoodsObjects.AlreadyExistsMessage.size()>0)
+			{
+				objGoodsObjects.CloseErrorMessage.click();
+				waitForJSandJQueryToLoad(driver);
+			}
+			objGoodsPage.SelectStore(objGoodsObjects, driver);
+			//objGoodsObjects.Expand.click();
+			waitForJSandJQueryToLoad(driver);
+			for(int i=1;objGoodsObjects.DeleteSize.size()!=0 ;i++)
+			{
+				objGoodsPage.DeletePreArticles(objGoodsObjects,driver);
+				waitForJSandJQueryToLoad(driver);
+			}
+			objGoodsObjects.ArticleBox.sendKeys(ranArticle);
+			int min = 1, max = 30;
+			Random rand1 = new Random();
+			int Random1 = rand1.nextInt((max - min) + 1) + min;
+			String RandomQty = Integer.toString(Random1);
+			//driver.findElement(By.xpath("//*[contains(@class,'groupByTr2  ')]//div[2]//label/following::input")).sendKeys(ranArticle);
+			//waitFor(1);
+			//driver.findElement(By.xpath("(//*[contains(@class,'groupByTr2  ')]//div)[7]//input")).sendKeys("10");
+			//*[contains(@class,'groupByTr2  ')]//div)[7]//input
+			objGoodsObjects.TransferQuantity.sendKeys(RandomQty);
+			//waitFor(1);
+			//driver.findElement(By.xpath("(//*[contains(@class,'groupByTr2  ')]//div)[8]/label")).click();
+			//*[contains(@class,'groupByTr2  ')]//div)[8]/label
+			objGoodsObjects.SearchAndAdd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.CheckboxClick.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.AddToList.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.SubmitButton.click();
+			waitForJSandJQueryToLoad(driver);
+			if(objGoodsObjects.MoreAcceptQuantity.isDisplayed())
+			{
+				objGoodsObjects.AcceptQuantity.click();
+				waitForJSandJQueryToLoad(driver);
+				if(objGoodsObjects.FrozenArticleMessage.size()!=0)
+				{objGoodsObjects.CloseFrozenArticleMessage.click();
+				objGoodsObjects.ChilledTemp.sendKeys("1");
+				objGoodsObjects.NextButton.click();
+				waitForJSandJQueryToLoad(driver);
+				}
+				/*if(objGoodsObjects.NoRecordsweb.isDisplayed())
+				{
+					objGoodsObjects.CloseErrorMessage.click();
+				}*/
+				objGoodsObjects.FinishButton.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.CloseSuccessMessage.click();
+				waitForJSandJQueryToLoad(driver);
+			}else
+			{
+				objGoodsObjects.CloseSuccessMessage.click();
+			}
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			waitFor(2);
+			String tempNewSoh="";
+			String CurrentSOHdb="";
+			String PrevSOHdb="";
+			String Adjusteddb="";
+			String NewSOHdb="";
+			String NewSOH="";
+			String CurrentSOHPIdb="";
+			String AdjQty="";
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver); 
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the HAWA Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results = sql.executeQuery(getContext(),Records);
+				objGoodsPage.ApplicationRecordsIBT(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results2 = sql.executeQuery(getContext(),Quantity);
+				objGoodsPage.SOHValues(objGoodsObjects, results, results2, tempNewSoh,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the IBT performed for a PBD article type in Goods Movement Summary Report")
+	public void VerifyGoodsIBTPBD()   {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		TestStatus status = getTestStatus();
+		try{
+			navToGoods(status);
+			objGoodsPage.clickOnStockTranfer(objGoodsObjects,driver);
+			waitFor(3); 
+			String all_articles_sql = data.getText("PBD");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.EnterStoreNumber.sendKeys("3200");
+			objGoodsObjects.SearchAnd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.CreateButton.click();
+			waitForJSandJQueryToLoad(driver);
+			if (objGoodsObjects.AlreadyExistsMessage.size()>0)
+			{
+				objGoodsObjects.CloseErrorMessage.click();
+			}
+			//objGoodsObjects.Expand.click();
+			objGoodsPage.SelectStore(objGoodsObjects, driver);
+			waitForJSandJQueryToLoad(driver); 
+			for(int i=1;objGoodsObjects.DeleteSize.size()!=0 ;i++)
+			{
+				objGoodsPage.DeletePreArticles(objGoodsObjects,driver);
+				waitForJSandJQueryToLoad(driver);
+			}
+			objGoodsObjects.ArticleBox.sendKeys(ranArticle);
+			int min = 1, max = 30;
+			Random rand1 = new Random();
+			int Random1 = rand1.nextInt((max - min) + 1) + min;
+			String RandomQty = Integer.toString(Random1);
+			objGoodsObjects.TransferQuantity.sendKeys(RandomQty);
+			//waitFor(2); 
+			objGoodsObjects.SearchAndAdd.click();
+			waitForJSandJQueryToLoad(driver); 
+			objGoodsObjects.CheckboxClick.click();
+			waitForJSandJQueryToLoad(driver); 
+			objGoodsObjects.AddToList.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.SubmitButton.click();
+			waitForJSandJQueryToLoad(driver);
+			if(objGoodsObjects.MoreAcceptQuantity.isDisplayed())
+			{
+				objGoodsObjects.AcceptQuantity.click();
+				waitForJSandJQueryToLoad(driver); 
+				/*objGoodsObjects.NextButton.click();
+				waitFor(2);*/ 
+				if(objGoodsObjects.FrozenArticleMessage.size()!=0)
+				{objGoodsObjects.CloseFrozenArticleMessage.click();
+				objGoodsObjects.ChilledTemp.sendKeys("1");
+				objGoodsObjects.NextButton.click();
+				waitForJSandJQueryToLoad(driver);
+				}
+				/*if(objGoodsObjects.NoRecordsweb.isDisplayed())
+				{
+					objGoodsObjects.CloseErrorMessage.click();
+				}*/
+				objGoodsObjects.FinishButton.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.CloseSuccessMessage.click();
+				waitForJSandJQueryToLoad(driver);
+			}else
+			{
+				objGoodsObjects.CloseSuccessMessage.click();
+			}
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			String tempNewSoh="";
+			String PrevSOHdb="";
+			String NewSOHdb="";
+			String AdjQty="";
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver);
+			//waitFor(2);   
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the PBD Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results = sql.executeQuery(getContext(),Records);
+				objGoodsPage.ApplicationRecordsIBT(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results2 = sql.executeQuery(getContext(),Quantity);
+				objGoodsPage.SOHValues(objGoodsObjects, results, results2, tempNewSoh,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the IBT performed for a Weighted article type in Goods Movement Summary Report")
+	public void VerifyGoodsIBTWeighted()   {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		TestStatus status = getTestStatus();
+		try{
+			navToGoods(status);
+			objGoodsPage.clickOnStockTranfer(objGoodsObjects,driver);
+			waitFor(3); 
+			waitForJSandJQueryToLoad(driver); 
+			String all_articles_sql = data.getText("WEIGHTED");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.EnterStoreNumber.sendKeys("3200");
+			//waitFor(2);
+			//waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.SearchAnd.click();
+			waitForJSandJQueryToLoad(driver); 
+			objGoodsObjects.CreateButton.click();
+			if (objGoodsObjects.AlreadyExistsMessage.size()>0)
+			{
+				objGoodsObjects.CloseErrorMessage.click();
+			}
+			waitForJSandJQueryToLoad(driver);
+			objGoodsPage.SelectStore(objGoodsObjects, driver);
+			//waitFor(2); 
+			//objGoodsObjects.Expand.click();
+			//waitFor(2); 
+			for(int i=1;objGoodsObjects.DeleteSize.size()!=0 ;i++)
+			{
+				objGoodsPage.DeletePreArticles(objGoodsObjects,driver);
+				waitForJSandJQueryToLoad(driver);
+			}
+			objGoodsObjects.ArticleBox.sendKeys(ranArticle);
+			int min = 1, max = 30;
+			Random rand1 = new Random();
+			int Random1 = rand1.nextInt((max - min) + 1) + min;
+			String RandomQty = Integer.toString(Random1);
+			objGoodsObjects.TransferQuantity.sendKeys(RandomQty);
+			objGoodsObjects.SearchAndAdd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.CheckboxClick.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.AddToList.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.SubmitButton.click();
+			waitForJSandJQueryToLoad(driver);
+			if(objGoodsObjects.MoreAcceptQuantity.isDisplayed())
+			{
+				objGoodsObjects.AcceptQuantity.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.CloseWeightedMessage.click();
+				waitForJSandJQueryToLoad(driver);
+				//objGoodsObjects.ChilledTemp.sendKeys("1");
+				objGoodsObjects.NextButton.click();
+				waitForJSandJQueryToLoad(driver);
+				/*if(objGoodsObjects.NoRecordsweb.isDisplayed())
+				{
+					objGoodsObjects.CloseErrorMessage.click();
+				}*/
+				objGoodsObjects.FinishButton.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.CloseSuccessMessage.click();
+				waitForJSandJQueryToLoad(driver);
+			}
+			else
+			{
+				objGoodsObjects.CloseWeightedMessage.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.NextButton.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.FinishButton.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.CloseSuccessMessage.click();
+				waitForJSandJQueryToLoad(driver);
+			}
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			String tempNewSoh="";
+			String CurrentSOHdb="";
+			String PrevSOHdb="";
+			String Adjusteddb="";
+			String NewSOHdb="";
+			String NewSOH="";
+			String CurrentSOHPIdb="";
+			String AdjQty="";
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver);
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Weighted Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results = sql.executeQuery(getContext(),Records);
+				objGoodsPage.ApplicationRecordsIBTStructured(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results2 = sql.executeQuery(getContext(),Quantity);
+				objGoodsPage.SOHValues(objGoodsObjects, results, results2, tempNewSoh,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the IBT performed for a Display Exception article type in Goods Movement Summary Report")
+	public void VerifyGoodsIBTDisplayException()   {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		TestStatus status = getTestStatus();
+		try{
+			navToGoods(status);
+			objGoodsPage.clickOnStockTranfer(objGoodsObjects,driver);
+			waitFor(3); 
+			String all_articles_sql = data.getText("DisplayException");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.EnterStoreNumber.sendKeys("3200");
+			objGoodsObjects.SearchAnd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.CreateButton.click();
+			waitForJSandJQueryToLoad(driver);
+			if (objGoodsObjects.AlreadyExistsMessage.size()>0)
+			{
+				objGoodsObjects.CloseErrorMessage.click();
+			}
+			waitForJSandJQueryToLoad(driver);
+			objGoodsPage.SelectStore(objGoodsObjects, driver);
+			waitForJSandJQueryToLoad(driver);
+			for(int i=1;objGoodsObjects.DeleteSize.size()!=0 ;i++)
+			{
+				objGoodsPage.DeletePreArticles(objGoodsObjects,driver);
+				waitForJSandJQueryToLoad(driver);
+			}
+			objGoodsObjects.ArticleBox.sendKeys(ranArticle);
+			int min = 1, max = 30;
+			Random rand1 = new Random();
+			int Random1 = rand1.nextInt((max - min) + 1) + min;
+			String RandomQty = Integer.toString(Random1);
+			objGoodsObjects.TransferQuantity.sendKeys(RandomQty);
+			objGoodsObjects.SearchAndAdd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.CheckboxClick.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.AddToList.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.SubmitButton.click();
+			waitForJSandJQueryToLoad(driver);
+			if(objGoodsObjects.MoreAcceptQuantity.isDisplayed())
+			{
+				objGoodsObjects.AcceptQuantity.click();
+				waitForJSandJQueryToLoad(driver);
+				//objGoodsObjects.CloseWeightedMessage.click();
+				//waitFor(1); 
+			}
+			//objGoodsObjects.Chilled.sendKeys("-15");
+			/*objGoodsObjects.NextButton.click();
+				waitFor(3); 
+				objGoodsObjects.FinishButton.click();
+				waitFor(8); 
+				objGoodsObjects.CloseSuccessMessage.click();
+				waitFor(2); 
+			}
+			else
+			{*/
+			//objGoodsObjects.CloseWeightedMessage.click();
+			//waitFor(3); 
+			objGoodsObjects.NextButton.click();
+			waitForJSandJQueryToLoad(driver);
+			/*if(objGoodsObjects.NoRecordsweb.isDisplayed())
+			{
+				objGoodsObjects.CloseErrorMessage.click();
+			}*/
+			objGoodsObjects.FinishButton.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.CloseSuccessMessage.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			String tempNewSoh="";
+			String PrevSOHdb="";
+			String NewSOHdb="";
+			String AdjQty="";
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver);  
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Display Exception Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results = sql.executeQuery(getContext(),Records);
+				objGoodsPage.ApplicationRecordsIBTStructured(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results2 = sql.executeQuery(getContext(),Quantity);
+				objGoodsPage.SOHValues(objGoodsObjects, results, results2, tempNewSoh,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the IBT performed for a Random Weighted article type in Goods Movement Summary Report")
+	public void VerifyGoodsIBTRandomWeighted()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		TestStatus status = getTestStatus();
+		try{
+			navToGoods(status);
+			objGoodsPage.clickOnStockTranfer(objGoodsObjects,driver);
+			waitFor(3); 
+			String all_articles_sql = data.getText("RWT");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.EnterStoreNumber.sendKeys("3200");
+			//waitFor(1); 
+			//waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.SearchAnd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.CreateButton.click();
+			if (objGoodsObjects.AlreadyExistsMessage.size()>0)
+			{
+				objGoodsObjects.CloseErrorMessage.click();
+			}
+			waitForJSandJQueryToLoad(driver);
+			objGoodsPage.SelectStore(objGoodsObjects, driver);
+			//objGoodsObjects.Expand.click();
+			//waitFor(1); 
+			for(int i=1;objGoodsObjects.DeleteSize.size()!=0 ;i++)
+			{
+				objGoodsPage.DeletePreArticles(objGoodsObjects,driver);
+				waitForJSandJQueryToLoad(driver);
+			}
+			objGoodsObjects.ArticleBox.sendKeys(ranArticle);
+			int min = 1, max = 30;
+			Random rand1 = new Random();
+			int Random1 = rand1.nextInt((max - min) + 1) + min;
+			String RandomQty = Integer.toString(Random1);
+			objGoodsObjects.TransferQuantity.sendKeys(RandomQty);
+			objGoodsObjects.SearchAndAdd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.CheckboxClick.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.AddToList.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.SubmitButton.click();
+			waitForJSandJQueryToLoad(driver);
+			if(objGoodsObjects.MoreAcceptQuantity.isDisplayed())
+			{
+				objGoodsObjects.AcceptQuantity.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.CloseWeightedMessage.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.ChilledTemp.sendKeys("1");
+				objGoodsObjects.NextButton.click();
+				waitForJSandJQueryToLoad(driver);
+				/*if(objGoodsObjects.NoRecordsweb.isDisplayed())
+				{
+					objGoodsObjects.CloseErrorMessage.click();
+				}*/
+				objGoodsObjects.FinishButton.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.CloseSuccessMessage.click();
+				waitFor(2); 
+			}
+			else
+			{
+				objGoodsObjects.CloseWeightedMessage.click();
+				waitForJSandJQueryToLoad(driver); 
+				objGoodsObjects.NextButton.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.FinishButton.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.CloseSuccessMessage.click();
+				waitFor(2); 
+			}
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			waitFor(2);
+			String tempNewSoh="";
+			String PrevSOHdb="";
+			String NewSOHdb="";
+			String AdjQty="";
+			String CurrentSOHPIdb="";
+			String CurrentSOHdb="";
+			String Adjusteddb="";
+			String NewSOHPIdb="";
+			String NewSOH="";
+
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//	waitForJSandJQueryToLoad(driver); 
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Random weighted Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("RANDOM",ranArticle);
+				results = sql.executeQuery(getContext(),Records);
+				objGoodsPage.ApplicationRecordsIBTRandomWeighted(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("RANDOM",ranArticle);
+				results2 = sql.executeQuery(getContext(),Quantity);
+				objGoodsPage.SOHValuesIBTRandomWeighted(objGoodsObjects, results, results2, tempNewSoh,CurrentSOHPIdb,CurrentSOHdb,Adjusteddb,NewSOH,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the IBT performed for a CPBD article type in Goods Movement Summary Report")
+	public void VerifyGoodsIBTCPBD()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		TestStatus status = getTestStatus();
+		try{
+			navToGoods(status);
+			objGoodsPage.clickOnStockTranfer(objGoodsObjects,driver);
+			waitForJSandJQueryToLoad(driver);
+			waitFor(3); 
+			String all_articles_sql = data.getText("CPBD");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.EnterStoreNumber.sendKeys("3200");
+			objGoodsObjects.SearchAnd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.CreateButton.click();
+			waitForJSandJQueryToLoad(driver);
+			if (objGoodsObjects.AlreadyExistsMessage.size()>0)
+			{
+				objGoodsObjects.CloseErrorMessage.click();
+			}
+			objGoodsPage.SelectStore(objGoodsObjects, driver);
+			waitFor(1); 
+			for(int i=1;objGoodsObjects.DeleteSize.size()!=0 ;i++)
+			{
+				objGoodsPage.DeletePreArticles(objGoodsObjects,driver);
+				waitForJSandJQueryToLoad(driver);
+			}
+			objGoodsObjects.ArticleBox.sendKeys(ranArticle);
+			int min = 1, max = 30;
+			Random rand1 = new Random();
+			int Random1 = rand1.nextInt((max - min) + 1) + min;
+			String RandomQty = Integer.toString(Random1);
+			objGoodsObjects.TransferQuantity.sendKeys(RandomQty);
+			objGoodsObjects.SearchAndAdd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.CheckboxClick.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.AddToList.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.SubmitButton.click();
+			//waitForJSandJQueryToLoad(driver);
+			if(objGoodsObjects.MoreAcceptQuantity.isDisplayed())
+			{
+				objGoodsObjects.AcceptQuantity.click();
+				waitForJSandJQueryToLoad(driver); 
+				//objGoodsObjects.CloseWeightedMessage.click();
+				//waitForJSandJQueryToLoad(driver);
+				//objGoodsObjects.ChilledTemp.sendKeys("1");
+				//waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.NextButton.click();
+				waitForJSandJQueryToLoad(driver); 
+				/*if(objGoodsObjects.NoRecordsweb.isDisplayed())
+				{
+					objGoodsObjects.CloseErrorMessage.click();
+				}*/
+				objGoodsObjects.FinishButton.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.CloseSuccessMessage.click();
+				waitForJSandJQueryToLoad(driver);
+			}
+			else
+			{
+				//objGoodsObjects.CloseWeightedMessage.click();
+				//waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.NextButton.click();
+				waitForJSandJQueryToLoad(driver);
+				objGoodsObjects.FinishButton.click();
+				waitForJSandJQueryToLoad(driver); 
+				objGoodsObjects.CloseSuccessMessage.click();
+				waitForJSandJQueryToLoad(driver);
+			}
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			String tempPrevSoh="";
+			String tempNewSoh="";
+			String tempPrevSoh1="";
+			String tempNewSoh1="";
+			String PrevSOHdb="";
+			String	PrevSOHdb1 ="";
+			String NewSOHdb="";
+			String Childdb="";
+			String AdjQty="";
+			String count="";
+			String Childadjusted="";
+			waitFor(2);
+			//navToGoods(status);
+			//waitForJSandJQueryToLoad(driver);
+			boolean NoRecords=true;
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver);
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the CPBD Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				//System.out.println("Listing the Application records for Parent Article Started");
+
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results = sql.executeQuery(getContext(),Records);
+				objGoodsPage.ApplicationRecordsIBT(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results2 = sql.executeQuery(getContext(),Quantity);
+				objGoodsPage.SOHValues(objGoodsObjects, results, results2, tempNewSoh,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the RTV performed for a HAWA article type in Goods Movement Summary Report")
+	public void VerifyGoodsRTVHAWA()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		TestStatus status = getTestStatus();
+		try{
+			waitFor(1);
+			navToGoods(status);
+			waitFor(5);
+			objGoodsPage.clickOnRTV(objGoodsObjects,driver);
+			waitForJSandJQueryToLoad(driver);
+			String all_articles_sql = data.getText("HAWA");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.RTVArticlesBox.clear();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.RTVArticlesBox.sendKeys(ranArticle);
+			objGoodsObjects.RTVSearchAdd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.RTVYesButton.click();
+			waitForJSandJQueryToLoad(driver);
+			selectByValue(objGoodsObjects.RTVReason,"Damage Stock");
+			objGoodsObjects.RTVQuantity.clear();
+			int min = 1, max = 20;
+			Random rand1 = new Random();
+			int Random1 = rand1.nextInt((max - min) + 1) + min;
+			String RandomQty = Integer.toString(Random1);
+			objGoodsObjects.RTVQuantity.sendKeys(RandomQty);
+			waitForElement(objGoodsObjects.RTVFinalise,driver);
+			objGoodsObjects.RTVFinalise.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.OKFinalised.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.RTVLastokButton.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			String tempNewSoh="";
+			String PrevSOHdb="";
+			String NewSOHdb="";
+			String AdjQty="";
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(ranArticle);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			//waitForJSandJQueryToLoad(driver);  
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the HAWA Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results = sql.executeQuery(getContext(),Records);
+				objGoodsPage.ApplicationRecordsIBT(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results2 = sql.executeQuery(getContext(),Quantity);
+				objGoodsPage.SOHValues(objGoodsObjects, results, results2, tempNewSoh,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the RTV performed for a PBD article type in Goods Movement Summary Report")
+	public void VerifyGoodsRTVPBD()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		TestStatus status = getTestStatus();
+		try{
+			waitFor(1);
+			navToGoods(status);
+			waitFor(1);
+			objGoodsPage.clickOnRTV(objGoodsObjects,driver);
+			String all_articles_sql = data.getText("PBD");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.RTVArticlesBox.clear();
+			objGoodsObjects.RTVArticlesBox.sendKeys(ranArticle);
+			objGoodsObjects.RTVSearchAdd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.RTVYesButton.click();
+			waitForJSandJQueryToLoad(driver);
+			selectByValue(objGoodsObjects.RTVReason,"Damage Stock");
+			//objGoodsObjects.OrderableUOM.click();
+			objGoodsObjects.RTVQuantity.clear();
+			int min = 1, max = 20;
+			Random rand1 = new Random();
+			int Random1 = rand1.nextInt((max - min) + 1) + min;
+			String Qty = Integer.toString(Random1);
+			/*objGoodsObjects.RTVQuantity.sendKeys(RandomQty);
+			String Qty ="15";*/
+			objGoodsObjects.RTVQuantity.sendKeys(Qty);
+			waitForElement(objGoodsObjects.RTVFinalise,driver);
+			objGoodsObjects.RTVFinalise.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.OKFinalised.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.RTVLastokButton.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			String tempNewSoh="";
+			String PrevSOHdb="";
+			String NewSOHdb="";
+			String AdjQty="";
+			String Parent=ranArticle;
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(Parent);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			/*int size =objGoodsObjects.Add.size();
+			if (size != 1) 
+			{
+				objGoodsPage.selectNotRanged(objGoodsObjects, size, Parent);
+			}
+			waitFor(1);*/
+			waitFor(3);
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the PBD Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results = sql.executeQuery(getContext(),Records);
+				System.out.println(results);
+				objGoodsPage.ApplicationRecordsIBT(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results2 = sql.executeQuery(getContext(),Quantity);
+				//String OM=data.getText("ArticleOM").replace("Random",ranArticle);;
+				//results3 = sql.executeQuery(getContext(),OM);
+				objGoodsPage.SOHValuesRTV(objGoodsObjects, Qty,results, results2, tempNewSoh,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the RTV performed for a PBD article type in Goods Movement Summary Report")
+	public void VerifyGoodsRTVPBDHigherUOM()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		TestStatus status = getTestStatus();
+		try{
+			waitFor(1);
+			navToGoods(status);
+			waitFor(1);
+			objGoodsPage.clickOnRTV(objGoodsObjects,driver);
+			String all_articles_sql = data.getText("PBD");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.RTVArticlesBox.clear();
+			objGoodsObjects.RTVArticlesBox.sendKeys(ranArticle);
+			objGoodsObjects.RTVSearchAdd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.RTVYesButton.click();
+			waitForJSandJQueryToLoad(driver);
+			selectByValue(objGoodsObjects.RTVReason,"Damage Stock");
+			objGoodsObjects.OrderableUOM.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.RTVQuantity.clear();
+			int min = 1, max = 20;
+			Random rand1 = new Random();
+			int Random1 = rand1.nextInt((max - min) + 1) + min;
+			String Qty = Integer.toString(Random1);
+			/*objGoodsObjects.RTVQuantity.sendKeys(RandomQty);
+			String Qty ="10";*/
+			objGoodsObjects.RTVQuantity.sendKeys(Qty);
+			waitForElement(objGoodsObjects.RTVFinalise,driver);
+			objGoodsObjects.RTVFinalise.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.OKFinalised.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.RTVLastokButton.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			String tempNewSoh="";
+			String PrevSOHdb="";
+			String NewSOHdb="";
+			String AdjQty="";
+			String Parent=ranArticle;
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(Parent);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			/*int size =objGoodsObjects.Add.size();
+			if (size != 1) 
+			{
+				objGoodsPage.selectNotRanged(objGoodsObjects, size, Parent);
+			}
+			waitFor(1);*/
+			waitFor(3);
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the PBD Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results = sql.executeQuery(getContext(),Records);
+				objGoodsPage.ApplicationRecordsIBT(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);;
+				results2 = sql.executeQuery(getContext(),Quantity);
+				String OM=data.getText("ArticleOM").replace("Random",ranArticle);;
+				results3 = sql.executeQuery(getContext(),OM);
+				objGoodsPage.SOHValuesRTVHigherUOM(objGoodsObjects,Qty, results, results2,results3, tempNewSoh,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the RTV performed for a litre article in Goods Movement Summary Report")
+	public void VerifyGoodsRTVLitreArticles() {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+5;}
+		TestStatus status = getTestStatus();
+		try{
+			waitFor(1);
+			navToGoods(status);
+			waitFor(1);
+			objGoodsPage.clickOnRTV(objGoodsObjects,driver);
+			String all_articles_sql = data.getText("Litre");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.RTVArticlesBox.clear();
+			objGoodsObjects.RTVArticlesBox.sendKeys(ranArticle);
+			objGoodsObjects.RTVSearchAdd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.RTVYesButton.click();
+			waitForJSandJQueryToLoad(driver);
+			selectByValue(objGoodsObjects.RTVReason,"Damage Stock");
+			objGoodsObjects.RTVQuantity.clear();
+			int min = 1, max = 20;
+			Random rand1 = new Random();
+			int Random1 = rand1.nextInt((max - min) + 1) + min;
+			String Qty = Integer.toString(Random1);
+			//String Qty="10";
+			objGoodsObjects.RTVQuantity.sendKeys(Qty);
+			waitForElement(objGoodsObjects.RTVFinalise,driver);
+			objGoodsObjects.RTVFinalise.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.OKFinalised.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.RTVLastokButton.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			String tempNewSoh="";
+			String PrevSOHdb="";
+			String NewSOHdb="";
+			String AdjQty="";
+			String Parent=ranArticle;
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(Parent);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			/*int size =objGoodsObjects.Add.size();
+			if (size != 1) 
+			{
+				objGoodsPage.selectNotRanged(objGoodsObjects, size, Parent);
+			}
+			waitFor(1);*/
+			waitFor(3);
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Litre Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					waitForJSandJQueryToLoad(driver);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results = sql.executeQuery(getContext(),Records);
+				objGoodsPage.ApplicationRecordsIBT(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results2 = sql.executeQuery(getContext(),Quantity);
+				objGoodsPage.SOHValuesRTV(objGoodsObjects,Qty, results, results2, tempNewSoh,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));			}
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Validating the RTV performed for a litre articles for Orderable UOM in Goods Movement Summary Report")
+	public void VerifyGoodsRTVLitreArticlesForOrderableUOM()  {
+		if(GoodsSummaryArtpreCount2==-1){
+			MCcount =MCcount+4;}
+		TestStatus status = getTestStatus();
+		try{
+			waitFor(1);
+			navToGoods(status);
+			waitFor(1);
+			objGoodsPage.clickOnRTV(objGoodsObjects,driver);
+			String all_articles_sql = data.getText("OrderableUOMLitre");
+			results = sql.executeQuery(getContext(), all_articles_sql);
+			int num = common.RandomFromDB(results);
+			String ranArticle = results.get(num).get(0).toString();
+			objGoodsObjects.RTVArticlesBox.clear();
+			objGoodsObjects.RTVArticlesBox.sendKeys(ranArticle);
+			objGoodsObjects.RTVSearchAdd.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.RTVYesButton.click();
+			waitForJSandJQueryToLoad(driver);
+			selectByValue(objGoodsObjects.RTVReason,"Damage Stock");
+			objGoodsObjects.OrderableUOM.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.RTVQuantity.clear();
+			int min = 1, max = 20;
+			Random rand1 = new Random();
+			int Random1 = rand1.nextInt((max - min) + 1) + min;
+			String Qty = Integer.toString(Random1);
+			//String Qty="15";
+			objGoodsObjects.RTVQuantity.sendKeys(Qty);
+			waitForElement(objGoodsObjects.RTVFinalise,driver);
+			objGoodsObjects.RTVFinalise.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.OKFinalised.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsObjects.RTVLastokButton.click();
+			waitForJSandJQueryToLoad(driver);
+			objGoodsPage.ClickonReport(objGoodsObjects,driver);
+			String tempNewSoh="";
+			String PrevSOHdb="";
+			String NewSOHdb="";
+			String AdjQty="";
+			String Parent=ranArticle;
+			String FromDateF = common.ConvertdateFormat(-6);
+			objGoodsObjects.SearchBox.sendKeys(Parent);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+			/*int size =objGoodsObjects.Add.size();
+			if (size != 1) 
+			{
+				objGoodsPage.selectNotRanged(objGoodsObjects, size, Parent);
+			}
+			waitFor(1);*/
+			click(objGoodsObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);
+			try
+			{
+				if((objGoodsObjects.NoRecordsweb).isDisplayed())
+				{
+					boolean NoRecords = false;
+					htmlToExtent(cName,mName,extLogger,driver, "No Records are Available for the Litre Article entered ;;;Pass");
+					click(objGoodsObjects.CloseError);
+					waitForJSandJQueryToLoad(driver);
+					log.info("-----------------Logout from Application------------------");
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+					status.assertAll();
+				}
+			}
+			catch (Exception e1)
+			{
+				waitFor(0.2);
+				click(objGoodsObjects.Sort);
+				click(objGoodsObjects.Sort);
+				String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results = sql.executeQuery(getContext(),Records);
+				objGoodsPage.ApplicationRecordsIBT(objGoodsObjects, results, PrevSOHdb, NewSOHdb, AdjQty,driver);
+				String Quantity=data.getText("Compare").replace("FILTERDATE",FromDateF).replace("Random",ranArticle);
+				results2 = sql.executeQuery(getContext(),Quantity);
+				//String OM=data.getText("ArticleOM").replace("Random",ranArticle);;
+				//results3 = sql.executeQuery(getContext(),OM);
+				objGoodsPage.SOHValuesRTVHigherUOM(objGoodsObjects, Qty,results, results2,results3, tempNewSoh,driver);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(GoodsSummaryArtScenarios, GoodsSummaryArttestname,driver));
+			}
+		}
+
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		status.assertAll();
+	}
+
+	protected List<List<Object>> removeExtraSpaces(List<List<Object>> one,int position) throws IOException {
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next(); 
+			for(int i =0;i<elem.size();i++) {
+				if(i==position){
+					String s = elem.get(i).toString().replaceAll("\\s{2,}"," ");
+					elem.set(i, s);
+				}
+			}
+		}
+		return one;
+	}
+
+	public void navToGoods(TestStatus status) throws IOException,
+	AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		/*Report_AddStep("testcase",
+			"---------------Login into Application--------------------",
+			"", "", "Pass");*/
+		loginPage = new WoWLoginPage().createPage(driver, getContext(),
+				log, status, data, WoWLoginPage.class);
+		if (System.getProperty("store") == null) {
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : "+ getContext().getStringProperty("store")+";;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : "+ getContext().getStringProperty("store"), "", "", "Pass");
+			// articleLookUpPage =
+			// loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objGoodsPage = loginPage.navToGoods(getContext()
+					.getStringProperty("store"),driver);
+		} else {
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : " + store, "","", "Pass");
+			// articleLookUpPage = loginPage.navToArticlLookUp(store);
+			objGoodsPage = loginPage.navToGoods(store,driver);
+		}
+		log.info("-------------Navigate to Goods Movement Summary Page------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to Goods Movement Summary Page--------------------;;;Pass");
+		/*Report_AddStep(
+			"testcase",
+			"----------------Navigate to Stocktake Page--------------------",
+			"", "", "Pass");*/
+		objGoodsPage.ClickonReport(objGoodsObjects,driver);
+	}
+
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		waitFor(1);
+		System.out.println("test1 - beforemethod");
+		mName=m9.getName().toString().trim();			
+		if(!methodList.contains(m9.getName().toString().trim())){
+			methodList.add(m9.getName().toString().trim());
+			extLogger = extReport.startTest(m9.getName().toString().trim());
+		}
+
+		initializeTestcontext();
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		}else{
+			String title = driver.getCurrentUrl();
+			if(title.contains("logginOut"))
+			{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+			}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+						WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+						scrolltoElement(home,driver);
+						home.click();
+						TimeUnit.SECONDS.sleep(5);
+						loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+						driver.navigate().refresh();
+						TimeUnit.SECONDS.sleep(5);}
+				}
+			}
+		}
+		isFirstTest=false;
+		//driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser")); 
+		setDriver(driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		GoodsSummaryArttestname = m9.getName().toString().trim();
+		GoodsSummaryArttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		objGoodsObjects = PageFactory.initElements(this.driver,
+				GoodsMovementObjects.class);
+		objGoodsPage = PageFactory.initElements(this.driver,
+				GoodsMovementPage.class);
+		stockAdjTests = PageFactory.initElements(this.driver,
+				StockAdjustmentTests.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+	}
+
+	@BeforeClass
+	public void loadXMLFile(){	
+		//initializeTestcontext();
+		System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir")	+ "\\TestData\\NGBO\\GoodsSummary.xml");
+		customreport.createExtentReport();
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+	}
+
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitFor(1);
+		System.out.println("afterclass");
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(), MCcount);
+		//System.out.println(extentList);
+		//System.out.println(methodList);
+		extReport.endTest(extLogger);
+		extReport.flush();
+		removeDriver();
+		closeDriver(driver);
+		moduleName.put("Modules", GoodsSummaryArtModules);
+		waitFor(1);
+		int goodsArtM=MCcount;
+		GoodsSummaryArtMC=""+goodsArtM;
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+		System.out.println("AfterMethod");
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				//System.out.println();
+
+			}
+
+		waitFor(1);
+		/*Date ppMEndDate1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		GoodsSummaryArtMEndDate = dateFormat.format(ppMEndDate1);
+		//System.out.println(GoodsSummaryArtMEndDate); // 12/01/2011 4:48:16 PM
+		String EnhancedArtTime = GoodsSummaryArttestdesc +";"+ GoodsSummaryArtStartdat +";" + GoodsSummaryArtMEndDate;
+		GoodsSummaryArtTime.put(GoodsSummaryArttestname, EnhancedArtTime);
+		//Report_AddStep("testcase", "Running Completed Status","","", getResultStatusName(result.getStatus()));
+		waitFor(4);
+		closeDriver(driver);*/
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")){
+			int cnt = GoodsSummaryArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			GoodsSummaryArtpreCount2++;
+		}
+		/*waitFor(1);
+		if((getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")) && GoodsSummaryArtpreCount2!=reCount){
+			waitFor(1);
+			GoodsSummaryArtTime.removeAll(GoodsSummaryArttestname);
+			waitFor(1);
+			GoodsSummaryArtScenarios.removeAll(GoodsSummaryArttestname);
+		}
+		waitFor(1);*/
+		if(GoodsSummaryArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+			GoodsSummaryArtpreCount2=-1;
+		}
+		waitFor(1);
+	}
+}
+
+
+

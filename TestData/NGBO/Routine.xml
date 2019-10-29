@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+	<TCName name="VerifyReportWeekly">
+		<alldept>
+<![CDATA[select reason_desc,total_articles_rsn_cd,article_percentage_rsn_cd from sp_wow_generate_overstock_weekly_report('{"iv_department":"","iv_start_date":"20180514","iv_end_date":"20180520"}')]]>
+		</alldept>
+</TCName>
+
+
+<TCName name="VerifyReportDailyAllDepartments">
+		<alldeptdaily>
+<![CDATA[select article_number,promo_indicator,article_description,(soh  || ' ' || soh_uom) as Final,mpl,capacity from sp_wow_generate_overstock_daily_report('{"iv_department":"","iv_date":"20180514"}')]]>
+		</alldeptdaily>
+</TCName>
+
+<TCName name="VerifyReportDailySingleDepartment">
+		<alldeptdaily>
+<![CDATA[select article_number,promo_indicator,article_description,(soh  || ' ' || soh_uom) as Final,mpl,capacity from sp_wow_generate_overstock_daily_report('{"iv_department":"45","iv_date":"20180514"}')]]>
+		</alldeptdaily>
+</TCName>
+
+
+<TCName name="verifyreportdailyRW">
+		<alldeptdaily>
+<![CDATA[select article_number,promo_indicator,article_description,soh,soh_uom,mpl,capacity from sp_wow_generate_overstock_daily_report('{"iv_department":"","iv_date":"20180122"}') where article_number='12311']]>
+		</alldeptdaily>
+		<getArticleType>
+<![CDATA[select * from ZWOWC_ARTICLE_MASTER where matnr in ('art_no')]]>		
+		</getArticleType>
+</TCName>
+
+
+
+<TCName name="verifyreportdailyPBD">
+		<alldeptdaily>
+<![CDATA[select article_number,promo_indicator,article_description,soh,soh_uom,mpl,capacity from sp_wow_generate_overstock_daily_report('{"iv_department":"","iv_date":"20180222"}') where article_number='numbr']]>
+		</alldeptdaily>
+		<getArticleType>
+<![CDATA[select * from ZWOWC_ARTICLE_MASTER where matnr in ('art_no')]]>		
+		</getArticleType>
+</TCName>
+
+<TCName name="verifyreportdailyLitre">
+		<alldeptdaily>
+<![CDATA[select article_number,promo_indicator,article_description,soh,soh_uom,mpl,capacity from sp_wow_generate_overstock_daily_report('{"iv_department":"","iv_date":"20180222"}') where article_number='numbr']]>
+		</alldeptdaily>
+		<getArticleType>
+<![CDATA[select matnr,meins from ZWOWC_ARTICLE_UOM where matnr in('art_no') and meins='L']]>		
+		</getArticleType>
+</TCName>
+
+
+<TCName name="verifyreportdailyWeighted">
+		<alldeptdaily>
+<![CDATA[select article_number,promo_indicator,article_description,soh,soh_uom,mpl,capacity from sp_wow_generate_overstock_daily_report('{"iv_department":"","iv_date":"20180222"}') where article_number='numbr']]>
+		</alldeptdaily>
+		<getArticleType>
+<![CDATA[select matnr,weighted_ind from zwowc_article_master where matnr in ('art_no')]]>		
+		</getArticleType>
+</TCName>
+
+
+<TCName name="verifyreportdailyKG">
+		<alldeptdaily>
+<![CDATA[select article_number,promo_indicator,article_description,soh,soh_uom,mpl,capacity from sp_wow_generate_overstock_daily_report('{"iv_department":"","iv_date":"20180222"}') where article_number='numbr']]>
+		</alldeptdaily>
+		<getArticleType>
+
+<![CDATA[select a.matnr,a.meins from zwowc_article_uom a, zwowc_Article_master b where a.matnr= b.matnr]]>		
+		</getArticleType>
+</TCName>
+
+
+<TCName name="partialdepartmentdaily">
+		<partialdeptdaily>
+<![CDATA[SELECT 
+    LGR.REASON_CODE AS overstock_reason, 
+    LGR.REASON_NAME,
+    LGR.REASON_DESC, 
+    LGR.REASON_COMMENTS, 
+    LGR.PRIORITY, 
+    ZAM.MATNR AS article_number,
+    COALESCE(AED.UOM_DESC,ZAM.ARTICLE_DESC) AS article_description, 
+    case when zam.pbd_ind='Y' then cast(SOH.STORE_SOH/ZAU.PACK_SIZE as integer) else SOH.STORE_SOH end case AS soh, 
+    ZAU.MEINH as soh_uom, 
+    fn_wow_get_mpl_by_matnr(ZAL.MATNR,ZAU.MEINH) AS mpl,
+    fn_wow_get_sc_by_matnr(ZAL.MATNR,ZAU.MEINS) AS shelf_capacity,
+    fn_wow_get_promotion_flag(ZAM.MATNR) AS promo_flag, 
+    ZGI.PROMO_IND
+FROM ZWOWO_GAPSCAN_ITM ZGI
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (ZGI.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZAM.MATNR = ZAL.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAL.MATNR = ZAU.MATNR)
+JOIN ZWOWO_GAPSCAN_HDR ZAH ON (ZGI.MSG_TYPE = ZAH.MSG_TYPE AND ZGI.QUERY_DATE = ZAH.QUERY_DATE AND ZGI.QUERY_TIME = ZAH.QUERY_TIME)
+JOIN ZWOWC_OVERSTOCK_REASON LGR ON (ZGI.PRIORITY = LGR.REASON_CODE AND ZGI.PRIORITY_DESC = LGR.REASON_NAME)
+LEFT JOIN LOCAL_WOW_SOH SOH ON (SOH.ARTICLE=ZGI.MATNR)
+LEFT JOIN 
+    (
+    SELECT DISTINCT AED.MATNR, AED.MEINH, AED.UOM_DESC
+    FROM ZWOWC_ARTICLE_EAN_DESC AED
+    JOIN ZWOWO_GAPSCAN_ITM ZGI ON (ZGI.MATNR=AED.MATNR AND ZGI.MSG_TYPE = 'OSRP')
+    ) AED ON (AED.MATNR=ZAU.MATNR AND AED.MEINH=ZAU.MEINH)
+
+WHERE ZAU.BASE_UOM_IND = 'Y'
+    AND ZGI.MSG_TYPE = 'OSRP'
+    AND (ZGI.QUERY_DATE = '20180514')
+  
+ORDER BY LGR.PRIORITY;]]>
+		</partialdeptdaily>
+		<getArticleType>
+<![CDATA[select * from ZWOWC_ARTICLE_MASTER where matnr in ('art_no')]]>		
+		</getArticleType>
+</TCName>
+
+
+
+<TCName name="primarydepartmentdaily">
+		<primarydeptdaily>
+<![CDATA[SELECT 
+    LGR.REASON_CODE AS overstock_reason, 
+    LGR.REASON_NAME,
+    LGR.REASON_DESC, 
+    LGR.REASON_COMMENTS, 
+    LGR.PRIORITY, 
+    ZAM.MATNR AS article_number,
+    COALESCE(AED.UOM_DESC,ZAM.ARTICLE_DESC) AS article_description, 
+    case when zam.pbd_ind='Y' then cast(SOH.STORE_SOH/ZAU.PACK_SIZE as integer) else SOH.STORE_SOH end case AS soh, 
+    ZAU.MEINH as soh_uom, 
+    fn_wow_get_mpl_by_matnr(ZAL.MATNR,ZAU.MEINH) AS mpl,
+    fn_wow_get_sc_by_matnr(ZAL.MATNR,ZAU.MEINS) AS shelf_capacity,
+    fn_wow_get_promotion_flag(ZAM.MATNR) AS promo_flag, 
+    ZGI.PROMO_IND
+FROM ZWOWO_GAPSCAN_ITM ZGI
+JOIN ZWOWC_ARTICLE_MASTER ZAM ON (ZGI.MATNR = ZAM.MATNR)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (ZAM.MATNR = ZAL.MATNR)
+JOIN ZWOWC_ARTICLE_UOM ZAU ON (ZAL.MATNR = ZAU.MATNR)
+JOIN ZWOWO_GAPSCAN_HDR ZAH ON (ZGI.MSG_TYPE = ZAH.MSG_TYPE AND ZGI.QUERY_DATE = ZAH.QUERY_DATE AND ZGI.QUERY_TIME = ZAH.QUERY_TIME)
+JOIN ZWOWC_OVERSTOCK_REASON LGR ON (ZGI.PRIORITY = LGR.REASON_CODE AND ZGI.PRIORITY_DESC = LGR.REASON_NAME)
+LEFT JOIN LOCAL_WOW_SOH SOH ON (SOH.ARTICLE=ZGI.MATNR)
+LEFT JOIN 
+    (
+    SELECT DISTINCT AED.MATNR, AED.MEINH, AED.UOM_DESC
+    FROM ZWOWC_ARTICLE_EAN_DESC AED
+    JOIN ZWOWO_GAPSCAN_ITM ZGI ON (ZGI.MATNR=AED.MATNR AND ZGI.MSG_TYPE = 'OSRP')
+    ) AED ON (AED.MATNR=ZAU.MATNR AND AED.MEINH=ZAU.MEINH)
+
+WHERE ZAU.BASE_UOM_IND = 'Y'
+    AND ZGI.MSG_TYPE = 'OSRP'
+    AND (ZGI.QUERY_DATE = '20180228')
+  
+ORDER BY LGR.PRIORITY;]]>
+		</primarydeptdaily>	
+		<getArticleType>
+<![CDATA[select * from ZWOWC_ARTICLE_MASTER where matnr in ('art_no')]]>		
+		</getArticleType>
+</TCName>
+
+
+
+
+
+
+
+<TCName name="verifyReportCurrentWeekAllDepartment">
+<alldeptcurrentweek>
+<![CDATA[select * from sp_wow_generate_overstock_weekly_report('{"iv_department":"","iv_start_date":"weekstart","iv_end_date":"weekenddate"}')]]>
+</alldeptcurrentweek>
+<getArticleType>
+<![CDATA[select a.matnr,a.meins from zwowc_article_uom a, zwowc_Article_master b where a.matnr= b.matnr]]>		
+		</getArticleType>
+<setmonday>
+<![CDATA[set datefirst 1;select DATEPART(dw,getdate()) as weekday]]>		
+		</setmonday>
+<currentweek>
+<![CDATA[declare @dw_number smallint,
+       @to_first_dw smallint,
+       @to_last_dw smallint,
+       @wk_begin_date datetime,
+       @wk_end_date datetime
+
+select @dw_number = datepart(dw,getdate()) 
+
+select @to_first_dw = (@dw_number -2) * -1,  
+      @to_last_dw = 8 - @dw_number          
+
+select @wk_begin_date = dateadd(dd,@to_first_dw,getdate()),
+      @wk_end_date = dateadd(dd,@to_last_dw,getdate())
+
+select @wk_begin_date, @wk_end_date]]>		
+		</currentweek>
+</TCName>
+
+<TCName name="verifyReportLastWeekAllDepartment">
+<alldeptcurrentweek>
+<![CDATA[select * from sp_wow_generate_overstock_weekly_report('{"iv_department":"","iv_start_date":"weekstart","iv_end_date":"weekenddate"}')]]>
+</alldeptcurrentweek>
+<getArticleType>
+<![CDATA[select a.matnr,a.meins from zwowc_article_uom a, zwowc_Article_master b where a.matnr= b.matnr]]>		
+		</getArticleType>
+		
+<currentweek>
+<![CDATA[declare @dw_number smallint,
+       @to_first_dw smallint,
+       @to_last_dw smallint,
+       @wk_begin_date datetime,
+       @wk_end_date datetime
+
+select @dw_number = datepart(dw,getdate())  
+
+select @to_first_dw = (@dw_number +5) * -1,  
+      @to_last_dw = 1 - @dw_number          
+
+select @wk_begin_date = dateadd(dd,@to_first_dw,getdate()),
+      @wk_end_date = dateadd(dd,@to_last_dw,getdate())
+
+select @wk_begin_date, @wk_end_date]]>		
+		</currentweek>	
+</TCName>
+
+<TCName name="verifyReportCurrentWeekPartialDepartment">
+<alldeptcurrentweek>
+<![CDATA[select * from sp_wow_generate_overstock_weekly_report('{"iv_department":"departmentsfromlist","iv_start_date":"weekstart","iv_end_date":"weekenddate"}')]]>
+</alldeptcurrentweek>
+<getArticleType>
+
+<![CDATA[select a.matnr,a.meins from zwowc_article_uom a, zwowc_Article_master b where a.matnr= b.matnr]]>		
+</getArticleType>
+
+<setmonday>
+<![CDATA[set datefirst 1;select DATEPART(dw,getdate()) as weekday]]>		
+		</setmonday>
+<currentweek>
+<![CDATA[declare @dw_number smallint,
+       @to_first_dw smallint,
+       @to_last_dw smallint,
+       @wk_begin_date datetime,
+       @wk_end_date datetime
+
+select @dw_number = datepart(dw,getdate()) 
+
+select @to_first_dw = (@dw_number -2) * -1,  
+      @to_last_dw = 8 - @dw_number          
+
+select @wk_begin_date = dateadd(dd,@to_first_dw,getdate()),
+      @wk_end_date = dateadd(dd,@to_last_dw,getdate())
+
+select @wk_begin_date, @wk_end_date]]>		
+		</currentweek>
+
+		
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in (departmentsfromlist)]]>
+</deptcode>
+</TCName>
+
+<TCName name="verifyReportLastWeekPartialDepartment">
+<alldeptcurrentweek>
+<![CDATA[select * from sp_wow_generate_overstock_weekly_report('{"iv_department":"departmentsfromlist","iv_start_date":"weekstart","iv_end_date":"weekenddate"}')]]>
+</alldeptcurrentweek>
+<getArticleType>
+
+<![CDATA[select a.matnr,a.meins from zwowc_article_uom a, zwowc_Article_master b where a.matnr= b.matnr]]>		
+</getArticleType>
+		
+<currentweek>
+<![CDATA[declare @dw_number smallint,
+       @to_first_dw smallint,
+       @to_last_dw smallint,
+       @wk_begin_date datetime,
+       @wk_end_date datetime
+
+select @dw_number = datepart(dw,getdate())  
+
+select @to_first_dw = (@dw_number +5) * -1,  
+      @to_last_dw = 1 - @dw_number          
+
+select @wk_begin_date = dateadd(dd,@to_first_dw,getdate()),
+      @wk_end_date = dateadd(dd,@to_last_dw,getdate())
+
+select @wk_begin_date, @wk_end_date]]>		
+		</currentweek>	
+		
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in (departmentsfromlist)]]>
+</deptcode>
+</TCName>
+
+<!-- <TCName name="verifyReportLastWeekPartialDepartment">
+<alldeptcurrentweek>
+<![CDATA[select * from sp_wow_generate_overstock_weekly_report('{"iv_department":"departmentsfromlist","iv_start_date":"todaysdate","iv_end_date":""}')]]>
+</alldeptcurrentweek>
+<getArticleType>
+
+<![CDATA[select a.matnr,a.meins from zwowc_article_uom a, zwowc_Article_master b where a.matnr= b.matnr]]>		
+</getArticleType>
+		
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in (departmentsfromlist)]]>
+</deptcode>
+</TCName> -->
+
+<TCName name="verifyReportCurrentWeekPrimaryDepartment">
+<alldeptcurrentweek>
+<![CDATA[select * from sp_wow_generate_overstock_weekly_report('{"iv_department":"departmentsfromlist","iv_start_date":"weekstart","iv_end_date":"weekenddate"}')]]>
+</alldeptcurrentweek>
+<getArticleType>
+
+<![CDATA[select a.matnr,a.meins from zwowc_article_uom a, zwowc_Article_master b where a.matnr= b.matnr]]>		
+</getArticleType>
+		
+<currentweek>
+<![CDATA[declare @dw_number smallint,
+       @to_first_dw smallint,
+       @to_last_dw smallint,
+       @wk_begin_date datetime,
+       @wk_end_date datetime
+
+select @dw_number = datepart(dw,getdate()) 
+
+select @to_first_dw = (@dw_number -2) * -1,  
+      @to_last_dw = 8 - @dw_number          
+
+select @wk_begin_date = dateadd(dd,@to_first_dw,getdate()),
+      @wk_end_date = dateadd(dd,@to_last_dw,getdate())
+
+select @wk_begin_date, @wk_end_date]]>		
+		</currentweek>
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in (departmentsfromlist)]]>
+</deptcode>
+</TCName>
+
+<TCName name="verifyReportLastWeekPrimaryDepartment">
+<alldeptcurrentweek>
+<![CDATA[select * from sp_wow_generate_overstock_weekly_report('{"iv_department":"departmentsfromlist","iv_start_date":"weekstart","iv_end_date":"weekenddate"}')]]>
+</alldeptcurrentweek>
+<getArticleType>
+
+<![CDATA[select a.matnr,a.meins from zwowc_article_uom a, zwowc_Article_master b where a.matnr= b.matnr]]>		
+</getArticleType>
+		
+<currentweek>
+<![CDATA[declare @dw_number smallint,
+       @to_first_dw smallint,
+       @to_last_dw smallint,
+       @wk_begin_date datetime,
+       @wk_end_date datetime
+
+select @dw_number = datepart(dw,getdate())  
+
+select @to_first_dw = (@dw_number +5) * -1,  
+      @to_last_dw = 1 - @dw_number          
+
+select @wk_begin_date = dateadd(dd,@to_first_dw,getdate()),
+      @wk_end_date = dateadd(dd,@to_last_dw,getdate())
+
+select @wk_begin_date, @wk_end_date]]>		
+		</currentweek>	
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in (departmentsfromlist)]]>
+</deptcode>
+</TCName>
+
+<TCName name="verifyReportDailyAllDepartment">
+		<alldeptdaily>
+<![CDATA[select article_number,promo_indicator,article_description,round(soh,2),mpl,capacity from sp_wow_generate_overstock_daily_report('{"iv_department":"","iv_date":"todaysdate"}')]]>
+		</alldeptdaily>
+		<getArticleType>
+<![CDATA[select * from ZWOWC_ARTICLE_MASTER where matnr in ('art_no')]]>		
+		</getArticleType>
+</TCName>
+
+<TCName name="verifyReportDailyPartialDepartment">
+		<alldeptdaily>
+<![CDATA[select article_number,promo_indicator,article_description,round(soh,2),mpl,capacity from sp_wow_generate_overstock_daily_report('{"iv_department":"departmentsfromlist","iv_date":"todaysdate"}')]]>
+		</alldeptdaily>
+		<getArticleType>
+<![CDATA[select * from ZWOWC_ARTICLE_MASTER where matnr in ('art_no')]]>		
+		</getArticleType>
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in (departmentsfromlist)]]>
+</deptcode>
+</TCName>
+
+<TCName name="verifyReportDailyPrimaryDepartment">
+		<alldeptdaily>
+<![CDATA[select article_number,promo_indicator,article_description,round(soh,2),mpl,capacity from sp_wow_generate_overstock_daily_report('{"iv_department":"departmentsfromlist","iv_date":"todaysdate"}')]]>
+		</alldeptdaily>
+		<getArticleType>
+<![CDATA[select * from ZWOWC_ARTICLE_MASTER where matnr in ('art_no')]]>		
+		</getArticleType>
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in (departmentsfromlist)]]>
+</deptcode>
+</TCName>
+
+>>>>>>> .r14141
+</configuration>

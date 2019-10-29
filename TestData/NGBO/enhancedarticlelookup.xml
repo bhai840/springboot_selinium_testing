@@ -1,0 +1,1792 @@
+<configuration>
+
+<TCName name = "enhancedPriceUnitDetails">
+<gettaxarticle>
+<![CDATA[select a.matnr,a.SELL_PRICE_GROUP,a.PRICE_LIST_DESC,a.TAX_RATE from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b where a.matnr=b.matnr 
+and a.alc_status in ('NA','RA','DA')]]>
+</gettaxarticle>
+<getproducearticle>
+<![CDATA[select a.matnr,a.SELL_PRICE_GROUP,a.PRICE_LIST_DESC,a.TAX_RATE from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,
+saap.ZWOWC_ART_SALES_PRICE d,saap.zwowc_article_uom_desc e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and a.alc_status in ('NA','RA','DA') 
+and c.dept='30' and d.meinh=e.meinh and b.BASE_UOM_IND='Y';]]>
+</getproducearticle>
+<getarticleliq>
+<![CDATA[select a.matnr,a.SELL_PRICE_GROUP,a.PRICE_LIST_DESC,a.TAX_RATE from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,
+saap.ZWOWC_ARTICLE_MASTER d where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr  and a.alc_status in ('NA','RA','DA') and c.dept='20' 
+and d.pbd_ind='Y' and b.BASE_UOM_IND='Y']]>
+</getarticleliq>
+<getarticlecig>
+<![CDATA[select a.matnr,a.SELL_PRICE_GROUP,a.PRICE_LIST_DESC,a.TAX_RATE from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,
+saap.ZWOWC_ARTICLE_MASTER d where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr  and a.alc_status in ('NA','RA','DA') and c.dept='27' 
+and d.pbd_ind='Y' and b.BASE_UOM_IND='Y']]>
+</getarticlecig>
+<verifypriceHistoryliq>
+<![CDATA[select a.matnr,d.datab,d.meinh,e.uom_desc,d.sales_price from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,
+saap.ZWOWC_ART_SALES_PRICE d,saap.zwowc_article_uom_desc e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and a.alc_status in 
+('NA','RA','DA') and c.dept='20' and d.meinh=e.meinh and b.BASE_UOM_IND='Y' and a.matnr='artno';]]>
+</verifypriceHistoryliq>
+<verifypriceHistorycig>
+<![CDATA[select a.matnr,d.datab,d.meinh,e.uom_desc,d.sales_price from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,
+saap.ZWOWC_ART_SALES_PRICE d,saap.zwowc_article_uom_desc e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and a.alc_status in 
+('NA','RA','DA') and c.dept='27' and d.meinh=e.meinh and b.BASE_UOM_IND='Y' and a.matnr='artno';]]>
+</verifypriceHistorycig>
+<verifypriceHistoryprod>
+<![CDATA[select a.matnr,d.datab,d.meinh,e.uom_desc,d.sales_price from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,
+saap.ZWOWC_ART_SALES_PRICE d,saap.zwowc_article_uom_desc e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and a.alc_status in 
+('NA','RA','DA') and d.meinh=e.meinh and b.BASE_UOM_IND='Y' and a.matnr='artno';]]>
+</verifypriceHistoryprod>
+<getchildart>
+<![CDATA[select a.matnr,a.SELL_PRICE_GROUP,a.PRICE_LIST_DESC,a.TAX_RATE,e.child_article from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,ZWOWC_ARTICLE_MASTER d, 
+saap.zwowc_article_child e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.alc_status in ('NA','RA','DA') and c.dept='30' and d.article_cat_id='10' 
+and d.mtart in('ZPRD','ZMEA','ZDEL') and b.BASE_UOM_IND='Y']]>
+</getchildart>
+<getparentart>
+<![CDATA[select d.matnr,a.SELL_PRICE_GROUP,a.PRICE_LIST_DESC,a.TAX_RATE, e.child_article,a.article_om ,e.child_article_qty from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,
+saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d, saap.zwowc_article_child e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr 
+and a.alc_status in ('NA','RA','DA') and c.dept='30' and d.article_cat_id='10' and d.item_linkage_ind='Y' and d.mtart in('ZPRD','ZMEA','ZDEL') and b.BASE_UOM_IND='Y' ]]>
+</getparentart>
+<verifyparentart>
+<![CDATA[select e.child_article,a.SELL_PRICE_GROUP,a.PRICE_LIST_DESC,a.TAX_RATE,a.matnr,a.article_om ,e.child_article_qty from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d, 
+saap.zwowc_article_child e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.alc_status in ('NA','RA','DA') and c.dept='30' and d.article_cat_id='10' and d.item_linkage_ind='Y' 
+and d.mtart in('ZPRD','ZMEA','ZDEL') and b.BASE_UOM_IND='Y' and e.child_article='artno']]>
+</verifyparentart>
+<verifyparentPH>
+<![CDATA[select c.child_article,d.datab,d.meinh,e.uom_desc,d.sales_price from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.ZWOWC_ARTICLE_CHILD c,saap.ZWOWC_ART_SALES_PRICE d,saap.zwowc_article_uom_desc e where a.matnr=b.matnr and b.matnr=c.CHILD_ARTICLE and c.child_article=d.matnr and d.meinh=e.meinh and  b.BASE_UOM_IND='Y' and c.matnr in 
+(select a.matnr from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d, 
+saap.zwowc_article_child e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.alc_status in ('NA','RA','DA') and d.item_linkage_ind='Y' and c.dept='30' and d.article_cat_id='10' 
+and d.mtart in('ZPRD','ZMEA','ZDEL') and b.BASE_UOM_IND='Y') and c.child_article='artno']]>
+</verifyparentPH>
+<verifyproddesc>
+<![CDATA[select d.article_desc,d.long_desc from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d, 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr  and a.alc_status in ('NA','RA','DA') and c.dept='30' and d.item_linkage_ind<>'Y'
+and b.BASE_UOM_IND='Y' and a.matnr='artno']]>
+</verifyproddesc>
+<verifyparentdesc>
+<![CDATA[select d.article_desc,d.long_desc from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d, 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr  and a.alc_status in ('NA','RA','DA') and c.dept='30'  and d.item_linkage_ind='Y' 
+and b.BASE_UOM_IND='Y' and a.matnr='artno']]>
+</verifyparentdesc>
+<verifyprodaEAN>
+<![CDATA[select e.ean11,e.meinh,b.meins,b.pack_size from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d,saap.ZWOWC_ARTICLE_EAN e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.alc_status in ('NA','RA','DA') and d.mtart='ZPRD' and d.item_linkage_ind<>'Y'
+and b.meinh=e.meinh and a.matnr='artno']]>
+</verifyprodaEAN>
+<!-- <verifyprodaEAN>
+<![CDATA[select e.ean11,e.meinh,b.meinh,b.pack_size from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d,saap.ZWOWC_ARTICLE_EAN e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.alc_status in ('NA','RA','DA') and c.dept='30' and d.item_linkage_ind<>'Y'
+and b.meinh=e.meinh and a.matnr='artno']]>
+</verifyprodaEAN> -->
+<verifyparentprodaEAN>
+<![CDATA[select e.ean11,e.meinh,b.meinh,b.pack_size from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d,saap.ZWOWC_ARTICLE_EAN e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.alc_status in ('NA','RA','DA') and d.mtart='ZPRD' and d.item_linkage_ind='Y' 
+and b.meinh=e.meinh and a.matnr='artno']]>
+</verifyparentprodaEAN>
+<verifyliqdesc>
+<![CDATA[select d.article_desc,d.long_desc from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d, 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr  and a.alc_status in ('NA','RA','DA') and c.dept='20' and d.PBD_IND='Y'
+and b.BASE_UOM_IND='Y' and a.matnr='artno']]>
+</verifyliqdesc>
+<verifyliqaEAN>
+<![CDATA[select e.ean11,e.meinh,b.meins,b.pack_size from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d,saap.ZWOWC_ARTICLE_EAN e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.alc_status in ('NA','RA','DA') and c.dept='20' and d.PBD_IND='Y'
+and EANTP<>'Z2' and b.meinh=e.meinh and a.matnr='artno']]>
+</verifyliqaEAN>
+<verifycigdesc>
+<![CDATA[select d.article_desc,d.long_desc from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d, 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr  and a.alc_status in ('NA','RA','DA') and c.dept='27' and d.PBD_IND='Y'
+and b.BASE_UOM_IND='Y' and a.matnr='artno']]>
+</verifycigdesc>
+<verifycigaEAN>
+<![CDATA[select e.ean11,e.meinh,b.meins,b.pack_size from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d,saap.ZWOWC_ARTICLE_EAN e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.alc_status in ('NA','RA','DA') and c.dept='27' and d.PBD_IND='Y'
+and EANTP<>'Z2' and b.meinh=e.meinh and a.matnr='artno']]>
+</verifycigaEAN>
+<getMatproducearticle>
+<![CDATA[select a.matnr,a.SELL_PRICE_GROUP,a.PRICE_LIST_DESC,a.TAX_RATE from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,
+saap.ZWOWC_ART_SALES_PRICE d,saap.zwowc_article_uom_desc e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and a.alc_status in ('NA','RA','DA') and c.dept='30' 
+and d.meinh=e.meinh and b.BASE_UOM_IND='Y';]]>
+</getMatproducearticle>
+
+<getMproducearticle>
+<![CDATA[select sub.matnr, count(1)
+from (   
+   select distinct asp.matnr, asp.meinh, sales_price
+   from saap.zwowc_art_sales_price asp
+) sub
+join saap.zwowc_article_master m on (sub.matnr=m.matnr)
+group by sub.matnr, sub.meinh
+having count(1) > 1
+;]]>
+</getMproducearticle>
+
+<verifyMprodaEAN>
+<![CDATA[select e.ean11,e.meinh,b.meins,b.pack_size from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d,saap.ZWOWC_ARTICLE_EAN e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.alc_status in ('NA','RA','DA') and b.meinh=e.meinh and a.matnr='artno']]>
+</verifyMprodaEAN>
+<verifyMproddesc>
+<![CDATA[select d.article_desc,d.long_desc from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d, 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr  and a.alc_status in ('NA','RA','DA') and b.BASE_UOM_IND='Y' and a.matnr='artno']]>
+</verifyMproddesc>
+<verifyMpriceHistoryprod>
+<![CDATA[select a.matnr,d.datab,d.meinh,e.uom_desc,d.sales_price from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,
+saap.ZWOWC_ART_SALES_PRICE d,saap.zwowc_article_uom_desc e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and a.alc_status in 
+('NA','RA','DA') and d.meinh=e.meinh and b.BASE_UOM_IND='Y' and a.matnr='artno';]]>
+</verifyMpriceHistoryprod>
+</TCName>
+
+<TCName name = "enhancedActivePromoBWS">
+<ActivePBDArt>
+<![CDATA[select b.MATNR,b.PLVKP ,b.meinh from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d , saap.ZWOWC_ARTICLE_MASTER e 
+where a.matnr=b.matnr and b.matnr=d.matnr and d.MATNR=e.matnr and e.PBD_IND='Y' and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and a.ALC_STATUS<>'ES' and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI) group by b.matnr,b.PLVKP,b.meinh having count(b.matnr)=1]]>
+</ActivePBDArt>
+<ActivePBDgArt>
+<![CDATA[select b.MATNR,b.PLVKP,b.meinh from saap.ZWOWC_ARTICLE_EAN a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_LISTING c
+where a.EAN11=b.matnr and c.alc_status<>'ES' and a.EANTP='Z2' and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI) group by b.matnr,b.PLVKP,b.meinh]]>
+</ActivePBDgArt>
+<ActiveCPBDArt>
+<![CDATA[select b.MATNR,b.PLVKP ,b.meinh from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d 
+where a.matnr=b.matnr and b.matnr=d.matnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and a.ALC_STATUS<>'ES' and a.COMPLEX_PACK_BRK_ARTICLE>1 and a.COMPLEX_PACK_BRK_OM>6 and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI) group by b.matnr,b.PLVKP,b.meinh having count(b.matnr)=1]]>
+</ActiveCPBDArt>
+<ActiveDetails>
+<![CDATA[select dateformat(e.VKDAB,'dd/MM/yyyy') AS startDate,dateformat(e.VKDBI,'dd/MM/yyyy') AS enddate ,e.aktnr AS promo,
+e.aktkt AS descriptions,b.meinh AS UOM,b.PLVKP AS promoprice from saap.ZWOWC_ARTICLE_LISTING a,saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d ,saap. ZWOWC_PROMO_HDR e 
+where a.matnr=b.matnr and b.matnr=d.matnr and b.aktnr=e.aktnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') 
+and b.matnr='artno' and b.aktnr in (select aktnr from saap.zwowc_promo_hdr where e.VKDBI=today() or e.VKDBI>today())]]>
+</ActiveDetails>
+<ActivePBDDetails>
+<![CDATA[select distinct dateformat(e.VKDAB,'dd/MM/yyyy') AS startDate,dateformat(e.VKDBI,'dd/MM/yyyy') AS enddate ,e.aktnr AS promo,
+e.aktkt AS descriptions,b.meinh AS UOM,b.PLVKP AS promoprice from saap.ZWOWC_ARTICLE_LISTING a,saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_EAN d,saap. ZWOWC_PROMO_HDR e 
+where d.ean11= 'artno' and b.matnr=d.ean11 and b.aktnr=e.aktnr and d.EANTP='Z2' and a.ALC_STATUS in ('NA','RA','DA') 
+and b.aktnr in (select aktnr from saap.zwowc_promo_hdr where e.VKDBI=today() or e.VKDBI>today())]]>
+</ActivePBDDetails>
+</TCName>
+
+<TCName name = "enhancednearByStores">
+<getarticleliq>
+<![CDATA[select distinct a.matnr,d.use_by_date  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c, saap.LOCAL_WOW_USE_BY_DATE d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='20']]>
+</getarticleliq>
+<getrangedart>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status IN ('NA','RA')]]>
+</getrangedart>
+<getntrangedart>
+<![CDATA[select DISTINCT a.matnr, d.PS_article_status from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status = 'ES']]>
+</getntrangedart>
+</TCName>
+
+<TCName name = "enhancedCPBDDescriptionCheck">
+<getarticleliq>
+<![CDATA[select a.matnr from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_ARTICLE_UOM b , saap.MAT_VIEW_ZWOW_ARTICLES_HIER c 
+where a.matnr=b.matnr and b.matnr=c.matnr and a.IS_CPBD='1' and b.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA')
+and a.COMPLEX_PACK_BRK_BASE_QTY='1']]>
+</getarticleliq>
+<getrangedart>
+<![CDATA[select matnr , meinh from saap.sp_wow_get_complex_pbd_details('CPBD') where meinh='EA';]]>
+</getrangedart>
+<getntrangedart>
+<![CDATA[select a.matnr,a.article_desc_upper,a.long_desc,b.SALES_PRICE  from saap.ZWOWC_ARTICLE_MASTER_VIEW a,saap.MAT_VIEW_ZWOW_ARTICLE_SELL_PRICE b where a.matnr=b.matnr and a.matnr='ISIS' and b.meinh='EA']]>
+</getntrangedart>
+</TCName>
+
+<TCName name = "check">
+<getarticleliq>
+<![CDATA[select a.matnr from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_ARTICLE_UOM b , saap.MAT_VIEW_ZWOW_ARTICLES_HIER c 
+where a.matnr=b.matnr and b.matnr=c.matnr and a.IS_CPBD='1' and b.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA')
+and a.COMPLEX_PACK_BRK_BASE_QTY='1']]>
+</getarticleliq>
+</TCName>
+
+<TCName name = "enhancedFacingValue">
+<getprepackart>
+<![CDATA[select DISTINCT a.MATNR from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_ARTICLE_UOM b , saap.zwowc_article_master c,saap.ZWOWO_ARTICLE_UPDATE d 
+where a.matnr=b.MATNR and b.matnr=c.matnr  and c.matnr=d.matnr and a.ALC_STATUS in ('NA','RA','DA')  and b.BASE_UOM_IND='Y' and c.article_cat_id='11' and d.PREV_MPL='0.00' 
+and d.prev_facings='0.00' and d.PREV_shelf_capacity='0.00' and d.DEFAULT_MPL>'1.00' and a.alc_status<>'ES' and d.CURR_MPL<=d.CURR_SHELF_CAPACITY]]>
+</getprepackart>
+<getarticle>
+<![CDATA[select a.matnr,CONVERT(INT,a.CURR_MPL),CONVERT(INT,a.CURR_SHELF_CAPACITY), CONVERT(INT,a.CURR_FACINGS),CONVERT(INT,a.PREV_MPL),
+CONVERT(INT,a.PREV_SHELF_CAPACITY),CONVERT(INT,a.PREV_FACINGS),CONVERT(INT,a.DEFAULT_MPL),CONVERT(INT,a.DEFAULT_SHELF_CAPACITY),
+CONVERT(INT,a.DEFAULT_FACINGS) from saap.ZWOWO_ARTICLE_UPDATE a , saap.ZWOWC_ARTICLE_LISTING b , saap.ZWOWC_ARTICLE_UOM c  where a.matnr=b.matnr and b.alc_status in ('NA','RA') 
+and b.matnr=c.MATNR and c.BASE_UOM_IND='Y' and a.PREV_MPL='0.00' and a.prev_facings='0.00' and a.PREV_shelf_capacity='0.00' and a.DEFAULT_MPL>'1' and b.alc_status<>'ES' and 
+a.DEFAULT_SHELF_CAPACITY>'1' and a.DEFAULT_FACINGS>'1' and a.CURR_MPL<=a.CURR_SHELF_CAPACITY]]>
+</getarticle>
+<getPBDarticle>
+<![CDATA[select distinct a.matnr,a.CURR_MPL,a.CURR_SHELF_CAPACITY , a.CURR_FACINGS,a.DEFAULT_MPL,a.DEFAULT_SHELF_CAPACITY,a.DEFAULT_FACINGS from saap.ZWOWO_ARTICLE_UPDATE a , saap.ZWOWC_ARTICLE_LISTING b ,
+saap.ZWOWC_ARTICLE_UOM c , saap.ZWOWC_ARTICLE_MASTER d where a.matnr=b.matnr and b.alc_status in ('NA','RA') and b.matnr=c.MATNR and c.matnr=d.matnr and c.BASE_UOM_IND='Y' 
+and d.PBD_IND='Y' and a.PREV_MPL='0.00' and a.prev_facings='0.00' and a.PREV_shelf_capacity='0.00' and a.DEFAULT_MPL>'1.00' 
+and b.alc_status<>'ES' and a.CURR_MPL<=a.CURR_SHELF_CAPACITY]]>
+</getPBDarticle>
+<artCheck>
+<![CDATA[select distinct a.matnr,MGV_PR_REF_MAT_GUID,round(convert(float,NON_AGG_VAL),0) AS CURRENTVAL,CONVERT(INT,DEFAULT_VALUE) AS DEFAULTVAL from  saap.ZWOWC_ARTICLE_LISTING a , 
+saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c , saap.ZWOWT_ARTICLE_UPDATE d  
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and a.matnr='artno' and d.meinh='UOM' 
+ORDER BY CASE
+WHEN MGV_PR_REF_MAT_GUID='PLNU' THEN 1
+WHEN MGV_PR_REF_MAT_GUID='CTMU' THEN 2
+WHEN MGV_PR_REF_MAT_GUID='FACE' THEN 3
+END]]>
+</artCheck>
+</TCName>
+
+<TCName name = "enhancedUnknownItem">
+<PBDALCstatus>
+<![CDATA[select DISTINCT a.matnr, c.ean11 from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status = 'ES' and a.pbd_ind = 'Y']]>
+</PBDALCstatus>
+<PBDsalesstatus>
+<![CDATA[select DISTINCT a.matnr, c.ean11 from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.ZWOWC_ARTICLE_HIER_XREF d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and a.pbd_ind = 'Y' and a.MATNR NOT IN (Select e.matnr from SAAP.zwowc_article_listing e)]]>
+</PBDsalesstatus>
+<nonPIsalesstatus>
+<![CDATA[select DISTINCT a.matnr, c.ean11 from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.ZWOWC_ARTICLE_HIER_XREF d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and a.MTART = 'VERP' and a.MATNR NOT IN (Select e.matnr from SAAP.zwowc_article_listing e)]]>
+</nonPIsalesstatus>
+<RWALCstatus>
+<![CDATA[select DISTINCT a.matnr, c.ean11 from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status = 'ES' and d.random_weight_flg = 'Y']]>
+</RWALCstatus>
+<WALCstatus>
+<![CDATA[select DISTINCT a.matnr, c.ean11 from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status = 'ES' and d.random_weight_flg = 'N' and b.meinh = 'KG']]>
+</WALCstatus>
+<Wsalestatus>
+<![CDATA[select DISTINCT a.matnr, c.ean11 from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.ZWOWC_ARTICLE_HIER_XREF d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and b.MEINS = 'KG' and b.MEINH = 'CAR' and b.ORDER_UOM_IND = 'Y' and a.MATNR NOT IN (Select e.matnr from SAAP.zwowc_article_listing e)]]>
+</Wsalestatus>
+<LALCstatus>
+<![CDATA[select DISTINCT a.matnr, c.ean11 from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status = 'ES' and b.meinh = 'L']]>
+</LALCstatus>
+<Lsalesstatus>
+<![CDATA[select DISTINCT a.matnr, c.ean11 from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.ZWOWC_ARTICLE_HIER_XREF d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and b.MEINS = 'L' and a.MATNR NOT IN (Select e.matnr from SAAP.zwowc_article_listing e)]]>
+</Lsalesstatus>
+<verifyStatus>
+<![CDATA[select a.transid, a.MATNR, a.WERKS, a.MENGE, a.meins, b.article, b.base_uom, b.store_SOH from saap.T_MDOC_ITM a, saap.LOCAL_WOW_SOH b 
+where a.matnr=b.article and a.matnr = 'artno' order by transid DESC]]>
+</verifyStatus>
+<getRangingRost>
+<![CDATA[Select * from saap.LOCAL_WOW_RANGING_RQST where matnr = 'artno']]>
+</getRangingRost>
+</TCName>
+
+<TCName name = "enhancedSecurityTag">
+<getarticle>
+<![CDATA[select a.matnr,d.article_desc,d.long_desc from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d, 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr  and a.alc_status in ('NA','RA','DA') and c.dept='15' 
+and b.BASE_UOM_IND='Y']]>
+</getarticle>
+<verifyArt>
+<![CDATA[select matnr,non_agg_val from saap.ZWOWT_ARTICLE_UPDATE where matnr='artno']]>
+</verifyArt>
+<getntarticle>
+<![CDATA[select a.matnr,d.article_desc,d.long_desc from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d, 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr  and a.alc_status in ('NA','RA','DA')  
+and b.BASE_UOM_IND='Y' and a.SECURITY_ARTICLE='Y']]>
+</getntarticle>
+</TCName>
+
+<TCName name = "enhancedbigWAdvanceSearch">
+<getStylearticle>
+<![CDATA[select a.matnr, b.style, a.article_size, a.colour from saap.ZWOWC_ARTICLE_MASTER a, saap.ZWOWC_ARTICLE_LISTING b, 
+saap.ZWOWC_ARTICLE_HIER_XREF c where a.matnr = b.matnr and b.matnr = c.matnr and a.Article_cat_ID = '02']]>
+</getStylearticle>
+</TCName>
+
+<TCName name = "enhancedLTODetails">
+<getSITSOOarticle>
+<![CDATA[select b.matnr,convert(int,b.SIT) as SIT,convert(int,b.SOO) AS soo from saap.ZWOWC_ARTICLE_LISTING a , saap.LOCAL_WOW_STOCK_INFO b 
+where a.matnr=b.MATNR and a.alc_status in ('NA','RA','DA') and b.SOO>'0' and b.SIT>'0' and a.IS_CPBD<>'1']]>
+</getSITSOOarticle>
+<getRWart>
+<![CDATA[SELECT 
+  B.MATNR,
+  D.location_name,
+  E.aisle_lst,
+  A.location_id,
+  list(COALESCE(A.WEIGHT, A.LTO_QTY)||' '||CASE WHEN A.MEINH = C.MEINS AND B.RANDOM_WEIGHT_FLG  = 'Y' THEN B.PI_UOM ELSE A.MEINH END CASE,' ') LTO_QTY,
+  CASE WHEN D.location_type ='I' THEN 'Active' ELSE 'Not Active' END CASE AS Active_Indicator
+    FROM saap.local_wow_lto_details  A
+    JOIN saap.saap.local_wow_lto I ON (A.matnr=I.matnr)
+    JOIN saap.zwowc_article_listing B ON (A.matnr=B.matnr)
+    JOIN saap.zwowc_article_uom C ON (A.matnr=C.matnr and A.meinh=C.meinh)
+    JOIN  saap.zwowt_C_lto_location D ON( A.location_id=D.location_id)
+    JOIN (SELECT list(aisle) AS aisle_lst,location_id FROM saap.zwowt_c_lto_aisle GROUP BY location_id) E ON (A.location_id=E.location_id)
+    JOIN saap.zwowc_article_listing F ON (A.matnr=F.matnr)
+   WHERE F.random_weight_flg='Y'
+    GROUP BY  
+    B.MATNR, B.MATNR, 
+    D.location_name,
+    E.aisle_lst,
+    A.location_id,
+    Active_Indicator]]>
+</getRWart>
+<getCPBDart>
+<![CDATA[SELECT DISTINCT 
+  B.MATNR,
+  D.location_name,
+  E.aisle_lst,
+  A.location_id,
+  list(COALESCE(A.WEIGHT, A.LTO_QTY)||' '||CASE WHEN A.MEINH = C.MEINS AND B.RANDOM_WEIGHT_FLG  = 'Y' THEN B.PI_UOM ELSE A.MEINH END CASE,' ') LTO_QTY,
+  CASE WHEN D.location_type ='I' THEN 'Active' ELSE 'Not Active' END CASE AS Active_Indicator
+    FROM saap.local_wow_lto_details  A
+     JOIN saap.saap.local_wow_lto I ON (A.matnr=I.matnr)
+    JOIN saap.zwowc_article_listing B ON (A.matnr=B.matnr)
+    JOIN saap.zwowc_article_uom C ON (A.matnr=C.matnr and A.meinh=C.meinh)
+    JOIN  saap.zwowt_C_lto_location D ON( A.location_id=D.location_id)
+    JOIN (SELECT list(aisle) AS aisle_lst,location_id FROM saap.zwowt_c_lto_aisle GROUP BY location_id) E ON (A.location_id=E.location_id)
+    JOIN saap.zwowc_article_listing F ON (A.matnr=F.matnr) 
+   WHERE ISNUMERIC(F.COMPLEX_PACK_BRK_ARTICLE) = 1  and b.alc_status<>'ES' and B.COMPLEX_PACK_BRK_OM>'6'  
+    GROUP BY  
+    A.matnr,A.matnr,
+    D.location_name,
+    E.aisle_lst,
+    A.location_id,B.MATNR,
+    Active_Indicator]]>
+    
+   <!--  select * from LOCAL_WOW_LTO A JOIN saap.zwowc_article_listing F ON (A.matnr=F.matnr)  WHERE ISNUMERIC(F.COMPLEX_PACK_BRK_ARTICLE) = 1 -->
+</getCPBDart>
+<getWart>
+<![CDATA[SELECT 
+  A.matnr,
+  D.location_name,
+  E.aisle_lst,
+  A.location_id,
+  list(COALESCE(A.WEIGHT, A.LTO_QTY)||' '||CASE WHEN A.MEINH = C.MEINS AND B.RANDOM_WEIGHT_FLG  = 'Y' THEN B.PI_UOM ELSE A.MEINH END CASE,' ') LTO_QTY,
+  CASE WHEN D.location_type ='I' THEN 'Active' ELSE 'Not Active' END CASE AS Active_Indicator
+    FROM saap.local_wow_lto_details  A
+     JOIN saap.saap.local_wow_lto I ON (A.matnr=I.matnr)
+    JOIN saap.zwowc_article_listing B ON (A.matnr=B.matnr)
+    JOIN saap.zwowc_article_uom C ON (A.matnr=C.matnr and A.meinh=C.meinh)
+    JOIN  saap.zwowt_C_lto_location D ON( A.location_id=D.location_id)
+    JOIN (SELECT list(aisle) AS aisle_lst,location_id FROM saap.zwowt_c_lto_aisle GROUP BY location_id) E ON (A.location_id=E.location_id)
+    JOIN saap.zwowc_article_listing F ON (A.matnr=F.matnr) 
+    JOIN saap.zwowc_Article_master G  ON (A.matnr=G.matnr)
+   WHERE F.random_weight_flg='N' 
+   and G.weighted_ind='Y'
+    GROUP BY  
+    A.matnr, A.matnr,
+    D.location_name,
+    E.aisle_lst,
+    A.location_id,
+    Active_Indicator]]>
+</getWart>
+<getarticlecig>
+<![CDATA[ SELECT 
+  A.matnr,F.sub_Cat_name,
+  D.location_name,
+  E.aisle_lst,
+  A.location_id,
+  list(COALESCE(A.WEIGHT, A.LTO_QTY)||' '||CASE WHEN A.MEINH = C.MEINS AND B.RANDOM_WEIGHT_FLG  = 'Y' THEN B.PI_UOM ELSE A.MEINH END CASE,' ') LTO_QTY,
+  CASE WHEN D.location_type ='I' THEN 'Active' ELSE 'Not Active' END CASE AS Active_Indicator
+    FROM saap.local_wow_lto_details  A
+     JOIN saap.saap.local_wow_lto I ON (A.matnr=I.matnr)
+    JOIN saap.zwowc_article_listing B ON (A.matnr=B.matnr)
+    JOIN saap.zwowc_article_uom C ON (A.matnr=C.matnr and A.meinh=C.meinh)
+    JOIN  saap.zwowt_C_lto_location D ON( A.location_id=D.location_id)
+    JOIN (SELECT list(aisle) AS aisle_lst,location_id FROM saap.zwowt_c_lto_aisle GROUP BY location_id) E ON (A.location_id=E.location_id)
+    JOIN saap.MAT_VIEW_ZWOW_ARTICLES_HIER F ON (A.matnr=F.matnr)
+    JOIN saap.ZWOWC_ARTICLE_MASTER G ON (A.MATNR = G.MATNR)
+    WHERE F.dept_name='CIGARETTES' AND G.PBD_IND='Y'
+    GROUP BY  
+    A.matnr,F.sub_Cat_name,
+    D.location_name,
+    E.aisle_lst,
+    A.location_id,
+    Active_Indicator]]>
+</getarticlecig>
+<getarticleliq>
+<![CDATA[SELECT 
+  A.matnr,F.sub_Cat_name,
+  D.location_name,
+  E.aisle_lst,
+  A.location_id,
+  list(COALESCE(A.WEIGHT, A.LTO_QTY)||' '||CASE WHEN A.MEINH = C.MEINS AND B.RANDOM_WEIGHT_FLG  = 'Y' THEN B.PI_UOM ELSE A.MEINH END CASE,' ') LTO_QTY,
+  CASE WHEN D.location_type ='I' THEN 'Active' ELSE 'Not Active' END CASE AS Active_Indicator
+    FROM saap.saap.local_wow_lto_details  A
+    JOIN saap.saap.local_wow_lto I ON (A.matnr=I.matnr)
+    JOIN saap.zwowc_article_listing B ON (A.matnr=B.matnr)
+    JOIN saap.zwowc_article_uom C ON (A.matnr=C.matnr and A.meinh=C.meinh)
+    JOIN  saap.zwowt_C_lto_location D ON( A.location_id=D.location_id)
+    JOIN (SELECT list(aisle) AS aisle_lst,location_id FROM saap.zwowt_c_lto_aisle GROUP BY location_id) E ON (A.location_id=E.location_id)
+    JOIN saap.MAT_VIEW_ZWOW_ARTICLES_HIER F ON (A.matnr=F.matnr)
+    JOIN saap.ZWOWC_ARTICLE_MASTER G ON (A.MATNR = G.MATNR)
+    WHERE F.dept_name='LIQUOR' AND G.PBD_IND='Y'
+    GROUP BY  
+    A.matnr,F.sub_Cat_name,
+    D.location_name,
+    E.aisle_lst,
+    A.location_id,
+    Active_Indicator ]]>
+</getarticleliq>
+<LTOrwtCheck>
+<![CDATA[SELECT 
+  B.MATNR, B.MATNR,
+  D.location_name,
+  E.aisle_lst,
+  A.location_id,
+  list(COALESCE(convert(int,A.WEIGHT), A.LTO_QTY)||' '||CASE WHEN A.MEINH = C.MEINS AND B.RANDOM_WEIGHT_FLG  = 'Y' THEN B.PI_UOM ELSE A.MEINH END CASE,' '||', ') LTO_QTY,
+  CASE WHEN D.location_type ='I' THEN 'Active' ELSE 'Not Active' END CASE AS Active_Indicator
+    FROM saap.local_wow_lto_details  A
+    JOIN saap.saap.local_wow_lto I ON (A.matnr=I.matnr)
+    JOIN saap.zwowc_article_listing B ON (A.matnr=B.matnr)
+    JOIN saap.zwowc_article_uom C ON (A.matnr=C.matnr and A.meinh=C.meinh)
+    JOIN  saap.zwowt_C_lto_location D ON( A.location_id=D.location_id)
+    JOIN (SELECT list(aisle) AS aisle_lst,location_id FROM saap.zwowt_c_lto_aisle GROUP BY location_id) E ON (A.location_id=E.location_id)
+    JOIN saap.zwowc_article_listing F ON (A.matnr=F.matnr)
+   WHERE F.random_weight_flg='Y' and a.matnr = 'artno' and A.location_id='lid' 
+    GROUP BY  
+    B.MATNR, B.MATNR, 
+    D.location_name,
+    E.aisle_lst,
+    A.location_id,
+    Active_Indicator]]>
+</LTOrwtCheck>
+<LTOwtCheck>
+<![CDATA[SELECT 
+  A.matnr, A.matnr,
+  D.location_name,
+  E.aisle_lst,
+  A.location_id,
+  list(COALESCE(convert(int,A.WEIGHT), A.LTO_QTY)||' '||CASE WHEN A.MEINH = C.MEINS AND B.RANDOM_WEIGHT_FLG  = 'Y' THEN B.PI_UOM ELSE A.MEINH END CASE,' ' ||', ') LTO_QTY,
+  CASE WHEN D.location_type ='I' THEN 'Active' ELSE 'Not Active' END CASE AS Active_Indicator
+    FROM saap.local_wow_lto_details  A
+     JOIN saap.saap.local_wow_lto I ON (A.matnr=I.matnr)
+    JOIN saap.zwowc_article_listing B ON (A.matnr=B.matnr)
+    JOIN saap.zwowc_article_uom C ON (A.matnr=C.matnr and A.meinh=C.meinh)
+    JOIN  saap.zwowt_C_lto_location D ON( A.location_id=D.location_id)
+    JOIN (SELECT list(aisle) AS aisle_lst,location_id FROM saap.zwowt_c_lto_aisle GROUP BY location_id) E ON (A.location_id=E.location_id)
+    JOIN saap.zwowc_article_listing F ON (A.matnr=F.matnr) 
+    JOIN saap.zwowc_Article_master G  ON (A.matnr=G.matnr)
+   WHERE F.random_weight_flg='N' 
+   and G.weighted_ind='Y' and a.matnr = 'artno' and A.location_id='lid' 
+    GROUP BY  
+    A.matnr, A.matnr,
+    D.location_name,
+    E.aisle_lst,
+    A.location_id,
+    Active_Indicator]]>
+</LTOwtCheck>
+<LTOliqCheck>
+<![CDATA[SELECT 
+  A.matnr,F.sub_Cat_name,
+  D.location_name,
+  E.aisle_lst,
+  A.location_id,
+  list(COALESCE(convert(int,A.WEIGHT), A.LTO_QTY)||' '||CASE WHEN A.MEINH = C.MEINS AND B.RANDOM_WEIGHT_FLG  = 'Y' THEN B.PI_UOM ELSE A.MEINH END CASE,' ' ||', ') LTO_QTY,
+  CASE WHEN D.location_type ='I' THEN 'Active' ELSE 'Not Active' END CASE AS Active_Indicator
+    FROM saap.saap.local_wow_lto_details  A
+    JOIN saap.zwowc_article_listing B ON (A.matnr=B.matnr)
+    JOIN saap.zwowc_article_uom C ON (A.matnr=C.matnr and A.meinh=C.meinh)
+    JOIN  saap.zwowt_C_lto_location D ON( A.location_id=D.location_id)
+    JOIN (SELECT list(aisle) AS aisle_lst,location_id FROM saap.zwowt_c_lto_aisle GROUP BY location_id) E ON (A.location_id=E.location_id)
+    JOIN saap.MAT_VIEW_ZWOW_ARTICLES_HIER F ON (A.matnr=F.matnr)
+    JOIN saap.ZWOWC_ARTICLE_MASTER G ON (A.MATNR = G.MATNR)
+    WHERE F.dept_name='LIQUOR' AND G.PBD_IND='Y' and a.matnr = 'artno' and A.location_id='lid'
+    GROUP BY  
+    A.matnr,F.sub_Cat_name,
+    D.location_name,
+    E.aisle_lst,
+    A.location_id,
+    Active_Indicator]]>
+</LTOliqCheck>
+<LTOcigCheck>
+<![CDATA[SELECT 
+  A.matnr,F.sub_Cat_name,
+  D.location_name,
+  E.aisle_lst,
+  A.location_id,
+  list(COALESCE(convert(int,A.WEIGHT), A.LTO_QTY)||' '||CASE WHEN A.MEINH = C.MEINS AND B.RANDOM_WEIGHT_FLG  = 'Y' THEN B.PI_UOM ELSE A.MEINH END CASE,' ' ||', ') LTO_QTY,
+  CASE WHEN D.location_type ='I' THEN 'Active' ELSE 'Not Active' END CASE AS Active_Indicator
+    FROM saap.local_wow_lto_details  A
+    JOIN saap.zwowc_article_listing B ON (A.matnr=B.matnr)
+    JOIN saap.zwowc_article_uom C ON (A.matnr=C.matnr and A.meinh=C.meinh)
+    JOIN  saap.zwowt_C_lto_location D ON( A.location_id=D.location_id)
+    JOIN (SELECT list(aisle) AS aisle_lst,location_id FROM saap.zwowt_c_lto_aisle GROUP BY location_id) E ON (A.location_id=E.location_id)
+    JOIN saap.MAT_VIEW_ZWOW_ARTICLES_HIER F ON (A.matnr=F.matnr)
+    JOIN saap.ZWOWC_ARTICLE_MASTER G ON (A.MATNR = G.MATNR)
+    WHERE F.dept_name='CIGARETTES' AND G.PBD_IND='Y'  and a.matnr = 'artno' and A.location_id='lid' 
+    GROUP BY  
+    A.matnr,F.sub_Cat_name,
+    D.location_name,
+    E.aisle_lst,
+    A.location_id,
+    Active_Indicator]]>
+</LTOcigCheck>
+<LTOcbpdCheck>
+<![CDATA[SELECT 
+  A.matnr,A.matnr,
+  D.location_name,
+  E.aisle_lst,
+  A.location_id,
+  list(COALESCE(convert(int,A.WEIGHT), A.LTO_QTY)||' '||CASE WHEN A.MEINH = C.MEINS AND B.RANDOM_WEIGHT_FLG  = 'Y' THEN B.PI_UOM ELSE A.MEINH END CASE,' ' ||', ') LTO_QTY,
+  CASE WHEN D.location_type ='I' THEN 'Active' ELSE 'Not Active' END CASE AS Active_Indicator
+    FROM saap.local_wow_lto_details  A
+    JOIN saap.zwowc_article_listing B ON (A.matnr=B.matnr)
+    JOIN saap.zwowc_article_uom C ON (A.matnr=C.matnr and A.meinh=C.meinh)
+    JOIN  saap.zwowt_C_lto_location D ON( A.location_id=D.location_id)
+    JOIN (SELECT list(aisle) AS aisle_lst,location_id FROM saap.zwowt_c_lto_aisle GROUP BY location_id) E ON (A.location_id=E.location_id)
+    JOIN saap.zwowc_article_listing F ON (A.matnr=F.matnr) 
+   WHERE ISNUMERIC(F.COMPLEX_PACK_BRK_ARTICLE) = 1  and a.matnr = 'artno' and A.location_id='lid' 
+    GROUP BY  
+    A.matnr, A.matnr,
+    D.location_name,
+    E.aisle_lst,
+    A.location_id,
+    Active_Indicator]]>
+</LTOcbpdCheck>
+<VerifyLtoQty>
+<![CDATA[select * from LOCAL_WOW_LTO WHERE  matnr = 'artno']]>
+</VerifyLtoQty>
+<!-- <VerifyLtoQty>
+<![CDATA[select sum(coalesce(zld.weight,zld.lto_qty) *
+    case when zal.random_weight_flg = 'Y' and zau.base_uom_ind <> 'Y' then zal.pi_om
+         when zam.pbd_ind='Y' then zau.pack_size/zau.pack_size_base
+         else zau.pack_size
+    end case) as LTO_QTY
+    from saap.zwowo_lto_details_view zld
+    join saap.zwowt_c_lto_location zll on (zld.location_id=zll.location_id)
+    join saap.zwowc_article_uom zau on (zld.matnr = zau.matnr and zld.meinh = zau.meinh)
+    join saap.zwowc_article_master zam on (zld.matnr=zam.matnr)
+    join saap.zwowc_article_listing zal on (zld.matnr=zal.matnr)
+    where zld.matnr = 'artno'
+    and zll.location_type = 'I'
+    ;]]>
+</VerifyLtoQty> -->
+<LTOCheck>
+<![CDATA[select LTO_QTY||' '||MEINH AS lto_qty FROM saap.local_wow_lto_Details
+WHERE  matnr = 'artno' and Location_id='lid' ORDER BY CASE
+WHEN meinh='EA' THEN 1
+WHEN meinh='KG' THEN 2
+WHEN meinh='CA1' THEN 3
+WHEN meinh='CA2' THEN 4
+WHEN meinh='CA3' THEN 5
+WHEN meinh='CA4' THEN 6
+WHEN meinh='CA5' THEN 7
+WHEN meinh='CA1' THEN 8
+WHEN meinh='CAR' THEN 9
+WHEN meinh='MPK' THEN 10
+END]]>
+</LTOCheck>
+<VerifyLtoTable>
+<![CDATA[SELECT 
+  D.location_name,
+  E.aisle_lst,
+  list(COALESCE(A.WEIGHT, A.LTO_QTY)||' '||CASE WHEN A.MEINH = C.MEINS AND B.RANDOM_WEIGHT_FLG  = 'Y' THEN B.PI_UOM ELSE A.MEINH END CASE,' ') LTO_QTY,A.location_id,
+  CASE WHEN D.location_type ='I' THEN 'Active' ELSE 'Not Active' END CASE AS Active_Indicator
+    FROM saap.local_wow_lto_details  A
+    JOIN saap.zwowc_article_listing B ON (A.matnr=B.matnr)
+    JOIN saap.zwowc_article_uom C ON (A.matnr=C.matnr and A.meinh=C.meinh)
+    JOIN  saap.zwowt_C_lto_location D ON( A.location_id=D.location_id)
+    JOIN (SELECT list(aisle) AS aisle_lst,location_id FROM saap.zwowt_c_lto_aisle GROUP BY location_id) E ON (A.location_id=E.location_id)
+   WHERE A.matnr = 'artno'
+    GROUP BY  
+    D.location_name,
+    E.aisle_lst,
+    A.location_id,
+    Active_Indicator]]>
+</VerifyLtoTable>
+<multiArt>
+<![CDATA[Select
+  B.MATNR,
+  D.location_name,
+  E.aisle_lst,
+  A.location_id,
+  list(COALESCE(A.WEIGHT, A.LTO_QTY)||' '||CASE WHEN A.MEINH = C.MEINS AND B.RANDOM_WEIGHT_FLG  = 'Y' THEN B.PI_UOM ELSE A.MEINH END CASE,' ') LTO_QTY,
+  CASE WHEN D.location_type ='I' THEN 'Active' ELSE 'Not Active' END CASE AS Active_Indicator
+    FROM saap.local_wow_lto_details  A
+     JOIN saap.saap.local_wow_lto I ON (A.matnr=I.matnr)
+    JOIN saap.zwowc_article_listing B ON (A.matnr=B.matnr)
+    JOIN saap.zwowc_article_uom C ON (A.matnr=C.matnr and A.meinh=C.meinh)
+    JOIN  saap.zwowt_C_lto_location D ON( A.location_id=D.location_id)
+    JOIN (SELECT list(aisle) AS aisle_lst,location_id FROM saap.zwowt_c_lto_aisle GROUP BY location_id) E ON (A.location_id=E.location_id)
+    WHERE B.matnr in (select distinct matnr from (
+select matnr , location_id, rank () over (partition by matnr order by location_id) as loc_per_article from saap.local_wow_lto_details)A 
+where A.loc_per_article >1)
+    GROUP BY  
+    B.MATNR, B.MATNR, 
+    D.location_name,
+    E.aisle_lst,
+    A.location_id,
+    Active_Indicator]]>
+</multiArt>
+<ltoMAcheck>
+<![CDATA[Select
+  B.MATNR, B.MATNR,
+  D.location_name,
+  E.aisle_lst,
+  A.location_id,
+  list(COALESCE(convert(int,A.WEIGHT), A.LTO_QTY)||' '||CASE WHEN A.MEINH = C.MEINS AND B.RANDOM_WEIGHT_FLG  = 'Y' THEN B.PI_UOM ELSE A.MEINH END CASE,' '||', ') LTO_QTY,
+  CASE WHEN D.location_type ='I' THEN 'Active' ELSE 'Not Active' END CASE AS Active_Indicator
+    FROM saap.local_wow_lto_details  A
+     JOIN saap.saap.local_wow_lto I ON (A.matnr=I.matnr)
+    JOIN saap.zwowc_article_listing B ON (A.matnr=B.matnr)
+    JOIN saap.zwowc_article_uom C ON (A.matnr=C.matnr and A.meinh=C.meinh)
+    JOIN  saap.zwowt_C_lto_location D ON( A.location_id=D.location_id)
+    JOIN (SELECT list(aisle) AS aisle_lst,location_id FROM saap.zwowt_c_lto_aisle GROUP BY location_id) E ON (A.location_id=E.location_id)
+    WHERE B.matnr in (select distinct matnr from (
+select matnr , location_id, rank () over (partition by matnr order by location_id) as loc_per_article from saap.local_wow_lto_details)A 
+where A.loc_per_article >1) and a.matnr = 'artno' and A.location_id='lid' 
+    GROUP BY  
+    B.MATNR, B.MATNR, 
+    D.location_name,
+    E.aisle_lst,
+    A.location_id,
+    Active_Indicator]]>
+</ltoMAcheck>
+</TCName>
+
+<TCName name = "enhancedBannerbigW">
+<getCUParticle>
+<![CDATA[SELECT SUB.MATNR, SUB.PBD_IND, SUB.ARTICLE_CAT_ID, SUB.STD_CUP_PRICE
+FROM (
+    SELECT ZAM.MATNR, ZAM.PBD_IND, ZAM.ARTICLE_CAT_ID, 
+    fn_wow_get_std_cup_price(ZAM.MATNR) AS STD_CUP_PRICE
+    FROM saap.ZWOWC_ARTICLE_MASTER ZAM
+    JOIN saap.ZWOWC_ARTICLE_UOM ZAU ON (ZAM.MATNR = ZAU.MATNR)
+    JOIN ZWOWC_ARTICLE_LISTING ZA ON (ZAM.MATNR = ZA.MATNR)
+    WHERE ZAU.BASE_UOM_IND = 'Y'
+    AND ZAM.ARTICLE_CAT_ID=12
+    AND ZAM.MASTER_SIZE > 0
+    AND ZAM.COMP_SIZE_AU > 0
+    AND ZAM.COMP_SIZE_AU_UOM <> ''
+    AND ZAM.MASTER_SIZE_UOM <> ''
+    AND EXISTS (
+        SELECT 1
+        FROM saap.MAT_VIEW_ZWOW_ARTICLE_SELL_PRICE SP
+        WHERE SP.MATNR=ZAM.MATNR
+        AND SP.MEINH=ZAU.MEINH AND ZA.ALC_STATUS<>'ES'
+    )
+) SUB
+WHERE SUB.STD_CUP_PRICE > 0;]]>
+</getCUParticle>
+</TCName>
+
+<TCName name = "enhancedCupPriceNZ">
+<getCUParticle>
+<![CDATA[SELECT SUB.MATNR, SUB.PBD_IND, SUB.ARTICLE_CAT_ID, SUB.STD_CUP_PRICE
+FROM (
+    SELECT ZAM.MATNR, ZAM.PBD_IND, ZAM.ARTICLE_CAT_ID, 
+    fn_wow_get_std_cup_price(ZAM.MATNR) AS STD_CUP_PRICE
+    FROM saap.ZWOWC_ARTICLE_MASTER ZAM
+    JOIN saap.ZWOWC_ARTICLE_UOM ZAU ON (ZAM.MATNR = ZAU.MATNR)
+    JOIN ZWOWC_ARTICLE_LISTING ZA ON (ZAM.MATNR = ZA.MATNR)
+    WHERE ZAU.BASE_UOM_IND = 'Y'
+    AND ZAM.MASTER_SIZE > 0
+    AND ZAM.COMP_SIZE_NZ > 0
+    AND ZAM.COMP_SIZE_NZ_UOM <> ''
+    AND ZAM.MASTER_SIZE_UOM <> ''
+    AND EXISTS (
+        SELECT 1
+        FROM saap.MAT_VIEW_ZWOW_ARTICLE_SELL_PRICE SP
+        WHERE SP.MATNR=ZAM.MATNR
+        AND SP.MEINH=ZAU.MEINH AND ZA.ALC_STATUS<>'ES'
+    )
+) SUB
+WHERE SUB.STD_CUP_PRICE > 0;]]>
+</getCUParticle>
+</TCName>
+
+<TCName name = "enhancedBannerBWS">
+<getCUParticlePBD>
+<![CDATA[SELECT SUB.MATNR, SUB.PBD_IND, SUB.ARTICLE_CAT_ID, SUB.STD_CUP_PRICE
+FROM (
+    SELECT ZAM.MATNR, ZAM.PBD_IND, ZAM.ARTICLE_CAT_ID, 
+    fn_wow_get_std_cup_price(ZAM.MATNR) AS STD_CUP_PRICE
+    FROM saap.ZWOWC_ARTICLE_MASTER ZAM
+    JOIN saap.ZWOWC_ARTICLE_UOM ZAU ON (ZAM.MATNR = ZAU.MATNR)
+    JOIN ZWOWC_ARTICLE_LISTING ZA ON (ZAM.MATNR = ZA.MATNR)
+    WHERE ZAU.BASE_UOM_IND = 'Y'
+    AND ZAM.PBD_IND='Y'
+    AND ZAM.MASTER_SIZE > 0
+    AND ZAM.COMP_SIZE_AU > 0
+    AND ZAM.COMP_SIZE_AU_UOM <> ''
+    AND ZAM.MASTER_SIZE_UOM <> ''
+    AND EXISTS (
+        SELECT 1
+        FROM saap.MAT_VIEW_ZWOW_ARTICLE_SELL_PRICE SP
+        WHERE SP.MATNR=ZAM.MATNR
+        AND SP.MEINH=ZAU.MEINH AND ZA.ALC_STATUS<>'ES'
+    )
+) SUB
+WHERE SUB.STD_CUP_PRICE > 0;]]>
+</getCUParticlePBD>
+<getCUParticleCPBD>
+<![CDATA[SELECT SUB.MATNR, SUB.STD_CUP_PRICE
+FROM (
+    SELECT ZAM.MATNR, 
+    fn_wow_get_std_cup_price(ZAM.MATNR) AS STD_CUP_PRICE
+    FROM saap.ZWOWC_ARTICLE_MASTER ZAM
+    JOIN saap.ZWOWC_ARTICLE_UOM ZAU ON (ZAM.MATNR = ZAU.MATNR)
+    JOIN saap.ZWOWC_ARTICLE_LISTING ZAL ON (ZAU.MATNR=ZAL.MATNR)
+    WHERE ZAU.BASE_UOM_IND = 'Y'
+AND length(ZAL.COMPLEX_PACK_BRK_ARTICLE)>1
+    AND ZAM.MASTER_SIZE > 0
+    AND ZAM.COMP_SIZE_AU > 0
+    AND ZAM.COMP_SIZE_AU_UOM <> ''
+    AND ZAM.MASTER_SIZE_UOM <> ''
+    AND EXISTS (
+        SELECT 1
+        FROM saap.MAT_VIEW_ZWOW_ARTICLE_SELL_PRICE SP
+        WHERE SP.MATNR=ZAM.MATNR
+        AND SP.MEINH=ZAU.MEINH AND ZAL.ALC_STATUS<>'ES'
+    )
+) SUB
+WHERE SUB.STD_CUP_PRICE > 0;]]>
+</getCUParticleCPBD>
+</TCName>
+
+<TCName name = "enhancedPOSdetails">
+<check>
+<![CDATA[SELECT * FROM saap.sp_wow_generate_OOC_report
+       ('{"iv_dept_list":"45,27,62,28,15,05,20,25,00,10,30,47,55,40,60","iv_cat_list":"","iv_sub_cat_list":"","iv_seg_list":"","iv_from_date":"2017-08-21","iv_to_date":"2017-09-05"}')
+       WHERE tab_name = 'today']]>
+</check>
+<checknotPOA>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.IS_AGE_PROOF_REQD = 'N' and a.mtart != ('VERP')  and d.alc_status<>'ES']]>
+</checknotPOA>
+<checkPOA>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.IS_AGE_PROOF_REQD = 'Y' and a.mtart != ('VERP')  and d.alc_status<>'ES']]>
+</checkPOA>
+<checkQTY>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.FORCE_QTY_FLG = 'Y' and d.alc_status<>'ES']]>
+</checkQTY>
+<checknotQTY>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.FORCE_QTY_FLG = 'N' and a.mtart != 'VERP' and d.alc_status<>'ES']]>
+</checknotQTY>
+<checkIQTY>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.INHIBIT_QTY_REP_FLG = 'Y' and d.alc_status<>'ES']]>
+</checkIQTY>
+<checknotIQTY>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.INHIBIT_QTY_REP_FLG = 'N' and a.mtart != 'VERP' and d.alc_status<>'ES']]>
+</checknotIQTY>
+<checkSSF>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.sales_set_flag = 'Y' and d.alc_status<>'ES']]>
+</checkSSF>
+<checknotSSF>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.sales_set_flag != 'N' and a.mtart != 'VERP' and d.alc_status<>'ES']]>
+</checknotSSF>
+<checkST>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, 
+SAAP.ZWOWC_ARTICLE_HIER_XREF e, SAAP.LOCAL_WOW_MPLSCFAC f where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr 
+and e.matnr=f.matnr and f.SECURITY_TAG = 'Y' and d.alc_status<>'ES']]>
+</checkST>
+<checkDP>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.DEFAULT_PRICE_FLG = 'Y' and d.alc_status<>'ES']]>
+</checkDP>
+<checkMP>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.MANUAL_PRICE_FLG = 'Y' and d.alc_status<>'ES']]>
+</checkMP>
+<checkPW>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.WEIGHTED_IND = 'Y' and d.alc_status<>'ES']]>
+</checkPW>
+<checkSP>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.NOT_FOR_SALE = 'Y' and d.alc_status<>'ES']]>
+</checkSP>
+<checkPTWgreater>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.POS_TARE_WT > '0.00' and d.alc_status<>'ES']]>
+</checkPTWgreater>
+<checkPTWequal>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.POS_TARE_WT = '0.00' and d.alc_status<>'ES']]>
+</checkPTWequal>
+<checkPOS>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart = ('VERP') and d.alc_status<>'ES']]>
+</checkPOS>
+
+<checkPD>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.ZWOWC_ART_SALES_PRICE c, SAAP.zwowc_article_listing d, SAAP.MAT_VIEW_ZWOW_ARTICLEs_hier e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.prohibit_disct_flg='N' and a.MTART<>'VERP' and d.ALC_STATUS in('NA','RA','DA') 
+and d.alc_status<>'ES']]>
+</checkPD>
+<checkPPO>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.ZWOWC_ART_SALES_PRICE c, SAAP.zwowc_article_listing d, SAAP.MAT_VIEW_ZWOW_ARTICLEs_hier e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and c.PROHIBIT_PRICE_OVRRD='Y' and a.MTART<>'VERP' and d.ALC_STATUS in('NA','RA','DA') and 
+d.alc_status<>'ES']]>
+</checkPPO>
+
+<checkORDERqty>
+<![CDATA[select distinct d.lifnr ,f.MIN_ORDER_QTY,f.MIN_ORDER_VALUE from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c,SAAP.zwowc_article_listing d, 
+SAAP.ZWOWC_SUPPLIER_DETAILS e ,saap.ZWOWC_GS_VENDOR f where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr  and d.alc_status IN ('NA','RA') and d.source_of_supply = '1' 
+and d.lifnr > '0' and d.lifnr=e.supplier and d.lifnr=f.lifnr and f.lifnr = f.partner_no and f.MIN_ORDER_QTY>'0' and f.MIN_ORDER_VALUE>'0' and d.alc_status<>'ES']]>
+</checkORDERqty>
+<checkGCdetails>
+<![CDATA[select c.matnr ,c.GC_min_val,c.GC_MAX_VAL,c.GC_EXPR_PERIOD,c.GC_EXP_PER_TYPE from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b , saap.ZWOWC_ARTICLE_MASTER c ,SAAP.zwowc_article_listing d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and a.ALC_STATUS in ('NA','DA','RA') and C.GC_EXPR_PERIOD>'0' and b.BASE_UOM_IND='Y' and d.alc_status<>'ES']]>
+</checkGCdetails>
+<checkGSvendor>
+<![CDATA[select b.matnr,b.lifnr,a.partner_name,a.state,a.post_code,a.telephone from saap.ZWOWC_GS_VENDOR a,saap.ZWOWC_ARTICLE_LISTING b, 
+saap.zwowc_article_uom c where a.partner_no NOT IN(select partner_no from zwowc_gs_vendor group by partner_no having count(partner_no) > '1') and 
+a.partner_no=b.lifnr and b.alc_status in('NA','RA','DA') and b.matnr=c.matnr and c.base_uom_ind='Y' and b.alc_status<>'ES']]>
+</checkGSvendor>
+</TCName>
+
+
+<TCName name = "enhancedCheckNZStore">
+<getarticlecig>
+<![CDATA[select a.matnr,c.STORE_SOH from saap.zwowc_article_uom a, saap.ZWOWC_ARTICLE_LISTING b,saap.LOCAL_WOW_SOH c where a.base_uom_ind='Y' and a.pack_size>1
+and a.matnr=b.matnr and b.matnr=c.article and c.STORE_SOH>'0']]>
+</getarticlecig>
+<verifyMPLSCcigval>
+<![CDATA[select distinct a.matnr,d.MGV_PR_REF_MAT_GUID AS MPLSC,d.meinh,d.NON_AGG_VAL AS current_value,d.PREV_NON_AGG_VAL AS previous_value
+from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c , saap.ZWOWT_ARTICLE_UPDATE d  
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and c.pbd_ind='Y' and a.matnr='artno' 
+ORDER BY CASE
+WHEN d.meinh='MPK' THEN 1
+WHEN d.meinh='CAR' THEN 2
+END]]>
+</verifyMPLSCcigval>
+<checkUI>
+<![CDATA[select a.matnr,b.BRAND_DESC,c.ean11,c.meinh from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_MASTER b , saap.ZWOWC_ARTICLE_UOM c , saap.MAT_VIEW_ZWOW_ARTICLES_HIER d where a.matnr=b.matnr and b.matnr=c.matnr 
+and c.matnr=d.matnr and c.BASE_UOM_IND='Y' and a.alc_status in('NA','RA','DA') and a.matnr='artno']]>
+</checkUI>
+<suppInfo>
+<![CDATA[select a.matnr,convert(int,b.ARTICLE_OM/ a.PACK_SIZE_BASE) ||' '|| a.meinh as OM from saap.zwowc_article_uom a, saap.ZWOWC_ARTICLE_LISTING b,saap.LOCAL_WOW_SOH c where a.base_uom_ind='Y' and a.pack_size>1
+and a.matnr=b.matnr and b.matnr=c.article and c.STORE_SOH>'0']]>
+</suppInfo>
+<repliDetail>
+<![CDATA[select distinct a.matnr,n.uom_desc,e.long_desc,d.SALES_PRICE from saap.zwowc_article_uom a, saap.ZWOWC_ARTICLE_LISTING b,saap.LOCAL_WOW_SOH c,saap.ZWOWC_ARTICLE_MASTER e,
+saap.MAT_VIEW_ZWOW_ARTICLE_SELL_PRICE d,ZWOWC_ARTICLE_MASTER_VIEW f,zwowc_article_ean_desc n where a.base_uom_ind='Y' and a.pack_size>1 and a.matnr=b.matnr and b.matnr=c.article 
+and c.article=d.matnr and d.matnr=e.matnr and e.matnr=f.matnr and f.matnr=n.matnr and d.meinh=n.meinh and c.STORE_SOH>'0' and n.meinh='MPK']]>
+</repliDetail>
+</TCName>
+
+
+<TCName name = "enhancedMPLSCarticles">
+<ActiveCPBDArt>
+<![CDATA[select b.MATNR,b.PLVKP ,b.meinh from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d 
+where a.matnr=b.matnr and b.matnr=d.matnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and a.alc_status<>'DA' 
+and a.IS_CPBD > '0' and a.alc_status<>'ES' group by b.matnr,b.PLVKP,b.meinh having count(b.matnr)=1]]>
+</ActiveCPBDArt>
+<getartntFound>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a where a.matnr NOT IN (select b.matnr from saap.zwowc_article_listing b)]]>
+</getartntFound>
+<getRWart>
+<![CDATA[select a.matnr from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b where a.MATNR=b.matnr and 
+a.RANDOM_WEIGHT_FLG='Y' and b.BASE_UOM_IND='Y' and a.alc_status<>'DA' and a.alc_status<>'ES']]>
+</getRWart>
+<verifyRWart>
+<![CDATA[select distinct a.matnr,d.MGV_PR_REF_MAT_GUID AS MPLSC,d.meinh,d.NON_AGG_VAL AS current_value,d.PREV_NON_AGG_VAL AS previous_value
+from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c , saap.ZWOWT_ARTICLE_UPDATE d  
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and a.matnr='artno']]>
+</verifyRWart>
+<getWart>
+<![CDATA[select distinct a.matnr,c.ORDER_UOM from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b,saap.ZWOWC_ART_LIST_PROCURE c,saap.ZWOWC_ARTICLE_MASTER d  
+where a.MATNR=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and b.BASE_UOM_IND='Y' and d.WEIGHTED_IND='Y' and c.ISSUE_UOM in ('CAR','CA1','CA2','CA3','CA4','CA5') 
+and a.alc_status<>'DA'  and a.alc_status<>'ES' AND a.RANDOM_WEIGHT_FLG<>'Y']]>
+</getWart>
+<verifyWart>
+<![CDATA[select distinct a.matnr,d.MGV_PR_REF_MAT_GUID AS MPLSC,d.meinh,d.NON_AGG_VAL AS current_value,d.PREV_NON_AGG_VAL AS previous_value
+from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c , saap.ZWOWT_ARTICLE_UPDATE d  
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and a.matnr='artno']]>
+</verifyWart>
+<getdelart>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status = 'DA'  and D.alc_status<>'ES']]>
+</getdelart>
+<getarticlecig>
+<![CDATA[select distinct a.matnr  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='27' and a.alc_status<>'DA' and a.alc_status<>'ES']]>
+</getarticlecig>
+<getarticleliq>
+<![CDATA[select distinct a.matnr  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='20' and a.alc_status<>'DA' and a.alc_status<>'ES']]>
+</getarticleliq>
+<verifyMPLSCcigval>
+<![CDATA[select distinct a.matnr,d.MGV_PR_REF_MAT_GUID AS MPLSC,d.meinh,d.NON_AGG_VAL AS current_value,d.PREV_NON_AGG_VAL AS previous_value
+from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c , saap.ZWOWT_ARTICLE_UPDATE d  
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and c.pbd_ind='Y' and b.dept='27' and a.matnr='artno' 
+ORDER BY CASE
+WHEN d.meinh='EA' THEN 1
+WHEN d.meinh='CA1' THEN 2
+END]]>
+</verifyMPLSCcigval>
+<verifyMPLSCliqval>
+<![CDATA[select distinct a.matnr,d.MGV_PR_REF_MAT_GUID AS MPLSC,d.meinh,d.NON_AGG_VAL AS current_value,d.PREV_NON_AGG_VAL AS previous_value
+from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c , saap.ZWOWT_ARTICLE_UPDATE d  
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and c.pbd_ind='Y' and b.dept='20' and a.matnr='artno' 
+ORDER BY CASE
+WHEN d.meinh='EA' THEN 1
+WHEN d.meinh='CA1' THEN 2
+WHEN d.meinh='CAR' THEN 3
+WHEN d.meinh='MPK' THEN 4
+END]]>
+</verifyMPLSCliqval>
+<verifyMPLSCliqval1>
+<![CDATA[select distinct a.matnr,d.MGV_PR_REF_MAT_GUID AS MPLSC,d.meinh,d.NON_AGG_VAL AS current_value,d.PREV_NON_AGG_VAL AS previous_value
+from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c , saap.ZWOWT_ARTICLE_UPDATE d  
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and a.matnr='artno' and d.MGV_PR_REF_MAT_GUID<>'FACE' 
+ORDER BY CASE
+WHEN d.meinh='EA' THEN 1
+WHEN d.meinh='CA1' THEN 2
+WHEN d.meinh='CAR' THEN 3
+WHEN d.meinh='MPK' THEN 4
+END]]>
+</verifyMPLSCliqval1>
+</TCName>
+
+<TCName name = "enhancedReplinshmentFunctionality">
+<weekDay>
+<![CDATA[set datefirst 1;
+select DATEPART(dw,getdate()) as weekday]]>
+</weekDay>
+<getDOHart>
+<![CDATA[select a.matnr,round(convert(DOUBLE,(d.store_soh/a.AVG_SALES)),3) as DOH from LOCAL_WOW_ARTICLE_AVG_SALES a , ZWOWC_ARTICLE_LISTING b , zwowc_article_uom c , LOCAL_WOW_SOH d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.ARTICLE and c.BASE_UOM_IND='Y' and b.PERPETUAL_FLAG='Y' and d.store_soh> 1 order by a.AVG_SALES desc]]>
+</getDOHart>
+<getDOHart1>
+<![CDATA[select a.matnr,round(convert(DOUBLE,(d.store_soh/a.AVG_SALES)),3) as DOH from LOCAL_WOW_ARTICLE_AVG_SALES a , ZWOWC_ARTICLE_LISTING b , zwowc_article_uom c , LOCAL_WOW_SOH d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.ARTICLE and c.BASE_UOM_IND='Y' and b.PERPETUAL_FLAG='Y' and d.store_soh<1 order by a.AVG_SALES desc]]>
+</getDOHart1>
+<getDOHart2>
+<![CDATA[select a.matnr,round(convert(DOUBLE,(d.store_soh/a.AVG_SALES)),3) as DOH from LOCAL_WOW_ARTICLE_AVG_SALES a , ZWOWC_ARTICLE_LISTING b , zwowc_article_uom c , LOCAL_WOW_SOH d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.ARTICLE and c.BASE_UOM_IND='Y' and b.PERPETUAL_FLAG='Y' and d.store_soh=0 order by a.AVG_SALES desc]]>
+</getDOHart2>
+<getart>
+<![CDATA[SELECT ZAL.MATNR, roster_date_1 AS "Delivery Roster", delivery_date_1 AS "Next Delivery",delivery_date_2 AS "Following Delivery"
+FROM SAAP.LOCAL_WOW_ROSTER_DATE LWDR
+JOIN SAAP.ZWOWC_ARTICLE_LISTING ZAL ON (ZAL.LIFNR = LWDR.LIFNR)]]>
+</getart>
+<getart1>
+<![CDATA[select sub.matnr, saap.fn_wow_get_last_ordered_qty(sub.matnr) as "Last Ordered Qty", dateformat(bldat,'dd/mm/yyyy') as "Last Received", 
+menge||' '|| meinh as "Last Received Qty"
+from ( 
+      select distinct rec.lfbnr, rec.bldat, rec.matnr, rec.menge, rec.meinh, 
+      rank() over (partition by rec.matnr order by rec.transid desc) as rank
+      from saap.local_receiving_info rec 
+      where rec.menge <> 0
+      and rec.bldat <= dateformat(today(),'YYYYMMDD')
+      order by rank
+      ) sub
+where sub.rank=1;]]>
+</getart1>
+<getperpetualart>
+<![CDATA[select a.matnr,a.PI_UOM,convert(integer,a.PI_OM) from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b where a.matnr=b.matnr and b.base_uom_ind='Y' 
+and a.RANDOM_WEIGHT_FLG='Y' and  a.alc_status in('NA','RA','DA')]]>
+</getperpetualart>
+<getASart>
+<![CDATA[select DISTINCT a.MATNR from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_ARTICLE_UOM b where a.matnr=b.MATNR and a.ALC_STATUS in ('NA','RA','DA') 
+and a.AUTOSTOCKR_IND='Y' and b.BASE_UOM_IND='Y']]>
+</getASart>
+<getSRart>
+<![CDATA[select DISTINCT a.MATNR from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_ARTICLE_UOM b where a.matnr=b.MATNR and a.ALC_STATUS in ('NA','RA','DA') 
+and a.SRT_INDICATOR='Y' and b.BASE_UOM_IND='Y']]>
+</getSRart>
+<getdisp>
+<![CDATA[select DISTINCT a.MATNR from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_ARTICLE_UOM b , saap.zwowc_article_master c where a.matnr=b.MATNR and 
+b.matnr=c.matnr and a.ALC_STATUS in ('NA','RA','DA') and a.SRT_INDICATOR='Y' and b.BASE_UOM_IND='Y' and c.article_cat_id='12']]>
+</getdisp>
+</TCName>
+
+<TCName name = "enhancedReplinshmentFunctionalityBWS">
+<getprepackart>
+<![CDATA[select DISTINCT a.MATNR from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_ARTICLE_UOM b , saap.zwowc_article_master c
+where a.matnr=b.MATNR and b.matnr=c.matnr and a.ALC_STATUS in ('NA','RA','DA')  and b.BASE_UOM_IND='Y' and c.article_cat_id='11']]>
+</getprepackart>
+<getprofitableart>
+<![CDATA[select DISTINCT a.MATNR from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_ARTICLE_UOM b , saap.zwowc_article_master c
+where a.matnr=b.MATNR and b.matnr=c.matnr and a.ALC_STATUS in ('NA','RA','DA')  and b.BASE_UOM_IND='Y' and a.PROFITABLE_LINE='Y']]>
+</getprofitableart>
+<getimageLineart>
+<![CDATA[select DISTINCT a.MATNR from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_ARTICLE_UOM b , saap.zwowc_article_master c
+where a.matnr=b.MATNR and b.matnr=c.matnr and a.ALC_STATUS in ('NA','RA','DA')  and b.BASE_UOM_IND='Y' and a.image_line='X']]>
+</getimageLineart>
+<getkeyItemart>
+<![CDATA[select DISTINCT a.MATNR from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_ARTICLE_UOM b , saap.zwowc_article_master c
+where a.matnr=b.MATNR and b.matnr=c.matnr and a.ALC_STATUS in ('NA','RA','DA')  and b.BASE_UOM_IND='Y' and a.key_item='X']]>
+</getkeyItemart>
+</TCName>
+
+<TCName name = "enhancedDraftFunctionality">
+<getrangedart>
+<![CDATA[select distinct a.matnr,c.ORDER_UOM from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b,saap.ZWOWC_ART_LIST_PROCURE c,saap.ZWOWC_ARTICLE_MASTER d  
+where a.MATNR=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and b.BASE_UOM_IND='Y' and d.WEIGHTED_IND='Y' and c.ISSUE_UOM in ('CAR','CA1','CA2','CA3','CA4','CA5')]]>
+</getrangedart>
+<getrangedart>
+<![CDATA[select distinct a.matnr from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='20' and a.ALC_STATUS in('NA','RA')]]>
+</getrangedart>
+<getdisplayart>
+<![CDATA[select a.matnr from saap.ZWOWC_ARTICLE_LISTING a,saap.ZWOWC_ARTICLE_UOM b where a.autostockr_ind in('Y') and a.ALC_STATUS in ('NA','RA') 
+and a.matnr=b.MATNR and b.base_uom_ind='Y']]>
+</getdisplayart>
+</TCName>
+
+<TCName name = "enhancedPLUandsupplierInfo">
+<getPLU>
+<![CDATA[select g.matnr,g.PLU_CODE from saap.zwowc_article_master g , saap.zwowc_article_listing h where h.matnr=g.matnr and h.alc_status in('NA','RA') and g.plu_code in (select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr)]]>
+</getPLU>
+<getvendorart>
+<![CDATA[select a.matnr,a.ARTICLE_OM,a.source_of_supply,a.lifnr,c.partner_name,b.meinh from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b,saap.ZWOWC_GS_VENDOR c 
+where a.matnr=b.matnr and a.lifnr=c.partner_no and b.base_uom_ind='Y' and a.source_of_supply='1' and a.alc_status in('NA','RA','DA')]]>
+</getvendorart>
+<getwarehouseart>
+<![CDATA[select a.matnr,a.ARTICLE_OM,a.source_of_supply,a.lifnr,c.NAME1,b.meinh from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b,saap.ZWOWC_SUPPLIER_DETAILS c 
+where a.matnr=b.matnr and a.lifnr=c.SUPPLIER and b.base_uom_ind='Y' and a.source_of_supply='2' and a.alc_status in('NA','RA','DA')]]>
+</getwarehouseart>
+<getallart>
+<![CDATA[select a.matnr,a.ARTICLE_OM,a.source_of_supply,a.lifnr,c.partner_name,b.meinh from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b,saap.ZWOWC_GS_VENDOR c 
+where a.matnr=b.matnr and a.lifnr=c.partner_no and b.base_uom_ind='Y' and a.source_of_supply='A' and a.alc_status in('NA','RA','DA')]]>
+</getallart>
+</TCName>
+
+<TCName name = "enhancedSmartSearch">
+<getDept>
+<![CDATA[select DEPT_NAME,CAT_NAME,SUB_CAT_NAME,SEG_NAME from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where matnr='artno']]>
+</getDept>
+</TCName>
+
+<TCName name = "enhancedPOGdetailsUnitiInfo">
+<getPOGart>
+<![CDATA[select a.matnr,c.aisle,c.ACTUAL_BAY_POSITION,c.SHELF from saap.ZWOWC_ARTICLE_LISTING a , saap. ZWOWC_ARTICLE_UOM b , saap.ZWOWC_PLANOGRAM_ITM c where a.matnr=b.matnr and b.matnr=c.MATNR and b.BASE_UOM_IND='Y' and c.AISLE>'0' and c.ACTUAL_BAY_POSITION>'0' and c.SHELF>'0' and a.alc_status='RA']]>
+</getPOGart>
+<checkPOG>
+<![CDATA[select a.matnr,c.aisle,c.ACTUAL_BAY_POSITION,c.SHELF from saap.ZWOWC_ARTICLE_LISTING a , saap. ZWOWC_ARTICLE_UOM b , saap.ZWOWC_PLANOGRAM_ITM c where a.matnr=b.matnr and b.matnr=c.MATNR and b.BASE_UOM_IND='Y' and c.AISLE>'0' and c.ACTUAL_BAY_POSITION>'0' and c.SHELF>'0' and a.alc_status='RA' and a.matnr='artno']]>
+</checkPOG>
+<getUIart>
+<![CDATA[select a.matnr,b.BRAND_DESC,c.ean11,c.meinh from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_MASTER b , saap.ZWOWC_ARTICLE_UOM c , saap.MAT_VIEW_ZWOW_ARTICLES_HIER d where a.matnr=b.matnr and b.matnr=c.matnr 
+and c.matnr=d.matnr and c.BASE_UOM_IND='Y' and a.alc_status in('NA','RA','DA')]]>
+</getUIart>
+<checkUI>
+<![CDATA[select a.matnr,b.BRAND_DESC,c.ean11,c.meinh from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_MASTER b , saap.ZWOWC_ARTICLE_UOM c , saap.MAT_VIEW_ZWOW_ARTICLES_HIER d where a.matnr=b.matnr and b.matnr=c.matnr 
+and c.matnr=d.matnr and c.BASE_UOM_IND='Y' and a.alc_status in('NA','RA','DA') and a.matnr='artno']]>
+</checkUI>
+<getPBDUIart>
+<![CDATA[select a.matnr,b.PBD_IND from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_MASTER b , saap.ZWOWC_ARTICLE_UOM c , saap.MAT_VIEW_ZWOW_ARTICLES_HIER d where a.matnr=b.matnr and b.matnr=c.matnr 
+and c.matnr=d.matnr and c.BASE_UOM_IND='Y' and a.alc_status in('NA','RA','DA') and b.pbd_ind='Y']]>
+</getPBDUIart>
+<getlinkedart>
+<![CDATA[select d.matnr,a.SELL_PRICE_GROUP,a.PRICE_LIST_DESC,a.TAX_RATE, e.child_article from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,
+saap.MAT_VIEW_ZWOW_ARTICLES_HIER c,saap.ZWOWC_ARTICLE_MASTER d, saap.zwowc_article_child e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr 
+and a.alc_status in ('NA','RA','DA') and c.dept='30' and d.article_cat_id='10' and d.item_linkage_ind='Y' and d.mtart in('ZPRD','ZMEA','ZDEL') and b.BASE_UOM_IND='Y']]>
+</getlinkedart>
+<getperpetualart>
+<![CDATA[SELECT DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.perpetual_flag = 'Y']]>
+</getperpetualart>
+<getsaleORreturnart>
+<![CDATA[SELECT DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.VENDOR_RETURN_FLAG = 'Y']]>
+</getsaleORreturnart>
+</TCName>
+
+<TCName name = "enhancedArticleIndicator">
+<getOfferart>
+<![CDATA[select b.MATNR from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_BBUY_ITM b , saap.ZWOWC_ARTICLE_UOM d  
+where a.matnr=b.matnr and b.matnr=d.matnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and 
+b.aktnr in (select aktnr from zwowc_BBUY_hdr where today() between VKDAB and VKDBI)]]>
+</getOfferart>
+<getDCsuppliedart>
+<![CDATA[select DISTINCT a.matnr, d.lifnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status IN ('NA','RA') and d.source_of_supply = '2' and d.lifnr > '0']]>
+</getDCsuppliedart>
+<getPRart>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.PS_article_status = '08' and d.ALC_status = 'DA' and d.PS_stat_end_date = '9999-12-31']]>
+</getPRart>
+<getNRDCsuppliedart>
+<![CDATA[select a.matnr,d.lifnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=d.matnr and d.matnr=e.matnr and d.alc_status = 'ES' and b.BASE_UOM_IND='Y' and d.SOURCE_OF_SUPPLY='2' and d.lifnr<>'']]>
+</getNRDCsuppliedart>
+<getvendorsuppliedart>
+<![CDATA[select DISTINCT a.matnr, d.lifnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status IN ('NA','RA') and d.source_of_supply = '1' and d.lifnr > '0']]>
+</getvendorsuppliedart>
+<getNRvendorsuppliedart>
+<![CDATA[select a.matnr,d.lifnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=d.matnr and d.matnr=e.matnr and d.alc_status = 'ES' and b.BASE_UOM_IND='Y' and d.SOURCE_OF_SUPPLY='1' and d.lifnr<>'']]>
+</getNRvendorsuppliedart>
+<getnuingart>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status IN ('NA','RA') and a.fresh_food_flag = 'Y' and a.mtart= 'ZDEL']]>
+</getnuingart>
+<getnutIng>
+<![CDATA[select matnr,PRD_INGREDT from SAAP.zwowc_Prd_ingred_info where matnr='artno' order by PRD_INGREDT asc]]>
+</getnutIng>
+<getnutdesc>
+<![CDATA[select distinct nutrient_id,serve_qty,lower(serve_UOM),per100_qty,lower(per100_UOM),NUTRI_CLAIM from SAAP.zwowc_nutri_info where matnr='artno']]>
+</getnutdesc>
+<gettastingart>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e, SAAP.ZWOWC_TASTING_NOTES f 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and e.matnr=f.matnr and d.alc_status IN ('NA','RA')]]>
+</gettastingart>
+<gettastingdesc>
+<![CDATA[select * from SAAP.ZWOWC_TASTING_NOTES where matnr = 'artno']]>
+</gettastingdesc>
+<getfreshfoodart>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status IN ('NA','RA') and a.fresh_food_flag = 'Y' and a.mtart= 'ZDEL']]>
+</getfreshfoodart>
+<getffTARE>
+<![CDATA[select a.matnr,a.LABEL_DESC ||' '||a.label_desc2 as Label_Descr,a.LABEL_FORMAT_DESC,a.TOTAL_SHELF_LIFE,a.COUNTER_WEIGH_IND,a.TARE from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_listing c, SAAP.MAT_VIEW_ZWOW_ARTICLES_HIER d
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and c.alc_status IN ('NA','RA') and a.fresh_food_flag = 'Y' and a.mtart= 'ZDEL' and b.BASE_UOM_IND='Y' and a.COUNTER_WEIGH_IND='Y' and a.TARE is not null]]>
+</getffTARE>
+<getffUsebydays>
+<![CDATA[select a.matnr,a.USE_BY_DAYS,a.BEST_BEFORE_DAYS from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_listing c, SAAP.MAT_VIEW_ZWOW_ARTICLES_HIER d
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and c.alc_status IN ('NA','RA') and a.fresh_food_flag = 'Y' and a.mtart= 'ZDEL' and b.BASE_UOM_IND='Y' and a.USE_BY_DAYS>0]]>
+</getffUsebydays>
+<getffbbDays>
+<![CDATA[select a.matnr,a.USE_BY_DAYS,a.BEST_BEFORE_DAYS from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_listing c, SAAP.MAT_VIEW_ZWOW_ARTICLES_HIER d
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and c.alc_status IN ('NA','RA') and a.fresh_food_flag = 'Y' and a.mtart= 'ZDEL' and b.BASE_UOM_IND='Y' and a.BEST_BEFORE_DAYS>'0']]>
+</getffbbDays>
+<getffwraptare>
+<![CDATA[select a.matnr,a.WRAP_TARE,c.TRAY_ID from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_listing c, SAAP.MAT_VIEW_ZWOW_ARTICLES_HIER d
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and c.alc_status IN ('NA','RA') and a.fresh_food_flag = 'Y' and a.mtart= 'ZDEL' and b.BASE_UOM_IND='Y'  and c.TRAY_ID>'0']]>
+</getffwraptare>
+<getffmandatory>
+<![CDATA[select distinct aa.matnr, aa.mandatory_warning , aa.str_reqt,aa.nip_status  
+from saap.ZWOWC_ARTICLE_LISTING b
+join saap.zwowc_article_uom c on (b.matnr=c.matnr )
+join SAAP.zwowc_article_master d on (b.matnr=d.matnr )
+join saap.ZWOWC_NUTRI_INFO aa on (b.matnr=aa.matnr)
+join (
+select a.matnr,max(a.effective_date) as effective_date 
+from saap.ZWOWC_NUTRI_INFO a
+where a.mandatory_warning<>' ' and a.str_reqt<>' ' and a.nip_status<> ' ' --length(a.mandatory_warning)>1 and length(a.str_reqt)>1 and a.nip_status>1
+group by a.matnr
+)ab on (aa.matnr=ab.matnr and aa.effective_date=ab.effective_date)
+where --aa.matnr=120044 and 
+--length(aa.mandatory_warning)>1 and length(aa.str_reqt)>1 and aa.nip_status>1
+aa.mandatory_warning<>'' and aa.str_reqt<>'' and aa.nip_status<>11
+and b.alc_status in('NA','RA','DA')
+and d.fresh_food_flag = 'Y'
+and c.base_uom_ind='Y']]>
+</getffmandatory>
+<getffmandatorycheck>
+<![CDATA[select distinct aa.matnr, aa.mandatory_warning , aa.str_reqt,aa.nip_status  
+from saap.ZWOWC_ARTICLE_LISTING b
+join saap.zwowc_article_uom c on (b.matnr=c.matnr )
+join SAAP.zwowc_article_master d on (b.matnr=d.matnr )
+join saap.ZWOWC_NUTRI_INFO aa on (b.matnr=aa.matnr)
+join (
+select a.matnr,max(a.effective_date) as effective_date 
+from saap.ZWOWC_NUTRI_INFO a
+where a.mandatory_warning<>' ' and a.str_reqt<>' ' and a.nip_status<> ' ' --length(a.mandatory_warning)>1 and length(a.str_reqt)>1 and a.nip_status>1
+group by a.matnr
+)ab on (aa.matnr=ab.matnr and aa.effective_date=ab.effective_date)
+where --aa.matnr=120044 and 
+--length(aa.mandatory_warning)>1 and length(aa.str_reqt)>1 and aa.nip_status>1
+aa.mandatory_warning<>'' and aa.str_reqt<>'' and aa.nip_status<>11
+and b.alc_status in('NA','RA','DA')
+and d.fresh_food_flag = 'Y'
+and c.base_uom_ind='Y' and aa.matnr='artno']]>
+</getffmandatorycheck>
+<checkservingperPS>
+<![CDATA[select distinct a.matnr , FIRST_VALUE(convert(double,a.serves_per_pack)) OVER (PARTITION BY a.matnr ORDER BY a.effective_date DESC) AS serving_size 
+from saap.ZWOWC_NUTRI_INFO a , saap.ZWOWC_ARTICLE_LISTING b , saap.zwowc_article_uom c where a.matnr=b.matnr and b.matnr=c.matnr and b.alc_status in('NA','RA','DA') 
+and a.matnr>'340000' GROUP BY a.matnr,a.serves_per_pack,a.effective_date]]>
+</checkservingperPS>
+<nutcheck>
+<![CDATA[select a.matnr,a.NUTRI_CLAIM,a.SERVING_SIZE||' '|| lower(a.SERVING_SIZE_UOM),e.ORIG_COUNTRY from SAAP.ZWOWC_NUTRI_INFO a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_listing c,SAAP.zwowc_article_master e, SAAP.MAT_VIEW_ZWOW_ARTICLES_HIER d
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and c.alc_status IN ('NA','RA','DA') and e.fresh_food_flag = 'Y' and  b.BASE_UOM_IND='Y' 
+and length(a.nutri_claim)>2]]>
+</nutcheck>
+<servingSize>
+<![CDATA[select distinct a.matnr,a.NUTRI_CLAIM,FIRST_VALUE(a.SERVING_SIZE) OVER (PARTITION BY a.matnr ORDER BY a.effective_date DESC) ||' '|| lower(a.SERVING_SIZE_UOM) as sizes,
+e.ORIG_COUNTRY from SAAP.ZWOWC_NUTRI_INFO a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_listing c,SAAP.zwowc_article_master e, SAAP.MAT_VIEW_ZWOW_ARTICLES_HIER d
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and c.alc_status IN ('NA','RA','DA') and e.fresh_food_flag = 'Y' and  b.BASE_UOM_IND='Y' 
+and length(a.nutri_claim)>2 and a.matnr='artno' and a.NUTRI_CLAIM ='desc']]>
+</servingSize>
+<origincheck>
+<![CDATA[select COO_CON_STATMNT from ZWOWC_COO_LABEL where matnr='artno']]>
+</origincheck>
+<getarticlecig>
+<![CDATA[select distinct a.matnr,d.use_by_date  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c, saap.LOCAL_WOW_USE_BY_DATE d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='20']]>
+</getarticlecig>
+<getdelart>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status = 'DA']]>
+</getdelart>
+<getrangedart>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status IN ('NA','RA')]]>
+</getrangedart>
+<getntrangedart>
+<![CDATA[select DISTINCT a.matnr, d.PS_article_status from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status = 'ES']]>
+</getntrangedart>
+<getntfrsaleart>
+<![CDATA[select DISTINCT a.matnr from SAAP.zwowc_article_master a, SAAP.zwowc_article_uom b, SAAP.zwowc_article_ean c, SAAP.zwowc_article_listing d, SAAP.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.Not_for_sale = 'Y' and d.alc_status<>'DA']]>
+</getntfrsaleart>
+<getvendor>
+<![CDATA[select distinct a.lifnr from saap.zwowc_article_listing a, saap.zwowc_article_master b where a.matnr = b.matnr and a.source_of_supply = '1' and lifnr != '']]>
+</getvendor>
+<getWH>
+<![CDATA[select distinct a.lifnr from saap.zwowc_article_listing a, saap.zwowc_article_master b where a.matnr = b.matnr and a.source_of_supply = '2' and lifnr != '']]>
+</getWH>
+</TCName>
+
+<TCName name = "enhancedFullHistory">
+<getPBDarticle>
+<![CDATA[select MSFC.matnr,field_name , count(1) from 
+LOCAL_MPL_SC_FAC_HISTORY MSFC 
+join saap.zwowc_article_listing zal on (msfc.matnr=zal.matnr)
+join saap.zwowc_article_master zam on (msfc.matnr=zam.matnr)
+where field_name='PLNU'
+and zal.alc_status in ('NA','RA')
+and zam.PBD_IND='Y'
+and MSFC.modified_datetime>now()-28 GROUP BY MSFC.matnr , FIELD_NAME
+union
+select MSFC.matnr,field_name , count(1) from 
+ZWOWC_MPL_SC_FAC_HISTORY MSFC 
+join saap.zwowc_article_listing zal on (msfc.matnr=zal.matnr)
+join saap.zwowc_article_master zam on (msfc.matnr=zam.matnr)
+where field_name='PLNU'
+and zal.alc_status in ('NA','RA')
+and zam.PBD_IND='Y'
+and MSFC.modified_datetime>now()-28 GROUP BY MSFC.matnr , FIELD_NAME]]>
+</getPBDarticle>
+<getCPBDarticle>
+<![CDATA[select MSFC.matnr,field_name , count(1) from 
+LOCAL_MPL_SC_FAC_HISTORY MSFC 
+join saap.zwowc_article_listing zal on (msfc.matnr=zal.matnr)
+join saap.zwowc_article_master zam on (msfc.matnr=zam.matnr)
+where field_name='PLNU'
+and zal.alc_status in ('NA','RA')
+and zal.IS_CPBD>0
+and MSFC.modified_datetime>now()-28 GROUP BY MSFC.matnr , FIELD_NAME
+union
+select MSFC.matnr,field_name , count(1) from 
+ZWOWC_MPL_SC_FAC_HISTORY MSFC 
+join saap.zwowc_article_listing zal on (msfc.matnr=zal.matnr)
+join saap.zwowc_article_master zam on (msfc.matnr=zam.matnr)
+where field_name='PLNU'
+and zal.alc_status in ('NA','RA') and zal.IS_CPBD>0 
+and MSFC.modified_datetime>now()-28 GROUP BY MSFC.matnr , FIELD_NAME]]>
+</getCPBDarticle>
+<verifyValues>
+<![CDATA[select case when zal.pi_uom='EA' then 'EA' else msfc.meinh end case as uom,
+   dateformat(msfc.modified_datetime, 'DD/MM/YYYY') || ' ' ||  dateformat(msfc.modified_datetime, 'HH : NN : SS') as time_of_change, msfc.user_id as changed_by,msfc.old_value as value_old,
+ msfc.new_value as value_new,  '0' as iv_records,msfc.matnr as article, '1' as msg,
+   'artno' as iv_article, 0 as iv_page_no 
+   from saap.ZWOWC_MPL_SC_FAC_HISTORY MSFC
+   left join saap.ZWOWC_ARTICLE_LISTING ZAL ON (MSFC.MATNR=ZAL.MATNR)    
+   where msfc.matnr='artno' 
+   and msfc.field_name='shelf' 
+   and msfc.modified_datetime>now()-28
+   union
+   select  
+case when zal.pi_uom='EA' then 'EA' else msfl.meinh end case as uom,
+   dateformat(msfl.modified_datetime, 'DD/MM/YYYY') || ' ' ||
+   dateformat(msfl.modified_datetime, 'HH : NN : SS') as time_of_change,msfl.user_id as changed_by, msfl.old_value as value_old, msfl.new_value as value_new,
+'0' as iv_records,  msfl.matnr as article, '1' as msg,
+   'artno' as iv_article, 0 as iv_page_no    
+   from saap.LOCAL_MPL_SC_FAC_HISTORY MSFL
+   left join saap.ZWOWC_ARTICLE_LISTING ZAL ON (MSFL.MATNR=ZAL.MATNR)
+   where msfl.matnr='artno' 
+   and msfl.field_name='shelf'
+   and msfl.modified_datetime>now()-28 ;]]>
+</verifyValues>
+
+
+<getfullhistory>
+<![CDATA[select * from saap.zwowo_sales_history where article ='artno']]>
+</getfullhistory>
+</TCName>
+
+<TCName name = "enhancedFullHistorybigW">
+<getPBDarticle>
+<![CDATA[select MSFC.matnr,field_name , count(1) from 
+LOCAL_MPL_SC_FAC_HISTORY MSFC  
+join saap.zwowc_article_listing zal on (msfc.matnr=zal.matnr)
+join saap.zwowc_article_master zam on (msfc.matnr=zam.matnr)
+join saap.ZWOWC_ARTICLE_UOM b on (msfc.matnr=b.matnr)
+join saap.zwowc_article_master c  on (msfc.matnr=c.matnr)
+where field_name='PLNU'
+and zal.alc_status in ('NA','RA')
+and b.BASE_UOM_IND='Y' and c.article_cat_id='11'
+and MSFC.modified_datetime>now()-28 GROUP BY MSFC.matnr , FIELD_NAME
+union
+select MSFC.matnr,field_name , count(1) from 
+saap.ZWOWC_MPL_SC_FAC_HISTORY MSFC 
+join saap.zwowc_article_listing zal on (msfc.matnr=zal.matnr)
+join saap.zwowc_article_master zam on (msfc.matnr=zam.matnr)
+join saap.ZWOWC_ARTICLE_UOM b on (msfc.matnr=b.matnr)
+join saap.zwowc_article_master c  on (msfc.matnr=c.matnr)
+where field_name='PLNU'
+and zal.alc_status in ('NA','RA') and b.BASE_UOM_IND='Y' and c.article_cat_id='11' 
+and MSFC.modified_datetime>now()-28 GROUP BY MSFC.matnr , FIELD_NAME]]>
+</getPBDarticle>
+<verifyValues>
+<![CDATA[select case when zal.pi_uom='EA' then 'EA' else msfc.meinh end case as uom,
+   dateformat(msfc.modified_datetime, 'DD/MM/YYYY') || ' ' ||  dateformat(msfc.modified_datetime, 'HH : NN : SS') as time_of_change, msfc.user_id as changed_by,msfc.old_value as value_old,
+ msfc.new_value as value_new,  '0' as iv_records,msfc.matnr as article, '1' as msg,
+   'artno' as iv_article, 0 as iv_page_no 
+   from saap.ZWOWC_MPL_SC_FAC_HISTORY MSFC
+   left join saap.ZWOWC_ARTICLE_LISTING ZAL ON (MSFC.MATNR=ZAL.MATNR)    
+   where msfc.matnr='artno' 
+   and msfc.field_name='shelf' 
+   and msfc.modified_datetime>now()-28
+   union
+   select  
+case when zal.pi_uom='EA' then 'EA' else msfl.meinh end case as uom,
+   dateformat(msfl.modified_datetime, 'DD/MM/YYYY') || ' ' ||
+   dateformat(msfl.modified_datetime, 'HH : NN : SS') as time_of_change,msfl.user_id as changed_by, msfl.old_value as value_old, msfl.new_value as value_new,
+'0' as iv_records,  msfl.matnr as article, '1' as msg,
+   'artno' as iv_article, 0 as iv_page_no    
+   from saap.LOCAL_MPL_SC_FAC_HISTORY MSFL
+   left join saap.ZWOWC_ARTICLE_LISTING ZAL ON (MSFL.MATNR=ZAL.MATNR)
+   where msfl.matnr='artno' 
+   and msfl.field_name='shelf'
+   and msfl.modified_datetime>now()-28 ;]]>
+</verifyValues>
+
+
+<getfullhistory>
+<![CDATA[select * from saap.zwowo_sales_history where article ='artno']]>
+</getfullhistory>
+</TCName>
+
+<TCName name = "enhancedSalesHistory">
+<getarticle>
+<![CDATA[select article, 
+(coalesce(sales1,0) + coalesce(sales2,0) + coalesce(sales3,0) + coalesce(sales4,0) + coalesce(sales5,0) + coalesce(sales6,0) + coalesce(sales7,0)) as tot_sales
+from (
+select article, sum(sales_qty_day1) as sales1, sum(sales_qty_day2) as sales2, sum(sales_qty_day3) as sales3,
+sum(sales_qty_day4) as sales4, sum(sales_qty_day5) as sales5, sum(sales_qty_day6) as sales6, sum(sales_qty_day7) as sales7
+from saap.ZWOWO_SALES_HISTORY a 
+join saap.mat_view_zwow_articles_hier h on (a.article=h.matnr)
+join saap.ZWOWC_ARTICLE_LISTING i on (a.article=i.matnr) where i.LIFNR>0 and i.alc_status<>'ES'
+group by article
+) sub;]]>
+</getarticle>
+<getCPBDarticle>
+<![CDATA[select article, 
+(coalesce(sales1,0) + coalesce(sales2,0) + coalesce(sales3,0) + coalesce(sales4,0) + coalesce(sales5,0) + coalesce(sales6,0) + coalesce(sales7,0)) as tot_sales
+from (
+select article, sum(sales_qty_day1) as sales1, sum(sales_qty_day2) as sales2, sum(sales_qty_day3) as sales3,
+sum(sales_qty_day4) as sales4, sum(sales_qty_day5) as sales5, sum(sales_qty_day6) as sales6, sum(sales_qty_day7) as sales7
+from saap.ZWOWO_SALES_HISTORY a 
+join saap.mat_view_zwow_articles_hier h on (a.article=h.matnr)
+join saap.ZWOWC_ARTICLE_LISTING i on (a.article=i.matnr) where i.COMPLEX_PACK_BRK_ARTICLE>0 and i.COMPLEX_PACK_BRK_OM>6 and i.LIFNR>0 and i.alc_status<>'ES' and i.alc_status<>'DA' 
+group by article
+)sub;]]>
+</getCPBDarticle>
+<verifyValues>
+<![CDATA[select * from saap.sp_wow_get_sales_history_by_art('{"iv_article_no":"artno","iv_site_no":"storeNo"}');]]>
+</verifyValues>
+</TCName>
+
+<TCName name = "enhancedCheckGrossProfit">
+<getarticlecig>
+<![CDATA[select distinct a.matnr,d.use_by_date  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c, saap.LOCAL_WOW_USE_BY_DATE d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='27' and a.alc_status<>'ES' and a.alc_status<>'DA']]>
+</getarticlecig>
+<getvendor>
+<![CDATA[select a.matnr,a.source_of_supply,a.lifnr,c.partner_name from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b,saap.ZWOWC_GS_VENDOR c,saap.MAT_VIEW_ZWOW_ARTICLES_HIER d
+where a.matnr=b.matnr and a.lifnr=c.partner_no and a.matnr=d.matnr and b.base_uom_ind='Y' and a.source_of_supply='1' and a.alc_status in('NA','RA','DA')  and a.alc_status<>'ES' 
+and a.alc_status<>'DA' and d.dept_name<>'LIQUOR']]>
+</getvendor>
+<getWH>
+<![CDATA[select a.matnr,a.source_of_supply,a.lifnr,c.NAME1 from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b,saap.ZWOWC_SUPPLIER_DETAILS c,saap.MAT_VIEW_ZWOW_ARTICLES_HIER d
+where a.matnr=b.matnr and a.lifnr=c.SUPPLIER and a.matnr=d.matnr and b.base_uom_ind='Y' and a.source_of_supply='2' and a.alc_status in('NA','RA','DA')  and a.alc_status<>'ES' 
+and a.alc_status<>'DA' and d.dept_name<>'LIQUOR']]>
+</getWH>
+<getAll>
+<![CDATA[select a.matnr,a.source_of_supply,a.lifnr,c.partner_name from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b,saap.ZWOWC_GS_VENDOR c,saap.MAT_VIEW_ZWOW_ARTICLES_HIER d  
+where a.matnr=b.matnr and a.lifnr=c.partner_no and a.matnr=d.matnr and b.base_uom_ind='Y' and a.source_of_supply='A' and a.alc_status in('NA','RA','DA') and a.alc_status<>'ES' 
+and a.alc_status<>'DA' and d.dept_name<>'LIQUOR']]>
+</getAll>
+<getliq>
+<![CDATA[select distinct a.matnr,d.use_by_date  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c, saap.LOCAL_WOW_USE_BY_DATE d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='20'  and a.alc_status<>'ES']]>
+</getliq>
+</TCName>
+
+<TCName name = "enhancedSellandPromoPrice">
+<SellandPromoprice>
+<![CDATA[select c.matnr,c.SALES_PRICE,d.BEST_PROMO_PRICE,datename(DAY,d.START_DATE) AS startdate,datename(MONTH,d.START_DATE) AS startMonth,
+datename(DAY,d.END_DATE) AS enddate,datename(MONTH,d.END_DATE) AS endMonth from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b, saap.MAT_VIEW_ZWOW_ARTICLE_SELL_PRICE c, 
+saap.MAT_VIEW_ZWOW_ARTICLE_BEST_PROMO d where a.matnr=b.matnr and b.matnr=c.MATNR and c.matnr=d.MATNR and a.alc_status in ('NA','RA','DA') and b.base_uom_ind='Y' 
+and b.meinh=c.meinh]]>
+</SellandPromoprice>
+<startdatePromoprice>
+<![CDATA[select b.MATNR,b.PLVKP from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d  
+where a.matnr=b.matnr and b.matnr=d.matnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI) group by b.matnr,b.PLVKP having count(b.matnr)>1]]>
+</startdatePromoprice>
+<ActiveArt>
+<![CDATA[select b.MATNR from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d  
+where a.matnr=b.matnr and b.matnr=d.matnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI) group by b.matnr having count(b.matnr)>1]]>
+</ActiveArt>
+<ActivePBDArt>
+<![CDATA[select b.MATNR,b.PLVKP ,b.meinh from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d , saap.ZWOWC_ARTICLE_MASTER e 
+where a.matnr=b.matnr and b.matnr=d.matnr and d.MATNR=e.matnr and e.PBD_IND='Y' and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI) group by b.matnr,b.PLVKP,b.meinh having count(b.matnr)=1]]>
+</ActivePBDArt>
+<ActiveCPBDArt>
+<![CDATA[select b.MATNR,b.PLVKP ,b.meinh from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d 
+where a.matnr=b.matnr and b.matnr=d.matnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and a.COMPLEX_PACK_BRK_ARTICLE>1 and a.COMPLEX_PACK_BRK_OM>6 and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI) group by b.matnr,b.PLVKP,b.meinh having count(b.matnr)=1]]>
+</ActiveCPBDArt>
+<ActiveDetails>
+<![CDATA[select dateformat(e.VKDAB,'dd/MM/yyyy') AS startDate,dateformat(e.VKDBI,'dd/MM/yyyy') AS enddate ,e.aktnr AS promo,
+e.aktkt AS descriptions,b.meinh AS UOM,b.PLVKP AS promoprice from saap.ZWOWC_ARTICLE_LISTING a,saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d ,saap. ZWOWC_PROMO_HDR e 
+where a.matnr=b.matnr and b.matnr=d.matnr and b.aktnr=e.aktnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') 
+and b.matnr='artno' and b.aktnr in (select aktnr from saap.zwowc_promo_hdr where e.VKDBI=today() or e.VKDBI>today())]]>
+</ActiveDetails>
+<pastArt>
+<![CDATA[select b.MATNR,b.PLVKP,e.VKDAB,e.VKDBI from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d , saap.ZWOWC_PROMO_HDR e 
+where a.matnr=b.matnr and b.matnr=d.matnr and b.aktnr=e.aktnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where VKDBI between Today()-14 and Today()-1) group by b.matnr,b.PLVKP,e.VKDAB,e.VKDBI 
+having count(b.matnr)>1 Order by b.matnr desc]]>
+</pastArt>
+<pastDetails>
+<![CDATA[select dateformat(e.VKDAB,'dd/MM/yyyy') AS startDate,dateformat(e.VKDBI,'dd/MM/yyyy') AS enddate ,e.aktnr AS promo,e.aktkt AS descriptions,b.meinh AS UOM,b.PLVKP AS promoprice from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d , saap.ZWOWC_PROMO_HDR e 
+where a.matnr=b.matnr and b.matnr=d.matnr and b.aktnr=e.aktnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and b.matnr='artno' and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where VKDBI between Today()-14 and Today()-1)]]>
+</pastDetails>
+<futureArt>
+<![CDATA[select b.MATNR,b.PLVKP,b.aktnr from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d  
+where a.matnr=b.matnr and b.matnr=d.matnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI) group by b.matnr,b.PLVKP, b.aktnr having count(b.matnr)=1]]>
+</futureArt>
+<updfutureArt>
+<![CDATA[update saap.ZWOWC_PROMO_HDR set vkdab='strt' , vkdbi='end' where aktnr='artno']]>
+</updfutureArt>
+<futureDetails>
+<![CDATA[select dateformat(e.VKDAB,'dd/MM/yyyy') AS startDate,dateformat(e.VKDBI,'dd/MM/yyyy') AS enddate ,e.aktnr AS promo,e.aktkt AS descriptions,b.meinh AS UOM,b.PLVKP AS promoprice from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d , saap.ZWOWC_PROMO_HDR e 
+where a.matnr=b.matnr and b.matnr=d.matnr and b.aktnr=e.aktnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and b.matnr='artno' and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where VKDBI between Today()+1 and Today()+30)]]>
+</futureDetails>
+</TCName>
+
+<TCName name = "CheckPromopriceexcludingOneCardPromo">
+<SellandPromoprice>
+<![CDATA[select c.matnr,c.SALES_PRICE,d.BEST_PROMO_PRICE,datename(DAY,d.START_DATE) AS startdate,datename(MONTH,d.START_DATE) AS startMonth,
+datename(DAY,d.END_DATE) AS enddate,datename(MONTH,d.END_DATE) AS endMonth from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b, saap.MAT_VIEW_ZWOW_ARTICLE_SELL_PRICE c, saap.MAT_VIEW_ZWOW_ARTICLE_BEST_PROMO d 
+where a.matnr=b.matnr and b.matnr=c.MATNR and c.matnr=d.MATNR and a.alc_status in ('NA','RA','DA') and b.base_uom_ind='Y']]>
+</SellandPromoprice>
+<startdatePromoprice>
+<![CDATA[select b.MATNR,b.PLVKP from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d  
+where a.matnr=b.matnr and b.matnr=d.matnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI) group by b.matnr,b.PLVKP having count(b.matnr)>1]]>
+</startdatePromoprice>
+<ActiveArt>
+<![CDATA[select b.MATNR from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d  
+where a.matnr=b.matnr and b.matnr=d.matnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI) group by b.matnr having count(b.matnr)>1]]>
+</ActiveArt>
+<ActivePBDArt>
+<![CDATA[select b.MATNR,b.PLVKP ,b.meinh from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d , saap.ZWOWC_ARTICLE_MASTER e 
+where a.matnr=b.matnr and b.matnr=d.matnr and d.MATNR=e.matnr and e.PBD_IND='Y' and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI) group by b.matnr,b.PLVKP,b.meinh having count(b.matnr)=1]]>
+</ActivePBDArt>
+<ActiveCPBDArt>
+<![CDATA[select b.MATNR,b.PLVKP ,b.meinh from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d 
+where a.matnr=b.matnr and b.matnr=d.matnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and a.COMPLEX_PACK_BRK_ARTICLE>1 and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI) group by b.matnr,b.PLVKP,b.meinh having count(b.matnr)=1]]>
+</ActiveCPBDArt>
+<ActiveDetails>
+<![CDATA[select dateformat(e.VKDAB,'dd/MM/yyyy') AS startDate,dateformat(e.VKDBI,'dd/MM/yyyy') AS enddate ,e.aktnr AS promo,
+e.aktkt AS descriptions,b.meinh AS UOM,b.PLVKP AS promoprice from saap.ZWOWC_ARTICLE_LISTING a,saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d , saap.ZWOWC_PROMO_HDR e 
+where a.matnr=b.matnr and b.matnr=d.matnr and b.aktnr=e.aktnr and  e.aktnr=b.aktnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') 
+and b.matnr='artno'  and b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI)]]>
+</ActiveDetails>
+<pastArt>
+<![CDATA[select b.MATNR,b.PLVKP,e.VKDAB,e.VKDBI from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d , saap.ZWOWC_PROMO_HDR e 
+where a.matnr=b.matnr and b.matnr=d.matnr and b.aktnr=e.aktnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where VKDBI between Today()-14 and Today()-1) group by b.matnr,b.PLVKP,e.VKDAB,e.VKDBI 
+having count(b.matnr)>1 Order by b.matnr desc]]>
+</pastArt>
+<pastDetails>
+<![CDATA[select dateformat(e.VKDAB,'dd/MM/yyyy') AS startDate,dateformat(e.VKDBI,'dd/MM/yyyy') AS enddate ,e.aktnr AS promo,e.aktkt AS descriptions,b.meinh AS UOM,b.PLVKP AS promoprice from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d , saap.ZWOWC_PROMO_HDR e 
+where a.matnr=b.matnr and b.matnr=d.matnr and b.aktnr=e.aktnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and b.matnr='artno' and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where VKDBI between Today()-14 and Today()-1)]]>
+</pastDetails>
+<futureArt>
+<![CDATA[select b.MATNR,b.PLVKP,b.aktnr from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d  
+where a.matnr=b.matnr and b.matnr=d.matnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where today() between VKDAB and VKDBI) group by b.matnr,b.PLVKP, b.aktnr having count(b.matnr)=1]]>
+</futureArt>
+<updfutureArt>
+<![CDATA[update saap.ZWOWC_PROMO_HDR set vkdab='strt' , vkdbi='end' where aktnr='artno']]>
+</updfutureArt>
+<futureDetails>
+<![CDATA[select dateformat(e.VKDAB,'dd/MM/yyyy') AS startDate,dateformat(e.VKDBI,'dd/MM/yyyy') AS enddate ,e.aktnr AS promo,e.aktkt AS descriptions,b.meinh AS UOM,b.PLVKP AS promoprice from saap.ZWOWC_ARTICLE_LISTING a, saap.ZWOWC_PROMO_ITM b , saap.ZWOWC_ARTICLE_UOM d , saap.ZWOWC_PROMO_HDR e 
+where a.matnr=b.matnr and b.matnr=d.matnr and b.aktnr=e.aktnr and d.BASE_UOM_IND='Y' and a.ALC_STATUS in ('NA','RA','DA') and b.matnr='artno' and 
+b.aktnr in (select aktnr from saap.zwowc_promo_hdr where VKDBI between Today()+1 and Today()+30)]]>
+</futureDetails>
+<UpdatedPromoPrice>
+<![CDATA[SELECT * FROM MAT_VIEW_ZWOW_ARTICLE_BEST_PROMO WHERE MATNR='Article']]>
+</UpdatedPromoPrice>
+<CreateProc>
+<![CDATA[create PROCEDURE SAAP.sp_wow_update_matview_tables_by_eod_BESTPRICE()
+BEGIN
+    MESSAGE 'BEGIN: REFRESHING ARTICLE BEST PRICE INFORMATION';
+    CALL sp_wow_update_article_best_promo_price();
+    MESSAGE 'END: REFRESHING ARTICLE BEST PRICE INFORMATION';    
+END]]>
+</CreateProc>
+<DeleteProc>
+<![CDATA[DROP PROCEDURE SAAP.sp_wow_update_matview_tables_by_eod_BESTPRICE]]>
+</DeleteProc>
+<CalltheProc>
+<![CDATA[CALL SAAP.sp_wow_update_matview_tables_by_eod_BESTPRICE()]]>
+</CalltheProc>
+<InsertintoHDRforpromo>
+<![CDATA[INSERT INTO "SAAP"."ZWOWC_PROMO_HDR" ("AKTNR","VKORG","AKART","VKDAB","VKDBI","AKTKT","SELLING_DESCRIPTION","PMR_OFFER_ID","PROMO_STATUS","PRDCE_INSTORE_DATE","PRDCE_DISPLAY_TYPE","CUSTOMER_TYPE","CHANGE_TIME","LastUpdatedAtPlantTS") VALUES('CurrentDateformatted','1005','Z','StartDate','EndDate','Automation One card',' ','CurrentDateformatted','1',NULL,NULL,'8004',now(),now())]]>
+</InsertintoHDRforpromo>
+<InsertintoITMforpromo>
+<![CDATA[INSERT INTO "SAAP"."ZWOWC_PROMO_ITM" ("AKTNR","PROM_DISCOUNT_TYPE","PABBM","MEINH","PLVKP","WAELA","MATNR","CHANGE_TIME","LastUpdatedAtPlantTS") VALUES('CurrentDateformatted','2',1.00,'KG','FormattedPrice','AUD','artno',now(),now())]]>
+</InsertintoITMforpromo>
+<DropProc>
+<![CDATA[DROP PROCEDURE SAAP.sp_wow_update_matview_tables_by_eod_BESTPRICE]]>
+</DropProc>
+</TCName>
+
+<TCName name = "enhancedCheckPOSPrice">
+<getarticlecig>
+<![CDATA[select distinct a.matnr,d.use_by_date  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c, saap.LOCAL_WOW_USE_BY_DATE d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='27' and a.alc_status<>'ES']]>
+</getarticlecig>
+<getarticleliq>
+<![CDATA[select distinct a.matnr,d.use_by_date  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c, saap.LOCAL_WOW_USE_BY_DATE d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='20' and a.alc_status<>'ES']]>
+</getarticleliq>
+<getwghtarticle>
+<![CDATA[select distinct a.matnr,c.ORDER_UOM from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b,saap.ZWOWC_ART_LIST_PROCURE c,saap.ZWOWC_ARTICLE_MASTER d  where a.MATNR=b.matnr and 
+b.matnr=c.matnr and c.matnr=d.matnr and b.BASE_UOM_IND='Y' and d.WEIGHTED_IND='Y' and c.ISSUE_UOM in ('CAR','CA1','CA2','CA3','CA4','CA5') and a.alc_status<>'ES']]>
+</getwghtarticle>
+<getCUParticlePBD>
+<![CDATA[SELECT SUB.MATNR, SUB.PBD_IND, SUB.ARTICLE_CAT_ID, SUB.STD_CUP_PRICE
+FROM (
+    SELECT ZAM.MATNR, ZAM.PBD_IND, ZAM.ARTICLE_CAT_ID, 
+    fn_wow_get_std_cup_price(ZAM.MATNR) AS STD_CUP_PRICE
+    FROM saap.ZWOWC_ARTICLE_MASTER ZAM
+    JOIN saap.ZWOWC_ARTICLE_UOM ZAU ON (ZAM.MATNR = ZAU.MATNR)
+    JOIN ZWOWC_ARTICLE_LISTING ZA ON (ZAM.MATNR = ZA.MATNR)
+    WHERE ZAU.BASE_UOM_IND = 'Y'
+    AND ZAM.PBD_IND='Y'
+    AND ZAM.MASTER_SIZE > 0
+    AND ZAM.COMP_SIZE_AU > 0
+    AND ZAM.COMP_SIZE_AU_UOM <> ''
+    AND ZAM.MASTER_SIZE_UOM <> ''
+    AND EXISTS (
+        SELECT 1
+        FROM saap.MAT_VIEW_ZWOW_ARTICLE_SELL_PRICE SP
+        WHERE SP.MATNR=ZAM.MATNR
+        AND SP.MEINH=ZAU.MEINH AND ZA.ALC_STATUS<>'ES'
+    )
+) SUB
+WHERE SUB.STD_CUP_PRICE > 0;]]>
+</getCUParticlePBD>
+<getCUParticleCPBD>
+<![CDATA[SELECT SUB.MATNR, SUB.STD_CUP_PRICE, SUB.PBD_IND, SUB.ARTICLE_CAT_ID 
+FROM ( SELECT top 50 ZAM.MATNR, ZAM.PBD_IND, ZAM.ARTICLE_CAT_ID, fn_wow_get_std_cup_price(ZAM.MATNR) AS STD_CUP_PRICE 
+FROM saap.ZWOWC_ARTICLE_MASTER ZAM JOIN saap.ZWOWC_ARTICLE_UOM ZAU ON (ZAM.MATNR = ZAU.MATNR) 
+join saap.zwowc_article_listing zal on (zal.matnr=zam.matnr and is_cpbd='1')
+WHERE ZAU.BASE_UOM_IND = 'Y' AND ZAM.MASTER_SIZE > 0 AND ZAM.COMP_SIZE_AU > 0 AND ZAM.COMP_SIZE_AU_UOM <> '' AND ZAM.MASTER_SIZE_UOM <> ''
+AND EXISTS ( SELECT 1 FROM saap.MAT_VIEW_ZWOW_ARTICLE_SELL_PRICE SP WHERE SP.MATNR=ZAM.MATNR AND SP.MEINH=ZAU.MEINH AND zal.ALC_STATUS<>'ES'))SUB 
+WHERE SUB.STD_CUP_PRICE > 0 ;]]>
+</getCUParticleCPBD>
+</TCName>
+
+<TCName name = "enhancedAddMPLSCvalues">
+<getarticlecig>
+<![CDATA[select distinct a.matnr  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='27']]>
+</getarticlecig>
+<getarticleliq>
+<![CDATA[select distinct a.matnr  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='20']]>
+</getarticleliq>
+</TCName>
+
+<TCName name = "enhancedLookupInputParameter">
+<DescWithVendor>
+<![CDATA[select a.LIFNR  , count(a.matnr)from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b,saap.ZWOWC_article_master c,saap.ZWOWC_ARTICLE_HIER_XREF d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr = d.matnr and b.base_uom_ind='Y' and a.source_of_supply='1' and a.lifnr<>'' and a.alc_status in('NA','RA','DA') and 
+c.article_desc like '%Can%' group by a.lifnr order by count(a.matnr) desc]]>
+</DescWithVendor>
+<DescWithWH>
+<![CDATA[select a.LIFNR  , count(a.matnr)from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b,saap.ZWOWC_article_master c,saap.ZWOWC_ARTICLE_HIER_XREF d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr = d.matnr and b.base_uom_ind='Y' and a.source_of_supply='2' and a.lifnr<>'' and a.alc_status in('NA','RA','DA') and 
+c.article_desc like '%Ket%' group by a.lifnr order by count(a.matnr) desc]]>
+</DescWithWH>
+<ArtWithVendor>
+<![CDATA[select a.LIFNR,a.matnr from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b where a.matnr=b.matnr
+and b.base_uom_ind='Y' and a.source_of_supply='1' and a.alc_status in('NA','RA','DA') and length(a.LIFNR)>'1']]>
+</ArtWithVendor>
+<ArtWithWH>
+<![CDATA[select a.LIFNR,a.matnr from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b where a.matnr=b.matnr
+and b.base_uom_ind='Y' and a.source_of_supply='2' and a.alc_status in('NA','RA','DA') and length(a.LIFNR)>'1']]>
+</ArtWithWH>
+</TCName>
+
+<TCName name = "enhancedArticleLookUpSM">
+<getEAN>
+<![CDATA[select a.matnr,b.ean11 from saap.ZWOWC_ARTICLE_LISTING a , saap.zwowc_article_uom b,where a.matnr=b.matnr and a.alc_status in ('NA','RA','DA') and b.base_uom_ind='Y' and a.alc_status<>'ES']]>
+</getEAN>
+<getTUN>
+<![CDATA[select distinct a.matnr,C.EAN11 from saap.ZWOWC_ARTICLE_LISTING a , saap.ZWOWC_ARTICLE_UOM b,saap.ZWOWC_ART_LIST_PROCURE c,saap.ZWOWC_ARTICLE_MASTER d  where a.MATNR=b.matnr and 
+b.matnr=c.matnr and c.matnr=d.matnr and b.BASE_UOM_IND='Y' and d.WEIGHTED_IND='Y' and c.ISSUE_UOM in ('CAR','CA1','CA2','CA3','CA4','CA5') and a.alc_status<>'ES']]>
+</getTUN>
+</TCName>
+
+<TCName name = "enhancedVerifyMPLSCvalues">
+<getarticlecig>
+<![CDATA[select distinct a.matnr  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='27']]>
+</getarticlecig>
+<getarticleliq>
+<![CDATA[select distinct a.matnr  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='20']]>
+</getarticleliq>
+<verifyMPLSCcigval>
+<![CDATA[select distinct a.matnr,d.MGV_PR_REF_MAT_GUID AS MPLSC,d.meinh,d.NON_AGG_VAL AS current_value,d.PREV_NON_AGG_VAL AS previous_value
+from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c , saap.ZWOWT_ARTICLE_UPDATE d  
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and c.pbd_ind='Y' and b.dept='27' and a.matnr='art_no' 
+ORDER BY CASE
+WHEN d.meinh='EA' THEN 1
+WHEN d.meinh='CA1' THEN 2
+END]]>
+</verifyMPLSCcigval>
+<verifyMPLSCliqval>
+<![CDATA[select distinct a.matnr,d.MGV_PR_REF_MAT_GUID AS MPLSC,d.meinh,d.NON_AGG_VAL AS current_value,d.PREV_NON_AGG_VAL AS previous_value
+from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c , saap.ZWOWT_ARTICLE_UPDATE d  
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and c.pbd_ind='Y' and b.dept='20' and a.matnr='art_no' 
+ORDER BY CASE
+WHEN d.meinh='EA' THEN 1
+WHEN d.meinh='CA1' THEN 2
+WHEN d.meinh='CAR' THEN 3
+WHEN d.meinh='MPK' THEN 4
+END]]>
+</verifyMPLSCliqval>
+</TCName>
+
+<TCName name = "enhancedAddAndCompareExpiryDate">
+<getarticlecig>
+<![CDATA[select distinct a.matnr,d.use_by_date  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c, saap.LOCAL_WOW_USE_BY_DATE d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='27' and a.ALC_STATUS<>'ES']]>
+</getarticlecig>
+<getarticleliq>
+<![CDATA[select distinct a.matnr,d.use_by_date  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c, saap.LOCAL_WOW_USE_BY_DATE d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='20' and a.ALC_STATUS<>'ES']]>
+</getarticleliq>
+<verifyedatecig>
+<![CDATA[select distinct a.matnr,d.use_by_date ,d.meinh  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c , 
+saap.LOCAL_WOW_USE_BY_DATE d  where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and c.pbd_ind='Y' and b.dept='27' and d.use_by_date>=date('currentdt') and 
+a.matnr='art_no' ORDER BY d.use_by_date asc, CASE
+WHEN d.meinh='EA' THEN 1
+WHEN d.meinh='CA1' THEN 2
+WHEN d.meinh='CA2' THEN 3
+WHEN d.meinh='CAR' THEN 4
+END]]>
+</verifyedatecig>
+<verifyedateliq>
+<![CDATA[select distinct a.matnr,d.use_by_date ,d.meinh  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c , 
+saap.LOCAL_WOW_USE_BY_DATE d  where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and c.pbd_ind='Y' and b.dept='20' and d.use_by_date>=date('currentdt') and 
+a.matnr='art_no' ORDER BY d.use_by_date asc, CASE
+WHEN d.meinh='EA' THEN 1
+WHEN d.meinh='CA1' THEN 2
+WHEN d.meinh='CAR' THEN 3
+WHEN d.meinh='MPK' THEN 4
+END]]>
+</verifyedateliq>
+<getarticle>
+<![CDATA[select distinct a.matnr from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.ZWOWC_ARTICLE_UOM c where a.matnr=b.matnr and b.matnr=c.matnr and b.dept='10' 
+and a.ALC_STATUS in ('NA','DA','RA')]]>
+</getarticle>
+<verifyedate>
+<![CDATA[select distinct a.matnr,d.use_by_date,d.meinh  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_uom c , saap.LOCAL_WOW_USE_BY_DATE d  
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and b.dept='10' and d.use_by_date>sysdatetimeoffset() and a.matnr='art_no']]>
+</verifyedate>
+</TCName>
+
+<TCName name = "enhancedVerifyExpiryDate">
+<getarticlecig>
+<![CDATA[select distinct a.matnr,d.use_by_date  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c, saap.LOCAL_WOW_USE_BY_DATE d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='27']]>
+</getarticlecig>
+<getarticleliq>
+<![CDATA[select distinct a.matnr,d.use_by_date  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c, saap.LOCAL_WOW_USE_BY_DATE d 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and b.dept='20']]>
+</getarticleliq>
+<verifyedatecig>
+<![CDATA[select distinct a.matnr,d.use_by_date ,d.meinh  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c , 
+saap.LOCAL_WOW_USE_BY_DATE d  where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and c.pbd_ind='Y' and b.dept='27' and d.use_by_date>=date('currentdt') and 
+a.matnr='art_no' ORDER BY d.use_by_date asc, CASE
+WHEN d.meinh='EA' THEN 1
+WHEN d.meinh='CA1' THEN 2
+END]]>
+</verifyedatecig>
+<verifyedateliq>
+<![CDATA[select distinct a.matnr,d.use_by_date ,d.meinh  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c , 
+saap.LOCAL_WOW_USE_BY_DATE d  where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and c.pbd_ind='Y' and b.dept='20' and d.use_by_date>=date('currentdt') and 
+a.matnr='art_no' ORDER BY d.use_by_date asc, CASE
+WHEN d.meinh='EA' THEN 1
+WHEN d.meinh='CAR' THEN 2
+WHEN d.meinh='MPK' THEN 3
+END]]>
+</verifyedateliq>
+</TCName>
+
+<TCName name = "enhancedPrintTicketDefaultLabel">
+<getarticlecig>
+<![CDATA[select distinct a.matnr  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and a.ALC_STATUS<>'ES' and b.dept='27']]>
+</getarticlecig>
+<getarticleliq>
+<![CDATA[select distinct a.matnr  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and a.ALC_STATUS<>'ES' and b.dept='20']]>
+</getarticleliq>
+<getstatus>
+<![CDATA[select  PARENT_ARTICLE,STATUS,MATNR,ARTICLE_DESC,MEINH,NUM_OF_TKTS from saap.LOCAL_WOW_DBL_TKTG_DRAFT 
+where scan_user_id = 'namee' and CREATED_DATE_TIME > 'ctdate' and PARENT_ARTICLE='art_no']]>
+</getstatus>
+</TCName>
+
+<TCName name = "enhancedPrintTicketDefaultTalker">
+<getarticlecig>
+<![CDATA[select distinct a.matnr  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and a.ALC_STATUS<>'ES' and b.dept='27']]>
+</getarticlecig>
+<getarticleliq>
+<![CDATA[select distinct a.matnr  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and a.ALC_STATUS<>'ES' and b.dept='20']]>
+</getarticleliq>
+<getstatus>
+<![CDATA[select  PARENT_ARTICLE,STATUS,MATNR,ARTICLE_DESC,MEINH,NUM_OF_TKTS from saap.LOCAL_WOW_DBL_TKTG_DRAFT 
+where scan_user_id = 'namee' and CREATED_DATE_TIME > 'ctdate' and PARENT_ARTICLE='art_no']]>
+</getstatus>
+</TCName>
+
+<TCName name = "enhancedPrintTicketAllticket">
+<getarticlecig>
+<![CDATA[select distinct a.matnr  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and a.ALC_STATUS<>'ES' and b.dept='27']]>
+</getarticlecig>
+<getarticleliq>
+<![CDATA[select distinct a.matnr  from  saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.pbd_ind='Y' and a.ALC_STATUS<>'ES' and b.dept='20']]>
+</getarticleliq>
+<getstatus>
+<![CDATA[select PARENT_ARTICLE,STATUS,MATNR,ARTICLE_DESC,MEINH,NUM_OF_TKTS from saap.LOCAL_WOW_DBL_TKTG_DRAFT 
+where scan_user_id = 'namee' and CREATED_DATE_TIME > 'ctdate' and PARENT_ARTICLE='art_no']]>
+</getstatus>
+</TCName>
+
+</configuration>

@@ -1,0 +1,934 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+//import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.OrderEnquiryObjects;
+import au.wow.ngbomain.objects.ReceivingOrderObjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.tests.ORTests;
+
+public class OrderEnquiryPage extends BasePage {
+
+	WebDriver driver = ORTests.driver;
+	CommonFunctions common = PageFactory.initElements(driver,
+			CommonFunctions.class);
+	private Logger log = LogManager.getLogger(ORTests.class);
+	SQLWrapper sql = new SQLWrapper(log);
+
+	ExtentTest extLogger=ORTests.extLogger;
+	String cName=ORTests.cName;
+	String mName=ORTests.mName;
+	
+	
+
+	public void clickOnOrderEnquiry(OrderEnquiryObjects objOrderEnquiryObject,WebDriver driver)
+			throws AWTException {
+		//driver.navigate().to("http://ngbo-acpt.gss.woolworths.com.au/StoreCentral/1005/orderInquiry/onPageLoad.htm");
+		//waitForJSandJQueryToLoad(driver);
+		// waitForJSandJQueryToLoad(driver);
+		waitFor(1);
+		Point coordinates = objOrderEnquiryObject.Orders.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+
+		Actions action = new Actions(driver);
+		action.moveToElement(objOrderEnquiryObject.Orders).click().build()
+		.perform();
+		waitFor(1);
+
+		Point coordinates1 = objOrderEnquiryObject.orderEnquiry.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(), coordinates1.getY() + 100);
+
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objOrderEnquiryObject.orderEnquiry).click()
+		.build().perform();
+		waitFor(1);
+		robot.mouseMove(5, 5);
+		waitForJSandJQueryToLoad(driver);
+	}
+
+	public void clickOnstockTransfer(OrderEnquiryObjects objOrderEnquiryObject)
+			throws AWTException {
+		waitFor(1);
+		Point coordinates = objOrderEnquiryObject.StockMange.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+
+		Actions action = new Actions(driver);
+		action.moveToElement(objOrderEnquiryObject.StockMange).click().build()
+		.perform();
+		waitFor(1);
+
+		Point coordinates1 = objOrderEnquiryObject.StockTransfr.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(), coordinates1.getY() + 100);
+
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objOrderEnquiryObject.StockTransfr).click()
+		.build().perform();
+		waitFor(1);
+		robot.mouseMove(5, 5);
+	}
+	
+	public List orderOnCreationDetail(OrderEnquiryObjects objOrderEnquiryObjects, int i, String art1,List app,WebDriver driver) throws ParseException, IOException {
+		if (i == 0) {
+			objOrderEnquiryObjects.orderonreceiptart.click();
+			objOrderEnquiryObjects.orderonreceiptart.sendKeys(art1);
+			objOrderEnquiryObjects.orderonreceiptart.sendKeys(Keys.ENTER);
+		}
+		if (i == 1 || i==2) {
+			waitFor(1);
+			objOrderEnquiryObjects.orderonreceiptart2.click();
+			objOrderEnquiryObjects.orderonreceiptart2.sendKeys(art1);
+			objOrderEnquiryObjects.orderonreceiptart2.sendKeys(Keys.ENTER);
+		}
+		// objOrderEnquiryObjects.orderonreceiptart.sendKeys(art1);
+		htmlToExtent(cName,mName,extLogger,driver, "Article - " + art1+ " added to check;;;Pass");
+		// Report_AddStep("testcase"," Article - "+art1+" added to check" , "",
+		// "", "Pass");
+		// objOrderEnquiryObjects.orderonreceiptart.sendKeys(Keys.ENTER);
+		// objOrderEnquiryObjects.orderonreceiptartAdd.click();
+		verticalScroll(driver);
+		int j = 0;
+		if (i == 0) {
+			j = 1;
+		}
+		if (i == 1) {
+			j = 3;
+		}
+		if (i == 2) {
+			j = 5;
+		}
+		WebElement rcvdQty = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.orderonreceiptrcvdQty, j,driver);
+		Random rand = new Random();
+		int n = rand.nextInt(9) + 1;
+		String ordrQty = "" + n;
+		waitFor(1);
+		rcvdQty.clear();
+		rcvdQty.sendKeys(ordrQty);
+		htmlToExtent(cName,mName,extLogger,driver,"Received quantity entered for Article - " + art1 + " is "+ ordrQty + ";;;Pass");
+		// Report_AddStep("testcase","Received quantity entered for Article - "+art1+" is "+ordrQty+""
+		// , "", "", "Pass");
+		List<WebElement> KGlist = driver.findElements(By.xpath("//*[@id='oor_articleListTable']/tbody/tr[" + j+ "]/td[6]/input[2]"));
+		if (KGlist.size() != 0) {
+			WebElement kgQty = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.orderonreceiptkgQty, j,driver);
+			int n1 = rand.nextInt(9) + 1;
+			String kgQtyy = "" + n1;
+			kgQtyy = kgQtyy + ".00";
+			kgQty.sendKeys(kgQtyy);
+			htmlToExtent(cName,mName,extLogger,driver,"Total weight entered for Article - " + art1 + " is "+ kgQtyy + ";;;Pass");
+			// Report_AddStep("testcase","Total weight entered for Article - "+art1+" is "+kgQtyy+""
+			// , "", "", "Pass");
+		}
+		WebElement Date = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.orderonreceiptDate, j,driver);
+		WebElement Datemore = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.orderonreceiptDatemore, j,driver);
+		Date.sendKeys(common.getCurrentDate());
+		rcvdQty.click();
+		waitFor(1);
+		Datemore.click();
+		WebElement Datemoredate = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.orderonreceiptDatemoredate, j,driver);
+		Datemoredate.sendKeys(common.addDaystoCurrentDate(1));
+		rcvdQty.click();
+		htmlToExtent(cName,mName,extLogger,driver,
+				"Expiry date added for Article - " + art1
+						+ " successfully;;;Pass");
+		// Report_AddStep("testcase","Expiry date added for Article - "+art1+" successfully"
+		// , "", "", "Pass");
+		WebElement SOH = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.orderonreceiptSOH, j,driver);
+		String SOH_appl = SOH.getText();
+		WebElement OrderOM = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.orderonreceiptOM, j,driver);
+		String OM_appl = OrderOM.getText(); // 8 EA
+		String[] OM = OM_appl.split(" ");
+		OM_appl = OM[0];
+		Double SOHvalue = Double.parseDouble(SOH_appl)+ ((Integer.parseInt(OM_appl)) * n);
+		String soh = ""+SOHvalue;
+		if(soh.contains("."))
+		{
+			soh=soh.replaceAll("\\.?0+$","");
+		}
+		app.add(SOHvalue);
+
+		WebElement totalOrder = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.orderonreceiptTotalUnit, j,driver);
+		String totalOrderno = totalOrder.getText();
+		int order = n * Integer.parseInt(OM_appl);
+		if (order == (Integer.parseInt(totalOrderno))) {
+			htmlToExtent(cName,mName,extLogger,driver,"Total order qty matched for the article " + art1+ ";;;Pass");
+			// Report_AddStep("testcase","Total order qty matched for the article "+art1+""
+			// , "", "", "Pass");
+		} else {
+			htmlToExtent(cName,mName,extLogger,driver,"Total order qty mismatched for the article " + art1+ ";;;Fail");
+			// Report_AddStep("testcase","Total order qty mismatched for the article "+art1+""
+			// , "", "", "Fail");
+		}
+		// scrollUp();
+		return app;
+	}
+
+	public List<List<Object>> orderOnCreationCompare(
+			OrderEnquiryObjects objOrderEnquiryObjects,WebDriver driver) throws IOException {
+		List<List<Object>> appmatchListList = new ArrayList<List<Object>>();
+		int OC_status = objOrderEnquiryObjects.orderonreceiptartList.size();
+		for (int stat = 1; stat < OC_status; stat++) {
+			List appmatchList = new ArrayList();
+			WebElement art_no = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.orderonreceiptartNo, stat,driver);
+			String arti_no = art_no.getText();
+			WebElement SOH = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.orderonreceiptSOH, stat,driver);
+			String SOH_appl = SOH.getText();
+			SOH_appl = decimalFormat(SOH_appl);
+			WebElement OrderOM = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.orderonreceiptOM, stat,driver);
+			String OM_appl = OrderOM.getText();
+			String[] OM = OM_appl.split(" ");
+			OM_appl = OM[0];
+			 
+			stat++;
+			appmatchList.add(arti_no);
+			appmatchList.add(SOH_appl);
+			appmatchList.add(OM_appl);
+			appmatchListList.add(appmatchList);
+		}
+		return appmatchListList;
+	}
+
+	public void orderOnCreationOrderNo(
+			OrderEnquiryObjects objOrderEnquiryObjects, String StoreNo,WebDriver driver)
+			throws IOException {
+		waitFor(3);
+		for (int l = 2; l <= 6; l++) {
+			if (l == 6) {
+				if (StoreNo.equals("3064")) {
+					{
+						l = 7;
+					}
+				} else {
+					orderEnqArtScenarios
+							.put(orderEnqArttestname,
+									"Invoiced,Consignment,DGMS department,Carrier added successfully;;;Pass");
+					// Report_AddStep("testcase","Invoiced,Consignment,DGMS department,Carrier added successfully"
+					// , "", "", "Pass");
+					objOrderEnquiryObjects.finish.click();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,
+							"***Clicking on finish button***;;;Pass");
+					// Report_AddStep("testcase","***Clicking on finish button***"
+					// , "", "", "Pass");
+					break;
+				}
+			}
+			WebElement details = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.orderonreceiptDetails, l,driver);
+			if (l == 2) {
+				details.sendKeys("abc123");
+			}
+			if (l == 3) {
+				details.sendKeys("12345");
+			}
+			if (l == 4) {
+				details.sendKeys("order");
+			}
+			if (l == 5) {
+				details.sendKeys("creation");
+			}
+			if (l == 7) {
+				details.sendKeys("2");
+				waitFor(1);
+				orderEnqArtScenarios
+						.put(orderEnqArttestname,
+								"Invoiced,Consignment,DGMS department,Carrier,chilled temperature added successfully;;;Pass");
+				// Report_AddStep("testcase","Invoiced,Consignment,DGMS department,Carrier,chilled temperature added successfully"
+				// , "", "", "Pass");
+				objOrderEnquiryObjects.finish.click();
+				waitForJSandJQueryToLoad(driver);
+				htmlToExtent(cName,mName,extLogger,driver,
+						"***Clicking on finish button***;;;Pass");
+				// Report_AddStep("testcase","***Clicking on finish button***" ,
+				// "", "", "Pass");
+			}
+		}
+
+		String OrderNo = null;
+		if (objOrderEnquiryObjects.orderno.isDisplayed()) {
+			int ordernosize = objOrderEnquiryObjects.errorOC.size();
+			int errorclse = objOrderEnquiryObjects.ordercloseList.size();
+			int check = 0;
+			for (int p = ordernosize; p > 1; p--) {
+				List<WebElement> errlist = driver.findElements(By
+						.xpath("(//*[@class='content'])[" + p
+								+ "]/ol[@class='err_msg']/li"));
+				int list = errlist.size();
+				for (int y = 1; y <= list; y++) {
+					WebElement ordermsg = prepareWebElementWithDynamicXpathWithIntInt(
+							objOrderEnquiryObjects.errordesc, p, y,driver);
+					String errmsg = ordermsg.getText();
+					if (errmsg.contains("has been received")) {
+						htmlToExtent(cName,mName,extLogger,driver, ""
+								+ errmsg + ";;;Pass");
+						// Report_AddStep("testcase",""+errmsg+"", "", "", "");
+						String[] split = errmsg.split("Ref No:");
+						OrderNo = split[1];
+						int s = OrderNo.length();
+						OrderNo = OrderNo.substring(0, s - 1);
+						htmlToExtent(cName,mName,extLogger,driver,
+								"Order Number generated - " + OrderNo
+										+ ";;;Pass");
+						// Report_AddStep("testcase","Order Number generated - "+OrderNo+""
+						// , "", "", "Pass");
+					}
+				}
+				if (errorclse != 1) {
+					WebElement orderclse = prepareWebElementWithDynamicXpathWithInt(
+							objOrderEnquiryObjects.orderclse, errorclse,driver);
+					errorclse--;
+					orderclse.click();
+				}
+			}
+		}
+		objOrderEnquiryObjects.enterArt.click();
+		objOrderEnquiryObjects.enterArt.sendKeys(OrderNo);
+		objOrderEnquiryObjects.Go.click();
+		htmlToExtent(cName,mName,extLogger,driver, "Entered Order no - "
+				+ OrderNo + " to check status;;;Pass");
+		// Report_AddStep("testcase","Entered Order no - "+OrderNo+" to check status"
+		// , "", "", "Pass");
+		waitForJSandJQueryToLoad(driver);
+		if (!(objOrderEnquiryObjects.ordercloseList.size() == 0)) {
+			String orderstatus = objOrderEnquiryObjects.orderStatus.getText();
+			if (orderstatus.equals("RECEIVED")) {
+				htmlToExtent(cName,mName,extLogger,driver, "Order no - "
+						+ OrderNo + " is in received status;;;Pass");
+				// Report_AddStep("testcase","Order no - "+OrderNo+" is in received status"
+				// , "", "", "Pass");
+			} else {
+				htmlToExtent(cName,mName,extLogger,driver, "Order no - "
+						+ OrderNo + " is in " + orderstatus + " status;;;Fail");
+				// Report_AddStep("testcase","Order no - "+OrderNo+" is in "+orderstatus+" status"
+				// , "", "", "Fail");
+			}
+		} else {
+			WebElement orderclse = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.orderclse, 2,driver);
+			orderclse.click();
+			htmlToExtent(cName,mName,extLogger,driver,
+					"Sorry!! No result found for Order no - " + OrderNo
+							+ ";;;Fail");
+			// Report_AddStep("testcase","Sorry!! No result found for Order no - "+OrderNo+""
+			// , "", "", "Fail");
+		}
+	}
+
+	public void waitFn() {
+		waitForJSandJQueryToLoad(driver);
+		waitFor(0.5);
+		// waitForPageToLoad();
+	}
+	
+	public static void setValueIntoCell(int iRowNumber,String strData,String sheetname) throws  IOException, EncryptedDocumentException, InvalidFormatException  
+    {
+    		FileInputStream fis=new FileInputStream(System.getProperty("user.dir") + "\\TestData\\NGBO\\NGBO.xls");
+    		Workbook wb=WorkbookFactory.create(fis);
+    		Sheet sh=wb.getSheet(sheetname);
+    		CellStyle style = wb.createCellStyle();
+    		Row row=sh.getRow(iRowNumber);
+    		Cell cell=row.createCell(2);
+    		cell.setCellValue(strData);
+    		//fis.close();
+    		FileOutputStream fos=new FileOutputStream(System.getProperty("user.dir") + "\\TestData\\NGBO\\NGBO.xls");
+    		wb.write(fos);
+    		fos.close();
+    }
+	
+	public void setValueIntoCell1(int iRowNumber,String strData,int columnno) throws  IOException, EncryptedDocumentException, InvalidFormatException  
+    {
+    		FileInputStream fis=new FileInputStream(System.getProperty("user.dir") + "\\TestData\\NGBO\\one.xls");
+    		Workbook wb=WorkbookFactory.create(fis);
+    		Sheet sh=wb.getSheet("Sheet1");
+    		CellStyle style = wb.createCellStyle();
+    		Row row=sh.getRow(iRowNumber);
+    		 if(row == null)
+    	            row = sh.createRow(iRowNumber);
+    		Cell cell=row.createCell(columnno);
+    		cell.setCellValue(strData);
+    		//fis.close();
+    		FileOutputStream fos=new FileOutputStream(System.getProperty("user.dir") + "\\TestData\\NGBO\\one.xls");
+    		wb.write(fos);
+    		fos.close();
+    }
+	
+	public void deliverydatecombination(OrderEnquiryObjects objOrderEnquiryObjects,WebDriver driver) throws IOException, ParseException, AWTException
+	{
+		if(objOrderEnquiryObjects.advSrherrormsg.isDisplayed())
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"*******Advanced Search******* ;;;Pass");
+			//Report_AddStep("testcase","*******Advanced Search*******" , "", "", "Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"Please enter either order number/Article details/delivery date, which is mandatory to proceed!! - warning mesg is displayed when no details are provided to proceed;;;Pass");
+			//Report_AddStep("testcase","Please enter either order number/Article details/delivery date, which is mandatory to proceed!!" , "", "", "Pass");
+			objOrderEnquiryObjects.advSrherrormsgclse.click();
+			waitFor(1);
+			String currentdate = common.getCurrentDate();
+			String firstedate =common.addDaystoCurrentDate(-30);
+			String seconddate =common.addDaystoCurrentDate(-24);
+			objOrderEnquiryObjects.advFromDate.sendKeys(firstedate);
+			objOrderEnquiryObjects.advToDate.sendKeys(seconddate);
+			objOrderEnquiryObjects.Go.click(); // from and To dates are previous
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"*****From and To dates are previous dates*****;;;Info");
+			//Report_AddStep("testcase","*****From and To dates are previous dates*****" , "", "", "");
+			if(objOrderEnquiryObjects.advDeldatealert.isDisplayed())
+			{				
+				htmlToExtent(cName,mName,extLogger,driver,"More than 28 days of orders have been requested. This may take additional time to search,From date - "+firstedate+", To Date - "+seconddate+";;;Pass");
+				//Report_AddStep("testcase","More than 28 days of orders have been requested. This may take additional time to search." , "From date - "+firstedate+"", "To Date - "+seconddate+"", "Pass");
+				waitFor(1);
+				objOrderEnquiryObjects.advDeldatealertOK.click();
+				htmlToExtent(cName,mName,extLogger,driver,"Clicking OK to proceed;;;Pass");
+				//Report_AddStep("testcase","Clicking OK to proceed" , "", "", "Pass");
+				htmlToExtent(cName,mName,extLogger,driver,"Please enter valid date range for delivery. To date can not be before "+firstedate+" ;;;Pass");
+				//Report_AddStep("testcase","Please enter valid date range for delivery. To date can not be before "+firstedate+"" , "", "", "Pass");
+				waitFor(1);
+				objOrderEnquiryObjects.advDeldatealertOKK.click();
+				clickOnOrderEnquiry(objOrderEnquiryObjects,driver);
+				waitFn();
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Validation message has not occured when proceeding with previous delivery dates, From date - "+firstedate+" To Date - "+seconddate+";;;Pass");
+				//Report_AddStep("testcase","Validation message has not occured when proceeding with previous delivery dates" ,"From date - "+firstedate+"", "To Date - "+seconddate+"", "Pass");
+			}
+			objOrderEnquiryObjects.advanceSearch.click();
+			firstedate =common.addDaystoCurrentDate(15);
+			seconddate =common.addDaystoCurrentDate(25);
+			objOrderEnquiryObjects.advFromDate.sendKeys(firstedate);
+			objOrderEnquiryObjects.advToDate.sendKeys(seconddate);
+			objOrderEnquiryObjects.Go.click(); // from and To dates are future
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"*****From and To dates are future dates*****;;;Info");
+			//Report_AddStep("testcase","*****From and To dates are future dates*****" , "", "", "");
+			if(objOrderEnquiryObjects.advSrherrormsglist.size()!=0)
+			//if(!objOrderEnquiryObjects.ListofOrders.isDisplayed())
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Details are not available for future delivery dates , From date - "+firstedate+",To Date - "+seconddate+";;;Pass");
+				//Report_AddStep("testcase","Details are not available for future delivery dates" , "From date - "+firstedate+"", "To Date - "+seconddate+"", "Pass");
+				objOrderEnquiryObjects.advSrherrormsgclse.click();
+				waitFor(1);
+			}
+			else
+			{
+				String Listoforders=objOrderEnquiryObjects.ListofOrders.getText();
+				if(Listoforders.equals("List of Orders"))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Details are available for future delivery dates,From date - "+firstedate+",To Date - "+seconddate+";;;Pass");
+					//Report_AddStep("testcase","Details are available for future delivery dates" , "From date - "+firstedate+"", "To Date - "+seconddate+"", "Pass");
+				}
+			}
+			waitFor(2);
+			objOrderEnquiryObjects.advanceSearch.click();
+			firstedate =common.addDaystoCurrentDate(-30);
+			seconddate =common.addDaystoCurrentDate(32);
+			objOrderEnquiryObjects.advFromDate.clear();
+			objOrderEnquiryObjects.advToDate.clear();
+			objOrderEnquiryObjects.advFromDate.sendKeys(firstedate);
+			objOrderEnquiryObjects.advToDate.sendKeys(seconddate);
+			objOrderEnquiryObjects.Go.click(); // from and To dates are past and future -- more than 28 days
+			waitForJSandJQueryToLoad(driver);	
+			htmlToExtent(cName,mName,extLogger,driver,"*****From and To dates are past and future dates(more than 28 days)*****;;;Info");
+			//Report_AddStep("testcase","*****From and To dates are past and future dates(more than 28 days)*****" , "", "", "");
+			if(objOrderEnquiryObjects.advDeldatealert.isDisplayed())
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"More than 28 days of orders have been requested. This may take additional time to search,From date - "+firstedate+",To Date - "+seconddate+";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver,"Clicking OK to proceed;;;Pass");
+				//Report_AddStep("testcase","More than 28 days of orders have been requested. This may take additional time to search." , "From date - "+firstedate+"", "To Date - "+seconddate+"", "Pass");
+				//Report_AddStep("testcase","Clicking OK to proceed" , "", "", "Pass");
+				objOrderEnquiryObjects.advDeldatealertOK.click();
+				waitFor(7);
+				String Listoforders=objOrderEnquiryObjects.ListofOrdersfuture.getText();
+				//if(Listoforders.equals("List of orders for "))
+				if(objOrderEnquiryObjects.deldatestable.isDisplayed())
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Details are available for delivery dates more than 28 days,From date - "+firstedate+",To Date - "+seconddate+";;;Pass");
+					//Report_AddStep("testcase","Details are available for delivery dates more than 28 days" , "From date - "+firstedate+"", "To Date - "+seconddate+"", "Pass");
+					waitFor(1);
+					clickOnOrderEnquiry(objOrderEnquiryObjects,driver);
+					waitFn();
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Details are not available for delivery dates more than 28 days,From date - "+firstedate+",To Date - "+seconddate+";;;Pass");
+					//Report_AddStep("testcase","Details are not available for delivery dates more than 28 days" ,"From date - "+firstedate+"", "To Date - "+seconddate+"", "Pass");
+					clickOnOrderEnquiry(objOrderEnquiryObjects,driver);
+					waitFn();
+				}
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Validation message has not occured when proceeding with past and future delivery dates for more than 28 days,From date - "+firstedate+",To Date - "+seconddate+";;;Pass");
+				//Report_AddStep("testcase","Validation message has not occured when proceeding with past and future delivery dates for more than 28 days" , "From date - "+firstedate+"", "To Date - "+seconddate+"", "Pass");
+			}
+			objOrderEnquiryObjects.advanceSearch.click();
+			firstedate =common.addDaystoCurrentDate(-10);
+			seconddate =common.addDaystoCurrentDate(11);
+			objOrderEnquiryObjects.advFromDate.clear();
+			objOrderEnquiryObjects.advToDate.clear();
+			objOrderEnquiryObjects.advFromDate.sendKeys(firstedate);
+			objOrderEnquiryObjects.advToDate.sendKeys(seconddate);
+			objOrderEnquiryObjects.Go.click(); // from and To dates are past and future -- less than 28 days
+			waitFn();
+			htmlToExtent(cName,mName,extLogger,driver,"*****From and To dates are past and future dates(less than 28 days)*****;;;Info");
+			htmlToExtent(cName,mName,extLogger,driver,"Delivery dates for less than 28 days added,From date - "+firstedate+",To Date - "+seconddate+";;;Pass");
+			//Report_AddStep("testcase","*****From and To dates are past and future dates(less than 28 days)*****" , "", "", "");
+			//Report_AddStep("testcase","Delivery dates for less than 28 days added" , "From date - "+firstedate+"", "To Date - "+seconddate+"", "Pass");
+		}
+		else
+		{
+			//mandatory fields reqd
+		}
+	}
+	
+	public void advSearchdetails(OrderEnquiryObjects objOrderEnquiryObjects,String StoreNo,WebDriver driver) throws IOException
+	{
+		objOrderEnquiryObjects.advanceSearch.click();
+		int dd=0;
+		String SOS=null;
+		List<List<Object>> list_reasonCodes = StringToListCreation("All:Direct Vendor:Stock Transfer IN:Stock Transfer OUT:Stock Transfer IN / Stock Transfer OUT:Warehouse");
+		int listCnt = list_reasonCodes.get(0).size();
+		int index = (int)(Math.random() * listCnt);
+		String reasonCode = list_reasonCodes.get(0).get(index).toString();
+		if((reasonCode.equals("All"))||(reasonCode.equals("Stock Transfer IN"))||(reasonCode.equals("Stock Transfer OUT"))||(reasonCode.equals("Stock Transfer IN / Stock Transfer OUT"))){ dd=1;}
+		if(reasonCode.equals("Direct Vendor")){ dd=2;}
+		if(reasonCode.equals("Warehouse")){ dd=3;}
+		selectByVisibleText(objOrderEnquiryObjects.advOrderType, reasonCode);
+		htmlToExtent(cName,mName,extLogger,driver,"Type field can be selected from dropdown,selected type field is "+reasonCode+";;;Pass");
+		//Report_AddStep("testcase","Type field can be selected from dropdown,selected type field is "+reasonCode+"" , "", "", "Pass");
+		waitFor(1);
+		list_reasonCodes = StringToListCreation("All:Open:Ready to Receive:Received:Overdue:Cancelled");
+		listCnt = list_reasonCodes.get(0).size();
+		index = (int)(Math.random() * listCnt);
+		String status = list_reasonCodes.get(0).get(index).toString();
+		selectByVisibleText(objOrderEnquiryObjects.advOrderStatus, status);
+		htmlToExtent(cName,mName,extLogger,driver,"Status field can be selected from dropdown,selected Status is "+status+";;;Pass");
+		//Report_AddStep("testcase","Status field can be selected from dropdown,selected Status is "+status+"" , "", "", "Pass");
+		waitFor(1);
+		if(StoreNo.equals("1108"))
+		{
+			list_reasonCodes = StringToListCreation("BAKEHOUSE:CIGARETTES:FRONT OF STORE:GENERAL MERCHANDISE:GROCERIES:LIQUOR:MEAT:NON TRADING:PERISHABLES:PRODUCE:PROPRIETARY BAKERY:SEAFOOD:SERVICED DELICATESSEN");
+			listCnt = list_reasonCodes.get(0).size();
+			index = (int)(Math.random() * listCnt);
+			String dept = list_reasonCodes.get(0).get(index).toString();
+			selectByVisibleText(objOrderEnquiryObjects.advDept, dept);
+			htmlToExtent(cName,mName,extLogger,driver,"Department field can be selected from dropdown,selected dept is "+dept+";;;Pass");
+			//Report_AddStep("testcase","Department field can be selected from dropdown,selected dept is "+dept+"" , "", "", "Pass");
+		}
+		else
+		{
+			selectByVisibleText(objOrderEnquiryObjects.advDept, "LIQUOR");
+			htmlToExtent(cName,mName,extLogger,driver,"Department field can be selected from dropdown,selected dept is Liquor;;;Pass");
+			//Report_AddStep("testcase","Department field can be selected from dropdown,selected dept is Liquor" , "", "", "Pass");
+		}
+		waitFor(1);
+		String ddvalue=null;
+		if(dd==1)
+		{ 
+			objOrderEnquiryObjects.advAll.click(); 
+			waitFor(1);
+			SOS="All";
+		}
+		if(dd==2)
+		{ 	
+			objOrderEnquiryObjects.advvendor.click(); 
+			waitFor(1);
+			SOS="Direct Vendor";
+			String vendor_val="0046521001";
+			objOrderEnquiryObjects.advvendor_TB.sendKeys(vendor_val);
+			objOrderEnquiryObjects.advvendorVerify.click();
+			waitForJSandJQueryToLoad(driver);
+			//String ddvalue= objOrderEnquiryObjects.advvendor_TB.getAttribute("value");
+			ddvalue= "0046521001";
+		}	
+		if(dd==3)
+		{
+			objOrderEnquiryObjects.advwarehouse.click(); 
+			waitFor(1);
+			SOS="Warehouse";
+			Random rand = new Random();
+			int n = rand.nextInt(16) + 1;
+			String ddval=""+n;
+			//selectByValue(objOrderEnquiryObjects.advWarehouseDD, ddval);
+			selectByIndex(objOrderEnquiryObjects.advWarehouseDD,n);
+			waitFor(1);
+			ddvalue= objOrderEnquiryObjects.advWarehouseDD.getAttribute("value");
+		}		
+		htmlToExtent(cName,mName,extLogger,driver,"Source of supply field can be selected from dropdown,selected Source of supply is "+SOS+", selected "+SOS+" is "+ddvalue+";;;Pass");
+		//Report_AddStep("testcase","Source of supply field can be selected from dropdown,selected Source of supply is "+SOS+", selected "+SOS+" is "+ddvalue+"" , "", "", "Pass");
+		objOrderEnquiryObjects.advGo.click();
+		waitForJSandJQueryToLoad(driver);
+		waitFor(1);
+		htmlToExtent(cName,mName,extLogger,driver,"Clicking on GO to proceed;;;Pass");
+		//Report_AddStep("testcase","Clicking on GO to proceed" , "", "", "Pass");
+		if(objOrderEnquiryObjects.advSrherrormsglist.size()!=0)
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"Details are not available for selected fields;;;Pass");
+			//Report_AddStep("testcase","Details are not available for selected fields" , "", "", "Pass");
+			objOrderEnquiryObjects.advSrherrormsgclse.click();
+			waitFor(1);
+		}
+		else
+		{
+			String Listoforders=objOrderEnquiryObjects.ListofOrders.getText();
+			if(Listoforders.equals("List of Orders"))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Details are available for selected fields;;;Pass");
+				//Report_AddStep("testcase","Details are available for selected fields" , "", "", "Pass");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"******Order Advanced search verification with application details******;;;Pass");
+			//Report_AddStep("testcase","******Order Advanced search verification with application details******" , "", "", "");
+			countmatch(objOrderEnquiryObjects,driver);
+		}
+	}
+	
+	public void countmatch(OrderEnquiryObjects objOrderEnquiryObjects,WebDriver driver) throws IOException
+	{		
+		int o=0;
+		int count=0;
+		List appList = new ArrayList();
+		List appmatchList = new ArrayList();
+		List<List<Object>> appmatchListList = new ArrayList<List<Object>>();
+		List<List<Object>> appListList = new ArrayList<List<Object>>();
+		String frsttabname=objOrderEnquiryObjects.firsttab.getText();
+		String[] split=frsttabname.split(Pattern.quote("("));
+		int length = split[1].length();
+		String frsttabcount=split[1].substring(0, length-1);
+		split[1]=frsttabcount;
+		appList.add(split[0] + "- " + split[1]);
+		WebElement elements =null;
+		if(Integer.parseInt(split[1])>10)
+		{
+		WebElement element =  prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.paginationList, 1,driver);
+		if(element.isDisplayed())
+		{
+			List<WebElement> pagelist = driver.findElements(By.xpath("(//*[@class='paginationWrapper compact-theme simple-pagination'])[1]/ul/li"));
+			int numb = pagelist.size();
+			if(numb==4)
+			{
+				count=10;
+			}
+			else
+			{
+				elements =  prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.paginationnumberList, 1,numb-2,driver);
+				String pagenumb=elements.getText();
+				count=Integer.parseInt(pagenumb)*10;				
+			}
+			elements =  prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.paginationnumberList, 1,numb-1,driver);
+			elements.click();
+			waitFor(2);
+			List<WebElement> lastpagerowlist = driver.findElements(By.xpath("(//*[@class='ContentTable actionRows'])[1]/tbody/tr"));
+			count = count+lastpagerowlist.size();
+			appmatchList.add(split[0] + "- " + count);
+		}
+		}
+		else
+		{
+			List<WebElement> lastpagerowlist = driver.findElements(By.xpath("(//*[@class='ContentTable actionRows'])[1]/tbody/tr"));
+			count = lastpagerowlist.size();
+			appmatchList.add(split[0] + "- " + count);
+		}
+		int desc =2;
+		int size=objOrderEnquiryObjects.totaltabs.size();
+		if(size>1)
+		{
+			WebElement tabclick =  prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.totaltabsList, 1,driver);
+			tabclick.click();
+			waitForJSandJQueryToLoad(driver);
+			if(objOrderEnquiryObjects.orderenqerror1.size()!=0)
+			{
+				int list = objOrderEnquiryObjects.orderenqerror1.size();
+				for(int e =1;e<=list;e++)
+				{
+					String mess = objOrderEnquiryObjects.orderenqerror.getText();
+					if(mess.contains("Technical issue occured in SQLA"))
+					{
+						WebElement clse =  prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.orderclse, 1,driver);
+						clse.click();
+						o++;
+						break;
+					}
+				}
+			}
+			else
+			{			
+			for(int i=2;i<=size+1;i++)
+			{
+				if(i!=2)
+				{
+					tabclick =  prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.totaltabsList, 1,driver);
+					tabclick.click();
+					waitForJSandJQueryToLoad(driver);				
+				}
+				String tabname=tabclick.getText();
+				split=tabname.split(Pattern.quote("("));
+				length = split[1].length();
+				String tabcount=split[1].substring(0, length-1);
+				split[1]=tabcount;
+				appList.add(split[0] + "- " + split[1]);
+				if(Integer.parseInt(split[1])>10)
+				{
+				WebElement element =  prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.paginationList, desc,driver);				
+				if(element.isDisplayed())
+				{
+					List<WebElement> pagelist = driver.findElements(By.xpath("(//*[@class='paginationWrapper compact-theme simple-pagination'])["+desc+"]/ul/li"));
+					int numb = pagelist.size();
+					if(numb==4)
+					{
+						count=10;
+					}
+					else
+					{
+						elements =  prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.paginationnumberList, desc,numb-2,driver);
+						String pagenumb=elements.getText();
+						count=Integer.parseInt(pagenumb)*10;
+					}
+					elements =  prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.paginationnumberList, desc,numb-1,driver);
+					elements.click();
+					waitFor(2);
+					List<WebElement> lastpagerowlist = driver.findElements(By.xpath("(//*[@class='ContentTable actionRows'])["+i+"]/tbody/tr"));
+					count = count+lastpagerowlist.size();
+					appmatchList.add(split[0] + "- " + count);
+					desc++;
+				}
+				}
+				else
+				{
+					List<WebElement> lastpagerowlist = driver.findElements(By.xpath("(//*[@class='ContentTable actionRows'])["+i+"]/tbody/tr"));
+					count = lastpagerowlist.size();
+					appmatchList.add(split[0] + "- " + count);
+				}
+				
+			}
+			}
+		}
+		appmatchListList.add(appmatchList);
+		appListList.add(appList);
+		ElementContains(cName, mName,extLogger,driver,appmatchListList, appListList);
+		//Report_AddStep("testcase","******Application details verification with backend details******" , "", "", "");
+		if(o==1)
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"******Technical issue occured in SQLA, while calling the service****** when clicking on second tab;;;Fail");
+			//Report_AddStep("testcase","******Technical issue occured in SQLA, while calling the service****** when clicking on second tab" , "", "", "");
+		}
+	}
+
+	public void orderDetails(OrderEnquiryObjects objOrderEnquiryObject,String Art,int j,String arttype) throws IOException, ParseException, EncryptedDocumentException, InvalidFormatException 
+	{
+		objOrderEnquiryObject.addArticle.click();
+		objOrderEnquiryObject.articleSearch.click();
+		objOrderEnquiryObject.articleSearch.sendKeys(Art);
+		Random rand = new Random();
+		int n = rand.nextInt(9) + 1;
+		String ordrQty = "" + n;
+		objOrderEnquiryObject.orderQty.sendKeys(ordrQty);
+		String date = common.addDaystoCurrentDate(3);
+		objOrderEnquiryObject.deliveryDate.click();
+		objOrderEnquiryObject.deliveryDate.sendKeys(date);waitFor(0.5);
+		objOrderEnquiryObject.click.click();waitFor(1);
+		verticalScroll(driver);
+		waitForClickOfElement(objOrderEnquiryObject.searchAnddAdd, driver);
+		objOrderEnquiryObject.searchAnddAdd.click();
+		waitForJSandJQueryToLoad(driver);
+		int u = objOrderEnquiryObject.tablelist.size();
+		if(u>0)
+		{
+			if(objOrderEnquiryObject.table.isDisplayed())
+			{
+				for(int p=1;p<=u;p++)
+				{
+					WebElement ele = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObject.artTable, p, driver);
+					if(ele.getText().equals(Art))
+					{
+						WebElement elem = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObject.artClickTable, p, driver);
+						elem.click();
+						objOrderEnquiryObject.clickAddtoList1.click();
+						waitFor(0.5);
+						waitForJSandJQueryToLoad(driver);
+					}
+				}
+			}
+		}
+		if(objOrderEnquiryObject.DisplayErrormsgList.size()==1) { 
+			if(objOrderEnquiryObject.DisplayErrormsgclose.isDisplayed())
+			{
+				htmlToExtent(cName,mName,extLogger,driver, ""+arttype+" Article - "+Art+", Transfer Qty - "+ordrQty+" cannot be added, since "+objOrderEnquiryObject.DisplayErrormsg.getText()+";;;Fail");
+				objOrderEnquiryObject.DisplayErrormsgclose.click();
+				waitFor(0.5);
+				setValueIntoCell(j, "fail","CreateOrder");
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver, ""+arttype+" Article - "+Art+", Transfer Qty - "+ordrQty+" is added succesfully;;;Pass");
+				setValueIntoCell(j, "Pass","CreateOrder");
+			}
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver, ""+arttype+" Article - "+Art+", Transfer Qty - "+ordrQty+" is added succesfully;;;Pass");
+			setValueIntoCell(j, "Pass","CreateOrder");
+		}
+		
+	}
+	
+	public WebElement prepareWebElementWithDynamicXpathWithIntInt(String xpathValue, int j,int i,WebDriver driver) { //meenu
+		return driver.findElement(By.xpath(xpathValue.replace("dynamic",""+j).replace("value",""+i)));
+	}
+	
+	public int IBTorderDetails(OrderEnquiryObjects objOrderEnquiryObject,String Art,int j,String arttype) throws IOException, ParseException, EncryptedDocumentException, InvalidFormatException 
+	{		
+		int count=0;
+		int size = objOrderEnquiryObject.enterArticle.size();
+		for(int i=1;i<=size;i++)
+		{
+			WebElement ele = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObject.entArt, i, driver);
+			if(ele.isDisplayed()){
+				verticalinternalscroll(ele, driver);
+				ele.click();ele.clear();ele.sendKeys(Art);
+				break;
+			}
+		}
+		verticalinternalscroll(objOrderEnquiryObject.enterArticle1, driver);
+		waitFor(0.5);
+		objOrderEnquiryObject.enterArticle1.click();
+		objOrderEnquiryObject.enterArticle1.clear();
+		objOrderEnquiryObject.enterArticle1.sendKeys(Art);
+		Random rand = new Random();
+		int n = rand.nextInt(9) + 1;
+		String ordrQty = "" + n;
+		objOrderEnquiryObject.enterQty.clear();
+		objOrderEnquiryObject.enterQty.sendKeys(ordrQty);
+		verticalScroll(driver);
+		waitForClickOfElement(objOrderEnquiryObject.addArt, driver);
+		objOrderEnquiryObject.addArt.click();
+		waitFn();waitFor(1);
+		objOrderEnquiryObject.checkArt.click();
+		objOrderEnquiryObject.clickAddtoList.click();waitFor(0.5);
+		if(objOrderEnquiryObject.DisplayErrormsgList.size()==1) { 
+			if(objOrderEnquiryObject.DisplayErrormsgclose.isDisplayed())
+			{
+				htmlToExtent(cName,mName,extLogger,driver, ""+arttype+" Article - "+Art+", Transfer Qty - "+ordrQty+" cannot be added, since "+objOrderEnquiryObject.DisplayErrormsg.getText()+";;;Fail");
+				objOrderEnquiryObject.DisplayErrormsgclose.click();
+				waitFor(0.5);
+				setValueIntoCell(j, "Fail","StockTransfer");
+			}else{
+				count++;
+				htmlToExtent(cName,mName,extLogger,driver, ""+arttype+" Article - "+Art+", Transfer Qty - "+ordrQty+" is added succesfully;;;Pass");
+				setValueIntoCell(j, "Pass","StockTransfer");
+			}
+		}else{
+			count++;
+			htmlToExtent(cName,mName,extLogger,driver, ""+arttype+" Article - "+Art+", Transfer Qty - "+ordrQty+" is added succesfully;;;Pass");
+			setValueIntoCell(j, "Pass","StockTransfer");
+		}
+		waitForJSandJQueryToLoad(driver);
+		return count;
+	}
+
+	public void delOrder(OrderEnquiryObjects objOrderEnquiryObject)throws IOException 
+	{
+		waitFor(1);
+		int totalArt = objOrderEnquiryObject.totalArt.size(); 
+		for (int i = 1; i < totalArt; i++) 
+		{
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObject.Articleexpand, 1,driver);
+			i++;
+			element.click();
+			verticalScroll(driver);
+			List<WebElement> artlist = driver.findElements(By.xpath("//*[@class='grpTbody']/tr[2]/td/table/tbody/tr"));
+			for (int j = 1; j <= artlist.size() / 2; j++) 
+			{
+				WebElement deleteRec = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObject.delRecordList, 1,driver);
+				deleteRec.click();
+				waitFor(1);
+				objOrderEnquiryObject.accept.click();
+				waitFor(1);
+			}
+			verticalScroll(driver);
+		}
+		htmlToExtent(cName,mName,extLogger,driver,"previously added articles are deleted;;;Pass");
+	}
+	
+	public void delIBTOrder(OrderEnquiryObjects objOrderEnquiryObject,int IBTcount)throws IOException 
+	{
+		waitFor(1);
+		objOrderEnquiryObject.expandStore.click();
+		waitFn();
+		int totalArt = objOrderEnquiryObject.IBTartList.size(); 
+		if(totalArt>0){
+		for (int i = 1; i < totalArt+1; i++) 
+		{
+			verticalinternalscroll(objOrderEnquiryObject.IBTartDelete, driver);
+			objOrderEnquiryObject.IBTartDelete.click();
+			waitFn();
+			objOrderEnquiryObject.acceptIBT.click();
+			waitFn();
+		}
+		objOrderEnquiryObject.IBTartDeleteLast.click();
+		waitFn();
+		objOrderEnquiryObject.acceptIBT.click();
+		waitFn();}else{
+			try{
+			objOrderEnquiryObject.IBTartDeleteLast.click();
+			waitFn();
+			objOrderEnquiryObject.acceptIBT.click();
+			waitFn();}catch(Exception e){}
+		}
+		htmlToExtent(cName,mName,extLogger,driver,"previously added articles are deleted for IBT Orders;;;Pass");
+	}
+	
+}

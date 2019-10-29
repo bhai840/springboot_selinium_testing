@@ -1,0 +1,300 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class ltoreportobjects {
+	
+	@FindBy(xpath ="//*[@id='reports']/a")
+	public WebElement reports;
+	
+	@FindBy(xpath ="//*[@class='reportBtmBrdr AC_RPSM subMenu']/a")
+	public WebElement stockmgmt;
+	
+	@FindBy(xpath ="//*[@id='reports']/ul/li[10]/ul/li[9]/a")
+	public WebElement ltoreports;
+	
+	
+	@FindBy(xpath ="//*[@id='all']")
+	public WebElement ltocount;
+	
+	@FindBy(xpath ="//*[@id='from']")
+	public WebElement fromdate;
+	
+	
+	@FindBy(xpath ="//*[@id='to']")
+	public WebElement todate;
+	
+	@FindBy(xpath ="//*[@id='generateReport']")
+	public WebElement generatereport;
+	
+	@FindBy(xpath ="//*[@id='LTO_Count_head_page']/ul/li")
+	public List<WebElement> pagination;
+	
+	@FindBy(xpath ="//*[@id='LTO_Audit_head_page']/ul/li")
+	public List<WebElement> paginationAudit;
+	
+	public static final String paginationdynamic1="//*[@id='LTO_Audit_head_page']/ul/li[dynamic]";
+	
+	@FindBy(xpath ="//*[@id='success-wrapper']/div")
+	public List<WebElement> msg;
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div")
+	public List<WebElement> msg1;
+	
+	@FindBy(xpath ="//*[@id='success_msg']/li")
+	public WebElement msgtext;
+	
+	@FindBy(xpath ="//*[@id='error_msg']/li")
+	public WebElement msgalreadyadd;
+	
+	
+	
+	@FindBy(xpath ="//*[@id='standard']")
+	public WebElement ltoaudit;
+	
+	@FindBy(xpath ="//*[@id='success-wrapper']/div/div/div[1]/a")
+	public WebElement close;
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[1]/a")
+	public WebElement alreadyaddclose;
+	
+	
+	@FindBy(xpath ="//*[@id='ui-accordion-accordion-header-0']")
+	public WebElement generateltoreport;
+	
+	//*[@id="ui-accordion-accordion-header-0"]/span
+	
+	@FindBy(xpath ="//*[@id='ui-accordion-accordion-header-0']")
+	public WebElement generateltoreportplusBtn;
+	
+	@FindBy(xpath ="//*[@id='override']")
+	public WebElement ltologs;
+	
+	@FindBy(xpath ="//*[@id='searchBaiscBox']")
+	public WebElement box;
+	
+	@FindBy(xpath ="//*[@id='addtolist']")
+	public WebElement addtoList;
+	
+	@FindBy(xpath ="//*[@id='article_search_result_table']/tbody/tr")
+	public List<WebElement> Desclist;
+	
+	@FindBy(xpath ="//*[@id='article_search_result_table']/tbody/tr")
+	public WebElement DesclistCheck;
+	
+	@FindBy(xpath ="//*[@id='article_search_result_table']/tbody/tr")
+	public WebElement Desclist1;
+	
+	@FindBy(xpath ="//*[@id='article_search_result_table']/tbody/tr[1]/td[3]/input")
+	public WebElement Descclick;
+	
+	public static final String Desc="//*[@id='article_search_result_table']/tbody/tr[dynamic]/td[2]";
+	
+	public static final String DescCheck="//*[@id='article_search_result_table']/tbody/tr[dynamic]/td[3]/input";
+	
+	@FindBy(xpath ="//*[@id='ui-accordion-accordion-panel-0']/div/div[2]/label")
+	public WebElement chummadate;
+	
+	
+	@FindBy(xpath ="/html/body/div[20]")
+	public List<WebElement> addarticlestolist;
+	
+	
+	@FindBy(xpath ="//*[@id='label_tr_1_0']/input")
+	public WebElement firstcheckbox;
+	
+	@FindBy(xpath ="//*[@id='addtolist']")
+	public WebElement addtolist;
+	
+
+	@FindBy(xpath ="//*[@id='errorWrapper']")
+	public List<WebElement> datemsg;
+	
+	
+	@FindBy(xpath ="//*[@id='error_msg']/li")
+	public WebElement dateerrormsg;
+	
+	
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[1]/a")
+	public WebElement dateerrorclose;
+	
+	@FindBy(xpath ="//*[@id='05525']")
+	public WebElement firstarticlereport;
+	//*[@id="location_name_tr_1_0"]
+	
+	@FindBy(xpath ="//*[@id='location_name_tr_1_0']")
+	public WebElement location;
+	
+	
+	@FindBy(xpath ="//*[@id='tot_articles_tr_1_0']")
+	public WebElement totalarticles;
+
+	
+	@FindBy(xpath ="//*[@id='tot_cartons_tr_1_0']")
+	public WebElement totalfullcartons;
+	
+	@FindBy(xpath ="//*[@id='tot_wgt_articles_tr_1_0']")
+	public WebElement totalweightedarticles;
+	
+	@FindBy(xpath ="//*[@id='tot_rdmwgt_articles_tr_1_0']")
+	public WebElement totalrandomweightarticles;
+	
+	@FindBy(xpath ="//*[@id='tot_eaches_tr_1_0']")
+	public WebElement totaleach;
+	
+	@FindBy(xpath ="//*[@id='tot_mpk_tr_1_0']")
+	public WebElement totalmpk;
+	
+	//LTO Audit validations
+	
+	//Browser Elements of LTO Audit
+	@FindBy(xpath ="//*[@id='article_no_tr_1_0']")
+	public WebElement articleno;
+	
+	
+	@FindBy(xpath ="//*[@id='article_desc_tr_1_0']")
+	public WebElement articledesc;
+	
+	
+	@FindBy(xpath ="//*[@id='uom_tr_1_0']/label")
+	public WebElement uom;
+	
+	@FindBy(xpath ="//*[@id='om_tr_1_0']")
+	public WebElement om;
+	
+	@FindBy(xpath ="//*[@id='shelf_capacity_tr_1_0']")
+	public WebElement shelfcapacity;
+	
+	@FindBy(xpath ="//*[@id='lto_qty_tr_1_0']/label")
+	public WebElement ltoqty;
+	
+	@FindBy(xpath ="//*[@id='audit_qty_tr_1_0']/label")
+	public WebElement auditqty;
+	
+	@FindBy(xpath ="//*[@id='difference_tr_1_0']")
+	public WebElement difference;
+	
+	//LTO Logs validations
+	
+	//Browser elements of LTO Logs
+	
+	@FindBy(xpath ="//*[@id='article_no_tr_1_0']")
+	public WebElement logsartno;
+	
+	@FindBy(xpath ="//*[@id='article_desc_tr_1_0']")
+	public WebElement logsartdesc;
+	
+	@FindBy(xpath ="//*[@id='action_tr_1_0']/label")
+	public WebElement logsactivity;
+	
+	@FindBy(xpath ="//*[@id='action_qty_tr_1_0']")
+	public WebElement logsqty;
+	
+	@FindBy(xpath ="//*[@id='uom_tr_1_0']/label")
+	public WebElement logsuom;
+	
+	@FindBy(xpath ="//*[@id='userid_tr_1_0']")
+	public WebElement logsuserid;
+	
+	@FindBy(xpath ="//*[@id='username_tr_1_0']")
+	public WebElement logsusername;
+	
+	@FindBy(xpath ="//*[@id='modified_on_tr_1_0']")
+	public WebElement logsmodifiedon;
+	
+	@FindBy(xpath ="//*[@id='thead_LTO_Count']/tr/th[1]")
+	public WebElement clicklocation;
+	
+	
+	@FindBy(xpath ="//*[@id='LTO_Count_table']/tbody/tr")
+	public List<WebElement> listsize;
+	
+	
+	@FindBy(xpath ="//*[@id='81545']")
+	public List<WebElement> firstlistsize;
+	
+	
+	@FindBy(xpath ="//*[@id='LTO_Count_table']/tbody/tr")
+	public List<WebElement> check1;
+	
+	
+	
+	
+	@FindBy(xpath ="//*[@id='LTO_Audit_table']/tbody/tr")
+	public List<WebElement> auditlistsize;
+	
+	
+	@FindBy(xpath ="//*[@id='LTO_Logs_table']/tbody/tr")
+	public List<WebElement> logslistsize;
+	
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div")
+	public List<WebElement> articleaddedalready;
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[1]/a")
+	public WebElement closearticleaddedalready;
+	
+	
+	@FindBy(xpath ="//*[@id='thead_LTO_Audit']/tr/th[1]")
+	public WebElement clickarticle;//Clicking Article tab for LTO audit
+	
+	
+	
+	@FindBy(xpath ="//*[@id='invoice']")
+	public WebElement departmentcheckbox;
+	
+	
+	/*##@FindBy(xpath ="//*[@id='LTO_Audit_table']/tbody/tr[2]")
+	public List<WebElement> auditfirst;*/
+	
+	@FindBy(xpath ="//*[@id='LTO_Audit_table']/tbody/tr[1]")
+	public List<WebElement> auditfirst;
+	
+	@FindBy(xpath ="//*[@id='LTO_Audit_table']/tbody/tr[2]")
+	public List<WebElement> auditfirst1;
+	
+	@FindBy(xpath ="//*[@id='LTO_Logs_table']/tbody/tr[2]")
+	public List<WebElement> logsfirst;
+	
+	
+	/*@FindBy(xpath ="//*[@id='LTO_Count_table']/tbody/tr[1]")
+	public List<WebElement> countfirst;*/
+	
+	/*@FindBy(xpath ="//*[@id='LTO_Count_table']/tbody/tr[2]")
+	public List<WebElement> countfirst;*/
+	@FindBy(xpath ="//*[@id='LTO_Count_table']/tbody/tr[1]")
+	public List<WebElement> countfirst;
+	
+	
+	@FindBy(xpath ="//*[@id='LTO_Count_table']/tbody/tr[2]")
+	public List<WebElement> countsecond;
+	
+	
+	@FindBy(xpath ="//*[@id='backBtn']")
+	public WebElement backbutton;
+	
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div")
+	public List<WebElement> technicalissue;
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div")
+	public WebElement technicalissue1;
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[2]/ol/li")
+	public WebElement technicalissuetext;
+	
+	@FindBy(xpath ="//*[@id='errorWrapper']/div/div[1]/a")
+	public WebElement closetechnicalissue;
+	
+	
+	public static final String listdata="//*[@id='LTO_Count_table']/tbody/tr[dynamic]/td[value]";
+	
+	public static final String paginationdynamic="//*[@id='LTO_Count_head_page']/ul/li[dynamic]";
+	
+	
+
+}

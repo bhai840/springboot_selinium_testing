@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+<TCName name = "ReceivingIBTOrderInFull">
+
+<Vendororder2>7010335975</Vendororder2>7010186738, 7010174005
+<SITStore>
+<![CDATA[7041510477]]>
+</SITStore>
+
+<Invoice>12345</Invoice>
+
+<Vendororder1>7010335975</Vendororder1>7010198578, 7010332003
+
+<checkOrder>
+<![CDATA[select * from revert_received_order where order_no='ordNo']]>
+</checkOrder>
+<AddOrder>
+<![CDATA[INSERT INTO "SAAP"."revert_received_order" ("order_no") VALUES('ordersNo')]]>
+</AddOrder>
+<revertOrder>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"ordno"}');]]>
+</revertOrder>
+<Chilledtemp>2.56</Chilledtemp>
+<Frozentemp>-52.36</Frozentemp>
+<OrderDetails>
+<![CDATA[select a.ebeln, convert(char(12), a.lfdat, 103), convert(char(12), a.on_show_date, 103), a.created_by, b.reswk from zwowo_po_hdr a, ZWOWO_PO_HDR b where a.ebeln = b.ebeln and a.ebeln = 'ord_no']]>
+</OrderDetails>
+<vendorname>
+<![CDATA[select NAME1 from ZWOWC_SITE_MASTER where werks = 'DC_no']]>
+</vendorname>
+<TotCart>
+<![CDATA[select sum(menge) from ZWOWO_PO_ITM where ebeln = 'ord_no']]>
+</TotCart>
+<TotArt>
+<![CDATA[select count(*) from ZWOWO_PO_ITM where ebeln = 'ord_no']]>
+</TotArt>
+<Artdet>
+<![CDATA[select matnr, MENGE,MEINS from ZWOWO_PO_ITM  where ebeln = 'ord_no']]>
+</Artdet>
+<ChillTemp>3</ChillTemp>
+<FrozTemp>-26</FrozTemp>
+<OM>
+<![CDATA[select pack_size from zwowo_po_itm  where ebeln = 'ord_no']]>
+
+</OM>
+<Base_UOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</Base_UOM>
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<NEWSOH>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</NEWSOH>
+
+ <!-- <Vendororder1>50013897</Vendororder1> -->
+
+</TCName>>
+
+
+<TCName name = "ReceivingVendorOrderByChangingOM">
+
+<Vendororder2>50464066</Vendororder2>  //50464066
+
+<Invoice>12345</Invoice>
+
+<Vendororder1>50464066</Vendororder1>
+
+<ArtdetNw>
+<![CDATA[select PITM.EBELN,PITM.MATNR,PITM.MENGE,PITM.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.PI_OM,OPTM.ARTICLE_OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, ZAM.TEMPERATURE_IND FROM ZWOWO_PO_ITM PITM JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) WHERE PITM.EBELN = 'ord_no';]]>
+</ArtdetNw>
+
+<checkOrder>
+<![CDATA[select * from revert_received_order where order_no='ordNo']]>
+</checkOrder>
+<AddOrder>
+<![CDATA[INSERT INTO "SAAP"."revert_received_order" ("order_no") VALUES('ordersNo')]]>
+</AddOrder>
+<revertOrder>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"ordno"}');]]>
+</revertOrder>
+
+<OrderDetails>
+<![CDATA[select a.ebeln, convert(char(12), a.lfdat, 103), convert(char(12), a.on_show_date, 103), a.created_by, b.lifnr from zwowo_po_hdr a, ZWOWO_PO_HDR b where a.ebeln = b.ebeln and a.ebeln = 'ord_no']]>
+</OrderDetails>
+<vendorname>
+<![CDATA[select partner_name,partner_no from zwowc_gs_vendor where partner_no = 'vendor_no']]>
+</vendorname>
+<TotCart>
+<![CDATA[select sum(menge) from ZWOWO_PO_ITM where ebeln = 'ord_no']]>
+</TotCart>
+<TotArt>
+<![CDATA[select count(*) from ZWOWO_PO_ITM where ebeln = 'ord_no']]>
+</TotArt>
+<Artdet>
+<![CDATA[select matnr, MENGE,MEINS from ZWOWO_PO_ITM  where ebeln = 'ord_no']]>
+</Artdet>
+<OM>
+<![CDATA[select article_om from zwowo_po_itm  where ebeln = 'ord_no']]>
+</OM>
+<Base_UOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</Base_UOM>
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+
+<NewOM>5.123</NewOM>
+<NewOM1>7</NewOM1>
+<ChillTemp>3</ChillTemp>
+<FrozTemp>-26</FrozTemp>
+<DispArt>
+<![CDATA[select distinct MATNR, sum(ARTICLE_QTY), MEINS from ZWOWO_ORDER_COMPONENT group by MATNR, ebeln, display_article, order_type,MEINS having ebeln = 'ord_no' and display_article = 'art_no';]]>
+</DispArt>
+<CPBDSOH1>
+select matnr,complex_pack_brk_article,complex_pack_brk_om from ZWOWC_ARTICLE_LISTING where SAAP.ZWOWC_ARTICLE_LISTING.COMPLEX_PACK_BRK_ARTICLE = 'CPBD_no' 
+order by complex_pack_brk_om desc
+</CPBDSOH1>
+
+<CPBDSOH2>
+select a.article,convert(DOUBLE,a.store_soh) as TUSOH, b.meinh  as TotalUnits,convert(DOUBLE,a.store_soh_rand_wght) || ' EA' as  randWtO 
+from saap.local_wow_soh a,ZWOWC_ARTICLE_UOM b where a.article = b.matnr and article = 'CPBD_no' and b.base_uom_ind = 'Y';
+</CPBDSOH2>
+ <!-- <Vendororder1>50013897</Vendororder1> -->
+
+</TCName>>
+
+
+<TCName name = "ReceivingVirtualDCOrderByException">
+<Vendororder2>8334750</Vendororder2>  8241238 , 8276987
+<SITStore>
+<![CDATA[1943909]]>
+</SITStore>
+<Invoice>12345</Invoice>
+
+<Vendororder1>8334750</Vendororder1>
+<orderNo>8334750</orderNo>
+
+<checkOrder>
+<![CDATA[select * from revert_received_order where order_no='ordNo']]>
+</checkOrder>
+<AddOrder>
+<![CDATA[INSERT INTO "SAAP"."revert_received_order" ("order_no") VALUES('ordersNo')]]>
+</AddOrder>
+<revertOrder>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"ordno"}');]]>
+</revertOrder>
+
+<OrderDetails>
+<![CDATA[select vbeln, convert(char(12), convert(date, podat), 103), convert(char(12), convert(date, podat), 103), created_by, lifnr from ZWOWO_ORDER_NOTIF_HDR where vbeln ='ord_no']]>
+</OrderDetails>
+<Whsename>
+<![CDATA[select NAME1 from ZWOWC_SITE_MASTER where werks = 'DC_no']]>
+</Whsename>
+<TotCart>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'ord_no']]>
+</TotCart>
+<TotArt>
+<![CDATA[select count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'ord_no']]>
+</TotArt>
+<Artdet>
+<![CDATA[select a.matnr, a.MEINS,a.VRKME,sum(a.lfimg), sum(a.ZZDESPATCH_WEIGHT), max(a.OM_SIZE),b.DISPLAY_ITEM_IND, c.IS_CPBD,b.RANDOM_WEIGHT_FLG from ZWOWO_ORDER_NOTIF_ITM a 
+JOIN zwowc_article_master b on a.matnr = b.matnr JOIN ZWOWC_ARTICLE_LISTING c on b.matnr = c.matnr
+ group by a.matnr, a.meins, a.vbeln, a.VRKME,b.DISPLAY_ITEM_IND, c.IS_CPBD,b.RANDOM_WEIGHT_FLG having a.vbeln = 'ord_no' ]]>
+</Artdet>
+<Chilledtemp>2.56</Chilledtemp>
+<Frozentemp>-52.36</Frozentemp>
+<OrdDet>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS "ORDER QUANTITY",
+PITM.MEINS AS "ARTICLE UOM",MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS "ON SHOW DATE",ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG", ZAL.PI_OM,ZAL.ARTICLE_OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'ord_no';]]>
+</OrdDet>
+<OrdCar>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "DELIVERY DATE"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MAX(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG  FROM LOCAL_NOTIF_INFO_HDR LONH  JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'ord_no'
+) A;]]>
+</OrdCar>
+<Base_UOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</Base_UOM>
+<SOHSQL>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from local_wow_soh where article = 'art_no']]>
+</SOHSQL>
+<CPBDArticle>
+<![CDATA[select MATNR from ZWOWC_ARTICLE_LISTING where COMPLEX_PACK_BRK_ARTICLE = 'art_no' and COMPLEX_PACK_BRK_OM = '24']]>
+</CPBDArticle>
+<DispArt>
+<![CDATA[select distinct MATNR, sum(ARTICLE_QTY),MEINS from ZWOWO_ORDER_COMPONENT group by MATNR, ebeln, display_article, order_type,MEINS having ebeln = 'ord_no' and display_article = 'art_no' and order_type = 'DSP']]>
+</DispArt>
+<DispArtOrd>
+<![CDATA[SELECT DISTINCT ZONH.VBELN AS DELIVERY_NUMBER, ZOC.DISPLAY_ARTICLE AS DISPLAY_ARTICLE, ZOC.MATNR AS CHILD_ARTICLE, ZOC.MEINS AS UOM, 
+SUM(ZOC.ARTICLE_QTY) OVER (PARTITION BY ZOC.DISPLAY_ARTICLE,ZOC.MATNR,ZOC.MEINS) AS QTY
+FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN ZWOWO_ORDER_COMPONENT ZOC ON (ZONH.VBELN = ZOC.EBELN) WHERE ZONH.VBELN = 'ord_no' and ZOC.DISPLAY_ARTICLE = 'art_no';]]>
+</DispArtOrd>
+<usernm>
+<![CDATA[select FIRST_NAME, LAST_NAME from usr where usr_id = 'userid']]>
+</usernm>
+<Tempflg>
+<![CDATA[select Temperature_ind from ZWOWO_PO_HDR where ebeln = 'ord_no']]>
+</Tempflg>
+
+<NewOM>5.27</NewOM>
+<NewOM1>7</NewOM1>
+</TCName>>
+
+<TCName name = "ReceivingIBTOrderByException">
+<Vendororder2>7010335975</Vendororder2>  7010198578
+
+<Invoice>12345</Invoice>
+
+<Vendororder1>7010335975 </Vendororder1>7010186738
+
+<checkOrder>
+<![CDATA[select * from revert_received_order where order_no='ordNo']]>
+</checkOrder>
+<AddOrder>
+<![CDATA[INSERT INTO "SAAP"."revert_received_order" ("order_no") VALUES('ordersNo')]]>
+</AddOrder>
+<revertOrder>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"ordno"}');]]>
+</revertOrder>
+
+<OrderDetails>
+<![CDATA[select a.ebeln, convert(char(12), a.lfdat, 103), convert(char(12), a.on_show_date, 103), a.created_by, b.reswk from zwowo_po_hdr a, ZWOWO_PO_HDR b where a.ebeln = b.ebeln and a.ebeln = 'ord_no']]>
+</OrderDetails>
+<vendorname>
+<![CDATA[select NAME1 from ZWOWC_SITE_MASTER where werks = 'DC_no']]>
+</vendorname>
+<TotCart>
+<![CDATA[select sum(menge) from ZWOWO_PO_ITM where ebeln = 'ord_no']]>
+</TotCart>
+<TotArt>
+<![CDATA[select count(*) from ZWOWO_PO_ITM where ebeln = 'ord_no']]>
+</TotArt>
+<Artdet>
+<![CDATA[select matnr, MENGE,MEINS from ZWOWO_PO_ITM  where ebeln = 'ord_no']]>
+</Artdet>
+<OM>
+<![CDATA[select pack_size from zwowo_po_itm  where ebeln = 'ord_no']]>
+
+</OM>
+<Base_UOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</Base_UOM>
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<NEWSOH>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</NEWSOH>
+
+<NewOM>5.27</NewOM>
+<NewOM1>7</NewOM1>
+
+<Chilledtemp>2.56</Chilledtemp>
+<Frozentemp>-52.36</Frozentemp>
+
+
+ <!-- <Vendororder1>50013897</Vendororder1> -->
+</TCName>>
+
+<TCName name = "ReceivingVendorASNOrderByException">
+<Vendororder2>225533</Vendororder2>  225533 , WE2345YRTYR , 40724314, 914444
+<SITStore>
+<![CDATA[89845566121]]>
+</SITStore>
+<Invoice>12345</Invoice>
+<Vendororder1>914444</Vendororder1>
+<orderNo>914444</orderNo>
+<VBELN>
+<![CDATA[select vbeln,ebeln from ZWOWO_ORDER_NOTIF_hdr where lifex = 'ord_no']]>
+</VBELN>
+<OrderDetails>
+<![CDATA[select lifex, convert(char(12), convert(date, lfdat), 103), convert(char(12), convert(date, lfdat), 103), created_by, lifnr from ZWOWO_ORDER_NOTIF_HDR where vbeln ='ord_no']]>
+</OrderDetails>
+<vendorname>
+<![CDATA[select NAME1,SUPPLIER from ZWOWC_SUPPLIER_DETAILS where supplier = 'vendor_no']]>
+</vendorname>
+<TotCart>
+<![CDATA[select sum(LFIMG), sum(ZZDESPATCH_WEIGHT) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'ord_no']]>
+</TotCart>
+<TotArt>
+<![CDATA[select count(distinct matnr) from ZWOWO_ORDER_NOTIF_ITM where vbeln = 'ord_no']]>
+</TotArt>
+<Artdet>
+<![CDATA[select a.matnr, a.MEINS,a.VRKME,sum(a.lfimg), sum(a.ZZDESPATCH_WEIGHT), max(a.OM_SIZE),b.DISPLAY_ITEM_IND, c.IS_CPBD,c.RANDOM_WEIGHT_FLG, b.TEMPERATURE_IND, c.PI_OM from ZWOWO_ORDER_NOTIF_ITM a 
+JOIN zwowc_article_master b on a.matnr = b.matnr JOIN ZWOWC_ARTICLE_LISTING c on b.matnr = c.matnr
+ group by a.matnr, a.meins, a.vbeln, a.VRKME,b.DISPLAY_ITEM_IND, c.IS_CPBD,c.RANDOM_WEIGHT_FLG,b.TEMPERATURE_IND, c.PI_OM having a.vbeln = 'ord_no' ]]>
+</Artdet>
+<Chilledtemp>3.56</Chilledtemp>
+<Frozentemp>-23.41</Frozentemp>
+<Invoice>12345</Invoice>
+<Base_UOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</Base_UOM>
+<OrdDet>
+<![CDATA[SELECT DISTINCT LONH.VBELN AS "DELIVERY",LONH.MSG_TYPE AS "STATUS",PITM.MATNR AS "ARTICLE",SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS "ORDER QUANTITY",
+PITM.MEINS AS "ARTICLE UOM",MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS "ON SHOW DATE",ZAL.RANDOM_WEIGHT_FLG AS "RANDOM WEIGHT FLAG", ZAL.PI_OM,OPTM.ARTICLE_OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, PHDR.TEMPERATURE_IND FROM LOCAL_NOTIF_INFO_HDR LONH JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+JOIN ZWOWO_PO_ITM OPTM ON (PITM.EBELN = OPTM.EBELN and PITM.EBELP=OPTM.EBELP) JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (PITM.MATNR = ZAM.MATNR) WHERE LONH.VBELN = 'ord_no';]]>
+</OrdDet>
+<OrdCar>
+<![CDATA[SELECT DISTINCT A.DELIVERY AS "DELIVERY",
+SUM(A.ORDER_QUANTITY) OVER (PARTITION BY A.DELIVERY) AS "TOTAL ORDER QUANTITY",
+MAX(convert(char(12), A.ON_SHOW_DATE, 103)) OVER (PARTITION BY A.DELIVERY) AS "ON SHOW DATE",
+MAX(convert(char(12), A.LFDAT, 103)) OVER (PARTITION BY A.DELIVERY) AS "DELIVERY DATE"
+FROM 
+(
+  SELECT DISTINCT LONH.VBELN AS DELIVERY,  LONH.MSG_TYPE AS STATUS,   PITM.MATNR AS ARTICLE,   SUM(PITM.MENGE) OVER (PARTITION BY PITM.MATNR, PITM.MEINS) AS ORDER_QUANTITY, 
+  PITM.MEINS AS ARTICLE_UOM,  MAX(PHDR.ON_SHOW_DATE) OVER (PARTITION BY PHDR.EBELN) AS ON_SHOW_DATE,MAX(PHDR.LFDAT) OVER (PARTITION BY PHDR.EBELN) AS LFDAT,
+  ZAL.RANDOM_WEIGHT_FLG AS RANDOM_WEIGHT_FLAG  FROM LOCAL_NOTIF_INFO_HDR LONH  JOIN ZWOWO_PO_ITM PITM ON (LONH.ORDER_NO = PITM.EBELN)
+  JOIN ZWOWO_PO_HDR PHDR ON (PITM.EBELN = PHDR.EBELN)  JOIN ZWOWC_ARTICLE_LISTING ZAL ON (PITM.MATNR = ZAL.MATNR)  WHERE LONH.VBELN = 'ord_no'
+) A;]]>
+</OrdCar>
+<SOHSQL>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from local_wow_soh where article = 'art_no']]>
+</SOHSQL>
+<CPBDArticle>
+<![CDATA[select MATNR from ZWOWC_ARTICLE_LISTING where COMPLEX_PACK_BRK_ARTICLE = 'art_no' and COMPLEX_PACK_BRK_OM = '24']]>
+</CPBDArticle>
+<DispArt>
+<![CDATA[select distinct MATNR, sum(ARTICLE_QTY), MEINS from ZWOWO_ORDER_COMPONENT group by MATNR, ebeln, display_article, order_type, MEINS having ebeln = 'ord_no' and display_article = 'art_no'  and order_type = 'ASN']]>
+</DispArt>
+<DispArtOrd>
+<![CDATA[SELECT DISTINCT ZONH.VBELN AS DELIVERY_NUMBER, ZOC.DISPLAY_ARTICLE AS DISPLAY_ARTICLE, ZOC.MATNR AS CHILD_ARTICLE, ZOC.MEINS AS UOM, 
+SUM(ZOC.ARTICLE_QTY) OVER (PARTITION BY ZOC.DISPLAY_ARTICLE,ZOC.MATNR,ZOC.MEINS) AS QTY
+FROM ZWOWO_ORDER_NOTIF_HDR ZONH JOIN ZWOWO_ORDER_COMPONENT ZOC ON (ZONH.EBELN = ZOC.EBELN) WHERE ZONH.VBELN = 'ord_no' and ZOC.DISPLAY_ARTICLE = 'art_no';]]>
+</DispArtOrd>
+<usernm>
+<![CDATA[select COALESCE(COALESCE(PREFERRED_NAME,FIRST_NAME)||' '||LAST_NAME, 'userid') AS RECV_USER from usr where usr_id = 'userid']]>
+</usernm>
+
+<checkOrder>
+<![CDATA[select * from revert_received_order where order_no='ordNo']]>
+</checkOrder>
+<AddOrder>
+<![CDATA[INSERT INTO "SAAP"."revert_received_order" ("order_no") VALUES('ordersNo')]]>
+</AddOrder>
+<revertOrder>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"ordno"}');]]>
+</revertOrder>
+
+<NewOM>5.27</NewOM>
+<NewOM1>7</NewOM1>
+</TCName>>
+
+
+</configuration>

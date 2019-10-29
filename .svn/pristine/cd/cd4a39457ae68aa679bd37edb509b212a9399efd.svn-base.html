@@ -1,0 +1,719 @@
+<html>
+<head>
+<title>TestNG:  POC_tests</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>POC_tests</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>128/0/0</td>
+</tr><tr>
+<td>Started on:</td><td>Thu Dec 06 10:22:44 IST 2018</td>
+</tr>
+<tr><td>Total time:</td><td>1721 seconds (1721172 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-passed'>
+<tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GapscanReportTests.ActionrequiredAlldepartment()'><b>ActionrequiredAlldepartment</b><br>Test class: au.wow.ngbomain.tests.GapscanReportTests<br>Test method: Action Required-All Department Verification</td>
+<td></td>
+<td>40</td>
+<td>au.wow.ngbomain.tests.GapscanReportTests@313b2ea6</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceiveIBTByExceptionAcceptNR()'><b>ReceiveIBTByExceptionAcceptNR</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: check Receive line by Exception IBT by accepting not ranged articles</td>
+<td></td>
+<td>34</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceiveIBTByExceptionRejectNR()'><b>ReceiveIBTByExceptionRejectNR</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: check Receive line by Exception IBT by rejecting not ranged articles</td>
+<td></td>
+<td>33</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceiveLineByExceptionIBT()'><b>ReceiveLineByExceptionIBT</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: check Receive line by Exception IBT</td>
+<td></td>
+<td>30</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceiveLineByExceptionIBTTempCheck()'><b>ReceiveLineByExceptionIBTTempCheck</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: verify Temperature Check Receive line by Exception IBT</td>
+<td></td>
+<td>33</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceiveLineByExceptions()'><b>ReceiveLineByExceptions</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: check Receive line by Exception</td>
+<td></td>
+<td>31</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceiveLineByLineNewOM()'><b>ReceiveLineByLineNewOM</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: check Receive line by line by adding new OM</td>
+<td></td>
+<td>32</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceiveLineByLineTempCheck()'><b>ReceiveLineByLineTempCheck</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: check Receive line by line with Temperature check</td>
+<td></td>
+<td>31</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceiveLineByLines()'><b>ReceiveLineByLines</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: check Receive line by line</td>
+<td></td>
+<td>30</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceiveVendorinExceptionByNewArt()'><b>ReceiveVendorinExceptionByNewArt</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: Verify Vendor through Exception by adding new article</td>
+<td></td>
+<td>31</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceiveVendorinLineByNewEAN()'><b>ReceiveVendorinLineByNewEAN</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: Verify Vendor through Exception by adding new article</td>
+<td></td>
+<td>30</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceivingVendorASNinExceptionMulPOtoSingleASN()'><b>ReceivingVendorASNinExceptionMulPOtoSingleASN</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: Verify Receive Vendor ASN in Exception by Accepting not ranged articles  where multiple PO is converted into single ASN</td>
+<td></td>
+<td>53</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceivingVendorASNinExceptionSinglePOhavingDL()'><b>ReceivingVendorASNinExceptionSinglePOhavingDL</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: Verify Receive Vendor ASN in Full where single PO having duplicate ASN</td>
+<td></td>
+<td>41</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceivingVendorASNinFullByPostLater()'><b>ReceivingVendorASNinFullByPostLater</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: Receiving VendorASN in Full By using PostLater option</td>
+<td></td>
+<td>29</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceivingVendorASNinFullMulPOtoSingleASNOption()'><b>ReceivingVendorASNinFullMulPOtoSingleASNOption</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: Verify Receive Vendor ASN in Full where multiple PO is converted into single ASN</td>
+<td></td>
+<td>51</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceivingVendorASNinFullMulPOtoSingleASNhavingDL()'><b>ReceivingVendorASNinFullMulPOtoSingleASNhavingDL</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: Verify Receive Vendor ASN in Full where multiple PO is converted into single ASN having duplicate ASN</td>
+<td></td>
+<td>49</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceivingVendorASNinFullSinglePOhavingDL()'><b>ReceivingVendorASNinFullSinglePOhavingDL</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: Verify Receive Vendor ASN in Exception where single PO having duplicate ASN</td>
+<td></td>
+<td>41</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceivingVendorinFullByPostLater()'><b>ReceivingVendorinFullByPostLater</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: Receiving Vendor in Full By using PostLater option</td>
+<td></td>
+<td>30</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceivingVirtualDCOrderByException()'><b>ReceivingVirtualDCOrderByException</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: Verify Receive Virtual DC through exception</td>
+<td></td>
+<td>29</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceivingWHSellableinException()'><b>ReceivingWHSellableinException</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: Verify Receive Warehouse in Exception for sellable article</td>
+<td></td>
+<td>20</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.ReceivingOrderTests.ReceivingWareHouseinFullByPostLater()'><b>ReceivingWareHouseinFullByPostLater</b><br>Test class: au.wow.ngbomain.tests.ReceivingOrderTests<br>Test method: Receiving WareHouse in Full By using PostLater option</td>
+<td></td>
+<td>31</td>
+<td>au.wow.ngbomain.tests.ReceivingOrderTests@2638011</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsDisplay()'><b>VerifyGoodsDisplay</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the Sale performed for a Display Set Article type in Goods Movement Summary Report</td>
+<td></td>
+<td>24</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsDisplayExceptionAdjustment()'><b>VerifyGoodsDisplayExceptionAdjustment</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the Stock Adjustment performed for a Display Exception set Article type in Goods Movement Summary Report</td>
+<td></td>
+<td>28</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsDisplaySetAdjustment()'><b>VerifyGoodsDisplaySetAdjustment</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the Stock Adjustment performed for a Display set Article type in Goods Movement Summary Report</td>
+<td></td>
+<td>29</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsHAWAAdjustment()'><b>VerifyGoodsHAWAAdjustment</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the Stock Adjustment performed for a HAWA Article type in Goods Movement Summary Report</td>
+<td></td>
+<td>36</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsIBTCPBD()'><b>VerifyGoodsIBTCPBD</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the IBT performed for a CPBD article type in Goods Movement Summary Report</td>
+<td></td>
+<td>25</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsIBTDisplayException()'><b>VerifyGoodsIBTDisplayException</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the IBT performed for a Display Exception article type in Goods Movement Summary Report</td>
+<td></td>
+<td>47</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsIBTHAWA()'><b>VerifyGoodsIBTHAWA</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the IBT performed for a HAWA article type in Goods Movement Summary Report</td>
+<td></td>
+<td>44</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsIBTPBD()'><b>VerifyGoodsIBTPBD</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the IBT performed for a PBD article type in Goods Movement Summary Report</td>
+<td></td>
+<td>44</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsIBTRandomWeighted()'><b>VerifyGoodsIBTRandomWeighted</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the IBT performed for a Random Weighted article type in Goods Movement Summary Report</td>
+<td></td>
+<td>45</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsIBTWeighted()'><b>VerifyGoodsIBTWeighted</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the IBT performed for a Weighted article type in Goods Movement Summary Report</td>
+<td></td>
+<td>46</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsPBD()'><b>VerifyGoodsPBD</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the Sale performed for a PBD Article type in Goods Movement Summary Report</td>
+<td></td>
+<td>23</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsRTVHAWA()'><b>VerifyGoodsRTVHAWA</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the RTV performed for a HAWA article type in Goods Movement Summary Report</td>
+<td></td>
+<td>65</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsRTVLitreArticles()'><b>VerifyGoodsRTVLitreArticles</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the RTV performed for a litre article in Goods Movement Summary Report</td>
+<td></td>
+<td>56</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsRTVLitreArticlesForOrderableUOM()'><b>VerifyGoodsRTVLitreArticlesForOrderableUOM</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the RTV performed for a litre articles for Orderable UOM in Goods Movement Summary Report</td>
+<td></td>
+<td>57</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsRTVPBD()'><b>VerifyGoodsRTVPBD</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the RTV performed for a PBD article type in Goods Movement Summary Report</td>
+<td></td>
+<td>55</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsRTVPBDHigherUOM()'><b>VerifyGoodsRTVPBDHigherUOM</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the RTV performed for a PBD article type in Goods Movement Summary Report</td>
+<td></td>
+<td>56</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsRWT()'><b>VerifyGoodsRWT</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the Sale performed for a RWT Article type in Goods Movement Summary Report</td>
+<td></td>
+<td>21</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsRWTAdjustment()'><b>VerifyGoodsRWTAdjustment</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the Stock Adjustment performed for a RWT Article type in Goods Movement Summary Report</td>
+<td></td>
+<td>30</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsSales()'><b>VerifyGoodsSales</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the Sale performed for a Sales set Article type in Goods Movement Summary Report</td>
+<td></td>
+<td>20</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsSalesHAWA()'><b>VerifyGoodsSalesHAWA</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the Sale performed for a HAWA Article type in Goods Movement Summary Report</td>
+<td></td>
+<td>20</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsSalesSetAdjustmentforKG()'><b>VerifyGoodsSalesSetAdjustmentforKG</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the Stock Adjustment performed for a Sales set Article type in Goods Movement Summary Report</td>
+<td></td>
+<td>28</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GoodsMovementTests.VerifyGoodsSalesWeighted()'><b>VerifyGoodsSalesWeighted</b><br>Test class: au.wow.ngbomain.tests.GoodsMovementTests<br>Test method: Validating the Sale performed for a Weighted Article type in Goods Movement Summary Report</td>
+<td></td>
+<td>18</td>
+<td>au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GapscanReportTests.actionrequiredpartialdepartment()'><b>actionrequiredpartialdepartment</b><br>Test class: au.wow.ngbomain.tests.GapscanReportTests<br>Test method: Action Required-Partial Department Verification</td>
+<td></td>
+<td>39</td>
+<td>au.wow.ngbomain.tests.GapscanReportTests@313b2ea6</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GapscanReportTests.alldepartment()'><b>alldepartment</b><br>Test class: au.wow.ngbomain.tests.GapscanReportTests<br>Test method: All Department Verification</td>
+<td></td>
+<td>32</td>
+<td>au.wow.ngbomain.tests.GapscanReportTests@313b2ea6</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GapscanReportTests.bothalldepartment()'><b>bothalldepartment</b><br>Test class: au.wow.ngbomain.tests.GapscanReportTests<br>Test method: Both-All Department Verification</td>
+<td></td>
+<td>38</td>
+<td>au.wow.ngbomain.tests.GapscanReportTests@313b2ea6</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GapscanReportTests.bothpartialdepartment()'><b>bothpartialdepartment</b><br>Test class: au.wow.ngbomain.tests.GapscanReportTests<br>Test method: Both-Partial Department Verification</td>
+<td></td>
+<td>38</td>
+<td>au.wow.ngbomain.tests.GapscanReportTests@313b2ea6</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GapscanReportTests.bothprimarydepartment()'><b>bothprimarydepartment</b><br>Test class: au.wow.ngbomain.tests.GapscanReportTests<br>Test method: Both-Primary Department Verification</td>
+<td></td>
+<td>71</td>
+<td>au.wow.ngbomain.tests.GapscanReportTests@313b2ea6</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.category()'><b>category</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Multiple departments or Sub-categories- Category </td>
+<td></td>
+<td>21</td>
+<td>au.wow.ngbomain.tests.oocreporttest@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.Sampletest.check()'><b>check</b><br>Test class: au.wow.ngbomain.tests.Sampletest</td>
+<td></td>
+<td>63</td>
+<td>au.wow.ngbomain.tests.Sampletest@68267da0</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkBWSarticle()'><b>checkBWSarticle</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check IDT and Reverse IDT is applicable for BWS articles</td>
+<td></td>
+<td>33</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkIDTandRIDT()'><b>checkIDTandRIDT</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check IDT and Reverse IDT</td>
+<td></td>
+<td>50</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkIDTandRIDT_randomweighted()'><b>checkIDTandRIDT_randomweighted</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check IDT and Reverse IDT for random weighted articles</td>
+<td></td>
+<td>25</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkIDTandRIDT_weighted()'><b>checkIDTandRIDT_weighted</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check IDT and Reverse IDT for weighted articles</td>
+<td></td>
+<td>31</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkNoNodeIDforIDTandRIDT()'><b>checkNoNodeIDforIDTandRIDT</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check IDT and Reverse IDT</td>
+<td></td>
+<td>32</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkWHDelWeiRandomWeiArt()'><b>checkWHDelWeiRandomWeiArt</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check Warehouse Over Delivery for Weighted and RandomWeighted Article</td>
+<td></td>
+<td>23</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkWHDeliveryCPBD()'><b>checkWHDeliveryCPBD</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check WareHouse Delivery</td>
+<td></td>
+<td>19</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkWHdelivery()'><b>checkWHdelivery</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check WareHouse Under/Over Delivery</td>
+<td></td>
+<td>20</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.cpbdArticleUnreceivedOrders()'><b>cpbdArticleUnreceivedOrders</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: CPBD EA Article - Unreceived Orders</td>
+<td></td>
+<td>19</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.cpbpArticles()'><b>cpbpArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check CPBP Articles</td>
+<td></td>
+<td>50</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.datediscrepancy()'><b>datediscrepancy</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Date should not exceed 28 days</td>
+<td></td>
+<td>15</td>
+<td>au.wow.ngbomain.tests.oocreporttest@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.dateselectiondiscrepancy()'><b>dateselectiondiscrepancy</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Verifying Date Discrepancy Criteria</td>
+<td></td>
+<td>27</td>
+<td>au.wow.ngbomain.tests.oocreporttest@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.mpkAndCARArticles()'><b>mpkAndCARArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: MPK and CAR articles</td>
+<td></td>
+<td>126</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.multdept()'><b>multdept</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Multiple departments or Sub-categories- Department </td>
+<td></td>
+<td>17</td>
+<td>au.wow.ngbomain.tests.oocreporttest@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.nodepartment()'><b>nodepartment</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: No Department selected</td>
+<td></td>
+<td>17</td>
+<td>au.wow.ngbomain.tests.oocreporttest@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.nodepartmentselect()'><b>nodepartmentselect</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: No Department selected</td>
+<td></td>
+<td>16</td>
+<td>au.wow.ngbomain.tests.oocreporttest@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GapscanReportTests.partialdepartmentonly()'><b>partialdepartmentonly</b><br>Test class: au.wow.ngbomain.tests.GapscanReportTests<br>Test method: Partial-Department-Verification</td>
+<td></td>
+<td>38</td>
+<td>au.wow.ngbomain.tests.GapscanReportTests@313b2ea6</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GapscanReportTests.partialdepartmentreviewonly()'><b>partialdepartmentreviewonly</b><br>Test class: au.wow.ngbomain.tests.GapscanReportTests<br>Test method: Partial Department Reivewonly Verification</td>
+<td></td>
+<td>38</td>
+<td>au.wow.ngbomain.tests.GapscanReportTests@313b2ea6</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GapscanReportTests.primarydepartment()'><b>primarydepartment</b><br>Test class: au.wow.ngbomain.tests.GapscanReportTests<br>Test method: primary Department Verification</td>
+<td></td>
+<td>66</td>
+<td>au.wow.ngbomain.tests.GapscanReportTests@313b2ea6</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.primarydepartment1()'><b>primarydepartment1</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Verifying Primary Department</td>
+<td></td>
+<td>27</td>
+<td>au.wow.ngbomain.tests.oocreporttest@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GapscanReportTests.printreport()'><b>printreport</b><br>Test class: au.wow.ngbomain.tests.GapscanReportTests<br>Test method: Verify Print report</td>
+<td></td>
+<td>30</td>
+<td>au.wow.ngbomain.tests.GapscanReportTests@313b2ea6</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GapscanReportTests.reviewonlyalldepartment()'><b>reviewonlyalldepartment</b><br>Test class: au.wow.ngbomain.tests.GapscanReportTests<br>Test method: Review Only-All Department Verification</td>
+<td></td>
+<td>80</td>
+<td>au.wow.ngbomain.tests.GapscanReportTests@313b2ea6</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.GapscanReportTests.reviewonlypartialdepartment()'><b>reviewonlypartialdepartment</b><br>Test class: au.wow.ngbomain.tests.GapscanReportTests<br>Test method: Review only-Partial Department Verification</td>
+<td></td>
+<td>36</td>
+<td>au.wow.ngbomain.tests.GapscanReportTests@313b2ea6</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.segment()'><b>segment</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Multiple departments or Sub-categories- Segment </td>
+<td></td>
+<td>33</td>
+<td>au.wow.ngbomain.tests.oocreporttest@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.subcategory()'><b>subcategory</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Multiple departments or Sub-categories- Subcategory </td>
+<td></td>
+<td>16</td>
+<td>au.wow.ngbomain.tests.oocreporttest@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportAllDepartments()'><b>verifyDSCReportAllDepartments</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying Daily Stock Check Report for All Departments</td>
+<td></td>
+<td>87</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportLitreArticle()'><b>verifyDSCReportLitreArticle</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying Daily Stock Check Report for Litre Articles </td>
+<td></td>
+<td>23</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportMeatDepartment()'><b>verifyDSCReportMeatDepartment</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying Daily Stock Check Report for Meat Departments- Random weight, weight and Normal articles</td>
+<td></td>
+<td>22</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportMultipleReasonCode()'><b>verifyDSCReportMultipleReasonCode</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying Daily Stock Check Report for Articles with Multiple Reason Codes</td>
+<td></td>
+<td>82</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportPDBArticle()'><b>verifyDSCReportPDBArticle</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying Daily Stock Check Report for PDB Articles </td>
+<td></td>
+<td>23</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportPartialDepartment()'><b>verifyDSCReportPartialDepartment</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying Daily Stock Check Report for PDB Articles </td>
+<td></td>
+<td>35</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyDeletedcheckbox()'><b>verifyDeletedcheckbox</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verify whether user can select Deleted, on Promotion and Non PI Articles</td>
+<td></td>
+<td>113</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyDifferentSOSMPLReport()'><b>verifyDifferentSOSMPLReport</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verify whether user is able to generate MPL report for different source of supply</td>
+<td></td>
+<td>126</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyDifferentSOSSOHReport()'><b>verifyDifferentSOSSOHReport</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verify whether user is able to generate SOH report for different source of supply</td>
+<td></td>
+<td>94</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyDifferentSOSSOH_MPLReport()'><b>verifyDifferentSOSSOH_MPLReport</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verify whether user is able to generate SOH & MPL report for different source of supply</td>
+<td></td>
+<td>123</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportAdditonalCriteriaSOH()'><b>verifyInventoryReportAdditonalCriteriaSOH</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH & MPL and Additional criteria SOH</td>
+<td></td>
+<td>76</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportMPL()'><b>verifyInventoryReportMPL</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with MPL and Primary deparment Criteria</td>
+<td></td>
+<td>22</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportMultiDepartment()'><b>verifyInventoryReportMultiDepartment</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH & MPL and multi deparment Criteria</td>
+<td></td>
+<td>31</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportSOH()'><b>verifyInventoryReportSOH</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH and Primary deparment Criteria</td>
+<td></td>
+<td>21</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportSOH_MPL_AllDepartment()'><b>verifyInventoryReportSOH_MPL_AllDepartment</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH & MPL and all deparment Criteria</td>
+<td></td>
+<td>96</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportSOH_MPL_PartialDepartment()'><b>verifyInventoryReportSOH_MPL_PartialDepartment</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH & MPL and partial deparment Criteria</td>
+<td></td>
+<td>46</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportSOHandMPL()'><b>verifyInventoryReportSOHandMPL</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH & MPL and Primary deparment Criteria</td>
+<td></td>
+<td>65</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyLastSoldDate()'><b>verifyLastSoldDate</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verify whether date format value is displayed correctly</td>
+<td></td>
+<td>63</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyPBDUOM()'><b>verifyPBDUOM</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verify whether PBD articles are getting displayed with 3 UOM</td>
+<td></td>
+<td>26</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportAllDepartment()'><b>verifyPLUReportAllDepartment</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for All Department </td>
+<td></td>
+<td>39</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportDeletedPLU()'><b>verifyPLUReportDeletedPLU</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for deleted PLU</td>
+<td></td>
+<td>26</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportForArticleNumber()'><b>verifyPLUReportForArticleNumber</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for Article num and Desc </td>
+<td></td>
+<td>50</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportForArticlePLU()'><b>verifyPLUReportForArticlePLU</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for Article PLU Code </td>
+<td></td>
+<td>42</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportMultiDepartment()'><b>verifyPLUReportMultiDepartment</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for Multiple Departments</td>
+<td></td>
+<td>27</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportPartialDepartment()'><b>verifyPLUReportPartialDepartment</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for Partial Department </td>
+<td></td>
+<td>26</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportPrimaryDepartment()'><b>verifyPLUReportPrimaryDepartment</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for Primary Departments</td>
+<td></td>
+<td>20</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyPrintReportwithSeasonalActivity()'><b>verifyPrintReportwithSeasonalActivity</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verify whether user is able to print report by giving seasonal activity</td>
+<td></td>
+<td>76</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyPrintReportwithoutSeasonalActivity()'><b>verifyPrintReportwithoutSeasonalActivity</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verify whether user is able to print report without giving seasonal activity</td>
+<td></td>
+<td>116</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifySITSOO()'><b>verifySITSOO</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verify whether SIT, SOO and days on hand are displayed correctly</td>
+<td></td>
+<td>109</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifySohDays()'><b>verifySohDays</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verify whether user is able to enter only till 28 days</td>
+<td></td>
+<td>93</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifySohValue()'><b>verifySohValue</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verify whether SOH value is displayed in proper format</td>
+<td></td>
+<td>110</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjArt()'><b>verifyStockAdjArt</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment</td>
+<td></td>
+<td>69</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDesc()'><b>verifyStockAdjDesc</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment</td>
+<td></td>
+<td>56</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticles()'><b>verifyStockAdjDisplayArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Display Articles</td>
+<td></td>
+<td>38</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticlesDescription()'><b>verifyStockAdjDisplayArticlesDescription</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Display Articles</td>
+<td></td>
+<td>40</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticlesEAN()'><b>verifyStockAdjDisplayArticlesEAN</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Display Articles</td>
+<td></td>
+<td>41</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjEAN()'><b>verifyStockAdjEAN</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment</td>
+<td></td>
+<td>16</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjLinkedArticles()'><b>verifyStockAdjLinkedArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for linked Articles</td>
+<td></td>
+<td>41</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjLinkedArticlesDescription()'><b>verifyStockAdjLinkedArticlesDescription</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for linked Articles - Descrption</td>
+<td></td>
+<td>34</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjLinkedArticlesEAN()'><b>verifyStockAdjLinkedArticlesEAN</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for linked Articles - EAN</td>
+<td></td>
+<td>43</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjLinkedArticlesPLU()'><b>verifyStockAdjLinkedArticlesPLU</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for linked Articles - PLU</td>
+<td></td>
+<td>31</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjPLU()'><b>verifyStockAdjPLU</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment</td>
+<td></td>
+<td>17</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjRandomWeighedArticles()'><b>verifyStockAdjRandomWeighedArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Random Weighed Articles</td>
+<td></td>
+<td>35</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjWeighedArticles()'><b>verifyStockAdjWeighedArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Weighed Articles</td>
+<td></td>
+<td>25</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.verifyactiontodaycount()'><b>verifyactiontodaycount</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Verifying Action today count</td>
+<td></td>
+<td>15</td>
+<td>au.wow.ngbomain.tests.oocreporttest@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupDisplayArticles()'><b>verifylookupDisplayArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for linked Articles</td>
+<td></td>
+<td>27</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupLinkedArticles()'><b>verifylookupLinkedArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for linked Articles</td>
+<td></td>
+<td>24</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupRandomWeightArticles()'><b>verifylookupRandomWeightArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for Random Weight Articles</td>
+<td></td>
+<td>20</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupWeightArticles()'><b>verifylookupWeightArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for Weight Articles</td>
+<td></td>
+<td>20</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.verifypagination()'><b>verifypagination</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Verifying Full Dept</td>
+<td></td>
+<td>17</td>
+<td>au.wow.ngbomain.tests.oocreporttest@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.verifyprintreport()'><b>verifyprintreport</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Verify Report Print</td>
+<td></td>
+<td>39</td>
+<td>au.wow.ngbomain.tests.oocreporttest@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.oocreporttest.verifyreportpartial()'><b>verifyreportpartial</b><br>Test class: au.wow.ngbomain.tests.oocreporttest<br>Test method: Verifying Partial Dept</td>
+<td></td>
+<td>131</td>
+<td>au.wow.ngbomain.tests.oocreporttest@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.wareHouseemptyORDERlist()'><b>wareHouseemptyORDERlist</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check WareHouse Delivery</td>
+<td></td>
+<td>31</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58</td></tr>
+</table><p>
+</body>
+</html>

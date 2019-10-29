@@ -1,0 +1,201 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+
+public class DSCandPLUReportObjects {
+	
+	public static final String articleno_sort="//*[@id='article_no_tr_1_dynamic']";
+	
+	public static final String articleDesc_sort="//*[@id='article_desc_tr_1_dynamic']";
+	
+	public static final String articleOM_sort="//*[@id='om_tr_1_dynamic']";
+	
+	public static final String articleSOH_sort="//*[@id='soh_tr_1_dynamic']";
+	
+	public static final String articleSIT_sort="//*[@id='sit_tr_1_dynamic']";
+	
+	public static final String articleLTO_sort="//*[@id='lto_details_tr_1_dynamic']";
+	
+	public static final String articleDisplay_sort="//*[@id='display_type_tr_1_dynamic']";
+	
+	public static final String articleReason_sort="//*[@id='stock_check_desc_tr_1_dynamic']";
+	
+	public static final String departmentName="//*[@id='deptlst']/li[dynamic]/label";
+	
+	public static final String selectDepartment="//*[@id='deptlst']/li[dynamic]/input";
+	
+	public static final String articlePLU="//*[@id='plu_code_tr_1_dynamic']";
+	
+	public static final String departmentNamePLU="//*[@id='depDropDwnList']/li[dynamic]/label";
+	
+	public static final String selectDepartmentPLU="//*[@id='depDropDwnList']/li[dynamic]/input";
+	
+	public static final String selectArticleNOPLU="//*[@id='article_no_tr_1_dynamic']/label";
+	
+	public static final String selectArticleCheckBoxPLU="//*[@id='label_tr_1_dynamic']/input";
+	
+	public static final String articleDesc="//*[@id='article_desc_tr_1_dynamic']";
+	
+	public static final String articleALCStatus="//*[@id='article_stat_tr_1_dynamic']";
+	
+	public static final String departmentList="//*[@id='deptlst']/li[dynamic]/label";
+	
+	public static final String categoryList="//*[@id='categoryLst']/li[dynamic]/label";
+	
+	public static final String subCategoryList="//*[@id='subCategoryLst']/li[dynamic]/label";
+	
+	public static final String segmentList="//*[@id='segmentLst']/li[dynamic]/label";
+	
+	public static final String deparmentchkBox="//*[@id='deptlst']/li[dynamic]/input";
+	
+	public static final String categoryChkBox="//*[@id='categoryLst']/li[dynamic]/input";
+	
+	public static final String subCategoryChkBox="//*[@id='subCategoryLst']/li[dynamic]/input";
+	
+	public static final String segmentChkBox="//*[@id='segmentLst']/li[dynamic]/input";
+	
+	public static final String pluPageNo="//*[@id='Report_PLU_Table_head_page']/ul/li[dynamic]";
+	
+	public static final String articleno_Random="//*[@id='article_no_tr_dynamicPage_dynamic']";
+	
+	public static final String articleReason_Random="//*[@id='stock_check_desc_tr_dynamicPage_dynamic']";
+	
+	public static final String dsrPageNo="//*[@id='Report_DSC_Table_head_page']/ul/li[dynamic]/span";
+	
+	
+	
+	@FindBy(linkText ="Reports")
+	public WebElement report;
+	
+	@FindBy(linkText ="Stock Management")
+	public WebElement stockManagement;
+	
+	@FindBy(linkText ="Daily Stock Check Report")
+	public WebElement dailyStockCheckReport;
+	
+	@FindBy(linkText ="Generate Report")
+	public WebElement generateReportBtn;
+	
+	@FindBy(xpath ="//*[@id='deptlst']/li[1]/input")
+	public WebElement optionSelectAll;
+	
+	@FindBy(xpath ="//*[@id='deptlst']/li[1]/input")
+	public List<WebElement> optionSelectAllList;
+	
+	@FindBy(id ="noRecords")
+	public WebElement reportcount;
+	
+	@FindBy(xpath ="//*[@id='thead_Report_DSC_Table']/tr/th[1]")
+	public WebElement articleColumn;
+	
+	@FindBy(xpath ="//*[@id='thead_Report_DSC_Table']/tr/th[3]")
+	public WebElement descColumn;
+	
+	@FindBy(xpath ="//*[@id='thead_Report_DSC_Table']/tr/th[4]")
+	public WebElement OMColumn;
+	
+	@FindBy(xpath ="//*[@id='thead_Report_DSC_Table']/tr/th[5]")
+	public WebElement sohColumn;
+	
+	@FindBy(xpath ="//*[@id='thead_Report_DSC_Table']/tr/th[6]")
+	public WebElement sitColumn;
+	
+	@FindBy(xpath ="//*[@id='thead_Report_DSC_Table']/tr/th[7]")
+	public WebElement ltoLocationColumn;
+	
+	@FindBy(xpath ="//*[@id='thead_Report_DSC_Table']/tr/th[8]")
+	public WebElement displayColumn;
+	
+	@FindBy(xpath ="//*[@id='thead_Report_DSC_Table']/tr/th[9]")
+	public WebElement reasonCodeColumn;
+	
+	@FindBy(xpath ="//*[@id='stock_check_desc_tr_1_0']")
+	public WebElement reasonCodeFirstValue;
+	
+	@FindBy(xpath ="//*[@id='deptDiv']/div[2]/ul/li")
+	public List<WebElement> deptHierarchy;
+	
+	@FindBy(xpath ="//*[@id='printReportDSC']/label")
+	public WebElement printBtn;
+	
+	@FindBy(linkText ="PLU List Report")
+	public WebElement PLUReport;
+	
+	@FindBy(id ="deptDropDwnLabel")
+	public WebElement pluDeptDropDown;
+	
+	@FindBy(id ="allDeptChkBox")
+	public WebElement pluAllDeptChkBox;
+	
+	@FindBy(xpath ="//*[@id='pds']/ul/li")
+	public List<WebElement> deptDropDown;
+	
+	@FindBy(xpath ="//*[@id='printReportPLU']/a/label")
+	public WebElement printBtnPLU;
+	
+	@FindBy(id ="searchBaiscBox")
+	public WebElement searchBox;
+	
+	@FindBy(id ="article_search_result_head")
+	public WebElement articleSearchInfo;
+	
+	@FindBy(id ="article_search_result_head")
+	public List<WebElement> articleSearchInfoList;
+	
+	@FindBy(id ="searchArticleCount")
+	public WebElement searchArticleCount;
+	
+	@FindBy(id ="addtolist")
+	public WebElement addtolistBtn;
+	
+	@FindBy(id ="backBtn")
+	public WebElement backBtn;
+		
+	@FindBy(id ="success_title")
+	public List<WebElement> err_msg;
+	
+	@FindBy(id ="includeDelPLUs")
+	public WebElement includePLUChkBox;
+	
+	@FindBy(xpath ="//*[@id='thead_Report_PLU_Table']/tr/th[8]")
+	public WebElement pluReportStatusColumn;
+	
+	@FindBy(id ="depH")
+	public WebElement multiDeptChkBox;
+	
+	@FindBy(xpath ="//*[@id='deptlst']/li")
+	public List<WebElement> department;
+	
+	@FindBy(xpath ="//*[@id='categoryLst']/li")
+	public List<WebElement> category;
+	
+	@FindBy(xpath ="//*[@id='subCategoryLst']/li")
+	public List<WebElement> subCategory;
+	
+	@FindBy(xpath ="//*[@id='segmentLst']/li")
+	public List<WebElement> segment;
+	
+	@FindBy(id ="catSelectAll")
+	public WebElement categoryAll;
+	
+	@FindBy(id ="sCatSelectAll")
+	public WebElement subCategoryAll;
+	
+	@FindBy(linkText ="Next")
+	public WebElement PLUReportNextBtn;
+	
+	@FindBy(id ="Report_PLU_Table_table")
+	public List<WebElement> pluTable;
+	
+	@FindBy(xpath ="//*[@id='depDropDwnList']/li")
+	public List<WebElement> departmentListPLU;
+	
+	
+
+	
+
+}

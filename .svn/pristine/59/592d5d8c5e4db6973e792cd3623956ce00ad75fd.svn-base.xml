@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+	<TCName name="verifyreport">
+		<alldepartments_today>
+<![CDATA[SELECT DISTINCT A.MATNR, A.ONLINE_DESC, B.STORE_SOH, B.STORE_SOH_RAND_WGHT, C.USE_BY_DATE FROM ZWOWC_ARTICLE_MASTER A, LOCAL_WOW_SOH B, LOCAL_WOW_USE_BY_DATE C
+WHERE A.MATNR = B.ARTICLE AND B.ARTICLE = C.MATNR AND dateformat(C.USE_BY_DATE, 'MM/DD/YYYY') BETWEEN dateformat(TODAY(),'MM/DD/YYYY')  and dateformat(TODAY() + 1,'MM/DD/YYYY')
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0]]>
+		</alldepartments_today>
+
+		<daterange>
+	<![CDATA[SELECT DISTINCT A.MATNR, A.ONLINE_DESC, B.STORE_SOH, B.STORE_SOH_RAND_WGHT, C.USE_BY_DATE FROM ZWOWC_ARTICLE_MASTER A, LOCAL_WOW_SOH B, LOCAL_WOW_USE_BY_DATE C
+WHERE A.MATNR = B.ARTICLE AND B.ARTICLE = C.MATNR AND dateformat(C.USE_BY_DATE, 'MM/DD/YYYY') BETWEEN dateformat(TODAY(),'MM/DD/YYYY')  and dateformat(TODAY() + 5,'MM/DD/YYYY')
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0]]>
+		</daterange>
+
+		<oocproc>
+			<![CDATA[EXEC sp_wow_generate_OOC_report ('{"iv_dept_list":"","iv_cat_list":"","iv_sub_cat_list":"","iv_seg_list":"","iv_from_date":"lv_from_date","iv_to_date":"lv_to_date"}')]]>
+		</oocproc>
+		<primary_depts>
+<![CDATA[select distinct dept_name from saap.USR_PRIMARY_DEPTS where usr_id='gs1234' and site='NONE']]>
+		</primary_depts>
+		
+<oocprocrak>
+<![CDATA[select * from sp_wow_generate_OOC_report('{"iv_sales_org":"1005","iv_reason_type":"R","iv_cat_list":"","iv_sub_cat_list":"","iv_seg_list":"","iv_from_date":"todaydate","iv_to_date":"todate","iv_time":"AM","iv_dept_list":""}')]]>
+</oocprocrak>
+
+
+		
+		
+		<keerthycode>
+<![CDATA[SELECT DISTINCT A.MATNR, A.ARTICLE_DESC, CAST(B.STORE_SOH AS VARCHAR)+' '+ U.LWR_LVL_UOM AS SOH 
+FROM ZWOWC_ARTICLE_MASTER A
+JOIN LOCAL_WOW_SOH B
+ON A.MATNR = B.ARTICLE
+JOIN ZWOWC_ARTICLE_UOM U
+ON A.MATNR = U.MATNR
+JOIN LOCAL_WOW_USE_BY_DATE C
+ON C.MATNR = A.MATNR
+WHERE dateformat(C.USE_BY_DATE, 'MM/DD/YYYY') BETWEEN dateformat(TODAY()-3,'MM/DD/YYYY')
+and dateformat(TODAY() + 28,'MM/DD/YYYY')
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0
+]]>
+	</keerthycode>
+		
+		
+	<krishnacode>
+<![CDATA[SELECT A.matnr,A.article_description,A.Expiry_days,A.SOH from ( SELECT DISTINCT A.MATNR as matnr , A.ARTICLE_DESC as article_description, CAST(B.STORE_SOH AS VARCHAR)+' '+ U.LWR_LVL_UOM AS SOH ,
+dateformat(C.use_by_date,'MM/DD/YYYY')  as expiry_date, datediff(day,  dateformat(today(),'YYYYMMDD'),dateformat(expiry_date,'YYYYMMDD'))|' - '||' Days' as Expiry_days
+FROM ZWOWC_ARTICLE_MASTER A
+JOIN LOCAL_WOW_SOH B
+ON A.MATNR = B.ARTICLE
+JOIN ZWOWC_ARTICLE_UOM U
+ON A.MATNR = U.MATNR
+JOIN LOCAL_WOW_USE_BY_DATE C
+ON C.MATNR = A.MATNR
+WHERE C.USE_BY_DATE BETWEEN Today()-3 and Today()+28
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0)A ]]>
+		</krishnacode>	
+		
+		<pavcode>
+<![CDATA[SELECT A.matnr,A.online_description,A.SOH from ( SELECT DISTINCT A.MATNR as matnr , A.ONLINE_DESC as online_description, CAST(B.STORE_SOH AS VARCHAR)+' '+ U.LWR_LVL_UOM AS SOH, 
+dateformat(C.use_by_date,'YYYY-MM-DD')  as expiry_date,datediff(day,  dateformat(today(),'YYYY-MM-DD'),dateformat(expiry_date,'YYYY-MM-DD')) as Expiry_days
+FROM ZWOWC_ARTICLE_MASTER A
+JOIN LOCAL_WOW_SOH B
+ON A.MATNR = B.ARTICLE
+JOIN ZWOWC_ARTICLE_UOM U
+ON A.MATNR = U.MATNR
+JOIN LOCAL_WOW_USE_BY_DATE C
+ON C.MATNR = A.MATNR
+WHERE C.USE_BY_DATE BETWEEN Today()-3 and Today()+28
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0)A]]>
+		</pavcode>	
+		
+		
+		<pavcodeexpiry>
+<![CDATA[SELECT A.matnr,A.article_description,A.Expiry_days,A.SOH from ( SELECT DISTINCT A.MATNR as matnr , A.ARTICLE_DESC as article_description, CAST(B.STORE_SOH AS VARCHAR)+' '+ U.LWR_LVL_UOM AS SOH, 
+dateformat(C.use_by_date,'YYYY-MM-DD')  as expiry_date,datediff(day,  dateformat(today(),'YYYY-MM-DD'),dateformat(expiry_date,'YYYY-MM-DD')) as Expiry_days
+FROM ZWOWC_ARTICLE_MASTER A
+JOIN LOCAL_WOW_SOH B
+ON A.MATNR = B.ARTICLE
+JOIN ZWOWC_ARTICLE_UOM U
+ON A.MATNR = U.MATNR
+JOIN LOCAL_WOW_USE_BY_DATE C
+ON C.MATNR = A.MATNR
+WHERE C.USE_BY_DATE BETWEEN Today()-3 and Today()+28
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0)A]]>
+		</pavcodeexpiry>	
+
+		
+	</TCName>
+	
+	<TCName name="verifyactioncount">
+	<actioncode>
+	SELECT DISTINCT A.matnr,A.online_description,A.SOH from ( SELECT DISTINCT A.MATNR as matnr ,U.MEINH, CASE WHEN U.BASE_UOM_IND = 'Y' THEN COALESCE(D.UOM_DESC, A.article_DESC) ELSE D.UOM_DESC END CASE as online_description, CAST(B.STORE_SOH AS VARCHAR)+' '+ U.LWR_LVL_UOM AS SOH, 
+dateformat(C.use_by_date,'YYYY-MM-DD')  as expiry_date,datediff(day,  dateformat(today(),'YYYY-MM-DD'),dateformat(expiry_date,'YYYY-MM-DD')) as Expiry_days
+FROM ZWOWC_ARTICLE_MASTER A
+JOIN LOCAL_WOW_SOH B
+ON A.MATNR = B.ARTICLE
+JOIN ZWOWC_ARTICLE_UOM U
+ON A.MATNR = U.MATNR 
+JOIN zwowc_art_list_department E
+ON A.MATNR=E.MATNR
+LEFT JOIN LOCAL_WOW_USE_BY_DATE C
+ON C.MATNR = U.MATNR and u.meinh=c.meinh
+LEFT JOIN ZWOWC_ARTICLE_EAN_DESC D ON U.MATNR = D.MATNR AND C.MEINH = D.MEINH 
+WHERE C.USE_BY_DATE BETWEEN Today()-3 and Today()+28
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0 and C.UPDATE_MODE!='RECEIVING'  and online_description is not null  and E.DEPT_NAME='') A
+	</actioncode>
+	</TCName>
+	
+	
+<TCName name="verifyreportpartial">
+
+
+<keerthycode>
+<![CDATA[SELECT DISTINCT A.MATNR, A.ONLINE_DESC, CAST(B.STORE_SOH AS VARCHAR)+' '+ U.LWR_LVL_UOM AS SOH 
+FROM ZWOWC_ARTICLE_MASTER A
+JOIN LOCAL_WOW_SOH B
+ON A.MATNR = B.ARTICLE
+JOIN ZWOWC_ARTICLE_UOM U
+ON A.MATNR = U.MATNR
+JOIN LOCAL_WOW_USE_BY_DATE C
+ON C.MATNR = A.MATNR
+WHERE dateformat(C.USE_BY_DATE, 'MM/DD/YYYY') BETWEEN dateformat(TODAY()-3,'MM/DD/YYYY')
+and dateformat(TODAY() + 28,'MM/DD/YYYY')
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0]]>
+		</keerthycode>
+		
+		
+	<pavcode>
+<![CDATA[SELECT A.matnr,A.online_description,A.SOH from ( SELECT DISTINCT A.MATNR as matnr , A.ONLINE_DESC as online_description, CAST(B.STORE_SOH AS VARCHAR)+' '+ U.LWR_LVL_UOM AS SOH, 
+dateformat(C.use_by_date,'YYYY-MM-DD')  as expiry_date,datediff(day,  dateformat(today(),'YYYY-MM-DD'),dateformat(expiry_date,'YYYY-MM-DD')) as Expiry_days
+FROM ZWOWC_ARTICLE_MASTER A
+JOIN LOCAL_WOW_SOH B
+ON A.MATNR = B.ARTICLE
+JOIN ZWOWC_ARTICLE_UOM U
+ON A.MATNR = U.MATNR
+JOIN LOCAL_WOW_USE_BY_DATE C
+ON C.MATNR = A.MATNR
+WHERE C.USE_BY_DATE BETWEEN Today() and Today()+28
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0)A]]>
+		</pavcode>	
+		
+		
+		<pavcodeexpiry>
+<![CDATA[SELECT A.matnr,A.article_description,A.Expiry_days,A.SOH from ( SELECT DISTINCT A.MATNR as matnr , A.ARTICLE_DESC as article_description, CAST(B.STORE_SOH AS VARCHAR)+' '+ U.LWR_LVL_UOM AS SOH, 
+dateformat(C.use_by_date,'YYYY-MM-DD')  as expiry_date,datediff(day,  dateformat(today(),'YYYY-MM-DD'),dateformat(expiry_date,'YYYY-MM-DD')) as Expiry_days
+FROM ZWOWC_ARTICLE_MASTER A
+JOIN LOCAL_WOW_SOH B
+ON A.MATNR = B.ARTICLE
+JOIN ZWOWC_ARTICLE_UOM U
+ON A.MATNR = U.MATNR
+JOIN LOCAL_WOW_USE_BY_DATE C
+ON C.MATNR = A.MATNR
+WHERE C.USE_BY_DATE BETWEEN Today() and Today()+28
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0)A]]>
+		</pavcodeexpiry>		
+			
+		
+		
+		
+		
+
+</TCName>
+
+<TCName name="primarydepartment1">
+
+
+<keerthycode>
+<![CDATA[SELECT DISTINCT A.MATNR, A.ONLINE_DESC, CAST(B.STORE_SOH AS VARCHAR)+' '+ U.LWR_LVL_UOM AS SOH 
+FROM ZWOWC_ARTICLE_MASTER A
+JOIN LOCAL_WOW_SOH B
+ON A.MATNR = B.ARTICLE
+JOIN ZWOWC_ARTICLE_UOM U
+ON A.MATNR = U.MATNR
+JOIN LOCAL_WOW_USE_BY_DATE C
+ON C.MATNR = A.MATNR
+WHERE dateformat(C.USE_BY_DATE, 'MM/DD/YYYY') BETWEEN dateformat(TODAY(),'MM/DD/YYYY')
+and dateformat(TODAY() + 28,'MM/DD/YYYY')
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0]]>
+		</keerthycode>
+		
+		
+		
+		<pavcode>
+<![CDATA[SELECT A.matnr,A.online_description,A.SOH from ( SELECT DISTINCT A.MATNR as matnr , A.ONLINE_DESC as online_description, CAST(B.STORE_SOH AS VARCHAR)+' '+ U.LWR_LVL_UOM AS SOH, 
+dateformat(C.use_by_date,'YYYY-MM-DD')  as expiry_date,datediff(day,  dateformat(today(),'YYYY-MM-DD'),dateformat(expiry_date,'YYYY-MM-DD')) as Expiry_days
+FROM ZWOWC_ARTICLE_MASTER A
+JOIN LOCAL_WOW_SOH B
+ON A.MATNR = B.ARTICLE
+JOIN ZWOWC_ARTICLE_UOM U
+ON A.MATNR = U.MATNR
+JOIN LOCAL_WOW_USE_BY_DATE C
+ON C.MATNR = A.MATNR
+WHERE C.USE_BY_DATE BETWEEN Today() and Today()+28
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0)A]]>
+		</pavcode>	
+		
+		
+		<pavcodeexpiry>
+<![CDATA[SELECT A.matnr,A.online_description,A.Expiry_days,A.SOH from ( SELECT DISTINCT A.MATNR as matnr , A.ONLINE_DESC as online_description, CAST(B.STORE_SOH AS VARCHAR)+' '+ U.LWR_LVL_UOM AS SOH, 
+dateformat(C.use_by_date,'YYYY-MM-DD')  as expiry_date,datediff(day,  dateformat(today(),'YYYY-MM-DD'),dateformat(expiry_date,'YYYY-MM-DD')) as Expiry_days
+FROM ZWOWC_ARTICLE_MASTER A
+JOIN LOCAL_WOW_SOH B
+ON A.MATNR = B.ARTICLE
+JOIN ZWOWC_ARTICLE_UOM U
+ON A.MATNR = U.MATNR
+JOIN LOCAL_WOW_USE_BY_DATE C
+ON C.MATNR = A.MATNR
+WHERE C.USE_BY_DATE BETWEEN Today() and Today()+28
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0)A]]>
+		</pavcodeexpiry>		
+			
+
+</TCName>
+
+
+<TCName name="category">
+
+<pavcodecategory>
+<![CDATA[SELECT A.matnr,A.online_description,A.SOH from ( SELECT DISTINCT A.MATNR as matnr , A.ONLINE_DESC as online_description, CAST(B.STORE_SOH AS VARCHAR)+' '+ U.LWR_LVL_UOM AS SOH, 
+dateformat(C.use_by_date,'YYYY-MM-DD')  as expiry_date,datediff(day,  dateformat(today(),'YYYY-MM-DD'),dateformat(expiry_date,'YYYY-MM-DD')) as Expiry_days
+FROM ZWOWC_ARTICLE_MASTER A
+JOIN LOCAL_WOW_SOH B
+ON A.MATNR = B.ARTICLE
+JOIN ZWOWC_ARTICLE_UOM U
+ON A.MATNR = U.MATNR
+JOIN LOCAL_WOW_USE_BY_DATE C
+ON C.MATNR = A.MATNR
+WHERE C.USE_BY_DATE BETWEEN Today()-3 and Today()+28
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0)A]]>
+</pavcodecategory>	
+		
+
+</TCName>
+
+<TCName name="multdept">
+
+
+<deptlevel>
+<![CDATA[select ubd.matnr, coalesce(zed.uom_desc, zam.article_desc) as article_desc, '' as base_uom,case when zal.random_weight_flg='Y' then lws.store_soh_rand_wght ||' EA' when zam.pbd_ind = 'Y' then cast(lws.store_soh/zau.pack_size_base as integer) ||' '||zau.meinh else lws.store_soh ||' '||lws.base_uom end case as soh,list(dateformat(ubd.use_by_date,'MM/DD/YYYY') || '-' ||dayname(dateformat(ubd.use_by_date,'MM/DD/YYYY'))) as expiry_date, COALESCE(zpi.aisle,'NO AISLE') as aisle_no, zpi.location_in_store as aisle_location, hier.sub_cat_name from local_wow_use_by_date ubd join zwowc_article_master zam on (ubd.matnr = zam.matnr)join zwowc_article_listing zal on (ubd.matnr = zal.matnr)join zwowc_article_uom zau on (ubd.matnr=zau.matnr)join local_wow_soh lws on (lws.article=ubd.matnr)join mat_view_zwow_articles_hier hier on (ubd.matnr = hier.matnr)left join local_planogram_sequence zpi on (zam.matnr = zpi.matnr and ubd.meinh = zpi.meinh)left join zwowc_article_ean_desc zed on (ubd.matnr = zed.matnr and ubd.meinh = zed.meinh)where 1 = 1 and lws.store_soh > 0 and zau.base_uom_ind = 'Y' and coalesce(ubd.action_flag,'N') = 'N' and  hier.dept_name IN ('LIQUOR') and ubd.use_by_date between dateformat('10/22/2017','MM/DD/YYYY') and dateformat('11/22/2017','MM/DD/YYYY')group by ubd.matnr, article_desc, base_uom, soh, aisle_no, aisle_location, sub_cat_name;]]>
+</deptlevel>
+
+<pavcode>
+<![CDATA[SELECT A.matnr,A.online_description,A.SOH from ( SELECT DISTINCT A.MATNR as matnr , A.ONLINE_DESC as online_description, CAST(B.STORE_SOH AS VARCHAR)+' '+ U.LWR_LVL_UOM AS SOH, 
+dateformat(C.use_by_date,'YYYY-MM-DD')  as expiry_date,datediff(day,  dateformat(today(),'YYYY-MM-DD'),dateformat(expiry_date,'YYYY-MM-DD')) as Expiry_days
+FROM ZWOWC_ARTICLE_MASTER A
+JOIN LOCAL_WOW_SOH B
+ON A.MATNR = B.ARTICLE
+JOIN ZWOWC_ARTICLE_UOM U
+ON A.MATNR = U.MATNR
+JOIN LOCAL_WOW_USE_BY_DATE C
+ON C.MATNR = A.MATNR
+WHERE C.USE_BY_DATE BETWEEN Today() and Today()+28
+AND coalesce(C.action_flag,'N') = 'N' AND B.STORE_SOH > 0)A]]>
+		</pavcode>	
+		
+
+</TCName>
+
+
+<TCName name="subcategory">
+
+
+<subcategory>
+<![CDATA[select ubd.matnr, coalesce(zed.uom_desc, zam.article_desc) as article_desc, '' as base_uom,case when zal.random_weight_flg='Y' then lws.store_soh_rand_wght ||' EA' when zam.pbd_ind = 'Y' then cast(lws.store_soh/zau.pack_size_base as integer) ||' '||zau.meinh else lws.store_soh ||' '||lws.base_uom end case as soh,list(dateformat(ubd.use_by_date,'MM/DD/YYYY') || '-' ||dayname(dateformat(ubd.use_by_date,'MM/DD/YYYY'))) as expiry_date,COALESCE(zpi.aisle,'NO AISLE') as aisle_no, zpi.location_in_store as aisle_location, hier.sub_cat_name from local_wow_use_by_date ubd join zwowc_article_master zam on (ubd.matnr = zam.matnr) join zwowc_article_listing zal on (ubd.matnr = zal.matnr) join zwowc_article_uom zau on (ubd.matnr=zau.matnr) join local_wow_soh lws on (lws.article=ubd.matnr) join mat_view_zwow_articles_hier hier on (ubd.matnr = hier.matnr) left join local_planogram_sequence zpi on (zam.matnr = zpi.matnr and ubd.meinh = zpi.meinh) left join zwowc_article_ean_desc zed on (ubd.matnr = zed.matnr and ubd.meinh = zed.meinh) where 1 = 1 and lws.store_soh > 0 and zau.base_uom_ind = 'Y' and coalesce(ubd.action_flag,'N') = 'N' 
+and ubd.use_by_date between dateformat(TODAY(), 'MM/DD/YYYY')  and dateformat(TODAY()+ 27,'MM/DD/YYYY')
+       group by ubd.matnr, article_desc, base_uom, soh, aisle_no, aisle_location, sub_cat_name;]]>
+</subcategory>
+
+</TCName>
+
+</configuration>

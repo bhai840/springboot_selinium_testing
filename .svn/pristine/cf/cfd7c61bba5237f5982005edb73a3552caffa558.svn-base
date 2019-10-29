@@ -1,0 +1,429 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+
+public class StockTakeObjects {
+
+	@FindBy(xpath ="//*[@id='stockManage']/a")
+	public WebElement stockManagement;
+	
+	@FindBy(xpath ="//*[@id='stockManage']/ul/li[2]/a")
+	public WebElement stocktake;
+	
+
+    @FindBy(xpath ="//*[@id='ui-id-10']")
+	public WebElement CreateSTbutton;
+    
+    
+    @FindBy(xpath ="//*[@id='stockTakeName']")
+	public WebElement STName;
+    
+
+    @FindBy(xpath ="//*[@id='dateFromCreate']")
+	public WebElement StartDate;
+
+    @FindBy(xpath ="//*[@id='enddateCreate']")
+	public WebElement EndDate;
+    
+    
+    @FindBy(xpath ="//*[@id='ui-datepicker-div']/table/tbody/tr[4]/td[6]/a")
+	public WebElement SelectedDate;
+    
+    
+    @FindBy(xpath ="//*[@id='searchBoxInclude']")
+   public WebElement includebox;
+
+    @FindBy(xpath ="//*[@id='freqSelectOptions']")
+  	public WebElement Frequency;
+    
+    
+    @FindBy(xpath ="//*[@id='tableAddAction']")
+   public WebElement Justclick;
+    
+    
+    @FindBy(xpath ="//*[@id='CreateStockTake']/a")
+  	public WebElement Created;
+    
+    @FindBy(xpath ="//*[@id='createSTDeptDrpDwnLabel']")
+   	public WebElement SelectDepartment1;
+    
+  //*[@id="createSTDeptDrpDwnActiveId"]
+    
+    @FindBy(xpath ="  //*[@id='createSTDeptDrpDwnActiveId']")
+   	public WebElement SelectDepartment2;
+    
+  /*  @FindBy(xpath ="//*[@id='45']")
+	public WebElement Bake;*/
+    
+    @FindBy(xpath ="//*[@id='createSTDeptDrpDwnDone']/a")
+   	public WebElement Done;
+    
+    @FindBy(xpath ="//*[@class='close']")
+   	public WebElement close;  
+  
+   // @FindBy(xpath ="//*[@id='createSTArticleH']")
+   	//public WebElement CategorySelection;
+    
+  //*[@class="depH"]
+    
+    
+    @FindBy(xpath =" //*[@class='depH']")
+   	public WebElement CategorySelection;
+    
+    
+    @FindBy(xpath ="//*[@class='title']")    
+   	public List<WebElement> Status;
+  
+    @FindBy(xpath ="//*[@class='err_msg']")
+   	public WebElement Message;
+    
+  //*[@id="errorWrapper"]/div
+    
+    @FindBy(xpath ="//*[@id='error_msg']/li")
+   	public WebElement MandatoryMessage;
+    
+    @FindBy(xpath =" //*[@id='duenowTabId']")
+   	public WebElement Duenowtab;
+
+    @FindBy(xpath =" //ul[@id='createSTDeptDrpDwnUl']/div/li/label")
+   	public List<WebElement> elementobj;
+    
+    @FindBy(xpath ="   //*[@id='weeksCreateST']")
+   	public WebElement EveryX;
+    
+    public static final String departList="//*[@id='createSTDeptDrpDwnUl']/div[1]/li[dynamic]";
+  
+    public static final String deptlistfromdropdown="(//ul[@id='createSTDeptDrpDwnUl']/div/li/label)[dynamic]";
+    
+    public static final String ClickDept="(//*[@class='deptDrpDwnChkBx'])[dynamic]";
+    
+    
+    public static final String departmentList="//*[@class='deptlst']/li[dynamic]/label";
+    public static final String DtList="//*[@class='deptlst']/li[dynamic]/input";
+  
+	public static final String categoryList="//*[@id='categoryLst']/li[dynamic]/label";
+	public static final String CtList="//*[@id='categoryLst']/li[dynamic]/input";
+	
+	public static final String subCategoryLst="//*[@id='subCategoryLst']/li[dynamic]/label";
+	public static final String SubCatList="//*[@id='subCategoryLst']/li[dynamic]/input";
+	
+	public static final String segmentLst="//*[@id='segmentLst']/li[dynamic]/label";
+	
+	
+	@FindBy(xpath="//*[@id='createSTArticleHierarchyId']/div[2]/div[1]/h3/input")
+	public WebElement UnselectCategory;
+	
+	@FindBy(xpath="//*[@id='createSTArticleHierarchyId']/div[3]/div[1]/h3/input")
+	public WebElement UnselectSubCategory;
+	
+	@FindBy(xpath="//*[@id='createSTArticleHierarchyId']/div[4]/div[1]/h3/input")
+	public WebElement UnselectSegment;
+	
+
+	@FindBy(xpath="//*[@class='department']")
+	public List<WebElement> department;
+	
+	@FindBy(xpath="//*[@class='category']")
+	public List<WebElement> category;
+	
+    @FindBy(xpath="//*[@class='subCat']")
+    public List<WebElement> subCat1;
+    
+    @FindBy(xpath="//*[@class='progress']")
+	public WebElement open;
+    
+    @FindBy(xpath="//*[@class='progress']")
+	public List<WebElement> open1;
+
+    @FindBy(xpath="//*[@id='overdueTabId']")
+   	public WebElement OverDue;
+
+    @FindBy(xpath="//*[@id='duenowTabId']")
+   	public WebElement DueNow;
+    
+    @FindBy(xpath="//*[@id='otherDeptLink']")
+    public WebElement DueNowAllDepts;
+    
+  
+    
+    @FindBy(xpath="  //*[@id='varReportTabLabel']")
+    public WebElement VarianceReport;
+    
+    @FindBy(xpath=" //*[@id='refreshSTReportDetailsId']/label")
+    public WebElement Refresh;
+    
+    @FindBy(xpath="   //*[@id='statusId']")
+    public WebElement Status_ST;
+    
+ @FindBy(xpath="//*[@id='submitSTInfo-info-wrapper']/div/div/div[2]/ul/li")
+    public WebElement VarianceMessage;
+
+    @FindBy(xpath="//*[@id='myDeptLink']")
+    public WebElement MyDept;
+    
+    @FindBy(xpath="//*[@class='export']")
+    public WebElement BaseExport;
+    
+    @FindBy(xpath="//*[@id='promo-1']/div/div[3]/div[2]/label[2]/a/label")
+    public WebElement BasePrint;
+    
+    @FindBy(xpath=" //*[@id='Article_Count_Report_head_page']/ul/li")
+    public List<WebElement> PagesBase;
+    
+    @FindBy(xpath=" //*[@id='Article_Count_Report_head_page']")
+    public List<WebElement> PagesBaseTotal;
+    
+  //*[@id="Article_Count_Report_head_page"]
+
+    
+    public static final String Pages=" //*[@id='Article_Count_Report_head_page']/ul/li[dynamic]";
+    
+  
+    @FindBy(xpath=" //*[@id='articleCountCountedCount']")
+    public WebElement Countedarticles;
+    
+    @FindBy(xpath=" //*[@id='sourceId']")
+    public WebElement Source;
+    
+    @FindBy(xpath="//*[@id='createdSTUser']")
+    public WebElement CreatedUser;
+    
+    @FindBy(xpath="//*[@id='createdSTDate']")
+    public WebElement CreatedDate;
+    
+    @FindBy(xpath="  //*[@id='freqId']")
+    public WebElement FrequencyName;
+    
+   @FindBy(xpath=" //*[@id='stockTakeNameReportDetailsScreen']")
+    public WebElement StocktakeName;
+    
+    @FindBy(xpath=" //*[@id='Article_Count_Report_table']/tbody/tr[2]")
+    public WebElement Article_Check;
+    
+    @FindBy(xpath=" //*[@id='Article_Count_Report_table']/tbody/tr[2]/td[8]")
+    public WebElement Recount1;
+    
+    @FindBy(xpath=" //*[@id='Article_Count_Report_table']/tbody/tr[2]/td[9]")
+    public WebElement Recount2;
+    
+    @FindBy(xpath=" //*[@id='Article_Count_Report_table']/tbody/tr[2]/td[10]")
+    public WebElement Recount3;
+    
+    @FindBy(xpath=" //*[@id='Article_Count_Report_table']/tbody/tr[2]/td[11]")
+    public WebElement Recount4;
+    
+     @FindBy(xpath=" //*[@class='valueInfo subCatCol']")
+    public WebElement SubCounted;
+
+    @FindBy(xpath=" //*[@class='valueInfo aisleCol']")
+    public WebElement PlanoCounted;
+    
+    @FindBy(xpath=" //*[@class='valueInfo locCol']")
+    public WebElement OtherLocCounted;
+   
+    		
+    		
+   @FindBy(xpath=" //*[@class='valueInfo lastColumn userCol']")
+    public WebElement UsersCounted;
+    
+    
+    
+    @FindBy(xpath="  //*[@id='article_number_tr_1_0']")
+    public WebElement Article_Number;
+    
+    @FindBy(xpath="  //*[@id='uom_tr_1_0']")
+    public WebElement Article_UOM;
+    
+    @FindBy(xpath=" //*[@id='om_tr_1_0']")
+    public WebElement Article_OM;
+    
+   @FindBy(xpath="//*[@id='article_desc_to_display_tr_1_0']")
+    public WebElement Article_Description;
+    
+  @FindBy(xpath="//*[@id='base_count_tr_1_0']")
+    public WebElement BaseCount;
+    
+    @FindBy(xpath=" //*[@id='Article_Count_Report_table']/tbody")
+    public WebElement Article_Table;
+    
+    @FindBy(xpath=" //*[@id='Article_Count_Report_table']/tbody/tr")
+    public List<WebElement> ArticleRecords;
+
+    @FindBy(xpath=" //*[@id='filterOpen']")
+    public WebElement Filter;
+    
+    @FindBy(xpath=" //*[@id='filterClear']")
+    public WebElement ClearFilters;
+    
+    @FindBy(xpath=" //*[@id='articleCountAisleDrpDwnLabel']")
+    public WebElement Aisleclick1;
+ 
+    
+    @FindBy(xpath=" //*[@id='articleCountAisleDrpDwnActiveId']")
+    public WebElement Aisleclick;
+    
+    @FindBy(xpath=" //*[@id='articleCountallAisleChkBox']")
+    public WebElement AllAislesclick;
+    
+    @FindBy(xpath=" //*[@id='articleCountAisleDrpDwnDone']/a")
+    public WebElement AislesDone;
+    
+    @FindBy(xpath="  //*[@id='articleCountLocDrpDwnActiveId']")
+    public WebElement Otherclick;
+    
+    @FindBy(xpath=" //*[@id='articleCountallLocChkBox']")
+    public WebElement AllOtherclick;
+    
+    @FindBy(xpath=" //*[@id='articleCountLocDrpDwnDone']/a")
+    public WebElement OthersDone;
+    
+    @FindBy(xpath="//*[@id='articleCountDeptDrpDwnActiveId']")
+    public WebElement Departmentclick;
+    
+    @FindBy(xpath=" //*[@id='articleCountallDeptChkBox']")
+    public WebElement AllDepartmentsClick;
+    
+    @FindBy(xpath=" //*[@id='articleCountDeptDrpDwnDone']/a")
+    public WebElement AllDepartmentsDone;
+    
+    @FindBy(xpath="//*[@id='articleCountUsrDrpDwnActiveId']")
+    public WebElement UsersClick;
+    
+    @FindBy(xpath="//*[@id='articleCountallUsrChkBox']")
+    public WebElement AllUsersClick;
+    
+    @FindBy(xpath="//*[@id='articleCountUsrDrpDwnDone']/a")
+    public WebElement AllUsersDone;
+    
+    @FindBy(xpath="  //*[@id='baseCountFilterBtn']/a")
+    public WebElement ApplyFilters;
+    
+  
+    
+    @FindBy(xpath=" //*[@id='Article_Count_Report_foot_page']/ul/li[10]/a  ")
+    public WebElement NextForPagination;
+    		
+ @FindBy(xpath=" (//ul[@id='articleCountAisleDrpDwnUl']/div/li/label)[dynamic]")
+  public WebElement AisleSelection;
+ 
+ public static final String AisSelection="//ul[@id='articleCountAisleDrpDwnUl']/div/li/label[text()='dynamic']/../input";
+ 
+ public static final String OthersSelection="//ul[@id='articleCountLocDrpDwnUl']/div/li/label[text()='dynamic']/../input";
+ 
+ 	 
+ 	@FindBy(xpath="//*[@id='varReportTabLabel']")
+ 	public WebElement VarianceReportTab ; 
+ 	
+ 
+ 
+ 	
+ 	@FindBy(xpath="//*[@id='varaincePendingLabel']")
+ 	public WebElement VariancePending ;
+ 	
+
+ 	
+
+	@FindBy(xpath="//*[@id='varianceInProgressLabel']")
+ 	public WebElement VarianceInprogress ;
+	
+	
+	@FindBy(xpath="//*[@id='varianceCompletedLabel']")
+ 	public WebElement VarianceCompleted ;
+	
+ 	
+ 	
+ 	@FindBy(xpath="//*[@id='variancePendingCount']")
+ 	public WebElement VariancePendingCount ;
+ 	
+ 
+ 	
+    //@FindBy(xpath=" //*[@class='valueInfo subCatCol']")
+    //public WebElement SubCounted;
+
+ 	@FindBy(xpath="//*[@id='editStockTakeName']")
+ 	public WebElement StocktakeNameEdit ;
+
+ 
+
+@FindBy(xpath ="//*[@href='#mainTabs-1']")
+ public WebElement BasePercentage;
+    
+    
+//*[@class="failed"]
+//*[@class="progress"]
+
+
+
+@FindBy(xpath="//*[@class='failed']")
+	public WebElement NotStartedST ;
+
+@FindBy(xpath="//*[@class='failed']")
+public List <WebElement> NotStartedSTATUS ;
+
+@FindBy(xpath="//*[@class='progress']")
+public List <WebElement> OpenSTATUS ;
+
+@FindBy(xpath="//*[@class='linkBtn AC_EDSTK']")
+public WebElement NotStartedSTEdit ;
+
+@FindBy(xpath="//*[@class='linkBtn AC_EDOSTK']")
+public WebElement OpenSTEdit ;
+
+@FindBy(xpath="//*[@class='progress']")
+public WebElement OpenST ;
+
+
+
+@FindBy(xpath="//*[@id='delSTChkBox']")
+public WebElement Del ;
+
+//*[@id="overrrideSTChkBox"]
+
+
+@FindBy(xpath="//*[@id='overrrideSTChkBox']")
+public WebElement Over ;
+
+
+
+@FindBy(xpath="//*[@id='editStockTake']")
+public WebElement DelSave ;
+
+//*[@id="editReasonSelectBox"]
+
+@FindBy(xpath="//*[@id='editReasonSelectBox']")
+public WebElement Reason ;
+
+@FindBy(xpath="//*[@id='yes']/label")
+public WebElement Yes ;
+
+//*[@id="thead_Display_Stocktake"]/tr[1]/th[5]
+
+@FindBy(xpath="//*[@id='thead_Display_Stocktake']/tr[1]/th[5]")
+public WebElement Sort ;
+
+@FindBy(xpath="//*[@id='backBtn']")
+public WebElement Back ;
+
+@FindBy(xpath="//*[@id='promo-1']/div/div[2]/div/div/table/tbody/tr[1]/td[4]/label/a")
+public WebElement MORE ;
+
+@FindBy(xpath="//*[@id='promo-1']/div/div[2]/div/div/table/tbody/tr[1]/td[4]/label")
+public WebElement FewSub ;
+
+//*[@id="promo-1"]/div/div[2]/div/div/table/tbody/tr[1]/td[4]/label/a
+
+//*[@id="backBtn"]
+   
+
+  
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
+

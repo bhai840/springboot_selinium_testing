@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<TCName name = "checkPOSPrice">
+<alldepartments>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='ALL DEPARTMENTS']]>
+</alldepartments>
+<nodevalue>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='nodeval']]>
+</nodevalue>
+<department>4</department>
+</TCName>
+<TCName name = "checkGrossProfit">
+<alldepartments>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='ALL DEPARTMENTS']]>
+</alldepartments>
+<nodevalue>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='nodeval']]>
+</nodevalue>
+<department>4</department>
+</TCName>
+<TCName name = "verifyNearByStore">
+<alldepartments>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='ALL DEPARTMENTS']]>
+</alldepartments>
+<nodevalue>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='nodeval']]>
+</nodevalue>
+<department>4</department>
+</TCName>
+
+<TCName name = "verifyRCReason">
+<alldepartments>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='ALL DEPARTMENTS']]>
+</alldepartments>
+<nodevalue>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='nodeval']]>
+</nodevalue>
+<department>4</department>
+<lookuptxt>
+<![CDATA[select distinct a.matnr,a.ARTICLE_DESC,c.EAN11,a.mtart,d.lifnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,
+saap.zwowc_article_listing d,saap.ZWOWC_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and (d.source_of_supply='1' or d.source_of_supply='2')]]>
+</lookuptxt>
+<plucode>
+<![CDATA[SELECT a.ean11 from saap.ZWOWC_ART_LIST_PROCURE a,saap.ZWOWC_ARTICLE_LISTING b where a.PRIME_VENDOR_FLG='Y' and b.source_of_supply='1']]>
+</plucode>
+</TCName>
+
+<TCName name = "verifySalesHistory">
+<alldepartments>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='ALL DEPARTMENTS']]>
+</alldepartments>
+<nodevalue>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='nodeval']]>
+</nodevalue>
+<department>4</department>
+</TCName>
+
+<TCName name = "verifySOHValue">
+<alldepartments>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='ALL DEPARTMENTS']]>
+</alldepartments>
+<nodevalue>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='nodeval']]>
+</nodevalue>
+<department>4</department>
+</TCName>
+
+<TCName name = "verifyExpiryDate">
+<alldepartments>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='ALL DEPARTMENTS']]>
+</alldepartments>
+<nodevalue>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='nodeval']]>
+</nodevalue>
+<department>4</department>
+</TCName>
+
+
+<TCName name = "verifySecurityFlag">
+<alldepartments>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='ALL DEPARTMENTS']]>
+</alldepartments>
+<nodevalue>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='nodeval']]>
+</nodevalue>
+<department>4</department>
+</TCName>
+
+<TCName name = "verifySOH">
+<alldepartments>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='ALL DEPARTMENTS']]>
+</alldepartments>
+<nodevalue>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='nodeval']]>
+</nodevalue>
+<department>4</department>
+</TCName>
+
+<TCName name = "verifyOnOrder">
+<alldepartments>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='ALL DEPARTMENTS']]>
+</alldepartments>
+<nodevalue>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='nodeval']]>
+</nodevalue>
+<department>4</department>
+</TCName>
+
+<TCName name = "verifyMPLSCFacing">
+<alldepartments>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='ALL DEPARTMENTS']]>
+</alldepartments>
+<nodevalue>
+<![CDATA[SELECT NODE_NAME,NODE_ID FROM SAAP.ZWOWC_ARTICLE_HIERARCHY where PARENT_NODE='nodeval']]>
+</nodevalue>
+<department>4</department>
+</TCName>
+</configuration>

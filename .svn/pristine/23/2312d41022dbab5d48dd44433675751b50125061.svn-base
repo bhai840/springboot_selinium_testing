@@ -1,0 +1,134 @@
+package au.wow.ngbomain.tests;
+
+import au.wow.ngbo.utils.HTMLReport;
+
+
+public class StoreProperties extends HTMLReport{
+
+	public static void getStoreDetails(String stNum){ 
+
+		System.out.println(System.getProperty("store"));
+		switch (stNum){					
+		case "4290":
+			store = "4290";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_NCDWMBLAST0002_4290";
+			database1="SAAP_RCS_rem_4290";
+			host1="10.170.129.162";				
+			break;
+		case "1108":
+			store = "1108";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_7051smssrs001_1108";
+			database1="SAAP_RCS_rem_1108";
+			host1="10.41.199.240";		
+			break;
+		case "3064":
+			store = "3064";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_3064smssrs001_3064";
+			database1="SAAP_RCS_rem_3064";
+			host1="10.224.176.240";
+			break;
+		case "1786":
+			store = "1786";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_NCDWMBLAST0030_1786";
+			database1="SAAP_RCS_rem_1786";
+			host1="10.138.129.200";
+			break;
+		case "0871":
+			store = "0871";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_0871BWSSRS001_0871";
+			database1="SAAP_RCS_rem_0871";
+			host1="10.224.172.240";
+			break;
+		case "4294":
+			store = "4294";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_NCDWMBLAST0022_4294";
+			database1="SAAP_RCS_rem_4294";
+			host1="10.170.129.193";
+			break;
+		case "9698":
+			store = "9698";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_9698SMSSRS001_9698";
+			database1="SAAP_RCS_rem_9698";
+			host1="10.47.228.240";
+			break;
+		case "0858":
+			store = "0858";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_NCDWMBLAST0028_0858";
+			database1="SAAP_RCS_rem_0858";
+			host1="10.138.129.198";
+			break;
+		case "1759":
+			store = "1759";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_NCDWMBLAST0021_1759";
+			database1="SAAP_RCS_rem_1759";
+			host1="10.138.129.192";
+			break;
+		case "3574":
+			store = "3574";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_NCDWMBLAST0027_3574";
+			database1="SAAP_RCS_rem_3574";
+			host1="NCDWMBLAST0027.wowcorp.com.au";
+			break;
+		case "9384":
+			store = "9384";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_9384smssrs001_9384";
+			database1="SAAP_RCS_rem_9384";
+			host1="10.224.204.240";
+			break;
+		case "1616":
+			store = "1616";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_4033smssfs001_1616";
+			database1="SAAP_RCS_rem_1616";
+			host1="4033smssfs001";
+			break;
+		case "5796":
+			store = "5796";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_5796LQSSFS001_5796";
+			database1="SAAP_RCS_rem_5796";
+			host1="10.32.188.222";				
+			break;
+		case "7051":
+			store = "7051";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_7051smssrs001_7051";
+			database1="SAAP_RCS_rem_7051";
+			host1="10.41.199.240";				
+			break;
+		case "1883":
+			store = "1883";
+			user="saap";
+			pwd="sql";
+			eng1="SAAPDB_RCS_1883SMSSRS001_1883";
+			database1="SAAP_RCS_rem_1883";
+			host1="10.208.80.240";
+			break;
+		}
+	}
+}

@@ -1,0 +1,1549 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.OrderingObjects;
+import au.wow.ngbomain.objects.OrderingObjects;
+import au.wow.ngbomain.tests.OrderingTests;
+
+public class OrderingPage extends BasePage{
+	
+	CommonFunctions common = PageFactory.initElements(OrderingTests.driver, CommonFunctions.class);
+	private Logger log = LogManager.getLogger(OrderingTests.class);
+	//SQLWrapper sql = PageFactory.initElements(OrderCreationTests.driver, SQLWrapper.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	public static XMLDataReader data;
+
+	ExtentTest extLogger=OrderingTests.extLogger;
+	String cName= OrderingTests.cName;
+	String mName=OrderingTests.mName;
+    WebDriver driver;
+    boolean isTrue = true;
+    public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+    
+    List<List<Object>> artInitialQuantity = new ArrayList<List<Object>>();
+    
+    public void toOrderEnqPage(OrderingObjects objOrderCreateObject,WebDriver driver) throws AWTException{
+		//waitForJSandJQueryToLoad(driver);; 
+		waitFor(5);
+		Point coordinates = objOrderCreateObject.orders.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(objOrderCreateObject.orders).click().build().perform();	
+		waitFor(5);
+		
+		Point coordinates2 = objOrderCreateObject.orderEnquiry.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates2.getX(),coordinates2.getY()+100);
+		
+	
+		action.moveToElement(objOrderCreateObject.orderEnquiry).click().build().perform();
+		waitFor(5);
+		
+		waitForJSandJQueryToLoad(driver);
+		
+	}
+
+    public void delCreatedOrderOfSameDate(OrderingObjects objOrderCreateObject,String originalDate,WebDriver driver) throws AWTException{
+    	
+    	int k=1,i=1;
+    	try{
+    		do{
+    			WebElement delDate = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.previousOrder, i, driver);
+    			String alreadyDelDate = delDate.getText().substring(delDate.getText().indexOf(":")+1).trim();
+    			String reqDate = alreadyDelDate.replace("/", "");
+    			if(alreadyDelDate.equals(originalDate)){
+    				WebElement exp = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.expander, k, driver);
+    				exp.click();
+    				List<WebElement> delete = prepareListWebElementWithDynamicXpathWithString(objOrderCreateObject.deleteArticle, reqDate, driver);
+    				for(int n=1;n<=delete.size();n++){
+    					WebElement deleteBtn = prepareWebElementWithDynamicXpathWithString(objOrderCreateObject.deleteArticle,reqDate, driver);
+    					deleteBtn.click();
+    					try{
+    						objOrderCreateObject.deletePopUp.isDisplayed();
+    						objOrderCreateObject.deleteYesBtn.click();
+    						waitForJSandJQueryToLoad(driver);
+    					}
+    					catch(Exception e){
+
+    					}
+    				}
+    			}
+    			else{
+    				k++;
+    			}
+    			i=i+2;
+    		}while(i<=objOrderCreateObject.alreadyCreatedOrderList.size()/2);
+    	}catch(Exception e){
+
+    	}
+    }
+
+    
+    
+    public String openingOrderDraft(OrderingObjects objOrderCreateObject,String originalDate,List<List<Object>>quantity,List<String>articlenum,boolean isaltVendor,WebDriver driver) throws AWTException, SQLException, IOException{
+    	int k=1;
+    	if(objOrderCreateObject.afterCreationList.size() == 2){
+    		WebElement delDateAfter = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.afterCreation, k, driver);
+    		String delDate = delDateAfter.getText().substring(delDateAfter.getText().indexOf(":")+1).trim();
+    		if(delDate.equals(originalDate)){
+    			WebElement expAfter = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.afterCreationExp, k, driver);
+    			expAfter.click();
+    		}
+    	}else{
+    		for(int i=1;i<=objOrderCreateObject.afterCreationList.size()-2;i++){
+    			WebElement delDateAfter = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.afterCreation, k, driver);
+    			String delDate = delDateAfter.getText().substring(delDateAfter.getText().indexOf(":")+1).trim();
+    			if(delDate.equals(originalDate)){
+    				WebElement expAfter = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.afterCreationExp, k, driver);
+    				expAfter.click();
+    				break;
+    			}
+    			k=k+2;
+    		}
+    	}   	
+    	verticalScroll(driver);
+    	//String date="";
+    	if(isaltVendor){
+    		originalDate = alternateVendorCheck(objOrderCreateObject, originalDate, driver);
+    	}
+    	if(objOrderCreateObject.validateBtn.size()>1){
+    		for(int n=1;n<=objOrderCreateObject.validateBtn.size();n++){
+    			try{
+    				WebElement validateDync = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.validate, n, driver);
+    				if(validateDync.isDisplayed()){
+    					validateDync.click();
+    				}
+    			}
+    			catch(Exception e){
+    				continue;
+    			}
+    		}	
+    	}
+    	else{
+    		objOrderCreateObject.singelValidateBtn.click();
+    	}
+    	
+    	return originalDate;
+
+    }
+    
+    public void createBtn(OrderingObjects objOrderCreateObject,WebDriver driver) throws AWTException{
+    	
+    	if(objOrderCreateObject.createBtn.size()>1){
+    		for(int n=1;n<=objOrderCreateObject.createBtn.size();n++){
+    			try{
+    				WebElement createDync = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.create, n, driver);
+    				if(createDync.isDisplayed()){
+    					createDync.click();
+    				}
+    			}
+    			catch(Exception e){
+    				continue;
+    			}
+    		}	
+    	}
+    	else{
+    		objOrderCreateObject.singelcreateBtn.click();
+    	}
+
+    }   
+    
+    
+    public void pbdArticleSelection(OrderingObjects objOrderCreateObject,WebDriver driver){
+    	
+    	try{
+    		if(objOrderCreateObject.pbdPopUp.isDisplayed()){
+    			int i = ThreadLocalRandom.current().nextInt(1,objOrderCreateObject.pbdList.size())+1;
+    			WebElement pbdCheck = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.pbdCheckBox, i, driver);
+    			pbdCheck.click();
+    			objOrderCreateObject.pbdArticleAddToList.click();
+    			waitForJSandJQueryToLoad(driver);
+    		}
+    	}catch(Exception e){
+
+    	}
+    }
+    
+    public void errorArticleDelete(OrderingObjects objOrderCreateObject,String supplier,WebDriver driver) throws AWTException{
+    	
+    	ArrayList<String> errArticle = new ArrayList<String>();
+    	if(objOrderCreateObject.errorArticleList.size()!=0){
+    		htmlToExtent(cName,mName,extLogger,driver, objOrderCreateObject.errorMessage.getText()+";;;Info");
+    		for(int i=1;i<=objOrderCreateObject.errorArticleList.size();i++){
+    			WebElement errorArtNumber = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.errorArticle, i, driver);
+    			errArticle.add(errorArtNumber.getText().substring(0,errorArtNumber.getText().indexOf("-")).replace("Article","").trim());
+    		}
+    		
+    		objOrderCreateObject.errorMessage.click();
+        	objOrderCreateObject.cancelCreation.click();
+        	
+        	htmlToExtent(cName,mName,extLogger,driver, "*****Deleting error article from the order draft*****;;;Info");
+        	for(int j=1;j<=errArticle.size();j++){
+        		htmlToExtent(cName,mName,extLogger,driver, "Deleting article #"+errArticle.get(j)+";;;Pass");
+        		WebElement errDeleBtn = prepareWebElementWithDynamicXpathWithStringInt(objOrderCreateObject.errorArticleDelete,errArticle.get(j),Integer.parseInt(supplier), driver);
+        		errDeleBtn.click();
+        		waitForElement(objOrderCreateObject.deletePopUp, driver);
+        		objOrderCreateObject.deleteYesBtn.click();
+        	}
+        	//addingArticles(objOrderCreateObject, errArticle.size(), articleresult, delDate,supplier, driver);
+        	objOrderCreateObject.singelValidateBtn.click();
+    	}
+    	else{
+    		htmlToExtent(cName,mName,extLogger,driver, "There are no error article added to draft;;;Info");
+    	}
+    	
+    }
+    
+    public void checkDeliveryDate(OrderingObjects objOrderCreateObject,String cDate,String availableDelDate,String ordertype,WebDriver driver){
+    	
+    	int k=1;
+    	List<WebElement> size = prepareListWebElementWithDynamicXpathWithString(objOrderCreateObject.del, cDate, driver);
+    	if(size.size()==2){
+			WebElement delDate = prepareWebElementWithDynamicXpathWithStringInt(objOrderCreateObject.deliveryDateDync,cDate, k, driver);
+			WebElement artnum = prepareWebElementWithDynamicXpathWithStringInt(objOrderCreateObject.articledync,cDate, k, driver);
+    		if(availableDelDate.equals(delDate.getAttribute("value"))){
+    			htmlToExtent(cName,mName,extLogger,driver, "Article #"+artnum.getText()+" delivery date been updated properly;;;Pass");
+    		}
+    		else{
+    			htmlToExtent(cName,mName,extLogger,driver, "Article #"+artnum.getText()+" delivery date not updated properly;;;Fail");
+    		}
+    	}
+    	else{
+    		for(int i=1;i<=size.size()/2;i++){
+    			WebElement delDate = prepareWebElementWithDynamicXpathWithStringInt(objOrderCreateObject.deliveryDateDync,cDate, k, driver);
+    			WebElement artnum = prepareWebElementWithDynamicXpathWithStringInt(objOrderCreateObject.articledync,cDate, k, driver);
+    			if(availableDelDate.equals(delDate.getAttribute("value"))){
+    				htmlToExtent(cName,mName,extLogger,driver, "Article #"+artnum.getText()+" delivery date been updated with "+ordertype+" delivery date;;;Pass");
+    			}
+    			else{
+    				htmlToExtent(cName,mName,extLogger,driver, "Article #"+artnum.getText()+" delivery date not updated with "+ordertype+" delivery date;;;Fail");
+    			}
+    			k=k+2;
+    		}
+    	}
+    	
+    }
+    
+    public void articleDetailsCheck(OrderingObjects objOrderCreateObject,String deliveryDate,List<List<Object>>quantity,List<List<Object>>articlenumber,WebDriver driver) throws SQLException, IOException{
+    	
+    	List<List<Object>> articledetails = new ArrayList<List<Object>>();
+    	List<List<Object>> artUOM = new ArrayList<List<Object>>();
+    	List<List<Object>> articledetailsDB = new ArrayList<List<Object>>();
+    	List<List<Object>> artResult = new ArrayList<List<Object>>();
+    	List<WebElement> artdetail = prepareListWebElementWithDynamicXpathWithString(objOrderCreateObject.articleDetails, deliveryDate.replace("/","").trim(), driver);
+    	articledetails = getValuesFromTable(artdetail);
+    	
+    	int size = articledetails.size();
+    	for(int i=0;i<size/2;i++){
+    		articledetails.remove(i+1);
+    	}
+    	
+    	for(int j=17;j>=11;j--){
+    		articledetails = removeIndex(articledetails, Integer.toString(j));
+    	}
+    	
+    	articledetails = removeIndex(articledetails, Integer.toString(9));
+    	articledetails = removeIndex(articledetails, Integer.toString(8));
+    	articledetails = removeIndex(articledetails, Integer.toString(5));
+    	articledetails = removeIndex(articledetails, Integer.toString(0));
+    	articledetails = removeIndex(articledetails, Integer.toString(6));
+    	
+    	//[[140818, C/H Potted Boronia Medium, 0, CAR, 12 EA, 36 EA, Verified]
+    	//[[140818, C/H Potted Boronia Medium, 0.000, CAR, 12.000 EA, 36.000 EA, Verified]
+    	//[[140818, C/H Potted Boronia Medium, 0.000, CAR, 12.000 EA, 72.000 EA, Verified],
+    	
+    	for(int i=0;i<articledetails.size();i++){
+    		articledetails.get(i).set(2, String.format("%.03f", Float.parseFloat(articledetails.get(i).get(2).toString())));
+    		String om[] = articledetails.get(i).get(4).toString().split(" ");
+    		String om1 = String.format("%.03f", Float.parseFloat(om[0]));
+    		articledetails.get(i).set(4, om1+" "+om[1]);
+    		String totalU[] = articledetails.get(i).get(5).toString().split(" ");
+    		String totalU1 = String.format("%.03f", Float.parseFloat(totalU[0]));
+    		articledetails.get(i).set(5, totalU1+" "+totalU[1]);
+    	}
+    	    	
+    	//[[140818, C/H Potted Boronia Medium, 0.000, CAR, 12.000]]
+    	
+    	for(int i=0;i<articlenumber.size();i++){
+    		String articleDetailsFromDB = testdata.getText("articledetailsDB").replace("article",articlenumber.get(i).get(0).toString());
+        	artResult = sql.executeQuery(getContext(), articleDetailsFromDB);
+        	for(int j=0;j<articlenumber.size();j++)
+        		if(artResult.get(0).get(0).toString().equals(quantity.get(j).get(0).toString())){
+        			String articleuom = testdata.getText("baseuom").replace("article",artResult.get(0).get(0).toString());
+                	artUOM = sql.executeQuery(getContext(), articleuom);
+        			String tempDB = artResult.get(0).get(0).toString()+":"+artResult.get(0).get(1).toString().trim().replaceAll("\\s{2,}"," ")+":"+artResult.get(0).get(2).toString()+":"+artResult.get(0).get(3).toString()+":"+artResult.get(0).get(4).toString()+" "+artUOM.get(0).get(0).toString()+":"+String.format("%.03f", ((Float.parseFloat(artResult.get(0).get(4).toString())*Float.parseFloat(quantity.get(j).get(1).toString()))))+" "+artUOM.get(0).get(0).toString();
+        			articledetailsDB.addAll(StringToListCreation(tempDB));
+        			System.out.println(articledetailsDB);
+        			break;
+        		}
+        		else{
+        			continue;
+        		}
+
+    	}
+    	htmlToExtent(cName,mName,extLogger,driver, "*****Comparing article details in draft between DB and Application*****;;;Info");
+    	ElementContains1(cName,mName,extLogger,driver,articledetails,articledetailsDB); 
+    }
+    
+    public String alternateVendorCheck(OrderingObjects objOrderCreateObject,String delDate,WebDriver driver){
+    	
+    	List<List<Object>> alternateVendor = new ArrayList<List<Object>>();
+    	List<WebElement> artSize = prepareListWebElementWithDynamicXpathWithString(objOrderCreateObject.artSize,delDate.replace("/", ""), driver);
+    	
+    	int j=1;
+    	do{
+    		WebElement artExpand = prepareWebElementWithDynamicXpathWithStringInt(objOrderCreateObject.article, delDate.replace("/", ""), j, driver);
+    		artExpand.click();
+    		htmlToExtent(cName,mName,extLogger,driver, "Default vendor for article is "+objOrderCreateObject.alternateVendorEdit.getText()+";;;Pass");
+        	objOrderCreateObject.alternateVendorEdit.click();
+        	waitForJSandJQueryToLoad(driver);
+        	if((objOrderCreateObject.alternateVendorPagination.size()-2) > 1){
+        		htmlToExtent(cName,mName,extLogger,driver,"Alternate vendor popup window has been displayed;;;Pass");
+        		for(int i=2;i<objOrderCreateObject.alternateVendorPagination.size();i++){
+        			WebElement page = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.altPage, i, driver);
+        			page.click();
+        			waitForJSandJQueryToLoad(driver);
+        			alternateVendor = getValuesFromTable(objOrderCreateObject.alternateVendors);
+        		}
+        		WebElement page = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.altPage, 2, driver);
+        		page.click();
+    			waitForJSandJQueryToLoad(driver);
+        	}
+        	else{
+        		alternateVendor = getValuesFromTable(objOrderCreateObject.alternateVendors);
+        	}
+        	System.out.println(alternateVendor); 
+        	
+        	//for(int k=1;k<=objOrderCreateObject.alternateVendors.size();k++){
+        	int randNum;
+        	if(objOrderCreateObject.alternateVendors.size()==1){randNum=1;}
+        	else{randNum = ThreadLocalRandom.current().nextInt(1,objOrderCreateObject.alternateVendors.size());}
+        	WebElement randVendor = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.randVendor, randNum, driver);
+        	htmlToExtent(cName,mName,extLogger,driver, "*****Selecting random vendor form the alternate vendor popup*****;;;Info");
+        	WebElement randVendorNumber = prepareWebElementWithDynamicXpathWithIntInt(objOrderCreateObject.vendorDetails,randNum, 1, driver);
+        	htmlToExtent(cName,mName,extLogger,driver, "Random Vendor number selected is "+randVendorNumber.getText()+";;;Pass");
+        	WebElement randVendorName = prepareWebElementWithDynamicXpathWithIntInt(objOrderCreateObject.vendorDetails,randNum, 2, driver);
+        	htmlToExtent(cName,mName,extLogger,driver, "Random Vendor name selected is "+randVendorName.getText()+";;;Pass");
+        	WebElement randVendorSelect = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.vendorSelect,randNum, driver);
+        	randVendorSelect.click();
+        	waitForJSandJQueryToLoad(driver);
+	    	//}
+        	
+    		j=j+2;
+    	}while(j<=artSize.size()/2);
+	
+    	isTrue = false;
+    	int i=1,k=1;
+    	//do{
+    			WebElement delDateAfter = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.afterCreation, 1, driver);
+    			String delDate1 = delDateAfter.getText().substring(delDateAfter.getText().indexOf(":")+1).trim();
+    			//if(delDate.equals(delDate1)){
+    				WebElement expAfter = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.afterCreationExp, 1, driver);
+    				expAfter.click();
+    				driver.findElement(By.xpath("//*[contains(@class,'orderQty')]")).clear();
+    				driver.findElement(By.xpath("//*[contains(@class,'orderQty')]")).sendKeys("2");
+    				String actualDate = driver.findElement(By.xpath("//*[contains(@class,'delivery_date_valid')]")).getAttribute("value");
+    				driver.findElement(By.xpath("//*[contains(@class,'delivery_date_valid')]")).clear();
+    				driver.findElement(By.xpath("//*[contains(@class,'delivery_date_valid')]")).sendKeys(delDate);
+    			//	break;
+    			//}
+    			//k=k+2;
+    			//i++;
+    		//}while(i<=objOrderCreateObject.afterCreationList.size()/2);   	
+    	verticalScroll(driver);
+    	return actualDate;
+    }
+    
+   /* public void addingArticles(OrderCreationObjects objOrderCreateObject,int sizeOfLoop,List<List<Object>> articleresult,String delDate,String supplier,WebDriver driver) throws  AWTException {
+    	
+    	htmlToExtent(cName,mName,extLogger,driver, "*****Adding articles to draft*****;;;Info");
+    	int totalQty =0;
+		for(int i=0;i<sizeOfLoop;i++){
+			
+			waitForJSandJQueryToLoad(driver);
+			int rand = ThreadLocalRandom.current().nextInt(1,articleresult.size());
+			String article = articleresult.get(rand).get(0).toString();
+			//int indexOfArticle = articleresult.indexOf(articleresult.get(rand).get(0).toString());
+			//articleresult.remove(indexOfArticle);
+			objOrderCreateObject.articleSend.sendKeys(article);
+			String randQty = Integer.toString(ThreadLocalRandom.current().nextInt(1,7)+1);
+			totalQty = totalQty + Integer.parseInt(randQty);
+			objOrderCreateObject.orderQty.sendKeys(randQty);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "Article #"+articleresult.get(i).get(0).toString()+" of quantity "+randQty+" is added to draft;;;Pass");
+											
+			objOrderCreateObject.delDate.sendKeys(delDate);
+			objOrderCreateObject.createOrder.click();
+			waitFor(1);
+			objOrderCreateObject.searchBtn.click();
+			pbdArticleSelection(objOrderCreateObject, driver);
+			
+			try{
+				waitForElement(objOrderCreateObject.createOrderPopUp, driver);
+				objOrderCreateObject.createOrderPopUp.isDisplayed();
+				objOrderCreateObject.noBtn.click();
+			}
+			catch(Exception e){
+				
+			}
+			
+			objOrderCreateObject.articleSend.clear();
+		}
+		
+		//System.out.println(articleNumber);
+		
+		openingOrderDraft(objOrderCreateObject, delDate, driver);
+		htmlToExtent(cName,mName,extLogger,driver, "*****Verifing the Draft Order*****;;;Info");
+		errorArticleDelete(objOrderCreateObject, supplier,articleresult,delDate, driver);
+    	
+    }
+    
+   */ 
+    
+    
+    //Updating
+    
+    public void updatingQuantity(OrderingObjects objOrderCreateObject,int k,WebDriver driver) throws AWTException{
+        
+    	//objOrderCreateObject.editBtn.click();
+    	verticalScroll(driver);
+    	for(int i=1;i<=objOrderCreateObject.orderedQtyList.size();i++){
+    		WebElement orderedQty = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.orderQtyUpdate, i, driver);
+    		WebElement artnumber = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.articleNumber, k, driver);
+    		String initialQty = orderedQty.getAttribute("value");
+    		String temp = artnumber+":"+initialQty;
+    		artInitialQuantity.addAll(StringToListCreation(temp));
+    		orderedQty.clear();
+    		int rand = ThreadLocalRandom.current().nextInt(5, 15)+1;
+    		int sendQty;
+    		if(i%2==0){
+    			sendQty = Integer.parseInt(initialQty) + rand;
+    		}
+    		else{
+    			if(rand >= Integer.parseInt(initialQty)){
+    				rand = 1;
+    			}
+    			sendQty = Integer.parseInt(initialQty) - rand;
+    		}
+    		htmlToExtent(cName,mName,extLogger,driver,"Updating Quantity for #"+artnumber.getText()+" article from "+initialQty+" to "+sendQty+";;;Pass");
+    		orderedQty.sendKeys(Integer.toString(sendQty));
+    		k=k+2;
+    	}
+    	objOrderCreateObject.doneBtn.click();
+    	
+    	try{
+    		waitForElement(objOrderCreateObject.saveOrderPopUp, driver);
+			if(objOrderCreateObject.saveOrderPopUp.isDisplayed()){
+				htmlToExtent(cName,mName,extLogger,driver,""+objOrderCreateObject.saveOrderPopUpDialogText.getText()+";;;Pass");
+				objOrderCreateObject.confirmYesBtn.click();
+			}
+		}catch(Exception e){
+			htmlToExtent(cName,mName,extLogger,driver,"Confirmation popup is not displayed after changing order quantity and clicking done button;;;Fail");
+		}
+		waitForJSandJQueryToLoad(driver);
+		try{
+			if(objOrderCreateObject.successfulMessage.isDisplayed()){
+				htmlToExtent(cName,mName,extLogger,driver,""+objOrderCreateObject.successfulMessage.getText()+";;;Pass");
+				objOrderCreateObject.successfulMessage.click();
+			}	
+		}catch(Exception e){
+			htmlToExtent(cName,mName,extLogger,driver,"Success Message is not displayed after updating order;;;Fail");
+		}
+    }
+    
+    public String gettingSITSOOvalues(OrderingObjects objOrderCreateObject,int j,int k,WebDriver driver){
+    	
+    	WebElement plusBtn = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.plusBtn, k, driver);
+		plusBtn.click();
+		WebElement soo = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.soo, j+1, driver);
+		WebElement sit = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.sit, j+1, driver);
+		String soo1 = String.format("%.03f",Float.parseFloat(soo.getText()));
+		String sit1 = sit.getText();
+		if(sit1.isEmpty()){sit1 = "0.000";}else{sit1 = String.format("%.03f",Float.parseFloat(sit.getText()));}
+		plusBtn.click();
+		return soo1+"&"+sit1;
+		
+    }
+    
+    
+   public void checkingOrderAfterUpdate(OrderingObjects objOrderCreateObject,List<List<Object>> orderDetailsAppln1,String orderNo,WebDriver driver) throws AWTException{
+	   
+	   	toOrderEnqPage(objOrderCreateObject, driver);
+		objOrderCreateObject.orderNoSend.sendKeys(orderNo);
+		objOrderCreateObject.goBtn.click();
+		waitForJSandJQueryToLoad(driver);
+		
+		try {
+			if(objOrderCreateObject.filteredOrder.isDisplayed()){
+				String status = objOrderCreateObject.oStatus.getText().trim();
+				//orderDetailsAppln1 = getValuesFromTable(objOrderCreateObject.orderDetails);
+				if(status.equalsIgnoreCase("Submitted")){
+					htmlToExtent(cName,mName,extLogger,driver,"Order is in submitted status after updating and saving the order;;;Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Order is NOT in submitted status after updating and saving the order;;;Fail");
+				}
+			}
+		}catch(Exception e){
+				System.out.println("CatchBlock");
+		}
+   }
+   
+   public void blockingArticle(OrderingObjects objOrderCreateObject,List<List<Object>> blockText,List<List<Object>> articleAddList,String orderType,WebDriver driver) {
+	   
+   		objOrderCreateObject.editBtn.click();
+   		deletingArticle(objOrderCreateObject,orderType, driver);
+   		htmlToExtent(cName,mName,extLogger,driver,"*****Updating the Quantity of the article*****;;;Info");
+   		for(int i=0;i<blockText.size();i++){
+		   String blockArticleNumber = blockText.get(i).get(0).toString();
+		   String blockArticleReason = "null";
+		   if(blockText.get(i).get(1).equals(null)){blockArticleReason = "null";  } else{blockArticleReason = blockText.get(i).get(1).toString();}
+				   if(blockArticleReason.contains("LAY")){
+					   if(blockArticleReason.equals("ULAYBLCK")){
+						   htmlToExtent(cName,mName,extLogger,driver,"*****Article #"+blockArticleNumber+" is blocked with reason code as "+blockArticleReason+"*****;;;Info");
+						   WebElement blockOrderQty = prepareWebElementWithDynamicXpathWithString(objOrderCreateObject.blockUpdation, blockArticleNumber, driver);
+						   String initial = blockOrderQty.getAttribute("value");
+						   blockOrderQty.clear();
+						   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)-1));
+						   htmlToExtent(cName,mName,extLogger,driver,"Decreasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)-1)+";;;Pass");
+						   objOrderCreateObject.doneBtn.click();
+						   try{
+							   objOrderCreateObject.errorMessage.isDisplayed();
+								htmlToExtent(cName,mName,extLogger,driver,""+objOrderCreateObject.errorMessage.getText()+";;;Pass");
+								objOrderCreateObject.errorMessage.click();
+						   }catch(Exception e){
+							   htmlToExtent(cName,mName,extLogger,driver,"No error message displayed when underlay block article quantity is decreased;;;Fail");
+						   }
+						   htmlToExtent(cName,mName,extLogger,driver,"Increasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)+3)+";;;Pass");
+						   blockOrderQty.clear();
+						   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)+3));						   
+					   }
+					   else if(blockArticleReason.equals("OLAYBLCK")){
+						   htmlToExtent(cName,mName,extLogger,driver,"*****Article #"+blockArticleNumber+" is blocked with reason code as "+blockArticleReason+"*****;;;Info");
+						   WebElement blockOrderQty = prepareWebElementWithDynamicXpathWithString(objOrderCreateObject.blockUpdation, blockArticleNumber, driver);
+						   String initial = blockOrderQty.getAttribute("value");
+						   blockOrderQty.clear();
+						   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)+1));
+						   htmlToExtent(cName,mName,extLogger,driver,"Increasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)+1)+";;;Pass");
+						   objOrderCreateObject.doneBtn.click();
+						   try{
+							   objOrderCreateObject.errorMessage.isDisplayed();
+								htmlToExtent(cName,mName,extLogger,driver,""+objOrderCreateObject.errorMessage.getText()+";;;Pass");
+								objOrderCreateObject.errorMessage.click();
+						   }catch(Exception e){
+							   htmlToExtent(cName,mName,extLogger,driver,"No error message displayed when overlay block article quantity is increased;;;Fail");
+						   }
+						   htmlToExtent(cName,mName,extLogger,driver,"Decreasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)-2)+";;;Pass");
+						   blockOrderQty.clear();
+						   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)-2));
+					   }
+				   }
+				   else if(blockArticleReason.contains("ITEM")||blockArticleReason.contains("DC")||blockArticleReason.contains("SHARED")){
+					   htmlToExtent(cName,mName,extLogger,driver,"*****Article #"+blockArticleNumber+" is blocked with reason code as "+blockArticleReason+"*****;;;Info");
+					   WebElement blockOrderQty = prepareWebElementWithDynamicXpathWithString(objOrderCreateObject.blockUpdation, blockArticleNumber, driver);
+					   String initial = blockOrderQty.getAttribute("value");
+					   blockOrderQty.clear();
+					   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)-1));
+					   htmlToExtent(cName,mName,extLogger,driver,"Decreasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)-1)+";;;Pass");
+					   objOrderCreateObject.doneBtn.click();
+					   try{
+						   objOrderCreateObject.errorMessage.isDisplayed();
+							htmlToExtent(cName,mName,extLogger,driver,""+objOrderCreateObject.errorMessage.getText()+";;;Pass");
+							objOrderCreateObject.errorMessage.click();
+					   }catch(Exception e){
+						   htmlToExtent(cName,mName,extLogger,driver,"No error message displayed when underlay block article quantity is decreased;;;Fail");
+					   }
+					   htmlToExtent(cName,mName,extLogger,driver,"Increasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)+3)+";;;Pass");
+					   blockOrderQty.clear();
+					   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)+3));	
+					   objOrderCreateObject.doneBtn.click();
+					   try{
+						   objOrderCreateObject.errorMessage.isDisplayed();
+							htmlToExtent(cName,mName,extLogger,driver,""+objOrderCreateObject.errorMessage.getText()+";;;Pass");
+							objOrderCreateObject.errorMessage.click();
+					   }catch(Exception e){
+						   htmlToExtent(cName,mName,extLogger,driver,"No error message displayed when underlay block article quantity is decreased;;;Fail");
+					   }
+					   blockOrderQty.clear();
+					   htmlToExtent(cName,mName,extLogger,driver,"Updating Order Quantity same as initial Quantity "+initial+" for article #"+blockArticleNumber+" with block reason as "+blockArticleReason+";;;Pass");
+					   blockOrderQty.sendKeys(initial);	
+				   }
+				   else {
+					   htmlToExtent(cName,mName,extLogger,driver,"*****Article #"+blockArticleNumber+" does not have any block reason*****;;;Info");
+					   WebElement blockOrderQty = prepareWebElementWithDynamicXpathWithString(objOrderCreateObject.blockUpdation, blockArticleNumber, driver);
+					   String initial = blockOrderQty.getAttribute("value");
+					   blockOrderQty.clear();
+					   if(i%2==0){
+						   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)+6));
+					   }else{
+						   if(Integer.parseInt(initial)>3){
+							   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)-3));
+						   }else{
+							   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)-1));
+						   }
+					   }
+					   htmlToExtent(cName,mName,extLogger,driver,"Increasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)+6)+";;;Pass");
+				   }
+			   }
+   		
+   		for(int i=0;i<articleAddList.size();i++){
+   			addingarticle(objOrderCreateObject, articleAddList.get(i).get(0).toString(), driver);
+   		}
+   		
+   		objOrderCreateObject.doneBtn.click();   		
+   		try{
+   			waitForElement(objOrderCreateObject.warningMessage, driver);
+   			objOrderCreateObject.acceptHighQuantity.click();
+   		}catch(Exception e){
+   			objOrderCreateObject.confirmYesBtn.click();
+   		}
+   		waitFor(2);
+   		waitForJSandJQueryToLoad(driver);
+   		try{objOrderCreateObject.confirmYesBtn.click();}catch(Exception e){}  			
+   		waitForJSandJQueryToLoad(driver);
+   		try{
+   			if(objOrderCreateObject.errorMessage.isDisplayed()){
+   			htmlToExtent(cName,mName,extLogger,driver,""+objOrderCreateObject.errorMessage.getText()+";;;Fail");	
+   			}
+   		}
+   		catch(Exception e){ 
+   			if (objOrderCreateObject.successfulMessage.isDisplayed()){
+   				htmlToExtent(cName,mName,extLogger,driver,""+objOrderCreateObject.successfulMessage.getText()+";;;Pass");	
+   			}
+   			else{
+   				htmlToExtent(cName,mName,extLogger,driver,"No Success message after updating and saving the order;;;Fail");	
+   			}
+   		}
+   }
+   
+   public void deletingArticle(OrderingObjects objOrderCreateObject,String orderType,WebDriver driver) {
+	   
+	   int randnum;
+	   WebElement deleteBtn,articlenumber;
+	   if(objOrderCreateObject.orderTable.size()==2){
+		   randnum = 1;
+		   deleteBtn = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.deleteArticleBtn, randnum, driver);
+		   articlenumber = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.articleNumber, randnum, driver);   
+	   }else{randnum = ThreadLocalRandom.current().nextInt(1, (objOrderCreateObject.orderTable.size()/2));
+	   //int randnum = 2;
+	   		deleteBtn = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.deleteArticleBtn, randnum, driver);
+	   		articlenumber = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.articleNumber, randnum+1, driver);
+	   }
+	   htmlToExtent(cName,mName,extLogger,driver,"Deleting article #"+articlenumber.getText()+" by clicking on delete button;;;Pass");
+	   deleteBtn.click();
+	   
+	   if(orderType.equalsIgnoreCase("Sugo")){
+		   try{
+			   waitForElement(objOrderCreateObject.deletePopup, driver);
+		   	   htmlToExtent(cName,mName,extLogger,driver,""+objOrderCreateObject.warningMessage.getText()+";;;Pass");
+		   	   objOrderCreateObject.deleteOkBtn.click();
+		   }catch(Exception e){
+			   htmlToExtent(cName,mName,extLogger,driver,"No Warning message displayed when deleting an article;;;Fail");	
+		   }
+	   }
+	   else if(orderType.equalsIgnoreCase("Manual")){
+		   //Delete Func for Manual PO and PREQ
+		   try{
+			   waitForElement(objOrderCreateObject.deletePopup, driver);
+		   	   htmlToExtent(cName,mName,extLogger,driver,""+objOrderCreateObject.warningMessage.getText()+";;;Fail");
+		   	   objOrderCreateObject.deleteOkBtn.click();
+		   }catch(Exception e){
+			   htmlToExtent(cName,mName,extLogger,driver,"No Warning message displayed when deleting an article;;;Pass");	
+		   }
+	   }
+   }
+   
+   public void addingarticle(OrderingObjects objOrderCreateObject,String articlenumber,WebDriver driver) {
+	   
+	  // for(int i=0;i<4;i++){
+		   List<List<Object>> orderDetails = getValuesFromTables(objOrderCreateObject.orderDetails);
+		   //int randnum = ThreadLocalRandom.current().nextInt(1, articlenumber.size())+1;
+		   if(!orderDetails.contains(articlenumber)){
+			   objOrderCreateObject.addarticleinput.sendKeys(articlenumber);
+			   objOrderCreateObject.addquantity.clear();
+			   int rand = ThreadLocalRandom.current().nextInt(4, 14)+1;
+			   objOrderCreateObject.addquantity.sendKeys(Integer.toString(rand));
+			   objOrderCreateObject.searchandaddBtn.click();
+			   try{
+				   if(objOrderCreateObject.errorMessage.isDisplayed()){
+					   objOrderCreateObject.errorMessage.click();
+				   }
+			   }catch(Exception e){
+				   htmlToExtent(cName,mName,extLogger,driver,"Adding article #"+articlenumber+" of quantity "+rand+" to the order;;;Pass");
+				   
+			   }
+		   }
+	   }
+ //  }
+   
+   
+   //Sibi
+   
+   public void clickOnOrderEnquiry(OrderingObjects objOrderCreateObject,WebDriver driver) throws AWTException{
+		//		waitForJSandJQueryToLoad(driver);
+		waitFor(1);
+		Point coordinates = objOrderCreateObject.Orders.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+
+		Actions action = new Actions(driver);
+		action.moveToElement(objOrderCreateObject.Orders).click().build().perform();	
+		waitFor(1);
+
+		Point coordinates1 = objOrderCreateObject.orderEnquiry.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(),coordinates1.getY()+100);
+
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objOrderCreateObject.orderEnquiry).click().build().perform();
+		waitFor(1);
+		robot.mouseMove(5,5);	
+		
+			}
+	
+	public void waitFn(WebDriver driver) {
+		waitForJSandJQueryToLoad(driver);
+		// waitForPageToLoad();
+	}
+	public void updatePoOrderFromBrowser(OrderingObjects objOrderCreateObject,String Ordnumber,List<List<Object>>orderEnqiryList ,List<List<Object>>OrdHeaderList
+			,List<List<Object>>OrdHeaderList1DB,List<List<Object>>OrderItemDetailsDBList,List<Object>ItemResults,List<List<Object>>ArticleSOHList1,
+			List<List<Object>>ArticleTypeList)throws SQLException, IOException, AWTException, ParseException
+	
+	{
+		objOrderCreateObject.Ordernoentry.sendKeys(Ordnumber);
+		waitForJSandJQueryToLoad(driver);
+		objOrderCreateObject.GObutton.click();
+		List<List<Object>> enquiryListApp = getValuesFromTable(objOrderCreateObject.EnquiryTable);
+		List<List<Object>> OrdHeaderListAPP = new ArrayList<List<Object>>();
+		List<List<Object>> OrdHeaderList1 = new ArrayList<List<Object>>();
+		List<List<Object>> OrdHeaderList2 = new ArrayList<List<Object>>();
+		List<List<Object>> OrdItemList = new ArrayList<List<Object>>();
+		List<List<Object>> OrdItemListAppFinal = new ArrayList<List<Object>>();
+		List AppHeaderInfo=new ArrayList();
+		String ChilledTempNo=null;String FrozenTempNo=null;
+		
+	  System.out.println(enquiryListApp);
+	 
+	  if (objOrderCreateObject.Status.getText().equals("AUTHORISED") && Ordnumber .equals( objOrderCreateObject.OrderNO.getText()))
+			
+		{  
+	  
+		  
+		  
+		  htmlToExtent(cName,mName,extLogger,driver, "**** Comparing the order details in order enquiry page ****;;;Pass");
+		  ElementContains1(cName,mName,extLogger,driver,enquiryListApp,orderEnqiryList);
+		  htmlToExtent(cName,mName,extLogger,driver, "Order details in order enquiry page displayed correcly in Bowser(OrderNo,Delivery date,Status,Supplier,Type,Source,Total cartons)"
+		  		+ " "+Ordnumber+";;;Pass");
+		  waitForJSandJQueryToLoad(driver);
+		  objOrderCreateObject.ClickOnOrderNo.click();
+		 
+		  try {
+		    objOrderCreateObject.AsnRequirdPopUp.isDisplayed();
+		
+				objOrderCreateObject.AsnRequirdPopUp.click();
+				//objOrderCreateObject.ReciveOrder.isDisplayed();
+				htmlToExtent(cName,mName,extLogger,driver, "Unbale to receive order and ASN requied for this order  "+Ordnumber+";;;Fail");
+					
+			
+		} catch (Exception e) {
+			
+			htmlToExtent(cName,mName,extLogger,driver, "Able to receive the PO order "+Ordnumber+";;;Pass");
+			String HeaderOrderNo=objOrderCreateObject.OrderNoHeader.getText();
+			String DBHeaderOrderNo= "Vendor Order"+" "+Ordnumber;
+			if(DBHeaderOrderNo.equals(DBHeaderOrderNo))
+			{
+				
+				htmlToExtent(cName,mName,extLogger,driver,"Order number in header detail displayed correct ;;;Pass");
+				String HeaderList=objOrderCreateObject.OrderHeaderVendorNo.getText()+':'+ objOrderCreateObject.HeaderDeliveyDate.getText() +':'+objOrderCreateObject.Source.getText()+':'+objOrderCreateObject.OnShowDate.getText();
+				System.out.println(HeaderList);
+				OrdHeaderListAPP.addAll(StringToListCreation(HeaderList));
+				htmlToExtent(cName,mName,extLogger,driver, "**** Checking the order header details(Vendor No,Delivery date,Source,On show date) ****;;;Pass");
+				ElementContains1(cName,mName,extLogger,driver,OrdHeaderListAPP,OrdHeaderList);
+				htmlToExtent(cName,mName,extLogger,driver,"Order header details are displaying Correctly in order;;;Pass");
+				
+				OrdHeaderList1=	getValuesFromTable(objOrderCreateObject.OrderHeader1);
+				List OrdHeaderList1App = new ArrayList();
+				OrdHeaderList1App.add(OrdHeaderList1.get(0).get(3).toString());
+				OrdHeaderList1App.add(OrdHeaderList1.get(1).get(3).toString());
+				OrdHeaderList2.add(OrdHeaderList1App);
+				htmlToExtent(cName,mName,extLogger,driver, "**** Checking the order sub header details(Number of article,Total carton ordered ****;;;Pass");
+				System.out.println(OrdHeaderList2);
+				System.out.println(OrdHeaderList1DB);
+				ElementContains1(cName,mName,extLogger,driver,OrdHeaderList2,OrdHeaderList1DB);
+				
+				String NoOfArt=objOrderCreateObject.YetToReceived.getText().substring(objOrderCreateObject.YetToReceived.getText().indexOf("(")+1).replace(")","");
+				
+				objOrderCreateObject.GroupBy.click();
+				verticalScroll(driver);
+				if(NoOfArt.equals(OrdHeaderList1DB.get(0).get(0).toString()))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Number of articles in YET TO RECEIVED tab equal to total number of article ;;;Pass");
+					OrdItemList=getValuesFromTable(objOrderCreateObject.ItamTable);
+					List<List<Object>> OrdItemListApp = new ArrayList<List<Object>>();
+					
+					OrdItemListApp.addAll(OrdItemList);
+					System.out.println(OrdItemListApp);
+					int ItemAppListSize=OrdItemListApp.size();
+					for(int i=0;ItemAppListSize>i;i++)
+					{
+						
+						String temp=(OrdItemListApp.get(i).get(0).toString()+":"+OrdItemListApp.get(i).get(3).toString()+":"+OrdItemListApp.get(i).get(4).toString()
+								+":"+OrdItemListApp.get(i).get(5).toString());
+						OrdItemListAppFinal.addAll(StringToListCreation(temp));
+						
+						
+					}
+					
+					htmlToExtent(cName,mName,extLogger,driver, "**** Comparing the item details (Article No,OM,Ordered QTY ,Ordered Units) ****;;;Pass");
+					ElementContains1(cName,mName,extLogger,driver,OrdItemListAppFinal,OrderItemDetailsDBList);
+					
+					
+					
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver,"Number of articles in YET TO RECEIVED tab not equal to total number of article ;;;Fail");
+				}
+				
+				objOrderCreateObject.ReceiveOrderOption.click();
+				htmlToExtent(cName,mName,extLogger,driver, "**** Started receiving the Order ****;;;Pass");
+				try {
+					if(objOrderCreateObject.NewSession.isDisplayed()){
+						objOrderCreateObject.NewSession.click();
+						waitForJSandJQueryToLoad(driver);
+					}
+					
+					
+					
+					waitForJSandJQueryToLoad(driver);
+				}
+				finally
+				{
+				
+					String XmlInovice = data.getText("Invoice");
+					objOrderCreateObject.Invoice.sendKeys(XmlInovice);
+					
+					List<List<Object>> TempFalgDB = new ArrayList<List<Object>>();
+					String TempFalg=data.getText("Tempflg").replace("ord_no",Ordnumber);
+					TempFalgDB=sql.executeQuery(getContext(), TempFalg);
+					
+					if(TempFalgDB.get(0).get(0).toString().endsWith("Y"))
+					{
+						 
+							if(objOrderCreateObject.ChilledTemp.isDisplayed() && objOrderCreateObject.frozenTemp.isDisplayed()){
+								 ChilledTempNo = data.getText("Temp");
+								objOrderCreateObject.ChilledTemp.sendKeys(ChilledTempNo);
+								 FrozenTempNo = data.getText("Frozentemp");
+								objOrderCreateObject.frozenTemp.sendKeys(FrozenTempNo); 
+								verticalScroll(driver);
+							
+							
+					} 
+							else
+						{
+							if(objOrderCreateObject.ChilledTemp.isDisplayed()){
+								 ChilledTempNo = data.getText("Temp");
+								objOrderCreateObject.ChilledTemp.sendKeys(ChilledTempNo);
+								 FrozenTempNo="NA";
+								verticalScroll(driver);	
+								
+							}
+							else
+							{
+							 FrozenTempNo = data.getText("Frozentemp");
+							objOrderCreateObject.frozenTemp.sendKeys(FrozenTempNo); 
+							 ChilledTempNo="NA";
+							verticalScroll(driver);
+							}
+						}
+					}
+					waitForJSandJQueryToLoad(driver);
+					
+					if((ItemResults.isEmpty()==true) && objOrderCreateObject.ReceiveLineButton.isEnabled())
+					{
+						objOrderCreateObject.ReceiveFullButton.click();
+						
+						
+					  String ReceivingMethod="RECEIVE IN FULL";
+					objOrderCreateObject.NextButton.click();
+					try 
+					{
+						waitForJSandJQueryToLoad(driver);
+						objOrderCreateObject.NotRangedAcpt.click();
+						//objOrderCreateObject.NotRangedPopFinal.click();
+						htmlToExtent(cName,mName,extLogger,driver, "**** Not Ranged articles are accepted while receiving the order ****;;;Pass");
+					}
+					catch (Exception e1)
+					{
+						htmlToExtent(cName,mName,extLogger,driver, "**** Not Ranged articles are not avaliable in order ****;;;Pass");
+					}
+					
+					List<List<Object>> ReceivingSummaryList = new ArrayList<List<Object>>();
+					List<List<Object>> ReceivingSummaryList1 = new ArrayList<List<Object>>();
+					
+					ReceivingSummaryList=getValuesFromTable(objOrderCreateObject.ReceivingSummary);
+					
+					int size1=ReceivingSummaryList.size();
+					System.out.println(ReceivingSummaryList);
+					
+					ReceivingSummaryList1.addAll(StringToListCreation(ReceivingSummaryList.get(0).get(1).toString()));
+					for(int i=1;size1>i;i++)
+					{
+						
+						String List=ReceivingSummaryList.get(i).get(1).toString()+":"+ReceivingSummaryList.get(i).get(3).toString();
+						ReceivingSummaryList1.addAll(StringToListCreation(List));
+						
+					}
+					
+					System.out.println(ReceivingSummaryList1);
+					List<List<Object>> ReceivingSummaryDBList = new ArrayList<List<Object>>();
+					String username = getContext().getStringProperty("username");
+					List<List<Object>> ReceivingSummaryDBList1 = new ArrayList<List<Object>>();
+					ReceivingSummaryDBList1.addAll(StringToListCreation(username));
+					String ReceivedQTY=data.getText("SumOfQTy").replace("ord_no",Ordnumber);
+					ReceivingSummaryDBList=sql.executeQuery(getContext(), ReceivedQTY);
+					String List2=decimalFormat1(ReceivingSummaryDBList.get(0).get(0).toString())+":"+decimalFormat1(ReceivingSummaryDBList.get(0).get(1).toString());   
+					ReceivingSummaryDBList1.addAll(StringToListCreation(List2));
+					ReceivingSummaryDBList1.addAll(StringToListCreation(List2));
+					System.out.println(ReceivingSummaryDBList1);
+					
+					htmlToExtent(cName,mName,extLogger,driver, "**** Comparing the details in final summary screen (Received By,Total Articles Ordered,Total Cartons Ordered,Total Articles Received,Total Cartons Received) ****;;;Pass");
+					ElementContains1(cName,mName,extLogger,driver,ReceivingSummaryList1,ReceivingSummaryDBList1);
+					try {
+						objOrderCreateObject.PostNow.isEnabled() ;
+						verticalScroll(driver);
+						objOrderCreateObject.SubmitButton.click();
+						objOrderCreateObject.continueButton.click();
+						
+					} catch (Exception e1) {
+						objOrderCreateObject.PostNow.click();
+						verticalScroll(driver);
+						objOrderCreateObject.SubmitButton.click();objOrderCreateObject.continueButton.click();
+						objOrderCreateObject.SucessMsg.click();
+					} 
+					if(objOrderCreateObject.SucessMsg.isDisplayed())
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Order received sucessfully ;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver,"Issue in order receiving unable to proceed ;;;Fail");
+					}
+					waitForJSandJQueryToLoad(driver);
+					objOrderCreateObject.SucessMsg.click();
+				    verticalScroll(driver);
+					List<List<Object>> RceivedNewSOH = new ArrayList<List<Object>>();
+					List<List<Object>> RceivedNewSOHFinal = new ArrayList<List<Object>>();
+					for(int i=0;OrdItemListAppFinal.size()>i;i++)
+					{
+						String[] RWSOH=OrdItemListAppFinal.get(i).get(3).toString().split("\\s");
+						String QTY=RWSOH[0];
+						if(OrdItemListAppFinal.get(i).get(3).toString().contains("("))
+						{
+							 String Weight =RWSOH[3];
+							 String RWSOHAPP=OrdItemListAppFinal.get(i).get(0).toString()+":"+Weight+":"+QTY;
+							 RceivedNewSOH.addAll(StringToListCreation(RWSOHAPP));
+						}
+						else
+						{
+							 String SOHListApp=OrdItemListAppFinal.get(i).get(0).toString()+":"+QTY+":"+"0";
+							 RceivedNewSOH.addAll(StringToListCreation(SOHListApp));
+							 System.out.println(RceivedNewSOH);
+						}
+					}
+					RceivedNewSOHFinal.addAll(RceivedNewSOH);
+					System.out.println(ArticleSOHList1);
+					System.out.println(RceivedNewSOHFinal);
+					List<List<Object>> FinalSOH=new ArrayList<List<Object>>();
+					for (int i=0;ArticleSOHList1.size()>i;i++)
+					{
+						for (int j=0;RceivedNewSOHFinal.size()>j;j++)
+						{
+							if(ArticleSOHList1.get(i).get(0).toString().equals(RceivedNewSOHFinal.get(j).get(0).toString()))
+							{
+								float a = Float.parseFloat(ArticleSOHList1.get(i).get(1).toString())+
+										Float.parseFloat(RceivedNewSOHFinal.get(j).get(1).toString());
+                              float b=Float.parseFloat(ArticleSOHList1.get(i).get(2).toString())+Float.parseFloat(RceivedNewSOHFinal.get(j).get(2).toString());
+								String AddSOH=ArticleSOHList1.get(i).get(0).toString()+":"+String.format("%.03f", a)+":"+String.format("%.03f", b);
+								FinalSOH.addAll(StringToListCreation(AddSOH));
+							}
+						}
+					}
+					System.out.println(FinalSOH);
+					System.out.println(ArticleSOHList1);
+					htmlToExtent(cName,mName,extLogger,driver, "**** Comparing the  actual SOH in local and expeted SOH after receiving(Article No,Received QTY,Received weight)   ****;;;Pass");
+					List<List<Object>> ArticleSOH=new ArrayList<List<Object>>();
+					List<List<Object>> FinalDBArticleSOHList=new ArrayList<List<Object>>();
+					for (int i=0;i<FinalSOH.size();i++)
+					{
+						String SOH=data.getText("SOHFinal").replace("art_no",FinalSOH.get(i).get(0).toString());
+						ArticleSOH= sql.executeQuery(getContext(), SOH);
+						FinalDBArticleSOHList.addAll(ArticleSOH);
+					}
+					ElementContains1(cName,mName,extLogger,driver,FinalDBArticleSOHList,FinalSOH);
+					List<List<Object>> ReceivedFinalSummary1=new ArrayList<List<Object>>();
+					ReceivedFinalSummary1=getValuesFromTable(objOrderCreateObject.ReceivedFinalSummary);
+					List OrdHeaderListAppRecived = new ArrayList(); OrdHeaderList2.clear();
+					OrdHeaderListAppRecived.add(ReceivedFinalSummary1.get(0).get(5).toString());
+					OrdHeaderListAppRecived.add(ReceivedFinalSummary1.get(1).get(1).toString());
+					OrdHeaderListAppRecived.add(ReceivedFinalSummary1.get(1).get(5).toString());
+					//OrdHeaderListAppRecived.add(ReceivedFinalSummary1.get(2).get(1).toString());
+				    OrdHeaderListAppRecived.add(objOrderCreateObject.ReceivedChiledTemp.getText());
+				    OrdHeaderListAppRecived.add(objOrderCreateObject.ReceivedFrozenTemp.getText());
+					OrdHeaderListAppRecived.add(objOrderCreateObject.RecivedInvoiceNo.getText());
+					//OrdHeaderListAppRecived.add(objOrderCreateObject.RceivedUser.getText());
+					OrdHeaderListAppRecived.add(objOrderCreateObject.ReceiveByMethod.getText());
+					   
+					   OrdHeaderList2.add(OrdHeaderListAppRecived);
+					   
+					   System.out.println(OrdHeaderList2);
+					   
+					  // Received By,Total Articles Ordered,Total Cartons Ordered,Total Articles Received,Total Cartons Received
+					   List<List<Object>> OrdHeaderListDBRecived = new ArrayList<List<Object>>();
+					   
+					   
+					   String d=null;
+					   for(int i=0;FinalSOH.size()>i;i++)
+					   {
+						   float c=Float.parseFloat(FinalSOH.get(i).get(2).toString());
+						   
+						    c=c++;
+						    d=Float.toString(c);
+						   
+					   }
+					   String DBList=ReceivingSummaryDBList1.get(1).get(0).toString()+":"
+					   +ReceivingSummaryDBList1.get(1).get(1).toString()
+							   +":"+ReceivingSummaryDBList1.get(2).get(1).toString()/*+":"+d*/+":"+ChilledTempNo+":"+FrozenTempNo+":"+XmlInovice+":"/*+
+					   ReceivingSummaryDBList1.get(0).get(0).toString()+":"*/+ReceivingMethod;
+					   OrdHeaderListDBRecived.addAll(StringToListCreation(DBList));
+					System.out.println(OrdHeaderListDBRecived);
+					
+					htmlToExtent(cName,mName,extLogger,driver, "**** Comparing the Order summary details after received the order(Total Articles,Total Cartons Ordered,Total Cartons Received,Total Weight Received,Received temperature,Invoice,Docket No,Receiving method  ****;;;Pass");
+					
+					ElementContains1(cName,mName,extLogger,driver,OrdHeaderList2,OrdHeaderListDBRecived);
+					
+					htmlToExtent(cName,mName,extLogger,driver, "**** Comparing the ordered Qty and received Qty  ****;;;Pass");
+					
+					List<List<Object>> ReceivedItemQTY=new ArrayList<List<Object>>();
+					List<List<Object>> ReceivedItemOrderedQTYFinal=new ArrayList<List<Object>>();
+					List<List<Object>> ReceivedItemReceivedQTYFinal=new ArrayList<List<Object>>();
+					
+					objOrderCreateObject.ClearGroup.click();
+					ReceivedItemQTY=getValuesFromTable(objOrderCreateObject.ReceivedItemDetails);
+					
+					
+					for(int i=0;ReceivedItemQTY.size()>i;i++)
+					{
+					String OrderedQty=ReceivedItemQTY.get(i).get(4).toString() +":"+ReceivedItemQTY.get(i).get(5).toString();
+					String ReceivedQty=ReceivedItemQTY.get(i).get(8).toString() +":"+ReceivedItemQTY.get(i).get(9).toString();
+					
+					ReceivedItemOrderedQTYFinal.addAll(StringToListCreation(OrderedQty));
+					ReceivedItemReceivedQTYFinal.addAll(StringToListCreation(ReceivedQty));
+					}
+					ElementContains1(cName,mName,extLogger,driver,ReceivedItemOrderedQTYFinal,ReceivedItemReceivedQTYFinal);
+					
+					scrollUp(driver);
+					scrollToElement(objOrderCreateObject.UpdateOptionButton);
+					objOrderCreateObject.UpdateOptionButton.click();
+					objOrderCreateObject.AddMissing.click();
+					List<List<Object>> AddMissingRWArticle=new ArrayList<List<Object>>();
+					String VendorNp=data.getText("VendorNo").replace("Order_no",Ordnumber);
+					List<List<Object>> VendorNoList=new ArrayList<List<Object>>();
+					VendorNoList=sql.executeQuery(getContext(), VendorNp);
+					String RWArticle=data.getText("RWArticle1").replace("Vendor_No",VendorNoList.get(0).get(0).toString());
+					List<List<Object>> HAWAArticleList=new ArrayList<List<Object>>();
+					String HAWAArticle=data.getText("HAWA1").replace("Vendor_No",VendorNoList.get(0).get(0).toString());
+					HAWAArticleList=sql.executeQuery(getContext(), HAWAArticle);
+					AddMissingRWArticle=sql.executeQuery(getContext(), RWArticle);
+					 int j=0;int k=0; String RWArticleNo1=null;
+					 for (int i = 0; AddMissingRWArticle.size() > i; i++) 
+					 {
+						 k=0;
+						 for( j=0;ReceivedItemQTY.size()>j;j++)
+						 {
+							 if (AddMissingRWArticle.get(i).get(0).toString()!=ReceivedItemQTY.get(j).get(0).toString()) 
+							 {
+								 k++;
+							 }
+						 }
+						 if(ReceivedItemQTY.size()==k)
+						 {
+						   objOrderCreateObject.ArticleNo.clear();
+							 objOrderCreateObject.ArticalQTY.clear();
+							 
+							 objOrderCreateObject.ArticleNo.sendKeys(AddMissingRWArticle.get(i).get(0).toString());
+							 objOrderCreateObject.ArticalQTY.sendKeys("10");
+							 objOrderCreateObject.SearchAndAdd.click();
+							 waitForJSandJQueryToLoad(driver);
+							 try{
+							/* if(objOrderCreateObject.errorMseg.isDisplayed())
+							 {*/
+								 objOrderCreateObject.errorMseg.isDisplayed();
+								 objOrderCreateObject.errorMseg.click();
+								 waitFor(1);
+								 continue;
+							 //}
+							 }
+							 
+							 catch(Exception e1){
+									htmlToExtent(cName,mName,extLogger,driver, "New random weight article added successfully in received order updation:"+AddMissingRWArticle.get(i).get(0).toString()+";;;Pass");
+                                   RWArticleNo1=AddMissingRWArticle.get(i).get(0).toString();
+
+								 break;
+								 
+							 }
+						 }
+						 
+					 }
+					 
+					String hawaArtNo=null;
+					 for (int i = 0; HAWAArticleList.size() > i; i++) 
+					 {
+						 k=0;
+						 for( j=0;ReceivedItemQTY.size()>j;j++)
+						 {
+							 if (HAWAArticleList.get(i).get(0).toString()!=ReceivedItemQTY.get(j).get(0).toString()) 
+							 {
+								 k++;
+							 }
+						 }
+						 if(ReceivedItemQTY.size()==k)
+						 {
+							 objOrderCreateObject.ArticleNo.clear();
+							objOrderCreateObject.ArticalQTY.clear();
+							 objOrderCreateObject.ArticleNo.sendKeys(HAWAArticleList.get(i).get(0).toString());
+							 objOrderCreateObject.ArticalQTY.sendKeys("10");
+							 
+							 objOrderCreateObject.SearchAndAdd.click();
+							 waitForJSandJQueryToLoad(driver);
+							 try{
+									/* if(objOrderCreateObject.errorMseg.isDisplayed())
+									 {*/
+										 objOrderCreateObject.errorMseg.isDisplayed();
+										 objOrderCreateObject.errorMseg.click();
+										 waitFor(1);
+										 continue;
+									 //}
+									 }
+									 
+									 catch(Exception e1){
+								 htmlToExtent(cName,mName,extLogger,driver, "New HAWA article added successfully in received order updation :"+HAWAArticleList.get(i).get(0).toString()+";;;Pass");
+                                 hawaArtNo=HAWAArticleList.get(i).get(0).toString();
+								 break;
+							 }
+						 }
+					 }
+					
+					 List<List<Object>> UpdateItemList= UpdateItemDetailsFuntion(objOrderCreateObject.updatedArticleDetails,driver);
+					 waitFor(1);
+					 verticalScroll(driver);
+					 for(int i=0;i<FinalSOH.size();i++)
+					 {
+					 if(ArticleTypeList.get(i).get(1).toString().equals("Y"))
+					 {
+						 WebElement RWArticleNo = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.AtricleNo, i, driver);
+						
+						if(ArticleTypeList.get(i).get(0).toString().equals(RWArticleNo.getText())) 
+						{
+							
+							String ArtNo=ArticleTypeList.get(i).get(0).toString();
+						    WebElement RWArticleQTY = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.ArticleRWQty, i, driver);
+						    RWArticleQTY.clear();
+						    RWArticleQTY.sendKeys("20");
+						    WebElement RWArticleWeight = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.ArticleRWWeight, i, driver);
+						    RWArticleWeight.clear();
+						    RWArticleWeight.sendKeys("50.258");
+						    htmlToExtent(cName,mName,extLogger,driver, "QTY and Weight updated for article :"+getText(RWArticleNo)+" with QTY 20 and weight 50.258;;;Pass");
+						}
+					 }
+					 
+					 try
+					 {
+						 if((objOrderCreateObject.TotalWeightMsg.isDisplayed()))
+								 {
+						 WebElement RWArticleNo = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.AtricleNo, 1, driver);
+						 objOrderCreateObject.TotalQty.clear();
+						 objOrderCreateObject.TotalQty.sendKeys("20");
+						 htmlToExtent(cName,mName,extLogger,driver, "QTY changed for weighted article :"+getText(RWArticleNo)+" with QTY of 20;;;Pass");
+						 //objOrderCreateObject.TotalUpdatedUnits.click();
+						 
+								 }
+					 }
+					 catch (Exception e2){
+						 WebElement RWArticleNo = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.AtricleNo, 1, driver);
+						 String ArtNo=ArticleTypeList.get(i).get(0).toString();
+						 objOrderCreateObject.TotalQty.clear();
+						 objOrderCreateObject.TotalQty.sendKeys("20"); 
+						 htmlToExtent(cName,mName,extLogger,driver, "QTY changed for article :"+getText(RWArticleNo)+" with QTY of 25;;;Pass");
+						
+					 }
+					 }
+					 waitFor(2);
+					 Actions act = new Actions(driver);
+					verticalScroll(driver);
+					act.moveToElement(objOrderCreateObject.HeaderBar).click();
+					objOrderCreateObject.CloseButton.click();
+					 List<List<Object>> UpdateItemList1= UpdateItemDetailsFuntion(objOrderCreateObject.updatedArticleDetails,driver);
+					 List<List<Object>> LocalSOHList= LocalSOHFunction(UpdateItemList1,driver);
+					 System.out.println(UpdateItemList1);
+					 System.out.println(LocalSOHList);
+					 int g;
+					 for(int k1=0;k1<LocalSOHList.size();k1++)
+					 {
+						 if(LocalSOHList.get(k1).get(0).toString().equals(RWArticleNo1))
+						 {
+							 
+							 for(int s=0;s<UpdateItemList1.size();s++)
+							 {
+							 
+								if (LocalSOHList.get(s).get(0).toString().equals(RWArticleNo1))
+								{
+                           float weight1=Float.parseFloat(UpdateItemList.get(s).get(1).toString());
+                           float QTY1=Float.parseFloat(UpdateItemList.get(s).get(2).toString());
+							 LocalSOHList.get(k1).set(1, (String.format("%.03f", Float.parseFloat( LocalSOHList.get(k1).get(1).toString())+weight1)));
+							 LocalSOHList.get(k1).set(2, (String.format("%.03f",Float.parseFloat( LocalSOHList.get(k1).get(2).toString())+QTY1)));
+							 
+							 System.out.println(LocalSOHList);
+								}
+							 
+							 }	
+						 }
+						 else
+						 {
+							 if(LocalSOHList.get(k1).get(0).toString().equals(hawaArtNo))
+							 {
+								 LocalSOHList.get(k1).set(1, (String.format("%.03f",Float.parseFloat( LocalSOHList.get(k1).get(1).toString())+Float.parseFloat(UpdateItemList1.get(k1).get(2).toString()))));
+
+							 }
+						 }
+					 }
+					 for(int p=0;p<UpdateItemList1.size();p++)
+					 {
+						 for(int z=0;z<UpdateItemList.size();z++)
+						 {
+							 if(UpdateItemList1.get(p).get(0).toString().equals(UpdateItemList.get(z).get(0).toString()))
+							 {
+								 double ss=Double.parseDouble(UpdateItemList1.get(p).get(1).toString())- Double.parseDouble(UpdateItemList.get(z).get(1).toString());
+								 if(ss!=0)
+								 {
+									 float weight2=Float.parseFloat(UpdateItemList1.get(p).get(1).toString())-Float.parseFloat(UpdateItemList.get(p).get(1).toString());
+			                            float QTY2=Float.parseFloat(UpdateItemList1.get(p).get(2).toString())-Float.parseFloat(UpdateItemList.get(p).get(2).toString());
+									 for(int m=0;m<LocalSOHList.size();m++)
+									 {
+									     if(LocalSOHList.get(m).get(0).toString().equals(UpdateItemList1.get(p).get(0).toString()))
+									     {
+										 LocalSOHList.get(m).set(1, (String.format("%.03f",Float.parseFloat( LocalSOHList.get(m).get(1).toString())+weight2)));
+										 LocalSOHList.get(m).set(2, (String.format("%.03f",Float.parseFloat( LocalSOHList.get(m).get(2).toString())+QTY2)));
+										
+									     }
+									 }
+								 }
+								 
+							 }
+						 }
+					 }
+					 System.out.println(LocalSOHList);
+					// List<List<Object>> LocalSOHList1= LocalSOHFunction(UpdateItemList1,driver);
+					
+					 objOrderCreateObject.saveButton.click();
+					 objOrderCreateObject.YesOption.click();
+					 waitForJSandJQueryToLoad(driver);
+					 List<List<Object>> LocalSOHList1= LocalSOHFunction(UpdateItemList1,driver);
+					 System.out.println(LocalSOHList1);
+					 htmlToExtent(cName,mName,extLogger,driver, "**** Comparing the local excpeted SOH  and actual SOH after updation of received order(ArticleNo,Rceived QTY,Received weight ****;;;Pass");
+					 ElementContains1(cName,mName,extLogger,driver,LocalSOHList1,LocalSOHList);
+					 objOrderCreateObject.UpdateSuccessMsg.click();
+					 verticalScroll(driver);
+					 waitForJSandJQueryToLoad(driver);
+					 objOrderCreateObject.ClearGroup.click();
+					 List<List<Object>> UpdateItemListAfterUpdation= UpdateItemDetailsFuntion(objOrderCreateObject.ItemDetailsAfterUpd,driver);
+					 htmlToExtent(cName,mName,extLogger,driver, "**** Comparing the item details after updation in order details(Article No,Total received QTY(EA),Totale received Weight(Kg)  ****;;;Pass");
+					 ElementContains1(cName,mName,extLogger,driver,UpdateItemList1,UpdateItemListAfterUpdation);
+					 htmlToExtent(cName,mName,extLogger,driver, "**** Received order updation successfully in Browser****;;;Pass");
+					 
+//QTY updation for all article in Po
+					 
+					    htmlToExtent(cName,mName,extLogger,driver, "**** Updating the received PO order 2nd time by decreasing the QTY for all article  ****;;;Pass");
+					    scrollUp(driver);
+						scrollToElement(objOrderCreateObject.UpdateOptionButton);
+						objOrderCreateObject.UpdateOptionButton.click();
+						List<List<Object>> UpdateOrderDeatils1=new ArrayList<List<Object>>();
+						List<List<Object>> UpdateOrderDeatils2=new ArrayList<List<Object>>();
+						UpdateOrderDeatils1=getValuesFromTable(objOrderCreateObject.updatedArticleDetails);
+						System.out.println(UpdateOrderDeatils1);
+					    System.out.println(LocalSOHList);
+					    List<List<Object>> UpdateItemList3= UpdateItemDetailsFuntion(objOrderCreateObject.updatedArticleDetails,driver);
+					    System.out.println(UpdateItemList3);
+					    waitForJSandJQueryToLoad(driver);
+						for(int i=1;i<=UpdateOrderDeatils1.size();i++)
+						{
+							waitFor(2);
+							WebElement ArticleNo = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.ArtNo, i, driver);
+							for(int p=0;p<UpdateOrderDeatils1.size();p++)
+							{
+							try {
+								if(UpdateOrderDeatils1.get(p).get(0).toString().equals(ArticleNo.getText()))
+								{
+									WebElement QTY = prepareWebElementWithDynamicXpathWithString(objOrderCreateObject.ArtQTy, ArticleNo.getText(), driver);
+									WebElement Weight = prepareWebElementWithDynamicXpathWithString(objOrderCreateObject.ArtRWWeight, ArticleNo.getText(), driver);
+									String newQty =Float.toString(Float.parseFloat(QTY.getAttribute("value"))+10);
+									String newWeight =Float.toString(Float.parseFloat(Weight.getAttribute("value"))+10);
+									QTY.clear();
+									QTY.sendKeys(newQty);
+									Weight.clear();
+									Weight.sendKeys(newWeight);
+									ArticleNo.click();	
+								}
+							}
+							catch (Exception e2)
+							{
+								waitForJSandJQueryToLoad(driver);
+								ArticleNo.click();
+								 waitFor(2);
+								WebElement QTY = prepareWebElementWithDynamicXpathWithString(objOrderCreateObject.ArtQTy, ArticleNo.getText(), driver);
+								String newQty =Float.toString(Float.parseFloat(QTY.getAttribute("value"))+10);
+								QTY.clear();
+								QTY.sendKeys(newQty);
+								ArticleNo.click();		
+							}
+						}	
+						}
+						List<List<Object>> UpdateItemList2= UpdateItemDetailsFuntion(objOrderCreateObject.updatedArticleDetails,driver);
+						System.out.println(UpdateItemList2);
+						System.out.println(LocalSOHList1);
+						for (int f=0;f<UpdateItemList2.size();f++)
+						{
+							for(int s=0;s<LocalSOHList1.size();s++){
+							if(UpdateItemList3.get(f).get(0).toString().equals(LocalSOHList1.get(s).get(0).toString()))
+							{
+								float ArtQTY=Float.parseFloat(UpdateItemList2.get(f).get(1).toString())-Float.parseFloat(UpdateItemList3.get(f).get(1).toString());
+	                            float QTYPI=Float.parseFloat(UpdateItemList2.get(f).get(2).toString())-Float.parseFloat(UpdateItemList3.get(f).get(2).toString());
+						        LocalSOHList1.get(s).set(1, (String.format("%.03f", Float.parseFloat( LocalSOHList1.get(s).get(1).toString())+ArtQTY)));
+						        LocalSOHList1.get(s).set(2, (String.format("%.03f", Float.parseFloat( LocalSOHList1.get(s).get(2).toString())+QTYPI)));
+							}
+						}
+						}
+						 objOrderCreateObject.saveButton.click();
+						 objOrderCreateObject.YesOption.click();
+						 waitForJSandJQueryToLoad(driver);
+						 List<List<Object>> LocalSOHList2= LocalSOHFunction(UpdateItemList1,driver);
+						 System.out.println(LocalSOHList2);	
+						 htmlToExtent(cName,mName,extLogger,driver, "**** Comparing the SOH values after updation (Increased) for all articles(Article No,Total received QTY(EA),Totale received Weight(Kg)  ****;;;Pass");
+						 ElementContains1(cName,mName,extLogger,driver,LocalSOHList2,LocalSOHList1);
+						 
+//Qty decresing the for all article in PO						 
+						 objOrderCreateObject.UpdateSuccessMsg.click();
+						 verticalScroll(driver);
+						 waitForJSandJQueryToLoad(driver);
+						 htmlToExtent(cName,mName,extLogger,driver, "**** Updating the received PO order 3rd time by decresing the QTY for all article  ****;;;Pass");
+						 scrollUp(driver);
+						 scrollToElement(objOrderCreateObject.UpdateOptionButton);
+						 objOrderCreateObject.UpdateOptionButton.click();
+					     List<List<Object>> UpdateOrderDeatil1=new ArrayList<List<Object>>();
+						 List<List<Object>> UpdateOrderDeatil2=new ArrayList<List<Object>>();
+						 UpdateOrderDeatil1=getValuesFromTable(objOrderCreateObject.updatedArticleDetails);
+						 System.out.println(UpdateOrderDeatils1);
+						 System.out.println(LocalSOHList);
+						 List<List<Object>> UpdateItemList5= UpdateItemDetailsFuntion(objOrderCreateObject.updatedArticleDetails,driver);
+						 System.out.println(UpdateItemList5);
+						 waitForJSandJQueryToLoad(driver);
+						 waitFor(2);
+							for(int i=1;i<=UpdateOrderDeatils1.size();i++)
+							{
+								WebElement ArticleNo = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.ArtNo, i, driver);
+								for(int p=0;p<UpdateOrderDeatil1.size();p++)
+								{
+								try {
+									
+									if(UpdateOrderDeatil1.get(p).get(0).toString().equals(ArticleNo.getText()))
+									{
+										WebElement QTY = prepareWebElementWithDynamicXpathWithString(objOrderCreateObject.ArtQTy, ArticleNo.getText(), driver);
+										WebElement Weight = prepareWebElementWithDynamicXpathWithString(objOrderCreateObject.ArtRWWeight, ArticleNo.getText(), driver);
+										String newQty =Float.toString(Float.parseFloat(QTY.getAttribute("value"))-5);
+										String newWeight =Float.toString(Float.parseFloat(Weight.getAttribute("value"))-5);
+										QTY.clear();
+										QTY.sendKeys(newQty);
+										Weight.clear();
+										Weight.sendKeys(newWeight);
+										ArticleNo.click();
+										
+									}
+									else
+									{
+										continue; 
+									}
+									
+								}
+								catch (Exception e2)
+								{
+									waitForJSandJQueryToLoad(driver);
+									 waitFor(2);
+									WebElement QTY = prepareWebElementWithDynamicXpathWithString(objOrderCreateObject.ArtQTy, ArticleNo.getText(), driver);
+									String newQty =Float.toString(Float.parseFloat(QTY.getAttribute("value"))-5);
+									QTY.clear();
+									QTY.sendKeys(newQty);
+									ArticleNo.click();		
+								}
+							}	
+							}
+							List<List<Object>> UpdateItemList6= UpdateItemDetailsFuntion(objOrderCreateObject.updatedArticleDetails,driver);
+							System.out.println(UpdateItemList6);
+							System.out.println(LocalSOHList1);
+							for (int f=0;f<UpdateItemList2.size();f++)
+							{
+								for(int s=0;s<LocalSOHList1.size();s++){
+								if(UpdateItemList3.get(f).get(0).toString().equals(LocalSOHList1.get(s).get(0).toString()))
+								{
+									float ArtQTY=Float.parseFloat(UpdateItemList5.get(f).get(1).toString())-Float.parseFloat(UpdateItemList6.get(f).get(1).toString());
+		                            float QTYPI=Float.parseFloat(UpdateItemList5.get(f).get(2).toString())-Float.parseFloat(UpdateItemList6.get(f).get(2).toString());
+							        LocalSOHList1.get(s).set(1, (String.format("%.03f", Float.parseFloat( LocalSOHList1.get(s).get(1).toString())-ArtQTY)));
+							        LocalSOHList1.get(s).set(2, (String.format("%.03f", Float.parseFloat( LocalSOHList1.get(s).get(2).toString())-QTYPI)));
+								}
+							}
+							}
+							 objOrderCreateObject.saveButton.click();
+							 objOrderCreateObject.YesOption.click();
+							 waitForJSandJQueryToLoad(driver);
+							 List<List<Object>> LocalSOHListFianl= LocalSOHFunction(UpdateItemList1,driver);
+							 System.out.println(LocalSOHListFianl);	
+							 htmlToExtent(cName,mName,extLogger,driver, "**** Comparing the SOH values after updation (Decreased) for all articles(Article No,Total received QTY(EA),Totale received Weight(Kg)  ****;;;Pass");
+							 ElementContains1(cName,mName,extLogger,driver,LocalSOHListFianl,LocalSOHList1);
+							 
+						 
+					 
+					}
+					
+					
+					else{
+						//for exception validation
+					}
+				}
+			}
+			
+			else{
+				
+				htmlToExtent(cName,mName,extLogger,driver,"Order number in header details are displaying wrong ;;;Fail");
+			}
+			
+		
+		}
+		}
+		else 
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Order and Status  details are not available correctly in Browser "+Ordnumber+";;;Fail");
+
+		}
+}
+	public List<List<Object>> UpdateItemDetailsFuntion(List<WebElement> expath,WebDriver driver)
+	{
+	List<List<Object>> UpdatedPageItemDetails=new ArrayList<List<Object>>();
+	 List<List<Object>> UpdatedPageItemDetails1=new ArrayList<List<Object>>();
+	 UpdatedPageItemDetails=getValuesFromTable(expath);
+	 System.out.println(UpdatedPageItemDetails);
+	 
+	 for(int i=0;i< UpdatedPageItemDetails.size();i++)
+	 {
+		 String[] RWQTY=UpdatedPageItemDetails.get(i).get(9).toString().split("\\s");
+
+		 try
+		 {
+			 
+			 String QTY=RWQTY[2].replace("(","");
+			 String articleDetails=UpdatedPageItemDetails.get(i).get(0)+":"+ RWQTY[0]+":"+QTY;
+			 UpdatedPageItemDetails1.addAll(StringToListCreation(articleDetails));
+			 
+		 }
+		 catch (Exception e1)
+		 {
+			
+				 String articleDetails=UpdatedPageItemDetails.get(i).get(0)+":"+RWQTY[0] +":"+0.000; 
+				 UpdatedPageItemDetails1.addAll(StringToListCreation(articleDetails));
+				 
+		 }
+	 }
+	 
+	 return UpdatedPageItemDetails1;
+	}
+	
+	public List<List<Object>> UpdateItemDetailsFuntion1(List<WebElement> expath,WebDriver driver)
+	{
+	List<List<Object>> UpdatedPageItemDetails=new ArrayList<List<Object>>();
+	 List<List<Object>> UpdatedPageItemDetails1=new ArrayList<List<Object>>();
+	 UpdatedPageItemDetails=getValuesFromTable(expath);
+	 System.out.println(UpdatedPageItemDetails);
+	 
+	 for(int i=0;i< UpdatedPageItemDetails.size();i++)
+	 {
+		 String[] RWQTY=UpdatedPageItemDetails.get(i).get(10).toString().split("\\s");
+
+		 try
+		 {
+			 
+			 String QTY=RWQTY[2].replace("(","");
+			 String articleDetails=UpdatedPageItemDetails.get(i).get(0)+":"+ QTY+":"+RWQTY[0];
+			 UpdatedPageItemDetails1.addAll(StringToListCreation(articleDetails));
+			 
+		 }
+		 catch (Exception e1)
+		 {
+			
+				 String articleDetails=UpdatedPageItemDetails.get(i).get(0)+":"+RWQTY[0] +":"+0.000; 
+				 UpdatedPageItemDetails1.addAll(StringToListCreation(articleDetails));
+				 
+		 }
+	 }
+	 
+	 return UpdatedPageItemDetails1;
+	}
+	
+	public List<List<Object>> LocalSOHFunction(List<List<Object>> FinalLocalSOH,WebDriver driver) throws  SQLException, IOException, AWTException, ParseException
+	{
+	
+	List<List<Object>> ArticleList=new ArrayList<List<Object>>();
+	List<List<Object>> ArticleSOH=new ArrayList<List<Object>>();
+	
+	for (int i=0;i<FinalLocalSOH.size();i++)
+	{
+		String SOH=data.getText("SOHFinal").replace("art_no",FinalLocalSOH.get(i).get(0).toString());
+		ArticleSOH= sql.executeQuery(getContext(), SOH);
+		
+		ArticleList.addAll(ArticleSOH);
+		for(int b=0;b<ArticleList.size();b++)
+		{
+			if(ArticleList.get(b).get(2)==null)
+			{
+				ArticleList.get(b).set(2, 0.000);
+			}
+		}
+	}
+	return ArticleList;
+	}
+	
+	
+
+}
+   		
+   	

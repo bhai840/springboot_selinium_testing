@@ -1,0 +1,1131 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.InstoreClearanceObject;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.InstoreClearancePage1;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+public class InstoreClearanceTest1 extends TestBase {
+	
+	private Logger log = LogManager.getLogger(InstoreClearanceTest.class);
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	InstoreClearancePage1 objInstorePage1;
+	InstoreClearanceObject objInstoreObjects;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;			
+	List<List<Object>> result;
+	List<List<Object>> result_temp;
+	public static WebDriver driver;
+	public static XMLDataReader data;
+	public String returnedString;
+	
+	
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+    int count=0;		
+	int MCcount=0;
+	public static boolean isFirstTest=true;
+	
+	String freshfood = "('25','30','40','45','47','55')";
+	String nonfreshfood = "('20','27','05','15','28','10','00')"; 
+	
+	public InstoreClearanceTest1(){
+		super.log=log;
+	}
+	
+	
+	public void deletePromotionTable() throws SQLException{
+		
+		List<List<Object>> deleteResult = new ArrayList<List<Object>>();
+		String deletePromo = data.getText("deleteQuery");
+		deleteResult = sql.executeQuery(getContext(), deletePromo);	
+		
+	}
+	
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Store Manager for FRESH FOOD article")
+	public void MaxDurationSMFF() //throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSM(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("freshfood", freshfood);;
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Department Manager for FRESH FOOD article")
+   public void MaxDurationDMFF() //throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreDM(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("freshfood", freshfood);;;
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Office Supervisor for FRESH FOOD article")
+	public void MaxDurationOSFF() //throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}				
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOS(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("freshfood", freshfood);;;
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+		
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Office Assistant for FRESH FOOD article")
+	public void MaxDurationOAFF() //throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOA(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("freshfood", freshfood);;;
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString=objInstorePage1.MaxDuration(objInstoreObjects, Article,0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Team Member for FRESH FOOD article")
+	public void MaxDurationTMFF() //throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreTM(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("freshfood", freshfood);;;
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString=objInstorePage1.MaxDuration(objInstoreObjects, Article,0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Stock Take Manager for FRESH FOOD article")
+	public void MaxDurationSTFF() //throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSTM(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("freshfood", freshfood);;;
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+		
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Customer Assistance for FRESH FOOD article")
+	public void MaxDurationCAFF() //throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreCA(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("freshfood", freshfood);;;
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+		
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify the maximum duration for Business Review for Competition Promotion")
+	public void MaxDurationBRFF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreBR(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("freshfood", freshfood);;;
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify error message for maximum duration for FRESH FOOD article")
+	public void MaxDurationErrFF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+2;}
+
+		TestStatus status = getTestStatus();
+		try{
+			for(int i=0;i<=6;i++){
+				if(i ==0) {
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS STORE MANAGER-----------------;;;Pass");
+					navToInstoreSM(status);
+					navToUsers_DurationError1();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Store Manager;;;Pass");
+				}else if (i ==1){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS OFFICE ASSISTANT-----------------;;;Pass");
+					navToInstoreOA(status);
+					navToUsers_DurationError1();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Office Assistant;;;Pass");
+				}
+				else if (i ==2){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS OFFICE SUPERVISOR-----------------;;;Pass");
+					navToInstoreOS(status);
+					navToUsers_DurationError1();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Office Supervisor;;;Pass");
+				}else if (i ==3){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS TEAM MEMBER-----------------;;;Pass");
+					navToInstoreTM(status);
+					navToUsers_DurationError1();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Team Member;;;Pass");
+				}else if (i ==4){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS STOCKTAKE MANAGER-----------------;;;Pass");
+					navToInstoreSTM(status);
+					navToUsers_DurationError1();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for StockTake Manager;;;Pass");
+				}else if (i ==5){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS CUSTOMER ASSISTANT-----------------;;;Pass");
+					navToInstoreCA(status);
+					navToUsers_DurationError1();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Customer Assistant;;;Pass");
+				}else if (i ==6){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS DEPARTMENT MANAGER-----------------;;;Pass");
+					navToInstoreDM(status);
+					navToUsers_DurationError1();
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Department Manager;;;Pass");
+				}
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));}
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+		
+		/*navToInstore(status);
+		//List<List<Object>> results;
+		String Art = data.getText("article");
+		results = sql.executeQuery(getContext(), Art);
+		if(results.size()!=0){
+			int num = common.RandomFromDB(results);
+			String Article = results.get(num).get(0).toString();
+			objInstorePage1.MaxDuratioError(objInstoreObjects,Article);
+		}
+		
+		waitForJSandJQueryToLoad(driver);
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		status.assertAll();
+	}*/
+	
+	
+	//---------------------MAXIMUM DURATION FOR NON FRESH FOOD ARTICLES---------------
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Store Manager for NON FRESH FOOD article")
+	public void MaxDurationSMNF() //throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSM(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Department Manager for NON FRESH FOOD article")
+	public void MaxDurationDMNF()// throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreDM(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Office Supervisor for NON FRESH FOOD article")
+	public void MaxDurationOSNF() //throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOS(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+		
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Office Assistant for NON FRESH FOOD article")
+	public void MaxDurationOANF() //throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOA(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			//else
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Team Member for NON FRESH FOOD article")
+	public void MaxDurationTMNF() //throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreTM(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Stock Take Manager for NON FRESH FOOD article")
+	public void MaxDurationSTNF() //throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;} 
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSTM(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+		
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Customer Assistance for NON FRESH FOOD article")
+	public void MaxDurationCANF() //throws  IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}	
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreCA(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+				htmlToExtent(cName,mName,extLogger,driver,"Promotion with Maximum duration for CUSTOMER ASSISTANT has been created ;;;Pass");
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Business Review for NON FRESH FOOD article")
+	public void MaxDurationBRNF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreBR(status);
+			deletePromotionTable();
+			String Art = data.getText("article").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+				returnedString = objInstorePage1.MaxDuration(objInstoreObjects, Article,0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	
+	/*@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify maximum duration for Business Review for NON FRESH FOOD article")
+       public void MaxDurationBRNF() throws  IOException, AWTException, SQLException,  ParseException{
+			
+			TestStatus status = getTestStatus();
+			navToInstoreBA(status);
+			String Art = data.getText("article");
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num=common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstorePage1.MaxDuration(objInstoreObjects, Article,31);
+			}
+			
+			waitForJSandJQueryToLoad(driver);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+			status.assertAll();
+		}
+		
+	*/
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify error message for maximum duration for NON FRESH FOOD article")
+	public void MaxDurationErrNF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStore1ArtpreCount2==-1){
+		MCcount =MCcount+2;}
+		
+		TestStatus status = getTestStatus();
+	//	String users[] = new String[6];
+		try{
+		for(int i=0;i<=6;i++){
+			if(i ==0) {
+			htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS STORE MANAGER-----------------;;;Pass");
+			navToInstoreSM(status);
+			navToUsers_DurationError2();
+			htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Store Manager;;;Pass");
+		}else if (i ==1){
+			htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS OFFICE ASSISTANT-----------------;;;Pass");
+			navToInstoreOA(status);
+			navToUsers_DurationError2();
+			htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Office Assistant;;;Pass");
+		}
+		else if (i ==2){
+			htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS OFFICE SUPERVISOR-----------------;;;Pass");
+			navToInstoreOS(status);
+			navToUsers_DurationError2();
+			htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Office Supervisor;;;Pass");
+		}else if (i ==3){
+			htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS TEAM MEMBER-----------------;;;Pass");
+			navToInstoreTM(status);
+			navToUsers_DurationError2();
+			htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Team Member;;;Pass");
+		}else if (i ==4){
+			htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS STOCKTAKE MANAGER-----------------;;;Pass");
+			navToInstoreSTM(status);
+			navToUsers_DurationError2();
+			htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for StockTake Manager;;;Pass");
+		}else if (i ==5){
+			htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS CUSTOMER ASSISTANT-----------------;;;Pass");
+			navToInstoreCA(status);
+			navToUsers_DurationError2();
+			htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Customer Assistant;;;Pass");
+		}else if (i ==6){
+			htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS DEPARTMENT MANAGER-----------------;;;Pass");
+			navToInstoreDM(status);
+			navToUsers_DurationError2();
+			htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Department Manager;;;Pass");
+		}
+		
+		
+		
+		
+		//TestStatus status = getTestStatus();
+		//navToInstore(status);
+		//List<List<Object>> results;
+		//String Art = data.getText("article");
+		//results = sql.executeQuery(getContext(), Art);
+		//if(results.size()!=0){
+		//	int num = common.RandomFromDB(results);
+		//	String Article = results.get(num).get(0).toString();
+		//	objInstorePage1.MaxDuratioError(objInstoreObjects,Article);
+			//objInstorePage1.MaxDuration(objInstoreObjects, Article, 32);
+		//}else{
+		//	htmlToExtent(cName,mName,extLogger,driver,"No Data Found ;;;Fail");
+			
+		//}
+		//waitForJSandJQueryToLoad(driver);
+		//log.info("-----------------Logout from Application------------------");
+		//htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));
+		//status.assertAll();
+				
+	
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStore1ArtScenarios,inStore1Arttestname,driver));}
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+		}
+	
+	public void navToUsers_DurationError2() throws IOException, AWTException, SQLException,  ParseException{
+		deletePromotionTable();
+	String Art = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+	results = sql.executeQuery(getContext(), Art);
+	if(results.size()!=0){
+		int num = common.RandomFromDB(results);
+		String Article = results.get(num).get(0).toString();
+		objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+		objInstorePage1.MaxDuratioError(objInstoreObjects,Article,driver);
+		//objInstorePage1.MaxDuration(objInstoreObjects, Article, 32);
+	}else{
+		htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+	}}
+	
+	public void navToUsers_DurationError1() throws IOException, AWTException, SQLException,  ParseException{
+		deletePromotionTable();
+		String Art = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+		results = sql.executeQuery(getContext(), Art);
+		if(results.size()!=0){
+			int num = common.RandomFromDB(results);
+			String Article = results.get(num).get(0).toString();
+			objInstorePage1.DeletePreArticle(objInstoreObjects,driver);
+			objInstorePage1.MaxDuratioError(objInstoreObjects,Article,driver);
+			//objInstorePage1.MaxDuration(objInstoreObjects, Article, 32);
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+		}}
+	
+
+	//Login
+	public void navToInstoreSTM(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store: " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objInstorePage1 = loginPage.navToInstorePromotionSTM1(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store: " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objInstorePage1 = loginPage.navToInstorePromotionSTM1(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Clearance Promotion Page--------------------;;;Pass");
+			objInstorePage1.clickOnInstore(objInstoreObjects,driver);
+	}
+	
+	public void navToInstore(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objInstorePage1 = loginPage.navToInstorePromotiontester901(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objInstorePage1 = loginPage.navToInstorePromotiontester901(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Clearance Promotion Page--------------------;;;Pass");
+			objInstorePage1.clickOnInstore(objInstoreObjects,driver);
+	}
+	
+	
+	public void navToInstorePBD(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objInstorePage1 = loginPage.navToInstorePromotiontester901(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);					
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objInstorePage1 = loginPage.navToInstorePromotiontester901(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Clearance Promotion Page----------------;;;Pass");
+			objInstorePage1.clickOnInstore(objInstoreObjects,driver);
+	}
+	
+	public void navToInstoreDM(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application----------------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstorePage1 = loginPage.navToInstorePromotionDM1(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Clearance Promotion Page--------------;;;Pass");
+		objInstorePage1.clickOnInstore(objInstoreObjects,driver);
+	}
+	
+	public void navToInstoreTM(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstorePage1 = loginPage.navToInstorePromotionTM1(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Clearance Promotion Page--------------------;;;Pass");
+		objInstorePage1.clickOnInstore(objInstoreObjects,driver);
+	}
+	
+	public void navToInstoreCA(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstorePage1 = loginPage.navToInstorePromotionCA1(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Clearance Promotion Page--------------------;;;Pass");
+		objInstorePage1.clickOnInstore(objInstoreObjects,driver);
+	}
+	
+	public void navToInstoreOA(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstorePage1 = loginPage.navToInstorePromotionOA1(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Clearance Promotion Page--------------------;;;Pass");
+		objInstorePage1.clickOnInstore(objInstoreObjects,driver);
+	}
+	
+	public void navToInstoreOS(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstorePage1 = loginPage.navToInstorePromotionOS1(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Clearance Promotion Page--------------------;;;Pass");
+		objInstorePage1.clickOnInstore(objInstoreObjects,driver);
+	}
+	
+	public void navToInstoreSM(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstorePage1 = loginPage.navToInstorePromotionSM1(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Clearance Promotion Page--------------------;;;Pass");
+		objInstorePage1.clickOnInstore(objInstoreObjects,driver);
+	}
+			
+	public void navToInstoreBR(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objInstorePage1 = loginPage.navToInstorePromotionBR1(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objInstorePage1 = loginPage.navToInstorePromotionBR1(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Clearance Promotion Page--------------------;;;Pass");
+			objInstorePage1.clickOnInstore(objInstoreObjects,driver);
+	}
+	
+	
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		
+		 mName=m9.getName().toString().trim();			
+ 			if(!methodList.contains(m9.getName().toString().trim())){
+ 			methodList.add(m9.getName().toString().trim());
+ 			extLogger = extReport.startTest(m9.getName().toString().trim());
+ 			}
+		initializeTestcontext();
+		System.out.println("test1 - beforemethod");
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		}else{
+			String title = driver.getCurrentUrl();
+			if(title.contains("logginOut"))
+			{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+			}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+						WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+						scrolltoElement(home,driver);
+						home.click();
+						TimeUnit.SECONDS.sleep(5);
+						loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+						driver.navigate().refresh();
+						TimeUnit.SECONDS.sleep(5);}
+				}
+			}
+		}
+			isFirstTest=false;
+			//driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser")); 
+			setDriver(driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		inStore1Arttestname = m9.getName().toString().trim();
+		inStore1Arttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		objInstoreObjects = PageFactory.initElements(this.driver, InstoreClearanceObject.class);
+		objInstorePage1 = PageFactory.initElements(this.driver, InstoreClearancePage1.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+	}
+	
+	@BeforeClass
+	public void loadXMLFile(){				
+		System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\InstoreClearance.xml");
+		customreport.createExtentReport();
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());				
+	}
+	
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitForJSandJQueryToLoad(driver);
+		System.out.println("afterclass");
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(),MCcount);
+		//System.out.println(extentList);
+		//System.out.println(methodList);
+        extReport.endTest(extLogger);
+		extReport.flush();				
+		removeDriver();
+		closeDriver(driver);
+		moduleName.put("Modules", inStore1ArtModules);
+		waitFor(1);
+		int ArtMC=MCcount;
+		inStore1ArtMC=""+MCcount;
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {				
+		System.out.println("AffterMethod");
+		
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				//System.out.println();
+			
+			}
+		waitFor(1);
+		/*waitForJSandJQueryToLoad(driver);
+		Date ppMEndDate1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		inStore1ArtMEndDate = dateFormat.format(ppMEndDate1);
+		//System.out.println(inStore1ArtMEndDate); // 12/01/2011 4:48:16 PM
+		String EnhancedArtTime = inStore1Arttestdesc +";"+ inStore1ArtStartdat +";" + inStore1ArtMEndDate;
+		
+		htmlToExtent(cName,mName,extLogger,driver, "Running Completed Status;;;Pass"); 
+		inStore1ArtTime.put(inStore1Arttestname, EnhancedArtTime);
+		waitFor(4);
+		closeDriver(driver);*/
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info"))
+		{
+			int cnt = inStore1ArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			inStore1ArtpreCount2++;
+		}
+		/*waitForJSandJQueryToLoad(driver);
+		if((getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")) && inStore1ArtpreCount2!=reCount)
+		{
+			waitForJSandJQueryToLoad(driver);
+			inStore1ArtTime.removeAll(inStore1Arttestname);
+			waitForJSandJQueryToLoad(driver);
+			inStore1ArtScenarios.removeAll(inStore1Arttestname);
+		}
+		waitForJSandJQueryToLoad(driver);*/
+		if(inStore1ArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass"))
+		{
+			inStore1ArtpreCount2=-1;
+		}
+		waitFor(1);
+}
+	
+	
+	
+
+}

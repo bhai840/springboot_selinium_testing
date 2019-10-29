@@ -1,0 +1,2153 @@
+/*package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.OrderingAndReceivingObject;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.OrderingAndReceivingPage;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+public class OrderingAndReceivingTest extends TestBase {
+
+	private Logger log = LogManager.getLogger(OrderingAndReceivingTest.class);
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	OrderingAndReceivingPage objOrdRecPage;
+	OrderingAndReceivingObject objOrdRecObjects;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;
+	List<List<Object>> result;
+	List<List<Object>> result_temp;
+	List<List<Object>> result_temp1;
+	List<List<Object>> result_temp2;
+	List<List<Object>> result_temp3;
+	List<List<Object>> result_temp4;
+	List<List<Object>> result_temp5;
+	List<List<Object>> results2;
+	List<List<Object>> results3;
+	List<List<Object>> results4;
+	public static XMLDataReader data;
+	
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+    int count=0;		
+	int MCcount=0;
+public static WebDriver driver;
+
+
+
+	public OrderingAndReceivingTest(){
+		super.log=log;
+	}
+
+	public void navToOrderEnquiry(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		if(System.getProperty("store")==null){
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objOrdRecPage = loginPage.navToOrdRec(getContext().getStringProperty("store"),driver);
+		}else{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store);
+			objOrdRecPage = loginPage.navToOrdRec(store,driver);
+		}
+
+		log.info("-------------Navigate to Order Enquiry Page------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to Order Enquiry Page--------------------;;;Pass");
+		objOrdRecPage.clickOnOrderEnquiry(objOrdRecObjects,driver);
+	}
+
+	//@Test(description = "Receive the Vendor Order through Receive in Full option")
+	public void VendorinFull() throws IOException, AWTException, ParseException, SQLException
+	{
+		if(OrdRecArtpreCount2==-1){
+			MCcount=MCcount+15;}
+		TestStatus status = getTestStatus();
+		try{
+		navToOrderEnquiry(status);
+		objOrdRecPage.waitFn(driver);
+
+		List<List<Object>> DBList = new ArrayList<List<Object>>();
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList2= new ArrayList<List<Object>>();
+		String InvoiceNo = data.getText("Invoice");
+	//	String OrderNumber = data.getText("OrderNo");
+		String OrderNumber ="";
+		if(StoreNo.equals("3064"))
+		{
+			OrderNumber = data.getText("OrderNo");
+		}
+		if(StoreNo.equals("1786"))
+		{
+			OrderNumber = data.getText("SITStore");
+		}
+		OrderNumber=OrderNumber.trim();waitFor(0.5);
+		BaseObj.waitForClickOfElement(objOrdRecObjects.orderNo, driver);
+		enterText(objOrdRecObjects.orderNo, OrderNumber,driver);
+		String ord_no1 = data.getText("ReceiveFull").replace("ord_no", OrderNumber);
+		results = sql.executeQuery(getContext(), ord_no1);
+
+		RevertOrder(OrderNumber);
+
+		click(objOrdRecObjects.ClickGO);
+
+		String vndr = results.get(0).get(4).toString();
+		String Deldate = results.get(0).get(1).toString();
+		String onShwdate = results.get(0).get(2).toString();
+
+		String supplier = data.getText("vendorname").replace("vendor_no",vndr);
+		results1 = sql.executeQuery(getContext(), supplier);
+
+		String suplrname = results1.get(0).get(0).toString() + " (" + results1.get(0).get(1).toString() +")";
+
+		String TotCart = data.getText("TotCart").replace("ord_no",OrderNumber);
+		results2 = sql.executeQuery(getContext(), TotCart);
+
+		String TotalCartons = results2.get(0).get(0).toString().replaceAll("\\.?0+$","");
+
+		String TotArt = data.getText("TotArt").replace("ord_no",OrderNumber);
+		results3 = sql.executeQuery(getContext(), TotArt);
+
+		String Str = ""+results.get(0).get(0).toString()+":"+Deldate+":"+onShwdate+":"+results.get(0).get(3).toString()+":"+suplrname+":"+TotalCartons+":"+results3.get(0).get(0).toString();
+		DBList.addAll(StringToListCreation(Str));
+
+		System.out.println("DBLIST="+DBList);
+
+		String Artdet = data.getText("Artdet").replace("ord_no",OrderNumber);
+		result_temp = sql.executeQuery(getContext(), Artdet);
+
+		String OM_SQL = data.getText("OM").replace("ord_no",OrderNumber);
+		result_temp1 = sql.executeQuery(getContext(), OM_SQL);
+
+		for (int i =0;i<result_temp.size();i++){
+
+			String Orderedqty1 = result_temp.get(i).get(1).toString().replaceAll("\\.?0+$","");
+
+			String ordmul1 = result_temp1.get(i).get(0).toString().replaceAll("\\.?0+$","");
+
+			String art = result_temp.get(i).get(0).toString();
+			String baseuom = data.getText("Base_UOM").replace("art_no",art);
+			result_temp2 = sql.executeQuery(getContext(), baseuom);
+
+			String art1 = result_temp.get(i).get(0).toString();
+			String SOH_Value = data.getText("SOH_Old").replace("art_no",art1);
+			result_temp3 = sql.executeQuery(getContext(), SOH_Value);
+			
+			String Soh = result_temp3.get(0).get(0).toString().replaceAll("\\.?0+$","");
+
+			String Totunits1 = result_temp.get(i).get(6).toString();
+			String Artdet1 = data.getText("Artdet").replace("ord_no",OrderNumber);
+			result_temp = sql.executeQuery(getContext(), Artdet);
+
+			String Str1 = ""+result_temp.get(i).get(0).toString()+":"+Orderedqty1+":"+result_temp.get(i).get(2).toString()+":"+ordmul1+":"+result_temp2.get(0).get(0).toString()+":"+Soh;
+			DBList1.addAll(StringToListCreation(Str1));
+		}
+
+		System.out.println("DBLIST1="+DBList1);
+
+		System.out.println("Details are loaded successfully for the order"+OrderNumber);
+
+		objOrdRecPage.VendorOrderRecFull(objOrdRecObjects,InvoiceNo, DBList, DBList1, DBList2,driver);
+
+		List<List<Object>> appln = new ArrayList<List<Object>>();
+		List<List<Object>> DB1 = new ArrayList<List<Object>>();
+		List<List<Object>> DB2 = new ArrayList<List<Object>>();
+
+		String SOHval = " ";
+		Double Newval = 0.000;
+		for (int i=0;i<DBList1.size();i++)
+		{
+
+			Double OldSOHValue=Double.parseDouble(DBList1.get(i).get(5).toString());	
+			
+			String OldSOHValue1 = DBList1.get(i).get(5).toString().replaceAll("\\.?0+$","");
+
+			Integer OdrQtyValue=Integer.parseInt(DBList1.get(i).get(1).toString()) * Integer.parseInt(DBList1.get(i).get(3).toString());
+
+			Newval=  ((Double) OldSOHValue+ (int)OdrQtyValue);
+			
+			String Newval1 = Newval.toString().replaceAll("\\.?0+$","");
+
+			String str = ""+OldSOHValue1+":"+Newval1;
+			appln.addAll(StringToListCreation(str));
+
+			String art2 = DBList1.get(i).get(0).toString();
+			String SOH_New1 = data.getText("SOH_New").replace("art_no",art2);
+			result_temp4 = sql.executeQuery(getContext(), SOH_New1);
+			System.out.println("result_temp4 value = " +result_temp4);
+
+			SOHval= result_temp4.get(0).get(0).toString().replaceAll("\\.?0+$","");
+
+			String str1 = ""+OldSOHValue1+":"+SOHval;
+			DB1.addAll(StringToListCreation(str1));
+			
+			
+			String baseuom = data.getText("Base_UOM").replace("art_no",art2);
+			result_temp2 = sql.executeQuery(getContext(), baseuom);
+			
+			String Base_uom1 = result_temp2.get(0).get(0).toString();
+			
+			String str2 = ""+art2+":"+SOHval+" "+Base_uom1;
+			DB2.addAll(StringToListCreation(str2));
+
+		}
+
+		System.out.println("applnvalue " +appln);
+		System.out.println("DB1value " +DB1);
+		System.out.println("DB2value " +DB2);
+
+		htmlToExtent(cName,mName,extLogger,driver, "***** SOH Values*****;;;Pass");
+		ElementContains1(cName, mName,extLogger,driver, appln, DB1);
+		
+		objOrdRecPage.ArtLookUp(objOrdRecObjects, DB2,driver);
+
+		RevertOrder(OrderNumber);
+
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(OrdRecArtScenarios, OrdRecArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+
+		status.assertAll();
+	}
+
+	@Test(description = "Receive the Vendor Order by adding new Articles")
+	public void VendorinExceptionByNewOM() throws IOException, AWTException, ParseException, SQLException
+	{
+		if(OrdRecArtpreCount2==-1){
+			MCcount=MCcount+19;}
+		TestStatus status = getTestStatus();
+		try{
+		navToOrderEnquiry(status);
+		objOrdRecPage.waitFn(driver);
+		List<List<Object>> DBList = new ArrayList<List<Object>>();
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		String InvoiceNo = data.getText("Invoice");
+		String ChillTem = data.getText("Chilltemp");
+		String ForzenTem=data.getText("ForzenTemp");
+		String AddArtNo = data.getText("AddMisArtno");
+		String AddArtQty = data.getText("AddArtQtyNo");
+
+		String OrderNumber ="";
+		if(StoreNo.equals("3064"))
+		{
+			OrderNumber = data.getText("OrderNo");
+		}
+		if(StoreNo.equals("1786"))
+		{
+			OrderNumber = data.getText("SITStore");
+		}
+		OrderNumber=OrderNumber.trim();waitFor(0.5);
+		BaseObj.waitForClickOfElement(objOrdRecObjects.orderNo, driver);
+		enterText(objOrdRecObjects.orderNo, OrderNumber,driver);
+		String ord_no1 = data.getText("ReceiveFull").replace("ord_no", OrderNumber);
+		results = sql.executeQuery(getContext(), ord_no1);
+
+			
+			
+		RevertOrder(OrderNumber);
+		
+		
+
+		click(objOrdRecObjects.ClickGO);
+
+		String vndr = results.get(0).get(3).toString();
+		String Deldate = results.get(0).get(1).toString();
+		String onShwdate = results.get(0).get(2).toString();
+
+		String supplier = data.getText("vendorname").replace("vendor_no",vndr);
+		results1 = sql.executeQuery(getContext(), supplier);
+
+		String suplrname = results1.get(0).get(0).toString() + " (" + results1.get(0).get(1).toString() +")";
+
+		String TotCart = data.getText("TotCart").replace("ord_no",OrderNumber);
+		results2 = sql.executeQuery(getContext(), TotCart);
+
+		String TotalCartons = decimalFormat1(results2.get(0).get(0).toString());
+
+		String TotArt = data.getText("TotArt").replace("ord_no",OrderNumber);
+		results3 = sql.executeQuery(getContext(), TotArt);
+
+		String Str = ""+results.get(0).get(0).toString()+":"+Deldate+":"+onShwdate+":"+results.get(0).get(3).toString()+":"+suplrname+":"+TotalCartons+":"+results3.get(0).get(0).toString();
+		DBList.addAll(StringToListCreation(Str));
+
+		System.out.println("DBLIST="+DBList);
+
+		String Artdet = data.getText("Artdet").replace("ord_no",OrderNumber);
+		result_temp = sql.executeQuery(getContext(), Artdet);
+
+		String OM_SQL = data.getText("OM").replace("ord_no",OrderNumber);
+		result_temp1 = sql.executeQuery(getContext(), OM_SQL);
+
+		for (int i =0;i<result_temp.size();i++){
+
+			String Orderedqty1 = decimalFormat1(result_temp.get(i).get(1).toString());
+
+			String ordmul1 = decimalFormat1(result_temp1.get(i).get(0).toString());
+
+			String art = result_temp.get(i).get(0).toString();
+			String baseuom = data.getText("Base_UOM").replace("art_no",art);
+			result_temp2 = sql.executeQuery(getContext(), baseuom);
+
+			String art1 = result_temp.get(i).get(0).toString();
+			String SOH_Value_1 = data.getText("SOH_Old").replace("art_no",art1);
+			result_temp3 = sql.executeQuery(getContext(), SOH_Value_1);
+
+			String Str1 = ""+result_temp.get(i).get(0).toString()+":"+Orderedqty1+":"+result_temp.get(i).get(2).toString()+":"+ordmul1+":"+result_temp2.get(0).get(0).toString()+":"+result_temp3.get(0).get(0).toString();
+			DBList1.addAll(StringToListCreation(Str1));
+		}
+
+		String AddArtNo1 ="";
+		if(StoreNo.equals("3064"))
+		{
+			AddArtNo1 = data.getText("AddMisArtno");
+		}
+		if(StoreNo.equals("1786"))
+		{
+			AddArtNo1 = data.getText("AddMisArtno1");
+		}
+		AddArtNo1=AddArtNo1.trim();
+		
+		//String AddArtNo1 = data.getText("AddMisArtno");
+		String SOH_Value1 = data.getText("SOH_Old").replace("art_no",AddArtNo1);
+		results4 = sql.executeQuery(getContext(), SOH_Value1);
+		String Sohval_1 = results4.get(0).get(0).toString();
+
+		
+		
+		//String AddArtNo2 = data.getText("AddMisArtno");
+		String baseuom1 = data.getText("Base_UOM").replace("art_no",AddArtNo1);
+		List<List<Object>> results5 = sql.executeQuery(getContext(), baseuom1);
+		String baseuom_1 = results5.get(0).get(0).toString();
+
+		//String AddArtNo3 = data.getText("AddMisArtno");
+		String baseord = data.getText("Base_Ordqty").replace("art_no",AddArtNo1);
+		List<List<Object>> results6 = sql.executeQuery(getContext(), baseord);
+		String baseord1 = results6.get(0).get(0).toString();
+
+		System.out.println("DBLIST1="+DBList1);
+
+		System.out.println("Details are loaded successfully for the order" +OrderNumber);
+
+		List<List<Object>> DBList23 = objOrdRecPage.VendorOrderExpArt(objOrdRecObjects, InvoiceNo, AddArtNo, AddArtQty,ChillTem, ForzenTem,Sohval_1,baseord1, baseuom_1, DBList, DBList1,driver);
+		System.out.println("DBList23" +DBList23);
+
+		List<List<Object>> appln = new ArrayList<List<Object>>();
+		List<List<Object>> DB1 = new ArrayList<List<Object>>();
+		List<List<Object>> DB2 = new ArrayList<List<Object>>();
+
+		String SOHval1 = " ";
+		Double Newval = 0.000;
+		for (int i=0;i<DBList23.size();i++)
+		{
+
+			Double OldSOHValue=Double.parseDouble(DBList23.get(i).get(5).toString());	
+			
+			String OldSOHValue1 = DBList1.get(i).get(5).toString().replaceAll("\\.?0+$","");
+
+			Integer OdrQtyValue=Integer.parseInt(DBList23.get(i).get(1).toString()) * Integer.parseInt(DBList23.get(i).get(3).toString());
+
+			Newval=  ((Double) OldSOHValue+ (int)OdrQtyValue);
+			
+			String Newval1 = Newval.toString().replaceAll("\\.?0+$","");
+
+			String str = ""+OldSOHValue1+":"+Newval1;
+			appln.addAll(StringToListCreation(str));
+
+			String art2 = DBList23.get(i).get(0).toString();
+			String SOH_New1 = data.getText("SOH_New").replace("art_no",art2);
+			result_temp4 = sql.executeQuery(getContext(), SOH_New1);
+			System.out.println("result_temp4 value = " +result_temp4);
+
+			SOHval1=decimalFormat1(result_temp4.get(0).get(0).toString());
+			
+			Double SOHval = Double.parseDouble(SOHval1);
+			
+			String SOHval_1= SOHval.toString().replaceAll("\\.?0+$","");
+
+			String str1 = ""+OldSOHValue1+":"+SOHval_1;
+			DB1.addAll(StringToListCreation(str1));
+			
+			String baseuom = data.getText("Base_UOM").replace("art_no",art2);
+			result_temp2 = sql.executeQuery(getContext(), baseuom);
+			
+			String Base_uom1 = result_temp2.get(0).get(0).toString();
+			
+			String str2 = ""+art2+":"+SOHval_1+" "+Base_uom1;
+			DB2.addAll(StringToListCreation(str2));
+
+
+		}
+
+		System.out.println("applnvalue " +appln);
+		System.out.println("DB1value " +DB1);
+		System.out.println("DB2value " +DB2);
+
+		htmlToExtent(cName,mName,extLogger,driver, "***** SOH Values*****;;;Pass");
+
+		ElementContains1(cName, mName,extLogger,driver, appln, DB1);
+
+		if(appln.get(0).get(0).toString().equals(DB1.get(0).get(0).toString()) && appln.get(0).get(1).toString().equals(DB1.get(0).get(1).toString()) )
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Old and New SOH Values displayed ;Local Value is ["+appln.get(0).get(0).toString()+","+appln.get(0).get(1).toString()+"];DB Value is ["+DB1.get(0).get(1).toString()+","+DB1.get(0).get(1).toString()+"];Pass");
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Old and New SOH Values displayed ;Local Value is ["+appln.get(0).get(0).toString()+","+appln.get(0).get(1).toString()+"];DB Value is ["+DB1.get(0).get(1).toString()+","+DB1.get(0).get(1).toString()+"];Fail");
+				}
+		
+		objOrdRecPage.ArtLookUp(objOrdRecObjects, DB2,driver);
+
+		RevertOrder(OrderNumber);
+		
+
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(OrdRecArtScenarios, OrdRecArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+
+		status.assertAll();
+	}
+
+	//@Test(description = "Order on Receipt by changing the OM for Vendor supplied Articles")
+	public void OrderOnReceiptByNewOM() throws IOException, AWTException, ParseException, SQLException
+	{
+		if(OrdRecArtpreCount2==-1){
+			MCcount=MCcount+11;}
+		TestStatus status = getTestStatus();
+		try
+		{
+		navToOrderEnquiry(status);
+		objOrdRecPage.waitFn(driver);
+		waitFor(1);
+		List<List<Object>> res = null;
+		List<List<Object>> res1 = null;
+		List<List<Object>> res2 = null;
+		List<List<Object>> res3 = null;
+		List<List<Object>> res4 = null;
+
+		List articlelist = new ArrayList();				
+		List<List<Object>> DBList = new ArrayList<List<Object>>();
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList2 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList3= new ArrayList<List<Object>>();			
+
+		List<String> disp = new ArrayList();
+		List<String> normalart = new ArrayList();
+		List<String> random = new ArrayList();
+		List<String> cpbd = new ArrayList();
+
+		List<List<Object>> DB1 = new ArrayList();
+		List<List<Object>> DB2 = new ArrayList();
+		List<List<Object>> DB3 = new ArrayList();
+		List<List<Object>> DB4 = new ArrayList();
+		click(objOrdRecObjects.createOrder);
+		waitForJSandJQueryToLoad(driver);
+		objOrdRecPage.delOrder(objOrdRecObjects,driver);	
+		waitFor(1);
+		click(objOrdRecObjects.orderonreceipt);
+		waitFor(1);
+		String InvoicNo = data.getText("Invoice");
+		String Cong = data.getText("Consignment");
+		String DGMS = data.getText("DGMSDep");
+		String Carr = data.getText("Carrier");
+		String ChillTemp = data.getText("Chilltem");	
+
+		//String OrderNumber ="";
+		if(StoreNo.equals("3064"))
+		{
+			articlelist.add(data.getText("Art1"));
+			articlelist.add(data.getText("Art2"));
+			articlelist.add(data.getText("Art3"));
+		}
+		if(StoreNo.equals("1786"))
+		{
+			articlelist.add(data.getText("SArt1"));
+			articlelist.add(data.getText("SArt2"));
+			articlelist.add(data.getText("SArt3"));
+		}
+		//OrderNumber=OrderNumber.trim();
+		
+
+		String artno1 = " ";
+		String childart1 = " ";
+		String childqty1 = " ";
+		String RanSoh = " ";
+
+		String artno3 = " ";
+		String cpbd_1 = " ";
+		String complex_art = " ";
+
+		String artno2 = " ";
+		String Pi_om = " ";
+		String sohval=" ";
+		String baseuom_1 =" ";
+
+		String artno4 = " ";
+		String om=" ";
+
+		String ranwgt = " ";
+
+		for(int x=0;x<articlelist.size();x++)
+		{
+
+			String art1=(String) articlelist.get(x);
+			art1=art1.trim();
+			String chkdesart = data.getText("CheckDispArt").replace("art_no", art1);
+			res = sql.executeQuery(getContext(), chkdesart);
+
+			String cpbdart =res.get(0).get(5).toString();
+			if((res.get(0).get(4).toString().equals("Y"))&&(res.get(0).get(2).toString().equals("0")))
+			{
+
+				disp.add(res.get(0).get(0).toString());
+
+				String childqty = " ";
+
+				String childart = data.getText("DispArt").replace("art_no", art1);
+				res1 = sql.executeQuery(getContext(), childart);
+
+				for(int y=0;y<res1.size();y++)
+				{
+					artno1 = res1.get(y).get(0).toString();
+					childart1 = res1.get(y).get(1).toString();
+					childqty = res1.get(y).get(2).toString();
+
+					childqty1 = decimalFormat(childqty);
+
+					String SOH_sql = data.getText("SOH1").replace("art_no",childart1);
+					res2 = sql.executeQuery(getContext(), SOH_sql);
+					String soh = res2.get(0).get(0).toString();
+					String SOH1= decimalFormat(soh);
+					//RanSoh = res2.get(0).get(1).toString();
+					//RanSoh = decimalFormat(RanSoh);
+
+					String baseuom1 = data.getText("Base_UOM").replace("art_no",childart1);
+					res4 = sql.executeQuery(getContext(), baseuom1);
+					baseuom_1 = res4.get(0).get(0).toString();
+
+					String str = ""+artno1+":"+childart1+":"+childqty1+":"+SOH1;
+					DB1.addAll(StringToListCreation(str));
+
+				}
+				DBList.addAll(DB1); 
+
+				System.out.println("Display_Child Article: " +DB1);
+			}
+			else if(res.get(0).get(5).toString().equals("Y"))
+			{
+				random.add(res.get(0).get(0).toString());
+
+				artno2 = res.get(0).get(0).toString();
+
+				String SOH_sql = data.getText("SOH1").replace("art_no",art1);
+				results = sql.executeQuery(getContext(), SOH_sql);	
+				sohval = results.get(0).get(0).toString();
+				if(sohval.contains("."))
+				{
+					sohval = results.get(0).get(0).toString().replaceAll("\\.?0+$","");
+				}
+				else
+				{
+					sohval = results.get(0).get(0).toString();
+				}
+				RanSoh = results.get(0).get(1).toString();
+
+				//RanSoh = decimalFormat1(RanSoh);
+
+				String OM_sql = data.getText("Ran_OM").replace("art_no",art1);					
+				result_temp = sql.executeQuery(getContext(), OM_sql);
+				Pi_om = result_temp.get(0).get(0).toString();
+				Pi_om = decimalFormat(Pi_om);
+
+				String baseuom1 = data.getText("Base_UOM").replace("art_no",art1);
+				res4 = sql.executeQuery(getContext(), baseuom1);
+				baseuom_1 = res4.get(0).get(0).toString();
+
+				String str = ""+artno2+":"+sohval+":"+RanSoh;
+				DB2.addAll(StringToListCreation(str));
+
+				DBList.addAll(DB2);
+
+				System.out.println("Random Article" +DB2);
+
+
+			}
+			else if(res.get(0).get(2).toString().equals("1"))
+			{
+
+				cpbd.add(res.get(0).get(0).toString());
+
+				String cpbdart1 = data.getText("CPBDArt").replace("art_no", cpbdart);
+				res3 = sql.executeQuery(getContext(), cpbdart1);
+
+				for(int y=0;y<res3.size();y++)
+				{
+					artno3 = res3.get(y).get(0).toString();
+					cpbd_1 = res3.get(y).get(2).toString();
+					complex_art = res3.get(y).get(3).toString();
+
+					String SOH_sql = data.getText("SOH1").replace("art_no",complex_art);
+					res2 = sql.executeQuery(getContext(), SOH_sql);
+					String soh = res2.get(0).get(0).toString();
+					String SOH1= decimalFormat(soh);
+					RanSoh = res2.get(0).get(1).toString();
+					RanSoh = decimalFormat(RanSoh);
+
+					String str = ""+artno3+":"+cpbd_1+":"+complex_art+":"+SOH1+":"+RanSoh;
+					DB3.addAll(StringToListCreation(str));
+
+				}
+				DBList.addAll(DB3);
+
+				System.out.println("CPBD Article:" +DB3);
+			}	
+			else
+			{
+
+				normalart.add(res.get(0).get(0).toString());
+
+				artno4 = res.get(0).get(0).toString();
+
+				String SOH_sql = data.getText("SOH1").replace("art_no",art1);
+				results = sql.executeQuery(getContext(), SOH_sql);	
+				String soh = results.get(0).get(0).toString();
+				
+				if(soh.contains("."))
+				{
+					soh = results.get(0).get(0).toString().replaceAll("\\.?0+$","");
+				}
+				else
+				{
+					soh = results.get(0).get(0).toString();
+				}
+				//soh = decimalFormat(soh);
+
+				//RanSoh = results.get(0).get(1).toString();
+				//RanSoh = decimalFormat(RanSoh);
+
+				String OM_sql = data.getText("OM1").replace("art_no",art1);					
+				result_temp = sql.executeQuery(getContext(), OM_sql);
+				om = result_temp.get(0).get(0).toString();
+				om = decimalFormat(om);
+
+				String baseuom1 = data.getText("Base_UOM").replace("art_no",art1);
+				res4 = sql.executeQuery(getContext(), baseuom1);
+				baseuom_1 = res4.get(0).get(0).toString();
+
+				String str = ""+artno4+":"+soh;
+				DB4.addAll(StringToListCreation
+						(str));
+
+				DBList.addAll(DB4);
+
+				System.out.println("Normal Article" +DB4);
+
+			}
+
+		}	
+
+		System.out.println("DBValuesbeforecalculation:" +DBList);	
+		
+		List<List<Object>> appln = objOrdRecPage.AddingArticles(objOrdRecObjects,articlelist,disp, normalart,random,cpbd,DB1,DB2,DB3,DB4,artno1,RanSoh,artno2,baseuom_1,sohval,artno3,cpbd_1, complex_art,artno4,DBList1,driver);
+		htmlToExtent(cName,mName,extLogger,driver, "***** Comparing application value with DB before SOH calculation *****;;;Pass");
+		ElementContains1(cName, mName,extLogger,driver, appln, DBList);
+
+		List<List<Object>> applnlist = objOrdRecPage.articleCompare(objOrdRecObjects,disp,cpbd,random,normalart,DB1,DB2,DB3,DB4,artno1,RanSoh,artno3,cpbd_1, complex_art,artno2,Pi_om,artno4,om,ranwgt,DBList2,driver);
+
+		objOrdRecPage.scrolldown(driver);
+		objOrdRecObjects.submitOrder.click();
+		waitForJSandJQueryToLoad(driver);
+		htmlToExtent(cName,mName,extLogger,driver,"***Clicking on Submit Order***;;;Pass");
+		objOrdRecPage.OrderNoCreation(objOrdRecObjects, InvoicNo, Cong, DGMS, Carr, ChillTemp,driver );
+
+		int k=0;
+		for (Iterator<List<Object>> it = appln.iterator(); it.hasNext();) 
+		{
+			List<Object> elem = it.next(); 					
+			for(int i =0;i<elem.size();i++) 
+			{
+				if(elem.get(1)!=null)
+				{
+					elem.set(1, appln.get(k).toString());								
+				}
+			}
+			k++;
+		}
+
+		for(int x=0;x<articlelist.size();x++)
+		{
+
+			String art1=(String) articlelist.get(x);
+			art1=art1.trim();
+			String chkdesart = data.getText("CheckDispArt").replace("art_no", art1);
+			res = sql.executeQuery(getContext(), chkdesart);
+
+			String cpbdart =res.get(0).get(5).toString();
+			if((res.get(0).get(4).toString().equals("Y"))&&(res.get(0).get(2).toString().equals("0")))
+			{
+
+				disp.add(res.get(0).get(0).toString());
+
+				String childqty = " ";
+
+				String childart = data.getText("DispArt").replace("art_no", art1);
+				res1 = sql.executeQuery(getContext(), childart);
+
+				for(int y=0;y<res1.size();y++)
+				{
+					artno1 = res1.get(y).get(0).toString();
+					childart1 = res1.get(y).get(1).toString();
+					childqty = res1.get(y).get(2).toString();
+
+					childqty1 = decimalFormat(childqty);
+
+					String SOH_sql = data.getText("SOH1").replace("art_no",childart1);
+					res2 = sql.executeQuery(getContext(), SOH_sql);
+					String soh = res2.get(0).get(0).toString();
+					String SOH1= decimalFormat(soh);
+					//RanSoh = res2.get(0).get(1).toString();
+					//RanSoh = decimalFormat(RanSoh);
+
+					String baseuom1 = data.getText("Base_UOM").replace("art_no",childart1);
+					res4 = sql.executeQuery(getContext(), baseuom1);
+					baseuom_1 = res4.get(0).get(0).toString();
+
+					String str = ""+artno1+":"+childart1+":"+childqty1+":"+SOH1;
+					DBList3.addAll(StringToListCreation(str));
+
+				}
+
+			}
+			else if(res.get(0).get(5).toString().equals("Y"))
+			{
+
+				random.add(res.get(0).get(0).toString());
+
+				artno2 = res.get(0).get(0).toString();
+
+				String SOH_sql = data.getText("SOH1").replace("art_no",art1);
+				results = sql.executeQuery(getContext(), SOH_sql);	
+				String soh = results.get(0).get(0).toString();
+				Double SOHVal = Double.parseDouble(soh);
+				RanSoh = results.get(0).get(1).toString();
+
+				//RanSoh = decimalFormat(RanSoh);
+
+				String OM_sql = data.getText("Ran_OM").replace("art_no",art1);					
+				result_temp = sql.executeQuery(getContext(), OM_sql);
+				Pi_om = result_temp.get(0).get(0).toString();
+				Pi_om = decimalFormat(Pi_om);
+				int j=0;
+				for(int h = 0;h<applnlist.size();h++)
+				{
+					if(applnlist.get(h).get(0).toString().equals(artno2)){
+						j=h;break;}
+				}
+				String ranwgt1 = applnlist.get(j).get(3).toString();
+				ranwgt1 = decimalFormat1(ranwgt1);
+
+				String str = ""+artno2+":"+SOHVal+":"+RanSoh+":"+ranwgt1;
+				DBList3.addAll(StringToListCreation(str));						
+
+			}
+			else if(res.get(0).get(2).toString().equals("1"))
+			{
+
+				cpbd.add(res.get(0).get(0).toString());
+
+				String cpbdart1 = data.getText("CPBDArt").replace("art_no", cpbdart);
+				res3 = sql.executeQuery(getContext(), cpbdart1);
+
+				for(int y=0;y<res3.size();y++)
+				{
+					artno3 = res3.get(y).get(0).toString();
+					cpbd_1 = res3.get(y).get(2).toString();
+					complex_art = res3.get(y).get(3).toString();
+
+					String SOH_sql = data.getText("SOH1").replace("art_no",complex_art);
+					res2 = sql.executeQuery(getContext(), SOH_sql);
+					String soh = res2.get(0).get(0).toString();
+					String SOH1= decimalFormat(soh);
+					RanSoh = res2.get(0).get(1).toString();
+					RanSoh = decimalFormat(RanSoh);
+
+					String str = ""+artno3+":"+cpbd_1+":"+complex_art+":"+SOH1+":"+RanSoh;
+					DBList3.addAll(StringToListCreation(str));
+
+				}
+
+			}	
+			else
+			{
+
+				normalart.add(res.get(0).get(0).toString());
+
+				artno4 = res.get(0).get(0).toString();
+
+				String SOH_sql = data.getText("SOH1").replace("art_no",art1);
+				results = sql.executeQuery(getContext(), SOH_sql);	
+				String soh = results.get(0).get(0).toString();
+				soh = decimalFormat(soh);
+
+				RanSoh = results.get(0).get(1).toString();
+				RanSoh = decimalFormat(RanSoh);
+
+				String OM_sql = data.getText("OM1").replace("art_no",art1);					
+				result_temp = sql.executeQuery(getContext(), OM_sql);
+				om = result_temp.get(0).get(0).toString();
+				om = decimalFormat(om);
+
+				String str = ""+artno4+":"+soh;
+				DBList3.addAll(StringToListCreation(str));
+
+			}
+
+		}	
+
+		System.out.println("DBValuesaftercalculation:" +DBList3);
+
+		htmlToExtent(cName,mName,extLogger,driver, "***** Comparing application value with DB after SOH Calculation *****;;;Pass");
+		ElementContains1(cName, mName,extLogger,driver, applnlist, DBList3);
+
+		//objOrdRecPage.CompareTablevalues(objOrdRecObjects,DBList2,driver);
+
+		objOrdRecPage.clickOnOrderEnquiry(objOrdRecObjects,driver);
+
+		waitForJSandJQueryToLoad(driver);
+		click(objOrdRecObjects.createOrder);
+		waitForJSandJQueryToLoad(driver);
+		objOrdRecPage.delOrder(objOrdRecObjects,driver);	
+		waitFor(1);
+		
+		
+		
+		waitFor(1);
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(OrdRecArtScenarios, OrdRecArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+		status.assertAll();
+	}
+
+
+	public void RevertOrder(String OrderNo) throws SQLException, IOException
+	{
+		try {
+			String orderCheck = data.getText("revertOrder").replace("ordno", OrderNo).trim();	
+			sql.executeQuery_CUD(getContext(), orderCheck);	
+			System.out.println("Reverting Order Completed");
+		} catch(Exception e)
+		{
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+	}
+
+	//@Test(description = "Receive the Warehouse Order through Receive by Exception option")
+	public void WHByException() throws IOException, AWTException, ParseException, SQLException	
+	{
+		if(OrdRecArtpreCount2==-1){
+			MCcount=MCcount+20;}
+		
+
+		TestStatus status = getTestStatus();
+		try
+		{
+		navToOrderEnquiry(status);
+		objOrdRecPage.waitFn(driver);
+		List<List<Object>> res;
+		List<List<Object>> res1;
+		List<List<Object>> res2;
+		List<List<Object>> res3;
+		List<List<Object>> res4;
+		List<List<Object>> res5;
+		List<List<Object>> res6;
+		List<List<Object>> res7;
+		List<List<Object>> res8;
+
+		List<Object> disp = new ArrayList();
+		List<Object> DBList = new ArrayList();
+
+		List<String> random = new ArrayList();
+		List<String> weighted = new ArrayList();
+		
+
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList2 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList3 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList5 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList6 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList7 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList8 = new ArrayList<List<Object>>();
+		String OrderNumber ="";
+		if(StoreNo.equals("3064"))
+		{
+			OrderNumber = data.getText("OrderNo");
+		}
+		if(StoreNo.equals("1786"))
+		{
+			OrderNumber = data.getText("SITStore");
+		}
+		OrderNumber=OrderNumber.trim();
+		waitFor(0.5);
+		BaseObj.waitForClickOfElement(objOrdRecObjects.orderNo, driver);
+		//String OrderNumber = data.getText("OrderNo");
+		enterText(objOrdRecObjects.orderNo, OrderNumber,driver);
+
+		String RevertOrder = data.getText("revertOrder");
+			res = sql.executeQuery(getContext(), RevertOrder);
+		RevertOrder(OrderNumber);
+
+		click(objOrdRecObjects.ClickGO);
+		waitForJSandJQueryToLoad(driver);
+
+		String orddet = data.getText("OrdDetails").replace("ord_no", OrderNumber);
+		res = sql.executeQuery(getContext(), orddet);
+
+		String ordno = res.get(0).get(0).toString();
+		String supl = res.get(0).get(1).toString();
+
+		String orddet1 = data.getText("OrdDetails1").replace("DC_no", supl);
+		res1 = sql.executeQuery(getContext(), orddet1);
+
+		String supname = res1.get(0).get(0).toString();
+
+		String orddet2 = data.getText("OrdDetails2").replace("ord_no", OrderNumber);
+		res2 = sql.executeQuery(getContext(), orddet2);
+
+		String totart = res2.get(0).get(0).toString();
+		String totcar = res2.get(0).get(1).toString();
+		totcar = decimalFormat1(totcar);
+		String dispwt = res2.get(0).get(2).toString();
+
+		String orddet3 = data.getText("OrdDetails3").replace("ord_no", OrderNumber);
+		res = sql.executeQuery(getContext(), orddet3);
+
+		String showdate = res.get(0).get(2).toString();
+		String deldate = res.get(0).get(3).toString();
+
+		String str1 = ""+ordno+":"+deldate+":"+"DISPATCHED"+":"+supname+":"+"WAREHOUSE"+":"+totcar;
+		DBList1.addAll(StringToListCreation(str1));
+
+		objOrdRecPage.CompareOrderDetails(objOrdRecObjects,DBList1,driver);
+
+		String str2 = ""+supname+":"+deldate+":"+"ALLOCATION"+":"+showdate;
+		DBList2.addAll(StringToListCreation(str2));
+
+		String str3 = ""+totart+":"+totcar+":"+dispwt;
+		DBList3.addAll(StringToListCreation(str3));
+
+		String Totalart = data.getText("Artdet").replace("ord_no", OrderNumber);
+		res3 = sql.executeQuery(getContext(), Totalart);
+
+		System.out.println(res3);
+
+		String store_soh = " ";
+		String ran_soh = " ";
+
+		for(int i=0;i<res3.size();i++)
+		{
+
+			String artno = res3.get(i).get(0).toString();
+			String ordqty = res3.get(i).get(3).toString();
+			ordqty = decimalFormat1(ordqty);
+			String disqty = res3.get(i).get(3).toString();
+			disqty = decimalFormat1(disqty);
+			String recqty = res3.get(i).get(3).toString();
+			recqty = decimalFormat1(recqty);
+			String OM = res3.get(i).get(5).toString();
+			OM = decimalFormat1(OM);
+			String artom = res3.get(i).get(2).toString();
+
+			String Base_uom1 = data.getText("Base_UOM").replace("art_no", artno);
+			res4 = sql.executeQuery(getContext(), Base_uom1);
+
+			String uom = res4.get(0).get(0).toString();
+
+			if((res3.get(i).get(8).toString().equals("Y"))&&(res3.get(i).get(7).toString().equals("0")))
+			{
+				random.add(res3.get(i).get(0).toString());
+
+				String Pi_OM = data.getText("Ran_OM").replace("art_no", artno);
+				res5 = sql.executeQuery(getContext(), Pi_OM);
+
+				String piom = res5.get(0).get(0).toString();
+				piom = decimalFormat1(piom);
+
+				String piuom = res5.get(0).get(1).toString();
+
+				Integer OrdTotunits = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+
+				Integer ran_totunits = Integer.parseInt(piom) * Integer.parseInt(ordqty);
+
+				String ranwt = res3.get(i).get(4).toString();
+
+				String ranrectotunits = OrdTotunits + " " + uom  + " " + "(" +ran_totunits+ " " +piuom+ ")";
+
+				String randistotunits = ranwt + " " + uom  +  " " + "(" +ran_totunits+ " " +piuom+ ")";
+				
+				String ran_om = OM + " " + uom + " " + piom + " " + "(" +piuom+ ")";
+				String[] ran_om1 = splitString(ran_om, " ");
+				//String myRegex = "[(]";
+				//String[] a =splitString(ran_om1[2], myRegex);
+				String ranom1 = ran_om1[2];
+
+				String str4 = ""+artno+":"+ran_om+":"+ordqty+" "+artom+":"+ranrectotunits+":"+disqty+" "+artom+":"+randistotunits;
+				DBList4.addAll(StringToListCreation(str4));
+
+				Integer Rectotunits = Integer.parseInt(ranom1) * Integer.parseInt(recqty);
+
+				String Rectotunits1 = ranwt + " " + uom  +  " " + "(" +Rectotunits+ " " +piuom+ ")";
+
+				String str5 = ""+artno+":"+ran_om+":"+ordqty+" "+artom+":"+ranrectotunits+":"+disqty+" "+artom+":"+randistotunits+":"+recqty+":"+ranwt+":"+Rectotunits1;
+				DBList5.addAll(StringToListCreation(str5));
+
+				String SOH_sql = data.getText("SOH1").replace("art_no",artno);
+				res7 = sql.executeQuery(getContext(), SOH_sql);
+
+				//store_soh = res7.get(0).get(0).toString();
+				//store_soh1 = decimalFormat1(store_soh);
+				ran_soh = res7.get(0).get(1).toString();
+				//ran_soh1 = decimalFormat1(ran_soh);
+
+				String str7 = ""+artno+":"+ran_soh;
+				DBList7.addAll(StringToListCreation(str7));
+
+			}
+			else if((res3.get(i).get(8).toString().equals("N"))&&(res3.get(i).get(1).toString().equals("KG")))
+			{
+				weighted.add(res3.get(i).get(0).toString());
+				
+				String RecTotunits = " ";
+				
+				String OrdTotunits = " ";
+				
+				String disTotunits = " ";
+				
+				String disqtyval = res2.get(0).get(1).toString().replaceAll("\\.?0+$","");
+			
+				if((res3.get(i).get(1).toString().equals("KG")) && ((Double.parseDouble(res3.get(i).get(4).toString()))>0))
+				{
+					RecTotunits = res3.get(i).get(4).toString().replaceAll("\\.?0+$","");
+				}
+				else
+				{
+					if(OM.contains("."))
+					{
+						Double RecTotunits1 = Double.parseDouble(OM) * Integer.parseInt(recqty);
+						RecTotunits = RecTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Double OrdTotunits1 = Double.parseDouble(OM) * Integer.parseInt(ordqty);
+						OrdTotunits = OrdTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Double disTotunits1 = Double.parseDouble(OM) * Integer.parseInt(disqty);
+						disTotunits = disTotunits1.toString().replaceAll("\\.?0+$","");
+					}
+					else
+					{
+						Integer RecTotunits1 = Integer.parseInt(OM) * Integer.parseInt(recqty);
+						RecTotunits = RecTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Integer OrdTotunits1 = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+						OrdTotunits = OrdTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Integer disTotunits1 = Integer.parseInt(OM) * Integer.parseInt(disqty);
+						disTotunits = disTotunits1.toString().replaceAll("\\.?0+$","");
+					}
+				}
+				
+				//Integer OrdTotunits = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+				//Integer DisTotunits = Integer.parseInt(OM) * Integer.parseInt(disqty);
+
+				String RcdWt = res3.get(i).get(4).toString();
+				
+				String str4 = ""+artno+":"+OM+" "+uom+":"+ordqty+" "+artom+":"+OrdTotunits+" "+uom+":"+disqty+" "+artom+":"+RecTotunits+" "+uom;
+				DBList4.addAll(StringToListCreation(str4));
+
+				String str5 = ""+artno+":"+OM+" "+uom+":"+ordqty+" "+artom+":"+OrdTotunits+" "+uom+":"+disqty+" "+artom+":"+disTotunits+" "+uom+":"+recqty+":"+RecTotunits+" "+uom;
+				DBList5.addAll(StringToListCreation(str5)); 
+
+				String SOH_sql = data.getText("SOH1").replace("art_no",artno);
+				res7 = sql.executeQuery(getContext(), SOH_sql);
+
+				store_soh = res7.get(0).get(0).toString().replaceAll("\\.?0+$","");
+
+				String str7 = ""+artno+":"+store_soh;
+				DBList7.addAll(StringToListCreation(str7));
+				
+			}
+			else
+			{
+				Integer OrdTotunits = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+				Integer DisTotunits = Integer.parseInt(OM) * Integer.parseInt(disqty);
+
+				String str4 = ""+artno+":"+OM+" "+uom+":"+ordqty+" "+artom+":"+OrdTotunits+" "+uom+":"+disqty+" "+artom+":"+DisTotunits+" "+uom;
+				DBList4.addAll(StringToListCreation(str4));
+
+				Integer RecTotunits = Integer.parseInt(OM) * Integer.parseInt(recqty);
+
+				String str5 = ""+artno+":"+OM+" "+uom+":"+ordqty+" "+artom+":"+OrdTotunits+" "+uom+":"+disqty+" "+artom+":"+DisTotunits+" "+uom+":"+recqty+":"+RecTotunits+" "+uom;
+				DBList5.addAll(StringToListCreation(str5)); 
+
+				String SOH_sql = data.getText("SOH1").replace("art_no",artno);
+				res7 = sql.executeQuery(getContext(), SOH_sql);
+
+				store_soh = res7.get(0).get(0).toString().replaceAll("\\.?0+$","");
+				//store_soh1 = decimalFormat1(store_soh);
+
+				String str7 = ""+artno+":"+store_soh;
+				DBList7.addAll(StringToListCreation(str7));
+
+			}
+
+		}
+
+		System.out.println("DBList4" +DBList4);
+
+		System.out.println("DBList5" +DBList5);
+
+		System.out.println("DBList7" +DBList7);
+
+		objOrdRecPage.CheckArticles(objOrdRecObjects,DBList2,DBList3,DBList4,driver);
+
+		objOrdRecPage.RecOrd(objOrdRecObjects,driver);
+		
+		List<List<Object>> applnlist = objOrdRecPage.Receivearticles(objOrdRecObjects,random,weighted,DBList7,driver);
+		htmlToExtent(cName,mName,extLogger,driver, "Receive Articles page befor changing Received qty;;;Pass");
+		ElementContains1(cName, mName,extLogger,driver, applnlist, DBList5);
+
+		List<List<Object>> applnlist2 = objOrdRecPage.recqtyval(objOrdRecObjects,random, weighted,driver);
+		
+		List<List<Object>> applnlist3 = objOrdRecPage.SOHCal(objOrdRecObjects,random,weighted, store_soh,ran_soh,DBList7,applnlist2,driver);
+
+		List<List<Object>> applnlist1 = objOrdRecPage.ReviewDis(objOrdRecObjects,random, weighted,driver);
+
+		for(int i=0;i<applnlist1.size();i++)
+		{
+			String artno = applnlist1.get(i).get(0).toString();
+
+			String Totalart1 = data.getText("Articleno").replace("art_no",artno ).replace("ord_no", OrderNumber);
+			res6 = sql.executeQuery(getContext(), Totalart1);
+
+			String ordqty = res6.get(0).get(3).toString();
+			ordqty = decimalFormat1(ordqty);
+			String disqty = res6.get(0).get(3).toString();
+			disqty = decimalFormat1(disqty);
+			String recqty = applnlist1.get(i).get(5).toString();
+			String[] recqty1 = splitString(recqty, " ");
+			recqty = recqty1[0];
+			String OM = res6.get(0).get(5).toString();
+			OM = decimalFormat1(OM);
+			String artom = res6.get(0).get(2).toString();
+
+			String Base_uom1 = data.getText("Base_UOM").replace("art_no", artno);
+			res4 = sql.executeQuery(getContext(), Base_uom1);
+
+			String uom = res4.get(0).get(0).toString();
+
+			if((res6.get(0).get(8).toString().equals("Y"))&&(res6.get(0).get(7).toString().equals("0")))
+			{
+				//random.add(res6.get(i).get(0).toString());
+
+				String Pi_OM = data.getText("Ran_OM").replace("art_no", artno);
+				res5 = sql.executeQuery(getContext(), Pi_OM);
+
+				String piom = res5.get(0).get(0).toString();
+				piom = decimalFormat1(piom);
+
+				String piuom = res5.get(0).get(1).toString();
+
+				Integer OrdTotunits = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+				Integer OrdTotunits1 = Integer.parseInt(piom) * Integer.parseInt(ordqty);
+
+				Integer distotunits = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+				Integer distotunits1 = Integer.parseInt(piom) * Integer.parseInt(ordqty);
+
+				Integer Rectotunits = Integer.parseInt(OM) * Integer.parseInt(recqty);
+				Integer Rectotunits1 = Integer.parseInt(piom) * Integer.parseInt(recqty);
+
+				String ranwt = res6.get(i).get(4).toString();
+
+				String ranordtotunits = OrdTotunits + " " + uom  + " " + "(" +OrdTotunits1+ " " +piuom+ ")";
+
+				String randistotunits = ranwt + " " + uom  +  " " + "(" +distotunits1+ " " +piuom+ ")";
+
+				String ranrectotunits = ranwt + " " + uom  +  " " + "(" +Rectotunits1+ " " +piuom+ ")";
+
+				Integer Difference = Rectotunits - distotunits;
+
+				String str6 = ""+artno+":"+ordqty+" "+artom+":"+ranordtotunits+":"+disqty+" "+artom+":"+randistotunits+":"+recqty+" "+artom+":"+ranrectotunits+":"+Difference+":"+"Quantity Difference" ;
+				DBList6.addAll(StringToListCreation(str6)); 
+			}
+			else if(weighted.contains(artno))
+			{
+				String Difference = " ";
+				
+				String RecTotunitsval = " ";
+				String OrdTotunitsval = " ";
+				String DisTotunitsval = " ";
+				
+				if((res6.get(0).get(1).toString().equals("KG")) && ((Double.parseDouble(res6.get(0).get(4).toString()))>0))
+				{
+					RecTotunitsval = res3.get(i).get(4).toString().replaceAll("\\.?0+$","");
+				}
+				else
+				{
+					if(OM.contains("."))
+					{
+						Double RecTotunits1 = Double.parseDouble(OM) * Integer.parseInt(recqty);
+						RecTotunitsval = RecTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Double OrdTotunits1 = Double.parseDouble(OM) * Integer.parseInt(ordqty);
+						OrdTotunitsval = OrdTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Double DisTotunits1 = Double.parseDouble(OM) * Integer.parseInt(disqty);
+						DisTotunitsval = DisTotunits1.toString().replaceAll("\\.?0+$","");
+					
+						Double Difference1 = RecTotunits1 - DisTotunits1;
+						Difference = Difference1.toString();
+						
+						
+					}
+					else
+					{
+						Integer RecTotunits1 = Integer.parseInt(OM) * Integer.parseInt(recqty);
+						RecTotunitsval = RecTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Integer OrdTotunits1 = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+						OrdTotunitsval = OrdTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Integer DisTotunits1 = Integer.parseInt(OM) * Integer.parseInt(disqty);
+						DisTotunitsval = DisTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Integer Difference1 = RecTotunits1 - DisTotunits1;
+						Difference = Difference1.toString();
+					}
+				}
+						
+				String str6 = ""+artno+":"+ordqty+" "+artom+":"+OrdTotunitsval+" "+uom+":"+disqty+" "+artom+":"+DisTotunitsval+" "+uom+":"+recqty+" "+artom+":"+RecTotunitsval+" "+uom+":"+Difference+":"+"Quantity Difference";
+				DBList4.addAll(StringToListCreation(str6)); 
+				
+				
+			}
+			else
+			{
+				Integer OrdTotunits = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+				Integer DisTotunits = Integer.parseInt(OM) * Integer.parseInt(disqty);
+				Integer RecTotunits = Integer.parseInt(OM) * Integer.parseInt(recqty);
+
+				Integer Difference = RecTotunits - DisTotunits;
+
+				String str6 = ""+artno+":"+ordqty+" "+artom+":"+OrdTotunits+" "+uom+":"+disqty+" "+artom+":"+DisTotunits+" "+uom+":"+recqty+" "+artom+":"+RecTotunits+" "+uom+":"+Difference+":"+"Quantity Difference" ;
+				DBList6.addAll(StringToListCreation(str6)); 
+
+			}
+
+		}
+
+		System.out.println("DBList6" +DBList6);
+
+		ElementContains1(cName, mName,extLogger,driver, applnlist1, DBList6);
+
+		click(objOrdRecObjects.Next);
+
+		objOrdRecPage.ProvideULD(objOrdRecObjects,driver);
+
+		objOrdRecPage.Receivesummary(objOrdRecObjects,applnlist,applnlist2,driver);
+		
+		String baseuom_1 =" ";
+		String piuom = " ";
+		
+		List<List<Object>> DBList9 = new ArrayList<List<Object>>();
+
+		for(int i=0;i<applnlist3.size();i++)
+		{
+			String artno = applnlist3.get(i).get(0).toString();
+
+			String Totalart1 = data.getText("Articleno").replace("art_no",artno ).replace("ord_no", OrderNumber);
+			res6 = sql.executeQuery(getContext(), Totalart1);
+
+			//if((res6.get(0).get(8).toString().equals("Y"))&&(res6.get(0).get(7).toString().equals("0")))
+			if(random.contains(artno))
+			{
+				String OldSOh = applnlist3.get(i).get(1).toString();
+
+				String SOH_sql = data.getText("SOH1").replace("art_no",artno);
+				res8 = sql.executeQuery(getContext(), SOH_sql);
+
+				store_soh = res8.get(0).get(0).toString().replaceAll("\\.?0+$","");
+				
+				ran_soh = res8.get(0).get(1).toString().replaceAll("\\.?0+$","");
+				
+				String str8 = ""+artno+":"+OldSOh+":"+ran_soh;
+				DBList8.addAll(StringToListCreation(str8));
+				
+				String baseuom1 = data.getText("Base_UOM").replace("art_no",artno);
+				res4 = sql.executeQuery(getContext(), baseuom1);
+				baseuom_1 = res4.get(0).get(0).toString();
+				
+				String Pi_OM = data.getText("Ran_OM").replace("art_no", artno);
+				res5 = sql.executeQuery(getContext(), Pi_OM);
+				
+				piuom = res5.get(0).get(1).toString();
+				
+				String RanSoh_val = store_soh + " " + baseuom_1 + " " + "(" +ran_soh+ " " +piuom+ ")";
+				
+				String str = ""+artno+":"+RanSoh_val;
+				DBList9.addAll(StringToListCreation(str));
+
+			}
+			else if(weighted.contains(artno))
+			{
+				String OldSOh = applnlist3.get(i).get(1).toString();
+				
+				String SOH_sql = data.getText("SOH1").replace("art_no",artno);
+				res8 = sql.executeQuery(getContext(), SOH_sql);
+
+				store_soh = res8.get(0).get(0).toString().replaceAll("\\.?0+$","");
+			
+				String str8 = ""+artno+":"+OldSOh+":"+store_soh;
+				DBList8.addAll(StringToListCreation(str8));
+				
+				String baseuom1 = data.getText("Base_UOM").replace("art_no",artno);
+				res4 = sql.executeQuery(getContext(), baseuom1);
+				baseuom_1 = res4.get(0).get(0).toString();
+
+				String str = ""+artno+":"+store_soh+" "+baseuom_1;
+				DBList9.addAll(StringToListCreation(str));
+			}
+			else
+			{
+				String OldSOh = applnlist3.get(i).get(1).toString();
+				
+				String SOH_sql = data.getText("SOH1").replace("art_no",artno);
+				res8 = sql.executeQuery(getContext(), SOH_sql);
+
+				store_soh = res8.get(0).get(0).toString().replaceAll("\\.?0+$","");
+				
+
+				String str8 = ""+artno+":"+OldSOh+":"+store_soh;
+				DBList8.addAll(StringToListCreation(str8));
+				
+				String baseuom1 = data.getText("Base_UOM").replace("art_no",artno);
+				res4 = sql.executeQuery(getContext(), baseuom1);
+				baseuom_1 = res4.get(0).get(0).toString();
+
+				String str = ""+artno+":"+store_soh+" "+baseuom_1;
+				DBList9.addAll(StringToListCreation(str));
+			}
+
+		}
+
+		System.out.println("DBList8" +DBList8);
+		System.out.println("DBList9" +DBList9);
+
+		htmlToExtent(cName,mName,extLogger,driver, "SOH values after Calculation;;;Pass");
+
+		ElementContains1(cName, mName,extLogger,driver, applnlist3, DBList8);
+
+		objOrdRecPage.ReceivedArticles(objOrdRecObjects,applnlist,applnlist2,random,driver);
+		
+		objOrdRecPage.ArticleLookUp(objOrdRecObjects, DBList9,driver);
+
+		RevertOrder(OrderNumber);
+
+		waitFor(1);
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(OrdRecArtScenarios, OrdRecArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+
+		status.assertAll();
+	}
+
+	//@Test(description = "Receive the Warehouse order by giving high temperature")
+	public void WHByExceptionTemp() throws IOException, AWTException, ParseException, SQLException	
+	{
+		if(OrdRecArtpreCount2==-1){
+			MCcount=MCcount+20;}
+		
+
+		TestStatus status = getTestStatus();
+		try
+		{
+		navToOrderEnquiry(status);
+		objOrdRecPage.waitFn(driver);
+		List<List<Object>> res;
+		List<List<Object>> res1;
+		List<List<Object>> res2;
+		List<List<Object>> res3;
+		List<List<Object>> res4;
+		List<List<Object>> res5;
+		List<List<Object>> res6;
+		List<List<Object>> res7;
+		List<List<Object>> res8;
+
+		List<Object> disp = new ArrayList();
+		List<Object> DBList = new ArrayList();
+
+		List<String> random = new ArrayList();
+		List<String> Temp_Art = new ArrayList();
+		List<String> Other_Art = new ArrayList();
+		List<String> weighted = new ArrayList();
+		
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList2 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList3 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList5 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList6 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList7 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList8 = new ArrayList<List<Object>>();
+		String OrderNumber ="";
+		if(StoreNo.equals("3064"))
+		{
+			OrderNumber = data.getText("OrderNo");
+		}
+		if(StoreNo.equals("1786"))
+		{
+			OrderNumber = data.getText("SITStore");
+		}
+		OrderNumber=OrderNumber.trim();
+		waitFor(0.5);
+		BaseObj.waitForClickOfElement(objOrdRecObjects.orderNo, driver);
+		//String OrderNumber = data.getText("OrderNo");
+		enterText(objOrdRecObjects.orderNo, OrderNumber,driver);
+
+		List<List<Object>> orderResult;
+		
+		String orderCheck = data.getText("checkOrder").replace("ordNo", OrderNumber);
+		orderResult = sql.executeQuery(getContext(), orderCheck);
+		
+		RevertOrder(OrderNumber);
+
+		click(objOrdRecObjects.ClickGO);
+		waitForJSandJQueryToLoad(driver);
+
+		String orddet = data.getText("OrdDetails").replace("ord_no", OrderNumber);
+		res = sql.executeQuery(getContext(), orddet);
+
+		String ordno = res.get(0).get(0).toString();
+		String supl = res.get(0).get(1).toString();
+
+		String orddet1 = data.getText("OrdDetails1").replace("DC_no", supl);
+		res1 = sql.executeQuery(getContext(), orddet1);
+
+		String supname = res1.get(0).get(0).toString();
+
+		String orddet2 = data.getText("OrdDetails2").replace("ord_no", OrderNumber);
+		res2 = sql.executeQuery(getContext(), orddet2);
+
+		String totart = res2.get(0).get(0).toString();
+		String totcar = res2.get(0).get(1).toString().replaceAll("\\.?0+$","");
+		String dispwt = res2.get(0).get(2).toString().replaceAll("\\.?0+$","");
+
+		String orddet3 = data.getText("OrdDetails3").replace("ord_no", OrderNumber);
+		res = sql.executeQuery(getContext(), orddet3);
+
+		String showdate = res.get(0).get(2).toString();
+		String deldate = res.get(0).get(3).toString();
+
+		String str1 = ""+ordno+":"+deldate+":"+"DISPATCHED"+":"+supname+":"+"WAREHOUSE"+":"+totcar;
+		DBList1.addAll(StringToListCreation(str1));
+
+		objOrdRecPage.CompareOrderDetails(objOrdRecObjects,DBList1,driver);
+
+		String str2 = ""+supname+":"+deldate+":"+"ALLOCATION"+":"+showdate;
+		DBList2.addAll(StringToListCreation(str2));
+
+		String str3 = ""+totart+":"+totcar+":"+dispwt;
+		DBList3.addAll(StringToListCreation(str3));
+
+		String Totalart = data.getText("Artdet").replace("ord_no", OrderNumber);
+		res3 = sql.executeQuery(getContext(), Totalart);
+
+		System.out.println(res3);
+
+		String store_soh = " ";
+		String ran_soh = " ";
+
+		for(int i=0;i<res3.size();i++)
+		{
+
+			String artno = res3.get(i).get(0).toString();
+			String ordqty = res3.get(i).get(3).toString().replaceAll("\\.?0+$","");
+			//ordqty = decimalFormat1(ordqty);
+			String disqty = res3.get(i).get(3).toString().replaceAll("\\.?0+$","");
+			//disqty = decimalFormat1(disqty);
+			String recqty = res3.get(i).get(3).toString().replaceAll("\\.?0+$","");
+			//recqty = decimalFormat1(recqty);
+			String OM = res3.get(i).get(5).toString().replaceAll("\\.?0+$","");
+			//OM = decimalFormat1(OM);
+			String artom = res3.get(i).get(2).toString();
+
+			String Base_uom1 = data.getText("Base_UOM").replace("art_no", artno);
+			res4 = sql.executeQuery(getContext(), Base_uom1);
+
+			String uom = res4.get(0).get(0).toString();
+
+			if((res3.get(i).get(9).toString().equals("03")) || (res3.get(i).get(9).toString().equals("01")))
+			{
+				Temp_Art.add(res3.get(i).get(0).toString());
+			}
+			else
+			{
+				Other_Art.add(res3.get(i).get(0).toString());
+			}
+
+			if((res3.get(i).get(8).toString().equals("Y"))&&(res3.get(i).get(7).toString().equals("0")))
+			{
+				random.add(res3.get(i).get(0).toString());
+
+				String Pi_OM = data.getText("Ran_OM").replace("art_no", artno);
+				res5 = sql.executeQuery(getContext(), Pi_OM);
+
+				String piom = res5.get(0).get(0).toString();
+				piom = decimalFormat1(piom);
+
+				String piuom = res5.get(0).get(1).toString();
+
+				Integer OrdTotunits = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+
+				Integer ran_totunits = Integer.parseInt(piom) * Integer.parseInt(ordqty);
+
+				String ranwt = res3.get(i).get(4).toString();
+				
+				String ran_om = OM + " " + uom + " " + piom + " " + "(" +piuom+ ")";
+				String[] ran_om1 = splitString(ran_om, " ");
+				//String myRegex = "[(]";
+				//String[] a =splitString(ran_om1[2], myRegex);
+				String ranom1 = ran_om1[2];
+
+				String ranrectotunits = OrdTotunits + " " + uom  + " " + "(" +ran_totunits+ " " +piuom+ ")";
+
+				String randistotunits = ranwt + " " + uom  +  " " + "(" +ran_totunits+ " " +piuom+ ")";
+
+				String str4 = ""+artno+":"+ran_om+":"+ordqty+" "+artom+":"+ranrectotunits+":"+disqty+" "+artom+":"+randistotunits;
+				DBList4.addAll(StringToListCreation(str4));
+
+				Integer Rectotunits = Integer.parseInt(ranom1) * Integer.parseInt(recqty);
+
+				String Rectotunits1 = ranwt + " " + uom  +  " " + "(" +Rectotunits+ " " +piuom+ ")";
+
+				if(Temp_Art.contains(artno))
+				{
+					String str5 = ""+artno+":"+ran_om+":"+ordqty+" "+artom+":"+ranrectotunits+":"+disqty+" "+artom+":"+randistotunits+":"+0+":"+0+":"+0.000+" "+uom;
+					DBList5.addAll(StringToListCreation(str5));
+				}
+				else
+				{
+					String str5 = ""+artno+":"+ran_om+":"+ordqty+" "+artom+":"+ranrectotunits+":"+disqty+" "+artom+":"+randistotunits+":"+recqty+":"+ranwt+":"+Rectotunits1;
+					DBList5.addAll(StringToListCreation(str5));
+				}
+
+				String SOH_sql = data.getText("SOH1").replace("art_no",artno);
+				res7 = sql.executeQuery(getContext(), SOH_sql);
+
+				//store_soh = res7.get(0).get(0).toString();
+				//store_soh1 = decimalFormat1(store_soh);
+				ran_soh = res7.get(0).get(1).toString();
+				//ran_soh1 = decimalFormat1(ran_soh);
+
+				String str7 = ""+artno+":"+ran_soh;
+				DBList7.addAll(StringToListCreation(str7));
+
+			}
+			else if((res3.get(i).get(8).toString().equals("N"))&&(res3.get(i).get(1).toString().equals("KG")))
+			{
+				weighted.add(res3.get(i).get(0).toString());
+				
+				String RecTotunits = " ";
+				
+				String OrdTotunits = " ";
+				
+				String disTotunits = " ";
+				
+				String disqtyval = res2.get(0).get(1).toString().replaceAll("\\.?0+$","");
+			
+				if((res3.get(i).get(1).toString().equals("KG")) && ((Double.parseDouble(res3.get(i).get(4).toString()))>0))
+				{
+					RecTotunits = res3.get(i).get(4).toString().replaceAll("\\.?0+$","");
+				}
+				else
+				{
+					if(OM.contains("."))
+					{
+						Double RecTotunits1 = Double.parseDouble(OM) * Integer.parseInt(recqty);
+						RecTotunits = RecTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Double OrdTotunits1 = Double.parseDouble(OM) * Integer.parseInt(ordqty);
+						OrdTotunits = OrdTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Double disTotunits1 = Double.parseDouble(OM) * Integer.parseInt(disqty);
+						disTotunits = disTotunits1.toString().replaceAll("\\.?0+$","");
+					}
+					else
+					{
+						Integer RecTotunits1 = Integer.parseInt(OM) * Integer.parseInt(recqty);
+						RecTotunits = RecTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Integer OrdTotunits1 = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+						OrdTotunits = OrdTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Integer disTotunits1 = Integer.parseInt(OM) * Integer.parseInt(disqty);
+						disTotunits = disTotunits1.toString().replaceAll("\\.?0+$","");
+					}
+				}
+				
+				//Integer OrdTotunits = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+				//Integer DisTotunits = Integer.parseInt(OM) * Integer.parseInt(disqty);
+
+				String RcdWt = res3.get(i).get(4).toString();
+				
+				String str4 = ""+artno+":"+OM+" "+uom+":"+ordqty+" "+artom+":"+OrdTotunits+" "+uom+":"+disqty+" "+artom+":"+RecTotunits+" "+uom;
+				DBList4.addAll(StringToListCreation(str4));
+				
+				if(Temp_Art.contains(artno))
+				{
+					String str5 = ""+artno+":"+OM+" "+uom+":"+ordqty+" "+artom+":"+OrdTotunits+" "+uom+":"+disqty+" "+artom+":"+disTotunits+" "+uom+":"+0+":"+RecTotunits+" "+uom;
+					DBList5.addAll(StringToListCreation(str5)); 
+				}
+				else
+				{
+					String str5 = ""+artno+":"+OM+" "+uom+":"+ordqty+" "+artom+":"+OrdTotunits+" "+uom+":"+disqty+" "+artom+":"+disTotunits+" "+uom+":"+recqty+":"+RecTotunits+" "+uom;
+					DBList5.addAll(StringToListCreation(str5)); 
+				}
+
+				
+
+				String SOH_sql = data.getText("SOH1").replace("art_no",artno);
+				res7 = sql.executeQuery(getContext(), SOH_sql);
+
+				store_soh = res7.get(0).get(0).toString().replaceAll("\\.?0+$","");
+
+				String str7 = ""+artno+":"+store_soh;
+				DBList7.addAll(StringToListCreation(str7));
+				
+			}
+			else
+			{
+				Integer OrdTotunits = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+				Integer DisTotunits = Integer.parseInt(OM) * Integer.parseInt(disqty);
+
+				String str4 = ""+artno+":"+OM+" "+uom+":"+ordqty+" "+artom+":"+OrdTotunits+" "+uom+":"+disqty+" "+artom+":"+DisTotunits+" "+uom;
+				DBList4.addAll(StringToListCreation(str4));
+
+				Integer RecTotunits = Integer.parseInt(OM) * Integer.parseInt(recqty);
+
+				if(Temp_Art.contains(artno))
+				{
+					String str5 = ""+artno+":"+OM+" "+uom+":"+ordqty+" "+artom+":"+OrdTotunits+" "+uom+":"+disqty+" "+artom+":"+DisTotunits+" "+uom+":"+0+":"+0+" "+uom;
+					DBList5.addAll(StringToListCreation(str5)); 
+				}
+				else
+				{
+					String str5 = ""+artno+":"+OM+" "+uom+":"+ordqty+" "+artom+":"+OrdTotunits+" "+uom+":"+disqty+" "+artom+":"+DisTotunits+" "+uom+":"+recqty+":"+RecTotunits+" "+uom;
+					DBList5.addAll(StringToListCreation(str5)); 
+				}
+
+				String SOH_sql = data.getText("SOH1").replace("art_no",artno);
+				res7 = sql.executeQuery(getContext(), SOH_sql);
+
+				store_soh = res7.get(0).get(0).toString().replaceAll("\\.?0+$","");
+				//store_soh1 = decimalFormat1(store_soh);
+
+				String str7 = ""+artno+":"+store_soh;
+				DBList7.addAll(StringToListCreation(str7));
+
+			}
+
+
+		}
+
+		System.out.println("DBList4" +DBList4);
+
+		System.out.println("DBList5" +DBList5);
+
+		System.out.println("DBList7" +DBList7);
+
+		objOrdRecPage.CheckArticles(objOrdRecObjects,DBList2,DBList3,DBList4,driver);
+
+		objOrdRecPage.RecOrdHighTemp(objOrdRecObjects,driver);
+
+		List<List<Object>> applnlist = objOrdRecPage.ReceivearticlesPage(objOrdRecObjects,random,DBList7,Temp_Art,driver);
+		htmlToExtent(cName,mName,extLogger,driver, "Receive Articles page;;;Pass");
+		ElementContains1(cName, mName,extLogger,driver, applnlist, DBList5);
+
+		List<List<Object>> applnlist2 = objOrdRecPage.recqtyvalTemp(objOrdRecObjects,random, weighted,driver);
+		
+		List<List<Object>> applnlist3 = objOrdRecPage.SOHCal(objOrdRecObjects,random, weighted, store_soh,ran_soh,DBList7,applnlist2,driver);
+
+		List<List<Object>> applnlist1 = objOrdRecPage.ReviewDis(objOrdRecObjects,random,weighted,driver);
+
+		for(int i=0;i<applnlist1.size();i++)
+		{
+			String artno = applnlist1.get(i).get(0).toString();
+
+			String Totalart1 = data.getText("Articleno").replace("art_no",artno ).replace("ord_no", OrderNumber);
+			res6 = sql.executeQuery(getContext(), Totalart1);
+
+			String ordqty = res6.get(0).get(3).toString();
+			ordqty = decimalFormat1(ordqty);
+			String disqty = res6.get(0).get(3).toString();
+			disqty = decimalFormat1(disqty);
+			String recqty = applnlist1.get(i).get(5).toString();
+			String[] recqty1 = splitString(recqty, " ");
+			recqty = recqty1[0];
+			String OM = res6.get(0).get(5).toString();
+			OM = decimalFormat1(OM);
+			String artom = res6.get(0).get(2).toString();
+
+			String Base_uom1 = data.getText("Base_UOM").replace("art_no", artno);
+			res4 = sql.executeQuery(getContext(), Base_uom1);
+
+			String uom = res4.get(0).get(0).toString();
+
+			if((res6.get(0).get(8).toString().equals("Y"))&&(res6.get(0).get(7).toString().equals("0")))
+			{
+				//random.add(res6.get(i).get(0).toString());
+
+				String Pi_OM = data.getText("Ran_OM").replace("art_no", artno);
+				res5 = sql.executeQuery(getContext(), Pi_OM);
+
+				String piom = res5.get(0).get(0).toString();
+				piom = decimalFormat1(piom);
+
+				String piuom = res5.get(0).get(1).toString();
+
+				Integer OrdTotunits = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+				Integer OrdTotunits1 = Integer.parseInt(piom) * Integer.parseInt(ordqty);
+
+				Integer distotunits = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+				Integer distotunits1 = Integer.parseInt(piom) * Integer.parseInt(ordqty);
+
+				Integer Rectotunits = Integer.parseInt(OM) * Integer.parseInt(recqty);
+				Integer Rectotunits1 = Integer.parseInt(piom) * Integer.parseInt(recqty);
+
+				String ranwt = res6.get(i).get(4).toString().replaceAll("\\.?0+$","");
+
+				String ranordtotunits = OrdTotunits + " " + uom  + " " + "(" +OrdTotunits1+ " " +piuom+ ")";
+
+				String randistotunits = ranwt + " " + uom  +  " " + "(" +distotunits1+ " " +piuom+ ")";
+
+				String ranrectotunits = Rectotunits + " " + uom ;
+
+				Integer Difference = Rectotunits - distotunits;
+
+				String str6 = ""+artno+":"+ordqty+" "+artom+":"+ranordtotunits+":"+disqty+" "+artom+":"+randistotunits+":"+recqty+" "+artom+":"+ranrectotunits+":"+Difference+":"+"Quantity Difference" ;
+				DBList6.addAll(StringToListCreation(str6)); 
+
+
+			}
+			else if(weighted.contains(artno))
+			{
+				String Difference = " ";
+				
+				String RecTotunitsval = " ";
+				String OrdTotunitsval = " ";
+				String DisTotunitsval = " ";
+				
+				if((res6.get(0).get(1).toString().equals("KG")) && ((Double.parseDouble(res6.get(0).get(4).toString()))>0))
+				{
+					RecTotunitsval = res3.get(i).get(4).toString().replaceAll("\\.?0+$","");
+				}
+				else
+				{
+					if(OM.contains("."))
+					{
+						Double RecTotunits1 = Double.parseDouble(OM) * Integer.parseInt(recqty);
+						RecTotunitsval = RecTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Double OrdTotunits1 = Double.parseDouble(OM) * Integer.parseInt(ordqty);
+						OrdTotunitsval = OrdTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Double DisTotunits1 = Double.parseDouble(OM) * Integer.parseInt(disqty);
+						DisTotunitsval = DisTotunits1.toString().replaceAll("\\.?0+$","");
+					
+						Double Difference1 = RecTotunits1 - DisTotunits1;
+						Difference = Difference1.toString();
+						
+						
+					}
+					else
+					{
+						Integer RecTotunits1 = Integer.parseInt(OM) * Integer.parseInt(recqty);
+						RecTotunitsval = RecTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Integer OrdTotunits1 = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+						OrdTotunitsval = OrdTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Integer DisTotunits1 = Integer.parseInt(OM) * Integer.parseInt(disqty);
+						DisTotunitsval = DisTotunits1.toString().replaceAll("\\.?0+$","");
+						
+						Integer Difference1 = RecTotunits1 - DisTotunits1;
+						Difference = Difference1.toString();
+					}
+				}
+						
+				String str6 = ""+artno+":"+ordqty+" "+artom+":"+OrdTotunitsval+" "+uom+":"+disqty+" "+artom+":"+DisTotunitsval+" "+uom+":"+recqty+" "+artom+":"+RecTotunitsval+" "+uom+":"+Difference+":"+"Quantity Difference";
+				DBList6.addAll(StringToListCreation(str6)); 
+				
+				
+			}
+			else
+			{
+				Integer OrdTotunits = Integer.parseInt(OM) * Integer.parseInt(ordqty);
+				Integer DisTotunits = Integer.parseInt(OM) * Integer.parseInt(disqty);
+				Integer RecTotunits = Integer.parseInt(OM) * Integer.parseInt(recqty);
+
+				Integer Difference = RecTotunits - DisTotunits;
+
+				String str6 = ""+artno+":"+ordqty+" "+artom+":"+OrdTotunits+" "+uom+":"+disqty+" "+artom+":"+DisTotunits+" "+uom+":"+recqty+" "+artom+":"+RecTotunits+" "+uom+":"+Difference+":"+"Quantity Difference" ;
+				DBList6.addAll(StringToListCreation(str6)); 
+
+			}
+
+		}
+
+		System.out.println("DBList6" +DBList6);
+
+		ElementContains1(cName, mName,extLogger,driver, applnlist1, DBList6);
+
+		click(objOrdRecObjects.Next);
+
+		objOrdRecPage.ProvideULD(objOrdRecObjects,driver);
+
+		objOrdRecPage.ReceivesummaryPage(objOrdRecObjects,applnlist,applnlist2,applnlist1,driver);
+
+		List<List<Object>> DBList9 = new ArrayList<List<Object>>();
+		
+		for(int i=0;i<applnlist3.size();i++)
+		{
+			String artno = applnlist3.get(i).get(0).toString();
+			
+			String baseuom_1 = " ";
+			
+			String piuom = " ";
+
+			String Totalart1 = data.getText("Articleno").replace("art_no",artno ).replace("ord_no", OrderNumber);
+			res6 = sql.executeQuery(getContext(), Totalart1);
+
+			if((res6.get(0).get(8).toString().equals("Y"))&&(res6.get(0).get(7).toString().equals("0")))
+			{
+				
+				String OldSOh = applnlist3.get(i).get(1).toString();
+				
+				String SOH_sql = data.getText("SOH1").replace("art_no",artno);
+				res8 = sql.executeQuery(getContext(), SOH_sql);
+
+				ran_soh = res8.get(0).get(1).toString();
+			
+				if(ran_soh.contains("."))
+				{
+					ran_soh = res8.get(0).get(1).toString().replaceAll("\\.?0+$","");
+				}
+				else
+				{
+					ran_soh = res8.get(0).get(1).toString();
+				}
+				
+				
+				String str8 = ""+artno+":"+OldSOh+":"+ran_soh;
+				DBList8.addAll(StringToListCreation(str8));
+				
+				String baseuom1 = data.getText("Base_UOM").replace("art_no",artno);
+				res4 = sql.executeQuery(getContext(), baseuom1);
+				baseuom_1 = res4.get(0).get(0).toString();
+				
+				String Pi_OM = data.getText("Ran_OM").replace("art_no", artno);
+				res5 = sql.executeQuery(getContext(), Pi_OM);
+				
+				piuom = res5.get(0).get(1).toString();
+				
+				store_soh = res8.get(0).get(0).toString();
+				if(store_soh.contains("."))
+				{
+					store_soh = res8.get(0).get(0).toString().replaceAll("\\.?0+$","");
+				}
+				else
+				{
+					store_soh = res8.get(0).get(0).toString();
+				}
+				
+				String RanSoh_val = store_soh + " " + baseuom_1 + " " + "(" +ran_soh+ " " +piuom+ ")";
+				
+				String str = ""+artno+":"+RanSoh_val;
+				DBList9.addAll(StringToListCreation(str));
+
+			}
+			else if(weighted.contains(artno))
+			{
+				String OldSOh = applnlist3.get(i).get(1).toString();
+				
+				String SOH_sql = data.getText("SOH1").replace("art_no",artno);
+				res8 = sql.executeQuery(getContext(), SOH_sql);
+
+				store_soh = res8.get(0).get(0).toString().replaceAll("\\.?0+$","");
+			
+				String str8 = ""+artno+":"+OldSOh+":"+store_soh;
+				DBList8.addAll(StringToListCreation(str8));
+				
+				String baseuom1 = data.getText("Base_UOM").replace("art_no",artno);
+				res4 = sql.executeQuery(getContext(), baseuom1);
+				baseuom_1 = res4.get(0).get(0).toString();
+
+				String str = ""+artno+":"+store_soh+" "+baseuom_1;
+				DBList9.addAll(StringToListCreation(str));
+			}
+			else
+			{
+				String SOH_sql = data.getText("SOH1").replace("art_no",artno);
+				res8 = sql.executeQuery(getContext(), SOH_sql);
+
+				store_soh = res8.get(0).get(0).toString().replaceAll("\\.?0+$","");
+				
+				String OldSOh = applnlist3.get(i).get(1).toString();
+			
+				String str8 = ""+artno+":"+OldSOh+":"+store_soh;
+				DBList8.addAll(StringToListCreation(str8));
+				
+				String baseuom1 = data.getText("Base_UOM").replace("art_no",artno);
+				res4 = sql.executeQuery(getContext(), baseuom1);
+				baseuom_1 = res4.get(0).get(0).toString();
+
+				String str = ""+artno+":"+store_soh+" "+baseuom_1;
+				DBList9.addAll(StringToListCreation(str));
+			}
+
+		}
+
+		System.out.println("DBList8" +DBList8);
+		
+		System.out.println("DBList9" +DBList9);
+
+		htmlToExtent(cName,mName,extLogger,driver, "SOH Values after submit the order;;;Pass");
+
+		ElementContains1(cName, mName,extLogger,driver, applnlist3, DBList8);
+
+		objOrdRecPage.ReceivedArticlesPage(objOrdRecObjects,applnlist,applnlist2,random,driver);
+		
+		objOrdRecPage.ArticleLookUp(objOrdRecObjects, DBList9,driver);
+		
+		
+		String orderCheck1 = data.getText("checkOrder").replace("ordNo", OrderNumber);
+		orderResult = sql.executeQuery(getContext(), orderCheck1);
+		
+		RevertOrder(OrderNumber);
+
+		waitFor(1);
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(OrdRecArtScenarios, OrdRecArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+		status.assertAll();
+	}
+
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException{	
+		mName=m9.getName().toString().trim();			
+			if(!methodList.contains(m9.getName().toString().trim())){
+			methodList.add(m9.getName().toString().trim());
+			extLogger = extReport.startTest(m9.getName().toString().trim());
+			}
+
+		waitFor(2);
+		initializeTestcontext();
+		System.out.println("test1 - beforemethod");
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		//driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser")); setDriver(driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		OrdRecArttestname = m9.getName().toString().trim();
+		OrdRecArttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		objOrdRecObjects = PageFactory.initElements(this.driver, OrderingAndReceivingObject.class);
+		objOrdRecPage = PageFactory.initElements(this.driver, OrderingAndReceivingPage.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+
+		Date ppStartdat1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String formattedDatepp = dateFormat.format(ppStartdat1);
+		System.out.println(formattedDatepp); // 12/01/2011 4:48:16 PM
+		OrdRecArtStartdat = formattedDatepp;
+
+	}
+
+	@BeforeClass
+	public void loadXMLFile(){	
+		//initializeTestcontext();
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+
+		System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\OrdRec.xml");
+		customreport.createExtentReport();
+
+		Date enhancedArtMod = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		OrdRecArtStdateex = dateFormat.format(enhancedArtMod);
+
+	}
+
+
+
+
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(), MCcount);
+		System.out.println(extentList);
+		System.out.println(methodList);
+        extReport.endTest(extLogger);
+		extReport.flush();
+		removeDriver();
+
+		
+		waitFor(1);
+		System.out.println("afterclass");
+		String Pp1className = this.getClass().getSimpleName().toString();
+		OrdRecArtModules.put(Pp1className, OrdRecArtScenarios);
+		waitFor(1);
+		moduleName.put("Modules", OrdRecArtModules);
+		waitFor(1);
+		Date ppModEnd2 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		OrdRecArtenddateex = dateFormat.format(ppModEnd2);
+
+		System.out.println(OrdRecArtenddateex);
+		waitFor(2);
+		int OrdRecArtM=MCcount;
+		OrdRecArtMC=""+OrdRecArtM;
+		waitFor(2);
+		System.out.println("Ordering Receiving - " +OrdRecArtMC);
+		waitFor(2);
+		
+		int ORArtM=MCcount;
+		OrdRecArtMC=""+ORArtM;
+		waitFor(2);
+		System.out.println("orderEnq - " +OrdRecArtMC);
+		waitFor(2);
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+		
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				System.out.println();
+			
+			}
+
+		System.out.println("AffterMethod");
+		waitFor(1);
+		Date ppMEndDate1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		OrdRecArtMEndDate = dateFormat.format(ppMEndDate1);
+		System.out.println(OrdRecArtMEndDate); // 12/01/2011 4:48:16 PM
+		String ordrecArtTime = OrdRecArttestdesc +";"+ OrdRecArtStartdat +";" + OrdRecArtMEndDate;
+
+		OrdRecArtTime.put(OrdRecArttestname, ordrecArtTime);
+		//Report_AddStep("testcase", "Running Completed Status","","", getResultStatusName(result.getStatus()));
+		waitFor(4);
+		closeDriver(driver);
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")){
+			int cnt = OrdRecArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Info");
+			OrdRecArtpreCount2++;
+		}
+		waitFor(1);
+		if((getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")) && OrdRecArtpreCount2!=reCount){
+			waitFor(1);
+			OrdRecArtTime.removeAll(OrdRecArttestname);
+			waitFor(1);
+			OrdRecArtScenarios.removeAll(OrdRecArttestname);
+		}
+		waitFor(1);
+		if(OrdRecArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+			OrdRecArtpreCount2=-1;
+		}
+		waitFor(2);
+	}
+}
+*/

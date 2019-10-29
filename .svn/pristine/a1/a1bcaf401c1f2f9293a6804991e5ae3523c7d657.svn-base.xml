@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite guice-stage="DEVELOPMENT" name="Failed suite [Default suite]">
+  <test name="Default test(failed)">
+    <classes>
+      <class name="au.wow.ngbomain.tests.EnhancedArticleLookUpTests">
+        <methods>
+          <include name="enhancedPrintTicketAllticket"/>
+          <include name="CheckPromopriceexcludingOneCardPromo"/>
+          <include name="enhancedPOSdetails"/>
+          <include name="enhancedCupPriceNZ"/>
+          <include name="onStart"/>
+          <include name="enhancedLTODetails"/>
+          <include name="enhancedPriceUnitDetails"/>
+          <include name="enhancedActivePromobigW"/>
+          <include name="enhancedArticleLookUpSM"/>
+          <include name="enhancedPrintTicketDefaultLabel"/>
+          <include name="enhancedPOGdetailsUnitiInfo"/>
+          <include name="setUp"/>
+          <include name="enhancedbigWAdvanceSearch"/>
+          <include name="enhancedSmartSearch"/>
+          <include name="flushReports"/>
+          <include name="enhancedFullHistorybigW"/>
+          <include name="enhancedReplinshmentFunctionality"/>
+          <include name="enhancedCheckNZStore"/>
+          <include name="enhancedUnknownItem"/>
+          <include name="enhancedDraftFunctionality"/>
+          <include name="enhancedMPLSCarticles"/>
+          <include name="flushReports1"/>
+          <include name="enhancedFullHistory"/>
+          <include name="tearDown"/>
+          <include name="enhancedBannerbigW"/>
+          <include name="enhancedSellandPromoPrice"/>
+          <include name="enhancedCheckPOSPrice"/>
+          <include name="loadXMLFile"/>
+          <include name="enhancedCPBDDescriptionCheck"/>
+          <include name="enhancedPrintTicketDefaultTalker"/>
+          <include name="enhancedAddAndCompareExpiryDate"/>
+          <include name="enhancedPLUandsupplierInfo"/>
+          <include name="enhancednearByStores"/>
+          <include name="enhancedBannerBWS"/>
+          <include name="enhancedLookupInputParameter"/>
+          <include name="enhancedSecurityTag"/>
+          <include name="enhancedFacingValue"/>
+          <include name="enhancedSalesHistory"/>
+          <include name="enhancedArticleIndicator"/>
+          <include name="enhancedCheckGrossProfit"/>
+          <include name="enhancedReplinshmentFunctionalityBWS"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.EnhancedArticleLookUpTests -->
+    </classes>
+  </test> <!-- Default test(failed) -->
+</suite> <!-- Failed suite [Default suite] -->

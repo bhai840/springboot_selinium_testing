@@ -1,0 +1,856 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+<TCName name = "emergencyPREQ_VendorArticle" >
+<!-- <supplier>0046521001</supplier> -->
+<articles>192921,216287</articles>
+<suppliers>0046521001</suppliers>
+<supplier>
+<![CDATA[SELECT DISTINCT LIFNR FROM  ZWOWC_ARTICLE_LISTING WHERE LIFNR NOT IN (SELECT DISTINCT LIFNR FROM ZWOWC_ROSTER_DATE) AND RANDOM_WEIGHT_FLG ='Y' AND LIFNR LIKE '00%']]>
+</supplier>
+<rosterdate>
+<![CDATA[select * from ZWOWC_ROSTER_DATE where roster_date in (select(today())) and lifnr ='supplier']]>
+</rosterdate>
+<article>
+<![CDATA[select master.matnr,listing.lifnr,listing.perpetual_flag,listing.alc_status,listing.article_om,master.pbd_ind,listing.random_weight_flg,master.random_weight_flg
+from zwowc_article_listing listing,zwowc_article_master master where 
+master.matnr = listing.matnr 
+and listing.alc_status  not in ('DA','ES','EC')
+and listing.lifnr = 'supplier'
+and listing.random_weight_flg = 'N' 
+and master.pbd_ind = 'isPBD']]>
+</article>
+<randArticle>
+<![CDATA[select master.matnr,listing.lifnr,listing.perpetual_flag,listing.alc_status,listing.article_om,master.pbd_ind,listing.random_weight_flg,master.random_weight_flg
+from zwowc_article_listing listing,zwowc_article_master master where 
+master.matnr = listing.matnr 
+and listing.alc_status  not in ('DA','ES','EC')
+and listing.lifnr = 'supplier' 
+and listing.random_weight_flg = 'Y'
+and master.random_weight_flg  ='Y']]>
+</randArticle>
+<articledetailsDB>
+<![CDATA[SELECT LISTING.MATNR,MASTER.ARTICLE_DESC,SOH.STORE_SOH,UOM.MEINH,LISTING.ARTICLE_OM FROM ZWOWC_ARTICLE_LISTING LISTING,ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_UOM UOM,LOCAL_WOW_SOH SOH WHERE
+LISTING.MATNR = MASTER.MATNR
+AND MASTER.MATNR = UOM.MATNR
+AND LISTING.MATNR = UOM.MATNR
+AND SOH.ARTICLE = LISTING.MATNR
+AND LISTING.MATNR = 'article'
+AND UOM.ORDER_UOM_IND = 'Y']]>
+</articledetailsDB>
+<baseuom>
+<![CDATA[SELECT meins FROM ZWOWC_ARTICLE_UOM WHERE MATNR = 'article'  AND ORDER_UOM_IND = 'Y']]>
+</baseuom>
+</TCName>
+
+
+<TCName name = "manualPREQVendorArticle_WithRoster" >
+<supplier>
+<![CDATA[SELECT ZAL.MATNR, roster_date_1 AS "Delivery Roster", delivery_date_1 AS "Next Delivery",delivery_date_2 AS "Following Delivery",lwdr.lifnr AS "Supplier"
+FROM SAAP.LOCAL_WOW_ROSTER_DATE LWDR
+JOIN SAAP.ZWOWC_ARTICLE_LISTING ZAL ON (ZAL.LIFNR = LWDR.LIFNR) and ZAL.SOURCE_OF_SUPPLY='1']]>
+</supplier>
+<article>
+<![CDATA[SELECT ZAL.MATNR, roster_date_1 AS "Delivery Roster", delivery_date_1 AS "Next Delivery",delivery_date_2 AS "Following Delivery"
+FROM SAAP.LOCAL_WOW_ROSTER_DATE LWDR
+JOIN SAAP.ZWOWC_ARTICLE_LISTING ZAL ON (ZAL.LIFNR = LWDR.LIFNR) and ZAL.SOURCE_OF_SUPPLY='1'
+and lwdr.lifnr = 'supplier'
+]]>
+</article>
+<articles>58130,324488</articles>
+<suppliers>0059177011</suppliers>
+<!-- <randArticle> -->
+<!-- <![CDATA[select master.matnr,listing.lifnr,listing.perpetual_flag,listing.alc_status,listing.article_om,master.pbd_ind,listing.random_weight_flg,master.random_weight_flg -->
+<!-- from zwowc_article_listing listing,zwowc_article_master master where  -->
+<!-- master.matnr = listing.matnr  -->
+<!-- and listing.alc_status  not in ('DA','ES','EC') -->
+<!-- and listing.lifnr = 'supplier'  -->
+<!-- and listing.random_weight_flg = 'Y' -->
+<!-- and master.random_weight_flg  ='Y']]> -->
+<!-- </randArticle> -->
+<articledetailsDB>
+<![CDATA[SELECT LISTING.MATNR,MASTER.ARTICLE_DESC,SOH.STORE_SOH,UOM.MEINH,LISTING.ARTICLE_OM FROM ZWOWC_ARTICLE_LISTING LISTING,ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_UOM UOM,LOCAL_WOW_SOH SOH WHERE
+LISTING.MATNR = MASTER.MATNR
+AND MASTER.MATNR = UOM.MATNR
+AND LISTING.MATNR = UOM.MATNR
+AND SOH.ARTICLE = LISTING.MATNR
+AND LISTING.MATNR = 'article'
+AND UOM.ORDER_UOM_IND = 'Y']]>
+</articledetailsDB>
+<baseuom>
+<![CDATA[SELECT meinh FROM ZWOWC_ARTICLE_UOM WHERE MATNR = 'article'  AND ORDER_UOM_IND = 'Y']]>
+</baseuom>
+</TCName>
+
+<TCName name = "manualPREQDCArticle_WithRoster" >
+<supplier>
+<![CDATA[SELECT ZAL.MATNR, roster_date_1 AS "Delivery Roster", delivery_date_1 AS "Next Delivery",delivery_date_2 AS "Following Delivery",lwdr.lifnr AS "Supplier"
+FROM SAAP.LOCAL_WOW_ROSTER_DATE LWDR
+JOIN SAAP.ZWOWC_ARTICLE_LISTING ZAL ON (ZAL.LIFNR = LWDR.LIFNR) and ZAL.SOURCE_OF_SUPPLY='2']]>
+</supplier>
+<article>
+<![CDATA[SELECT ZAL.MATNR, roster_date_1 AS "Delivery Roster", delivery_date_1 AS "Next Delivery",delivery_date_2 AS "Following Delivery"
+FROM SAAP.LOCAL_WOW_ROSTER_DATE LWDR
+JOIN SAAP.ZWOWC_ARTICLE_LISTING ZAL ON (ZAL.LIFNR = LWDR.LIFNR) and ZAL.SOURCE_OF_SUPPLY='2'
+and lwdr.lifnr = 'supplier'
+]]>
+</article>
+<articles>169513,75089,376554,178907</articles>
+<suppliers>1944</suppliers>
+<!-- <randArticle> -->
+<!-- <![CDATA[select master.matnr,listing.lifnr,listing.perpetual_flag,listing.alc_status,listing.article_om,master.pbd_ind,listing.random_weight_flg,master.random_weight_flg -->
+<!-- from zwowc_article_listing listing,zwowc_article_master master where  -->
+<!-- master.matnr = listing.matnr  -->
+<!-- and listing.alc_status  not in ('DA','ES','EC') -->
+<!-- and listing.lifnr = 'supplier'  -->
+<!-- and listing.random_weight_flg = 'Y' -->
+<!-- and master.random_weight_flg  ='Y']]> -->
+<!-- </randArticle> -->
+<articledetailsDB>
+<![CDATA[SELECT LISTING.MATNR,MASTER.ARTICLE_DESC,SOH.STORE_SOH,UOM.MEINH,LISTING.ARTICLE_OM FROM ZWOWC_ARTICLE_LISTING LISTING,ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_UOM UOM,LOCAL_WOW_SOH SOH WHERE
+LISTING.MATNR = MASTER.MATNR
+AND MASTER.MATNR = UOM.MATNR
+AND LISTING.MATNR = UOM.MATNR
+AND SOH.ARTICLE = LISTING.MATNR
+AND LISTING.MATNR = 'article'
+AND UOM.ORDER_UOM_IND = 'Y']]>
+</articledetailsDB>
+<baseuom>
+<![CDATA[SELECT meins FROM ZWOWC_ARTICLE_UOM WHERE MATNR = 'article'  AND ORDER_UOM_IND = 'Y']]>
+</baseuom>
+</TCName>
+
+<TCName name = "manualPREQDCErrorMessage_noRoster" >
+<supplier>
+<![CDATA[SELECT DISTINCT LIFNR FROM ZWOWC_ARTICLE_LISTING WHERE LIFNR NOT IN (SELECT LIFNR FROM ZWOWC_ROSTER_DATE) AND LIFNR NOT LIKE '0%' AND LIFNR != '']]>
+</supplier>
+<article>
+<![CDATA[SELECT LISTING.matnr FROM ZWOWC_ARTICLE_LISTING LISTING, ZWOWC_ARTICLE_MASTER MASTER 
+WHERE LISTING.LIFNR IN ('supplier') 
+AND LISTING.MATNR = MASTER.MATNR
+AND LISTING.MATNR LIKE '7%']]>
+</article>
+<rosterdate>
+<![CDATA[select * from ZWOWC_ROSTER_DATE where roster_date in (select(today())) and lifnr ='supplier']]>
+</rosterdate>
+<articles>741167,310379</articles>
+<suppliers>1933</suppliers>
+<!-- <randArticle> -->
+<!-- <![CDATA[select master.matnr,listing.lifnr,listing.perpetual_flag,listing.alc_status,listing.article_om,master.pbd_ind,listing.random_weight_flg,master.random_weight_flg -->
+<!-- from zwowc_article_listing listing,zwowc_article_master master where  -->
+<!-- master.matnr = listing.matnr  -->
+<!-- and listing.alc_status  not in ('DA','ES','EC') -->
+<!-- and listing.lifnr = 'supplier'  -->
+<!-- and listing.random_weight_flg = 'Y' -->
+<!-- and master.random_weight_flg  ='Y']]> -->
+<!-- </randArticle> -->
+<articledetailsDB>
+<![CDATA[SELECT LISTING.MATNR,MASTER.ARTICLE_DESC,SOH.STORE_SOH,UOM.MEINH,LISTING.ARTICLE_OM FROM ZWOWC_ARTICLE_LISTING LISTING,ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_UOM UOM,LOCAL_WOW_SOH SOH WHERE
+LISTING.MATNR = MASTER.MATNR
+AND MASTER.MATNR = UOM.MATNR
+AND LISTING.MATNR = UOM.MATNR
+AND SOH.ARTICLE = LISTING.MATNR
+AND LISTING.MATNR = 'article'
+AND UOM.ORDER_UOM_IND = 'Y']]>
+</articledetailsDB>
+<baseuom>
+<![CDATA[SELECT meins FROM ZWOWC_ARTICLE_UOM WHERE MATNR = 'article'  AND ORDER_UOM_IND = 'Y']]>
+</baseuom>
+</TCName>
+
+
+<TCName name = "manualPREQWarehouse_ProduceArticle" >
+<supplier>
+<![CDATA[SELECT ZAL.MATNR, roster_date_1 AS "Delivery Roster", delivery_date_1 AS "Next Delivery",delivery_date_2 AS "Following Delivery",lwdr.lifnr AS "Supplier"
+FROM SAAP.LOCAL_WOW_ROSTER_DATE LWDR
+JOIN SAAP.ZWOWC_ARTICLE_LISTING ZAL ON (ZAL.LIFNR = LWDR.LIFNR) and ZAL.SOURCE_OF_SUPPLY='2']]>
+</supplier>
+<article>
+<![CDATA[SELECT ZAL.MATNR, roster_date_1 AS "Delivery Roster", delivery_date_1 AS "Next Delivery",delivery_date_2 AS "Following Delivery"
+FROM SAAP.LOCAL_WOW_ROSTER_DATE LWDR
+JOIN SAAP.ZWOWC_ARTICLE_LISTING ZAL ON (ZAL.LIFNR = LWDR.LIFNR) and ZAL.SOURCE_OF_SUPPLY='2'
+and lwdr.lifnr = 'supplier'
+]]>
+</article>
+<articles>312433,312437,214130</articles>
+<suppliers>3936</suppliers>
+<getArticle>
+<![CDATA[SELECT MASTER.MATNR FROM ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_LISTING LIST,ZWOWC_ART_LIST_DEPARTMENT DEPT WHERE 
+LIST.MATNR = MASTER.MATNR 
+AND LIST.MATNR = DEPT.MATNR 
+AND DEPT.MATNR = MASTER.MATNR
+AND DEPT.DEPT = '30']]></getArticle>
+<!-- <randArticle> -->
+<!-- <![CDATA[select master.matnr,listing.lifnr,listing.perpetual_flag,listing.alc_status,listing.article_om,master.pbd_ind,listing.random_weight_flg,master.random_weight_flg -->
+<!-- from zwowc_article_listing listing,zwowc_article_master master where  -->
+<!-- master.matnr = listing.matnr  -->
+<!-- and listing.alc_status  not in ('DA','ES','EC') -->
+<!-- and listing.lifnr = 'supplier'  -->
+<!-- and listing.random_weight_flg = 'Y' -->
+<!-- and master.random_weight_flg  ='Y']]> -->
+<!-- </randArticle> -->
+<articledetailsDB>
+<![CDATA[SELECT LISTING.MATNR,MASTER.ARTICLE_DESC,SOH.STORE_SOH,UOM.MEINH,LISTING.ARTICLE_OM FROM ZWOWC_ARTICLE_LISTING LISTING,ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_UOM UOM,LOCAL_WOW_SOH SOH WHERE
+LISTING.MATNR = MASTER.MATNR
+AND MASTER.MATNR = UOM.MATNR
+AND LISTING.MATNR = UOM.MATNR
+AND SOH.ARTICLE = LISTING.MATNR
+AND LISTING.MATNR = 'article'
+AND UOM.ORDER_UOM_IND = 'Y']]>
+</articledetailsDB>
+<baseuom>
+<![CDATA[SELECT meins FROM ZWOWC_ARTICLE_UOM WHERE MATNR = 'article'  AND ORDER_UOM_IND = 'Y']]>
+</baseuom>
+</TCName>
+
+<TCName name = "manualPREQVendor_ProduceArticle" >
+<supplier>
+<![CDATA[SELECT ZAL.MATNR, roster_date_1 AS "Delivery Roster", delivery_date_1 AS "Next Delivery",delivery_date_2 AS "Following Delivery",lwdr.lifnr AS "Supplier"
+FROM SAAP.LOCAL_WOW_ROSTER_DATE LWDR
+JOIN SAAP.ZWOWC_ARTICLE_LISTING ZAL ON (ZAL.LIFNR = LWDR.LIFNR) and ZAL.SOURCE_OF_SUPPLY='2']]>
+</supplier>
+<article>
+<![CDATA[SELECT ZAL.MATNR, roster_date_1 AS "Delivery Roster", delivery_date_1 AS "Next Delivery",delivery_date_2 AS "Following Delivery"
+FROM SAAP.LOCAL_WOW_ROSTER_DATE LWDR
+JOIN SAAP.ZWOWC_ARTICLE_LISTING ZAL ON (ZAL.LIFNR = LWDR.LIFNR) and ZAL.SOURCE_OF_SUPPLY='2'
+and lwdr.lifnr = 'supplier'
+]]>
+</article>
+<articles>140818,115920,115693</articles>
+<suppliers>0011565001</suppliers>
+<getArticle>
+<![CDATA[SELECT MASTER.MATNR FROM ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_LISTING LIST,ZWOWC_ART_LIST_DEPARTMENT DEPT WHERE 
+LIST.MATNR = MASTER.MATNR 
+AND LIST.MATNR = DEPT.MATNR 
+AND DEPT.MATNR = MASTER.MATNR
+AND DEPT.DEPT = '30']]></getArticle>
+<!-- <randArticle> -->
+<!-- <![CDATA[select master.matnr,listing.lifnr,listing.perpetual_flag,listing.alc_status,listing.article_om,master.pbd_ind,listing.random_weight_flg,master.random_weight_flg -->
+<!-- from zwowc_article_listing listing,zwowc_article_master master where  -->
+<!-- master.matnr = listing.matnr  -->
+<!-- and listing.alc_status  not in ('DA','ES','EC') -->
+<!-- and listing.lifnr = 'supplier'  -->
+<!-- and listing.random_weight_flg = 'Y' -->
+<!-- and master.random_weight_flg  ='Y']]> -->
+<!-- </randArticle> -->
+<articledetailsDB>
+<![CDATA[SELECT LISTING.MATNR,MASTER.ARTICLE_DESC,SOH.STORE_SOH,UOM.MEINH,LISTING.ARTICLE_OM FROM ZWOWC_ARTICLE_LISTING LISTING,ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_UOM UOM,LOCAL_WOW_SOH SOH WHERE
+LISTING.MATNR = MASTER.MATNR
+AND MASTER.MATNR = UOM.MATNR
+AND LISTING.MATNR = UOM.MATNR
+AND SOH.ARTICLE = LISTING.MATNR
+AND LISTING.MATNR = 'article'
+AND UOM.ORDER_UOM_IND = 'Y']]>
+</articledetailsDB>
+<baseuom>
+<![CDATA[SELECT meins FROM ZWOWC_ARTICLE_UOM WHERE MATNR = 'article'  AND ORDER_UOM_IND = 'Y']]>
+</baseuom>
+</TCName>
+
+<TCName name = "manualPREQGNVendor_withSingleVN" >
+<!-- <suppliers_1108>0064828013</suppliers_1108> -->
+<suppliers>0060184019</suppliers>
+<article>
+<![CDATA[SELECT MASTER.MATNR,DEPT.DEPT_NAME,list.lifnr FROM ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_LISTING LIST,ZWOWC_ART_LIST_DEPARTMENT DEPT WHERE 
+LIST.MATNR = MASTER.MATNR 
+AND LIST.MATNR = DEPT.MATNR 
+AND DEPT.MATNR = MASTER.MATNR
+AND DEPT.DEPT NOT IN ('45')
+AND LIST.SOURCE_OF_SUPPLY = '1'
+and list.lifnr in ('supplier')
+AND LIST.ALC_STATUS IN ('NA','RA') ORDER BY DEPT_NAME ASC]]>
+</article>
+<articledetailsDB>
+<![CDATA[SELECT LISTING.MATNR,MASTER.ARTICLE_DESC,SOH.STORE_SOH,UOM.MEINH,LISTING.ARTICLE_OM FROM ZWOWC_ARTICLE_LISTING LISTING,ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_UOM UOM,LOCAL_WOW_SOH SOH WHERE
+LISTING.MATNR = MASTER.MATNR
+AND MASTER.MATNR = UOM.MATNR
+AND LISTING.MATNR = UOM.MATNR
+AND SOH.ARTICLE = LISTING.MATNR
+AND LISTING.MATNR = 'article'
+AND UOM.ORDER_UOM_IND = 'Y']]>
+</articledetailsDB>
+<baseuom>
+<![CDATA[SELECT meins FROM ZWOWC_ARTICLE_UOM WHERE MATNR = 'article'  AND ORDER_UOM_IND = 'Y']]>
+</baseuom>
+</TCName>
+
+<TCName name = "manualPREQ_AlternateVendor" >
+<supplier>
+<![CDATA[SELECT ZAL.MATNR, roster_date_1 AS "Delivery Roster", delivery_date_1 AS "Next Delivery",delivery_date_2 AS "Following Delivery",lwdr.lifnr AS "Supplier"
+FROM SAAP.LOCAL_WOW_ROSTER_DATE LWDR
+JOIN SAAP.ZWOWC_ARTICLE_LISTING ZAL ON (ZAL.LIFNR = LWDR.LIFNR) and ZAL.SOURCE_OF_SUPPLY='2']]>
+</supplier>
+<article>
+<![CDATA[SELECT ZAL.MATNR, roster_date_1 AS "Delivery Roster", delivery_date_1 AS "Next Delivery",delivery_date_2 AS "Following Delivery"
+FROM SAAP.LOCAL_WOW_ROSTER_DATE LWDR
+JOIN SAAP.ZWOWC_ARTICLE_LISTING ZAL ON (ZAL.LIFNR = LWDR.LIFNR) and ZAL.SOURCE_OF_SUPPLY='2'
+and lwdr.lifnr = 'supplier'
+]]>
+</article>
+<articles>426121</articles>
+<suppliers>0088632001</suppliers>
+<getArticle>
+<![CDATA[SELECT MASTER.MATNR FROM ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_LISTING LIST,ZWOWC_ART_LIST_DEPARTMENT DEPT WHERE 
+LIST.MATNR = MASTER.MATNR 
+AND LIST.MATNR = DEPT.MATNR 
+AND DEPT.MATNR = MASTER.MATNR
+AND DEPT.DEPT = '30']]></getArticle>
+<!-- <randArticle> -->
+<!-- <![CDATA[select master.matnr,listing.lifnr,listing.perpetual_flag,listing.alc_status,listing.article_om,master.pbd_ind,listing.random_weight_flg,master.random_weight_flg -->
+<!-- from zwowc_article_listing listing,zwowc_article_master master where  -->
+<!-- master.matnr = listing.matnr  -->
+<!-- and listing.alc_status  not in ('DA','ES','EC') -->
+<!-- and listing.lifnr = 'supplier'  -->
+<!-- and listing.random_weight_flg = 'Y' -->
+<!-- and master.random_weight_flg  ='Y']]> -->
+<!-- </randArticle> -->
+<articledetailsDB>
+<![CDATA[SELECT LISTING.MATNR,MASTER.ARTICLE_DESC,SOH.STORE_SOH,UOM.MEINS,LISTING.ARTICLE_OM FROM ZWOWC_ARTICLE_LISTING LISTING,ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_UOM UOM,LOCAL_WOW_SOH SOH WHERE
+LISTING.MATNR = MASTER.MATNR
+AND MASTER.MATNR = UOM.MATNR
+AND LISTING.MATNR = UOM.MATNR
+AND SOH.ARTICLE = LISTING.MATNR
+AND LISTING.MATNR = 'article'
+AND UOM.ORDER_UOM_IND = 'Y']]>
+</articledetailsDB>
+<baseuom>
+<![CDATA[SELECT meins FROM ZWOWC_ARTICLE_UOM WHERE MATNR = 'article'  AND ORDER_UOM_IND = 'Y']]>
+</baseuom>
+</TCName>
+
+<TCName name = "manualPREQ_UnscheduledVendor" >
+<suppliers>0090097001</suppliers>
+<suppliers_1786>0000146080</suppliers_1786>
+<!-- <article> -->
+<!-- <![CDATA[SELECT MASTER.MATNR,DEPT.DEPT_NAME,list.lifnr FROM ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_LISTING LIST,ZWOWC_ART_LIST_DEPARTMENT DEPT WHERE  -->
+<!-- LIST.MATNR = MASTER.MATNR  -->
+<!-- AND LIST.MATNR = DEPT.MATNR  -->
+<!-- AND DEPT.MATNR = MASTER.MATNR -->
+<!-- AND DEPT.DEPT NOT IN ('45') -->
+<!-- AND LIST.SOURCE_OF_SUPPLY = '1' -->
+<!-- and list.lifnr in ('supplier') -->
+<!-- AND LIST.ALC_STATUS IN ('NA','RA') ORDER BY DEPT_NAME ASC]]> -->
+<!-- </article> -->
+<articledetailsDB>
+<![CDATA[SELECT LISTING.MATNR,MASTER.ARTICLE_DESC,SOH.STORE_SOH,UOM.MEINH,LISTING.ARTICLE_OM FROM ZWOWC_ARTICLE_LISTING LISTING,ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_UOM UOM,LOCAL_WOW_SOH SOH WHERE
+LISTING.MATNR = MASTER.MATNR
+AND MASTER.MATNR = UOM.MATNR
+AND LISTING.MATNR = UOM.MATNR
+AND SOH.ARTICLE = LISTING.MATNR
+AND LISTING.MATNR = 'article'
+AND UOM.ORDER_UOM_IND = 'Y']]>
+</articledetailsDB>
+<baseuom>
+<![CDATA[SELECT meins FROM ZWOWC_ARTICLE_UOM WHERE MATNR = 'article'  AND ORDER_UOM_IND = 'Y']]>
+</baseuom>
+<article>830603,456807</article>
+</TCName>
+
+<TCName name = "manualPREQ_1GSHavingMultipleVNVendor" >
+<suppliers_1108>0074276008</suppliers_1108>
+<suppliers>0074276008</suppliers>
+<!-- <article> -->
+<!-- <![CDATA[SELECT MASTER.MATNR,DEPT.DEPT_NAME,list.lifnr FROM ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_LISTING LIST,ZWOWC_ART_LIST_DEPARTMENT DEPT WHERE  -->
+<!-- LIST.MATNR = MASTER.MATNR  -->
+<!-- AND LIST.MATNR = DEPT.MATNR  -->
+<!-- AND DEPT.MATNR = MASTER.MATNR -->
+<!-- AND DEPT.DEPT NOT IN ('45') -->
+<!-- AND LIST.SOURCE_OF_SUPPLY = '1' -->
+<!-- and list.lifnr in ('supplier') -->
+<!-- AND LIST.ALC_STATUS IN ('NA','RA') ORDER BY DEPT_NAME ASC]]> -->
+<!-- </article> -->
+<articledetailsDB>
+<![CDATA[SELECT LISTING.MATNR,MASTER.ARTICLE_DESC,SOH.STORE_SOH,UOM.MEINH,LISTING.ARTICLE_OM FROM ZWOWC_ARTICLE_LISTING LISTING,ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_UOM UOM,LOCAL_WOW_SOH SOH WHERE
+LISTING.MATNR = MASTER.MATNR
+AND MASTER.MATNR = UOM.MATNR
+AND LISTING.MATNR = UOM.MATNR
+AND SOH.ARTICLE = LISTING.MATNR
+AND LISTING.MATNR = 'article'
+AND UOM.ORDER_UOM_IND = 'Y']]>
+</articledetailsDB>
+<baseuom>
+<![CDATA[SELECT meins FROM ZWOWC_ARTICLE_UOM WHERE MATNR = 'article'  AND ORDER_UOM_IND = 'Y']]>
+</baseuom>
+<article>29015,463760</article>
+</TCName>
+
+
+<TCName name = "manualPREQVendor_multipleGSSingleVN" >
+<supplier>
+<![CDATA[select a.matnr, lifnr from zwowc_article_listing a, zwowc_article_master b where lifnr in
+(select lifnr from zwowc_gs_vendor group by lifnr HAVING count(*) > 1) and a.matnr = b.matnr ]]>
+</supplier>
+<article>
+<![CDATA[select a.matnr, lifnr from zwowc_article_listing a, zwowc_article_master b where lifnr in
+(select lifnr from zwowc_gs_vendor group by lifnr HAVING count(*) > 1) and a.matnr = b.matnr  and lifnr = 'supplier']]>
+</article>
+<articles>140818,115920,115693</articles>
+<suppliers>0087420001</suppliers>
+<getArticle>
+<![CDATA[SELECT MASTER.MATNR FROM ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_LISTING LIST,ZWOWC_ART_LIST_DEPARTMENT DEPT WHERE 
+LIST.MATNR = MASTER.MATNR 
+AND LIST.MATNR = DEPT.MATNR 
+AND DEPT.MATNR = MASTER.MATNR
+AND DEPT.DEPT = '30']]></getArticle>
+<!-- <randArticle> -->
+<!-- <![CDATA[select master.matnr,listing.lifnr,listing.perpetual_flag,listing.alc_status,listing.article_om,master.pbd_ind,listing.random_weight_flg,master.random_weight_flg -->
+<!-- from zwowc_article_listing listing,zwowc_article_master master where  -->
+<!-- master.matnr = listing.matnr  -->
+<!-- and listing.alc_status  not in ('DA','ES','EC') -->
+<!-- and listing.lifnr = 'supplier'  -->
+<!-- and listing.random_weight_flg = 'Y' -->
+<!-- and master.random_weight_flg  ='Y']]> -->
+<!-- </randArticle> -->
+<articledetailsDB>
+<![CDATA[SELECT LISTING.MATNR,MASTER.ARTICLE_DESC,SOH.STORE_SOH,UOM.MEINH,LISTING.ARTICLE_OM FROM ZWOWC_ARTICLE_LISTING LISTING,ZWOWC_ARTICLE_MASTER MASTER,ZWOWC_ARTICLE_UOM UOM,LOCAL_WOW_SOH SOH WHERE
+LISTING.MATNR = MASTER.MATNR
+AND MASTER.MATNR = UOM.MATNR
+AND LISTING.MATNR = UOM.MATNR
+AND SOH.ARTICLE = LISTING.MATNR
+AND LISTING.MATNR = 'article'
+AND UOM.ORDER_UOM_IND = 'Y']]>
+</articledetailsDB>
+<baseuom>
+<![CDATA[SELECT meins FROM ZWOWC_ARTICLE_UOM WHERE MATNR = 'article'  AND ORDER_UOM_IND = 'Y']]>
+</baseuom>
+</TCName>
+
+<TCName name = "OrderUpdationOfSugoSTO_ZUBW" >
+<orderNumber>7011683005</orderNumber>
+<orderNumber_7051>7011683005</orderNumber_7051>
+<orderdetails>
+<![CDATA[select PO_NO,CREATED_DATE,DLVY_DATE,ARTICLE_COUNT,ORDER_QTY,SUPPLIER_NO,SUPPLIER_NAME,SOURCE,STATUS,CUT_OFF_DATE,CUT_OFF_TIME from LOCAL_WOW_ORDER_INFO_TILL_PO where po_no = 'order_no']]>
+</orderdetails>
+<articledetails>
+<![CDATA[select distinct(info.matnr),master.article_desc,info.meins,soh.store_soh,info.menge,info.article_om,stock.soo,stock.sit
+from LOCAL_ORDER_PO_INFO info,local_wow_soh soh,ZWOWC_ARTICLE_UOM uom,zwowc_article_master master,
+local_wow_stock_info stock,ZWOWC_ART_SALES_PRICE sales
+where info.ebeln = 'order_no' and 
+info.matnr = soh.article and 
+master.matnr = info.matnr and
+stock.matnr = info.matnr ]]>
+</articledetails>
+<article>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in ('suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.PERPETUAL_FLAG = 'Y'
+and master.mtart = 'HAWA'
+and master.PBD_IND = 'N']]>
+</article>
+<randKGarticle>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in ('suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.RANDOM_WEIGHT_FLG = 'randFlag'
+and master.RANDOM_WEIGHT_FLG = 'Y'
+and listing.PERPETUAL_FLAG = 'Y']]>
+</randKGarticle>
+<blockText>
+<![CDATA[select matnr,blckt from ZWOWO_PREQ where banfn = 'order_no']]>
+</blockText>
+</TCName>
+
+<TCName name = "OrderUpdationOfSugoPREQ_ZSW" >
+<orderNumber_7051>71835346</orderNumber_7051>
+<article>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.PERPETUAL_FLAG = 'Y'
+and master.mtart = 'HAWA'
+and master.PBD_IND = 'N']]>
+</article>
+<randKGarticle>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.RANDOM_WEIGHT_FLG = 'randFlag'
+and master.RANDOM_WEIGHT_FLG = 'Y'
+and listing.PERPETUAL_FLAG = 'Y']]>
+</randKGarticle>
+<orderdetails>
+<![CDATA[select PREQ_NO,CREATED_DATE,DLVY_DATE,ARTICLE_COUNT,ORDER_QTY,SUPPLIER_NO,SUPPLIER_NAME,SOURCE,STATUS,CUT_OFF_DATE,CUT_OFF_TIME from LOCAL_WOW_ORDER_INFO_TILL_PO where PREQ_NO = 'order_no']]>
+</orderdetails>
+<articlecount>
+<![CDATA[select count(distinct matnr) from ZWOWO_PREQ where banfn = 'order_no']]>
+</articlecount>
+<blockText>
+<![CDATA[select matnr,blckt from ZWOWO_PREQ where banfn = 'order_no'  and status = 'O']]>
+</blockText>
+<articledetails>
+<![CDATA[select distinct(info.matnr),master.article_desc,info.meins,soh.store_soh,info.menge,info.article_om,stock.soo,stock.sit,uom.meins
+--convert(double,info.article_om) || ' ' || uom.meins as om
+from ZWOWO_PREQ info,local_wow_soh soh,ZWOWC_ARTICLE_UOM uom,zwowc_article_master master,
+local_wow_stock_info stock,ZWOWC_ART_SALES_PRICE sales
+where info.banfn = 'order_no' and 
+info.matnr = soh.article and 
+master.matnr = info.matnr and info.matnr=uom.matnr and
+stock.matnr = info.matnr and
+uom.order_uom_ind = 'Y']]>
+</articledetails>
+</TCName>
+
+<TCName name = "OrderUpdationOfSugoPREQ_ZSP" >
+<orderNumber_7051>71835312</orderNumber_7051>
+<orderdetails>
+<![CDATA[select PREQ_NO,CREATED_DATE,DLVY_DATE,ARTICLE_COUNT,ORDER_QTY,SUPPLIER_NO,SUPPLIER_NAME,SOURCE,STATUS,CUT_OFF_DATE,CUT_OFF_TIME from LOCAL_WOW_ORDER_INFO_TILL_PO where PREQ_NO = 'order_no']]>
+</orderdetails>
+<articlecount>
+<![CDATA[select count(distinct matnr) from ZWOWO_PREQ where banfn = 'order_no']]>
+</articlecount>
+<blockText>
+<![CDATA[select matnr,blckt from ZWOWO_PREQ where banfn = 'order_no']]>
+</blockText>
+<articledetails>
+<![CDATA[select distinct(info.matnr),master.article_desc,info.meins,soh.store_soh,info.menge,info.article_om,stock.soo,stock.sit,uom.meins
+--convert(double,info.article_om) || ' ' || uom.meins as om
+from ZWOWO_PREQ info,local_wow_soh soh,ZWOWC_ARTICLE_UOM uom,zwowc_article_master master,
+local_wow_stock_info stock,ZWOWC_ART_SALES_PRICE sales
+where info.banfn = 'order_no' and 
+info.matnr = soh.article and 
+master.matnr = info.matnr and info.matnr=uom.matnr and
+stock.matnr = info.matnr and
+uom.order_uom_ind = 'Y']]>
+</articledetails>
+<article>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.PERPETUAL_FLAG = 'Y'
+and master.mtart = 'HAWA'
+and master.PBD_IND = 'N']]>
+</article>
+<randKGarticle>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.RANDOM_WEIGHT_FLG = 'randFlag'
+and master.RANDOM_WEIGHT_FLG = 'Y'
+and listing.PERPETUAL_FLAG = 'Y']]>
+</randKGarticle>
+</TCName>
+
+
+<TCName name = "OrderUpdationOfManualPO_ZMW" >
+<orderNumber>71835344</orderNumber>7011086763
+<orderNumber_7051>71835344</orderNumber_7051>
+<orderdetails>
+<![CDATA[select PREQ_NO,CREATED_DATE,DLVY_DATE,ARTICLE_COUNT,ORDER_QTY,SUPPLIER_NO,SUPPLIER_NAME,SOURCE,STATUS,CUT_OFF_DATE,CUT_OFF_TIME from LOCAL_WOW_ORDER_INFO_TILL_PO where PREQ_NO = 'order_no']]>
+</orderdetails>
+<articlecount>
+<![CDATA[select count(distinct matnr) from ZWOWO_PREQ where banfn = 'order_no']]>
+</articlecount>
+<blockText>
+<![CDATA[select matnr,blckt from ZWOWO_PREQ where banfn = 'order_no']]>
+</blockText>
+<articledetails>
+<![CDATA[select distinct(info.matnr),master.article_desc,info.meins,soh.store_soh,info.menge,info.article_om,stock.soo,stock.sit,uom.meins
+--convert(double,info.article_om) || ' ' || uom.meins as om
+from ZWOWO_PREQ info,local_wow_soh soh,ZWOWC_ARTICLE_UOM uom,zwowc_article_master master,
+local_wow_stock_info stock,ZWOWC_ART_SALES_PRICE sales
+where info.banfn = 'order_no' and 
+info.matnr = soh.article and 
+master.matnr = info.matnr and info.matnr=uom.matnr and
+stock.matnr = info.matnr and
+uom.order_uom_ind = 'Y']]>
+</articledetails>
+<article>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.PERPETUAL_FLAG = 'Y'
+and master.mtart = 'HAWA'
+and master.PBD_IND = 'N']]>
+</article>
+<randKGarticle>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.RANDOM_WEIGHT_FLG = 'randFlag'
+and master.RANDOM_WEIGHT_FLG = 'Y'
+and listing.PERPETUAL_FLAG = 'Y']]>
+</randKGarticle>
+</TCName>
+
+
+<TCName name = "ChangedBeforeOrderUpdationOfManualPO_ZMW" >
+<orderdetails>
+<![CDATA[select Preq_NO,CREATED_DATE,DLVY_DATE,ARTICLE_COUNT,ORDER_QTY,SUPPLIER_NO,SUPPLIER_NAME,SOURCE,STATUS,CUT_OFF_DATE,CUT_OFF_TIME from LOCAL_WOW_ORDER_INFO_TILL_PO where preq_no = 'order_no']]>
+</orderdetails>
+<articledetails>
+<![CDATA[select distinct(info.matnr),master.article_desc,info.meins,soh.store_soh,info.menge,info.article_om,stock.soo,stock.sit
+from LOCAL_ORDER_PO_INFO info,local_wow_soh soh,ZWOWC_ARTICLE_UOM uom,zwowc_article_master master,
+local_wow_stock_info stock,ZWOWC_ART_SALES_PRICE sales
+where info.ebeln = 'order_no' and 
+info.matnr = soh.article and 
+master.matnr = info.matnr and
+stock.matnr = info.matnr ]]>
+</articledetails>
+<article>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in ('suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.PERPETUAL_FLAG = 'Y'
+and master.mtart = 'HAWA'
+and master.PBD_IND = 'N']]>
+</article>
+<randKGarticle>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.RANDOM_WEIGHT_FLG = 'randFlag'
+and master.RANDOM_WEIGHT_FLG = 'Y'
+and listing.PERPETUAL_FLAG = 'Y']]>
+</randKGarticle>
+<blockText>
+<![CDATA[select matnr,blocking_text from zwowo_po_itm where ebeln = 'order_no']]>
+</blockText>
+</TCName>
+
+<TCName name = "OrderUpdationOfManualPREQ_ZMW" >
+<orderNumber_7051>71858143</orderNumber_7051>
+<article>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.PERPETUAL_FLAG = 'Y'
+and master.mtart = 'HAWA'
+and master.PBD_IND = 'N']]>
+</article>
+<randKGarticle>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.RANDOM_WEIGHT_FLG = 'randFlag'
+and master.RANDOM_WEIGHT_FLG = 'Y'
+and listing.PERPETUAL_FLAG = 'Y']]>
+</randKGarticle>
+<orderdetails>
+<![CDATA[select PREQ_NO,CREATED_DATE,DLVY_DATE,ARTICLE_COUNT,ORDER_QTY,SUPPLIER_NO,SUPPLIER_NAME,SOURCE,STATUS,CUT_OFF_DATE,CUT_OFF_TIME from LOCAL_WOW_ORDER_INFO_TILL_PO where PREQ_NO = 'order_no']]>
+</orderdetails>
+<articlecount>
+<![CDATA[select count(distinct matnr) from ZWOWO_PREQ where banfn = 'order_no'  and status = 'O']]>
+</articlecount>
+<blockText>
+<![CDATA[select matnr,blckt from ZWOWO_PREQ where banfn = 'order_no'  and status = 'O']]>
+</blockText>
+<articledetails>
+<![CDATA[select distinct(info.matnr),master.article_desc,info.meins,soh.store_soh,info.menge,info.article_om,stock.soo,stock.sit,uom.meins
+--convert(double,info.article_om) || ' ' || uom.meins as om
+from ZWOWO_PREQ info,local_wow_soh soh,ZWOWC_ARTICLE_UOM uom,zwowc_article_master master,
+local_wow_stock_info stock,ZWOWC_ART_SALES_PRICE sales
+where info.banfn = 'order_no' and 
+info.matnr = soh.article and 
+master.matnr = info.matnr and info.matnr=uom.matnr and
+stock.matnr = info.matnr and
+uom.order_uom_ind = 'Y']]>
+</articledetails>
+</TCName>
+
+<TCName name = "OrderUpdationByAddingArticleByEAN" >
+<orderNumber_7051>71858135</orderNumber_7051>
+<article>
+<![CDATA[select ean.EAN11 from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master,zwowc_article_ean ean
+where master.matnr = listing.matnr and 
+ean.matnr=listing.matnr and  
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.PERPETUAL_FLAG = 'Y'
+and master.mtart = 'HAWA'
+and master.PBD_IND = 'N']]>
+</article>
+<randKGarticle>
+<![CDATA[select ean.EAN11 from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master,zwowc_article_ean ean
+where master.matnr = listing.matnr and 
+ean.matnr=listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.RANDOM_WEIGHT_FLG = 'randFlag'
+and master.RANDOM_WEIGHT_FLG = 'Y'
+and listing.PERPETUAL_FLAG = 'Y']]>
+</randKGarticle>
+<orderdetails>
+<![CDATA[select PREQ_NO,CREATED_DATE,DLVY_DATE,ARTICLE_COUNT,ORDER_QTY,SUPPLIER_NO,SUPPLIER_NAME,SOURCE,STATUS,CUT_OFF_DATE,CUT_OFF_TIME from LOCAL_WOW_ORDER_INFO_TILL_PO where PREQ_NO = 'order_no']]>
+</orderdetails>
+<articlecount>
+<![CDATA[select count(distinct matnr) from ZWOWO_PREQ where banfn = 'order_no' and status = 'O']]>
+</articlecount>
+<blockText>
+<![CDATA[select matnr,blckt from ZWOWO_PREQ where banfn = 'order_no' and status = 'O']]>
+</blockText>
+<articledetails>
+<![CDATA[select distinct(info.matnr),master.article_desc,info.meins,soh.store_soh,info.menge,info.article_om,stock.soo,stock.sit,uom.meins
+--convert(double,info.article_om) || ' ' || uom.meins as om
+from ZWOWO_PREQ info,local_wow_soh soh,ZWOWC_ARTICLE_UOM uom,zwowc_article_master master,
+local_wow_stock_info stock,ZWOWC_ART_SALES_PRICE sales
+where info.banfn = 'order_no' and 
+info.matnr = soh.article and 
+master.matnr = info.matnr and info.matnr=uom.matnr and
+stock.matnr = info.matnr and
+uom.order_uom_ind = 'Y']]>
+</articledetails>
+</TCName>
+
+<TCName name = "AdvanceSearchByArticleByEAN" >
+<EAN>
+<![CDATA[9300633965488]]>
+</EAN>
+</TCName>
+
+<TCName name = "UpdatingReceivedVendorOrder">
+<Vendororder2>50014570</Vendororder2>51101895   51156732 51087782
+<Invoice>12345</Invoice>
+<Temp>2.5</Temp>
+<Vendororder1>7010335975</Vendororder1>7010198578, 7010332003 51087779
+
+<checkOrder>
+<![CDATA[select * from revert_received_order where order_no='ordNo']]>
+</checkOrder>
+<AddOrder>
+<![CDATA[INSERT INTO "SAAP"."revert_received_order" ("order_no") VALUES('ordersNo')]]>
+</AddOrder>
+<revertOrder>
+<![CDATA[call sp_wow_RevertReceiving('{iv_order_number:"ordno"}');]]>
+</revertOrder>
+<Chilledtemp>2.56</Chilledtemp>
+<Frozentemp>-52.36</Frozentemp>
+<OrderDetails>
+<![CDATA[select a.ebeln, convert(char(12), a.lfdat, 103), convert(char(12), a.on_show_date, 103),
+ a.created_by, b.reswk from zwowo_po_hdr a, ZWOWO_PO_HDR b where a.ebeln = b.ebeln and a.ebeln = 'ord_no']]>
+</OrderDetails>
+<vendorname>
+<![CDATA[select supplier_name ||' ('|| supplier_no || ')' as supp_name, SOURCE from LOCAL_WOW_ORDER_INFO_TILL_PO where po_no = 'ord_no']]>
+</vendorname>
+<VendorNo>
+<![CDATA[select supplier_no SOURCE from LOCAL_WOW_ORDER_INFO_TILL_PO where po_no = 'Order_no']]>
+</VendorNo>
+<TotCart>
+<![CDATA[select floor(sum(menge)) from ZWOWO_PO_ITM where ebeln = 'ord_no']]>
+</TotCart>
+<TotArt>
+<![CDATA[select count(*) from ZWOWO_PO_ITM where ebeln = 'ord_no']]>
+</TotArt>
+<Artdet>
+<![CDATA[select matnr, MENGE,MEINS from ZWOWO_PO_ITM  where ebeln = 'ord_no']]>
+</Artdet>
+<ChillTemp>3</ChillTemp>
+<FrozTemp>-26</FrozTemp>
+<OM>
+<![CDATA[select pack_size from zwowo_po_itm  where ebeln = 'ord_no']]>
+
+</OM>
+<Base_UOM>
+<![CDATA[select MEINS from ZWOWC_ARTICLE_UOM where matnr = 'art_no' and base_uom_ind = 'Y']]>
+</Base_UOM>
+<SOH>
+<![CDATA[select store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOH>
+<SOHFinal>
+<![CDATA[select article,store_soh, store_soh_rand_wght from saap.local_wow_soh where article='art_no']]>
+</SOHFinal>
+
+select article,store_soh, store_soh_rand_wght from saap.local_wow_soh where article='777317'
+<Tempflg>
+<![CDATA[select Temperature_ind from ZWOWO_PO_HDR where ebeln = 'ord_no']]>
+</Tempflg>
+<NEWSOH>
+<![CDATA[select store_soh, STORE_SOH_RAND_WGHT from saap.local_wow_soh where article='art_no']]>
+</NEWSOH>
+<OrdDet>
+<![CDATA[select OPTM.EBELN,OPTM.MATNR,OPTM.MENGE,OPTM.MEINS,ZAL.RANDOM_WEIGHT_FLG, ZAL.PI_OM,OPTM.ARTICLE_OM, ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND, ZAM.TEMPERATURE_IND FROM ZWOWO_PO_ITM OPTM 
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (OPTM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (OPTM.MATNR = ZAM.MATNR) WHERE OPTM.EBELN = 'ord_no';]]>
+</OrdDet>
+
+<Artilcetypes>
+<![CDATA[select OPTM.MATNR,ZAL.RANDOM_WEIGHT_FLG,  ZAL.IS_CPBD,
+ZAL.COMPLEX_PACK_BRK_ARTICLE, ZAM.DISPLAY_ITEM_IND FROM ZWOWO_PO_ITM OPTM 
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (OPTM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (OPTM.MATNR = ZAM.MATNR) 
+WHERE OPTM.EBELN = 'ord_no']]>
+</Artilcetypes>
+<SumOfQTy>
+<![CDATA[select count(*),floor(sum(OPTM.MENGE)) FROM ZWOWO_PO_ITM OPTM 
+JOIN ZWOWC_ARTICLE_LISTING ZAL ON (OPTM.MATNR = ZAL.MATNR) JOIN ZWOWC_ARTICLE_MASTER ZAM ON (OPTM.MATNR = ZAM.MATNR)
+ WHERE OPTM.EBELN = 'ord_no']]></SumOfQTy>
+ 
+ <RWArticle1><![CDATA[
+select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e
+ where a.matnr=b.matnr and b.matnr=c.matnr 
+and c.matnr=d.matnr and d.matnr=e.matnr and a.RANDOM_WEIGHT_FLG='Y' and d.source_of_supply='1' and d.lifnr='Vendor_No'and d.pi_om>1]]></RWArticle1>
+
+<HAWA1><![CDATA[ 
+select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e
+ where a.matnr=b.matnr and b.matnr=c.matnr 
+and c.matnr=d.matnr and d.matnr=e.matnr and d.source_of_supply='1' and d.lifnr='Vendor_No' and mtart='HAWA']]></HAWA1>
+</TCName>
+
+
+
+<TCName name = "OrdersCancellationFromBrowser">
+<OpenPreq><![CDATA[select banfn from zwowo_preq where status='O' and bsart='ZMW' and source_of_supply='source1'  group by banfn having count(distinct banfn ) =1 
+]]></OpenPreq>
+</TCName>
+
+<TCName name = "OrderCancellationFromBrowser">
+<PONo><![CDATA[select * from ZWOWO_PO_HDR where  DATEFORMAT(on_show_date,'MM/DD/YYYY') <  DATEFORMAT(today(),'MM/DD/YYYY')
+and source_of_supply='source1' and STATUS='A' and rcvd_flag is null ]]></PONo>
+</TCName>
+
+
+
+</configuration>

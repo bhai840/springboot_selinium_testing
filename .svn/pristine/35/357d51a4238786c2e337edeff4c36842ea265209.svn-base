@@ -1,0 +1,1669 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.GapscanReportObjects;
+
+import au.wow.ngbomain.objects.RoutineObjects;
+import au.wow.ngbomain.objects.oocreportobjects;
+
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.tests.AdjustmentLogReportTests;
+import au.wow.ngbomain.tests.OverstockReportsTest;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+public class RoutinesPage extends BasePage {
+
+	WebDriver driver ;
+	public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+	CommonFunctions common = PageFactory.initElements(driver,
+			CommonFunctions.class);
+	private Logger log = LogManager.getLogger(OverstockReportsTest.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	public static String msgtext1;
+	RoutinesPage objRoutinesPage;
+	XMLDataReader data;
+	WoWLoginPage loginPage;
+	ExtentTest extLogger=OverstockReportsTest.extLogger;
+	String cName= OverstockReportsTest.cName;
+	String mName=OverstockReportsTest.mName;
+
+	public void clickOnroutines(RoutineObjects objRoutineObjects,WebDriver driver) throws AWTException {
+		// TODO Auto-generated method stub
+		waitForJSandJQueryToLoad(driver);;
+		verticalScroll(driver);
+		waitForElement(objRoutineObjects.reports,driver);
+
+		driver.findElement(By.id("reports")).click();
+		driver.findElement(By.linkText("Stock Management")).click();
+		driver.findElement(By.linkText("Overstock Investigation Report")).click();
+		
+		waitForInvisibilityOfElement(By.id("statusImg"),driver);
+		waitForJSandJQueryToLoad(driver);
+	}
+	
+	/*public void clickOnroutines(RoutineObjects objRoutineObjects,WebDriver driver) throws AWTException{
+
+		waitForJSandJQueryToLoad(driver);;
+		verticalScroll(driver);
+		waitForElement(objRoutineObjects.reports,driver);
+
+		Point coordinates = objRoutineObjects.reports.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+
+		waitFor(1);
+		Actions action = new Actions(driver);
+		action.moveToElement(objRoutineObjects.reports).click().build()
+		.perform();
+
+		waitForJSandJQueryToLoad(driver);;
+		waitForElement(objRoutineObjects.stockmgmt,driver);
+
+		waitFor(1);
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objRoutineObjects.stockmgmt).click().build()
+		.perform();
+		waitFor(1);
+		Actions action1 = new Actions(driver);
+		action1.moveToElement(objRoutineObjects.overstockreport)
+		.click().build().perform();
+
+		robot.mouseMove(5, 5);
+
+		waitForJSandJQueryToLoad(driver);;
+	}*/
+
+
+	/*public int generaterandomnumber(int min, int max)//Function for dynamically generating a number. To access this Xpath should be Dynamic
+	{
+		Random random = new Random();
+		int randnumber = random.nextInt(max + 1-min)+ min;
+		return randnumber;
+	}
+
+
+	public void dynamicreasonclick(RoutineObjects objRoutineObjects,WebDriver driver) throws AWTException
+	{
+		int randomno = generaterandomnumber(1,2);//Inserted that function
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.reasontypesdyn,randomno,driver);
+		ele.click();
+
+
+
+
+	}
+
+	public void dynmicdatedrpdwnclick(RoutineObjects objRoutineObjects,WebDriver driver)
+	{
+		int randomno = generaterandomnumber(0,6);//Inserted that function
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.dateselectionoption,randomno,driver);
+		ele.click();
+
+
+
+
+	}
+	public void clickOnroutines(RoutineObjects objRoutineObjects,WebDriver driver) throws AWTException{
+//		waitForJSandJQueryToLoad(driver);;
+		//verticalScroll(driver);
+		waitFor(1);
+		Point coordinates = objRoutineObjects.reports.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+
+		Actions action = new Actions(getDriver());
+		action.moveToElement(objRoutineObjects.reports).click().build().perform();	
+		waitFor(2);
+
+		Point coordinates1 = objRoutineObjects.stockmgmt.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(),coordinates1.getY()+100);
+
+		Actions action2 = new Actions(getDriver());
+		action2.moveToElement(objRoutineObjects.stockmgmt).click().build().perform();
+		waitFor(2);
+
+		Point coordinates2 = objRoutineObjects.overstockreport.getLocation();
+		Robot robo1t1 = new Robot();
+		robo1t1.mouseMove(coordinates2.getX(),coordinates2.getY()+100);
+
+		Actions action3 = new Actions(getDriver());
+		action3.moveToElement(objRoutineObjects.overstockreport).click().build().perform();
+		waitFor(2);
+		robot.mouseMove(5,5);
+		waitForJSandJQueryToLoad(driver);;
+
+	}
+	public void dynamicdateclick(RoutineObjects objRoutineObjects,WebDriver driver) throws AWTException
+	{
+		int randomno = generaterandomnumber(1,2);//Inserted that function
+		WebElement ele = prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.datetypesdyn,randomno,driver);
+		ele.click();
+
+
+
+
+
+
+	}
+
+	public void overstock(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException
+	{
+
+		for(int deptdropdwn1=1;deptdropdwn1<=1;deptdropdwn1++)
+		{
+			objRoutineObjects.dropdownselect.click();
+			WebElement DDclick =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.clickinnerDD, deptdropdwn1,driver);		
+			String deptname=DDclick.getText();	
+			htmlToExtent(cName,mName,extLogger,driver, "Checking for Department name - "+deptname+";;;Pass");
+			//Report_AddStep("testcase", "Checking for Department name - "+deptname+" ","","", "");
+			if((deptdropdwn1!=1)&&(deptdropdwn1!=2))
+			{
+				WebElement DDclick1 =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.clickinnerDD, 1,driver);	
+				DDclick1.click();
+				DDclick1.click();
+			}
+			if(deptdropdwn1==2)
+			{
+				WebElement DDclick1 =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.clickinnerDD, 1,driver);	
+				DDclick1.click();				
+			}
+			verticalinternalscroll(DDclick,driver);
+			//DDclick.click();//## this Unchecks alldept
+			waitFor(3);
+			click(objRoutineObjects.Done);
+			waitFor(1);
+			objRoutineObjects.GenerateReport.click(); 
+			waitForJSandJQueryToLoad(driver);;
+
+
+
+		}}
+
+	public  void fnNoRecords(RoutineObjects objRoutineObjects,WebDriver driver){
+
+		String message = objRoutineObjects.msgtext.getText();
+		if(message.equals("Sorry, No records found."))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, ""+message+";;;Pass");
+			objRoutineObjects.close.click();
+			waitFor(2);
+			objRoutineObjects.generateoverstockreport.click();
+			waitFor(2);
+			objRoutineObjects.generateoverstockreport.click();
+			waitFor(1);
+
+		}
+
+	}
+	public  void fnNoDeptselected(RoutineObjects objRoutineObjects,WebDriver driver){
+		try{
+			String nodeptsmsg = objRoutineObjects.nodept.getText();
+			if(nodeptsmsg.contains("Please select any department and proceed"))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, ""+nodeptsmsg+";;;Pass");
+				//Report_AddStep("testcase", ""+mesg+"","","", "");
+				objRoutineObjects.close.click();
+				waitFor(2);
+				objRoutineObjects.generateoverstockreport.click();
+				waitFor(2);
+				objRoutineObjects.generateoverstockreport.click();
+				waitFor(1);
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver, "The eror message is not displayed;;;Fail");
+			}}
+		catch(Exception e){
+		}
+	}
+
+
+
+	public int random_no(int size)
+	{
+		Random rand = new Random();
+		int n = rand.nextInt(size);
+		return n;
+	}	
+
+
+	public void AllDepartmentReport(RoutineObjects objRoutineObjects,WebDriver driver) {
+<<<<<<< .mine
+		if (isEnabled(objRoutineObjects.alldept))
+||||||| .r13617
+		if (isEnabled(objRoutineObjects.alldeptcb))
+=======
+		if (isEnabled(objRoutineObjects.AllDeptCheckbox))
+>>>>>>> .r14139
+
+		{
+			objRoutineObjects.dropdownselect.click();
+<<<<<<< .mine
+			click(objRoutineObjects.alldept);
+||||||| .r13617
+			click(objRoutineObjects.alldeptcb);
+=======
+			click(objRoutineObjects.AllDeptCheckbox);
+>>>>>>> .r14139
+			//objRoutineObjects.done.click();
+			waitForJSandJQueryToLoad(driver);;
+		}
+<<<<<<< .mine
+		
+		objRoutineObjects.GenerateReport.click();
+		
+||||||| .r13617
+		
+		objRoutineObjects.generatereport.click(); 
+		
+=======
+
+		objRoutineObjects.GenerateReport.click(); 
+
+>>>>>>> .r14139
+	}
+
+
+
+	//Randomly clicks on partial department
+	public List<String> PartialDepartment(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException
+	{
+		List<String> selectedDept = new ArrayList<String>();
+		//Calculate size of dept drop down
+		int max = objRoutineObjects.innerDD.size();
+		int min = 2;
+
+		List<Integer> randomNumbers = new ArrayList<Integer>();
+		objRoutineObjects.dropdownselect.click();
+
+		if (isSelected(objRoutineObjects.alldept))
+
+		{
+			click(objRoutineObjects.alldept);
+//			click(objRoutineObjects.alldept);
+			waitForJSandJQueryToLoad(driver);;
+		}
+
+		else//## check if required
+		{
+			click(objRoutineObjects.alldept);
+			waitForJSandJQueryToLoad(driver);;
+
+			click(objRoutineObjects.alldept);
+			waitForJSandJQueryToLoad(driver);;
+		}
+
+
+
+		randomNumbers = generateMultiplRandomNumber(min, max, 3);
+
+
+
+
+		for(int i=0;i<3;i++)
+		{
+			WebElement element =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.partialdeptselectiondynamic,randomNumbers.get(i),driver);
+			String dptName = element.getText().trim();
+
+			Coordinates coordinate = ((Locatable)element).getCoordinates(); 
+			coordinate.onPage(); 
+			coordinate.inViewPort();
+
+			WebElement deptCheckbox =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.partialcheckboxselectiondynamic,randomNumbers.get(i),driver);
+			click(deptCheckbox);
+
+			//Report_AddStep("testcase","The department Selected is : "+dptName,"" ,"" , "Pass");
+			selectedDept.add(dptName);
+		}
+		objRoutineObjects.Done.click();
+		objRoutineObjects.GenerateReport.click();
+		htmlToExtent(cName,mName,extLogger,driver, "The department Selected is : "+selectedDept+";;;Pass");
+		return selectedDept;
+	}	
+
+	public List<Integer> generateMultiplRandomNumber(int min, int max, int multiple)
+	{
+		ArrayList<Integer> list = new ArrayList<Integer>();
+
+		for (int i=min; i<=max; i++) {
+			list.add(new Integer(i));
+		}
+		Collections.shuffle(list);
+		for (int i=0; i<multiple; i++) {
+			//System.out.println(list.get(i));
+		}
+
+		return list;
+	}
+
+
+
+
+	public void fordate(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException, SQLException, ParseException, AWTException
+	{
+		//Click on date(current week/Last week)
+		int size1 = objRoutineObjects.dateradio.size();
+
+		for(int i=1;i<=size1;i++)
+		{
+			WebElement element =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.datetypesdyn,i,driver);
+			click(element);
+			waitFor(1);
+			//Selecting Partial department
+			PartialDepartment(objRoutineObjects,driver);
+			//Click generate report
+			click(objRoutineObjects.GenerateReport);//##DB validation tbd
+			waitForJSandJQueryToLoad(driver);;
+			//Pagination handling
+			paginationhandling(objRoutineObjects,driver);//##
+			//Sorry no records>click close button>click generateoverstockreport
+			if(objRoutineObjects.msg.size()!=0)//Error message
+			{
+				String mesg = objRoutineObjects.msgtext.getText();
+				if(mesg.equals("Sorry, No records found."))
+				{
+					htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+					waitFor(2);
+					//Report_AddStep("testcase", ""+mesg+"","","", "");
+					objRoutineObjects.close.click();
+					waitFor(2);
+					//Check overstock report has scrolled up
+					objRoutineObjects.generateoverstockreport.click();
+					waitFor(2);
+					objRoutineObjects.generateoverstockreport.click();
+				}
+
+
+
+				else
+				{
+
+
+					ooctabs(objRoutineObjects,driver);//##
+
+				}}}}
+
+
+	public void fordateprimary1(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException, SQLException, Exception
+	{
+
+		int size1 = objRoutineObjects.dateradio.size();
+
+		for(int i=1;i<=1;i++)
+		{
+			WebElement element =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.datetypesdyn,i,driver);
+			click(element);
+			waitFor(1);
+			primarydepartment123(objRoutineObjects,driver);
+			click(objRoutineObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);;
+			paginationhandling(objRoutineObjects,driver);
+
+			if(objRoutineObjects.msg.size()!=0)
+			{
+				String mesg = objRoutineObjects.msgtext.getText();
+				if(mesg.equals("Sorry, No records found."))
+				{
+					htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+					//Report_AddStep("testcase", ""+mesg+"","","", "");
+					objRoutineObjects.close.click();
+					objRoutineObjects.generateoverstockreport.click();
+					objRoutineObjects.generateoverstockreport.click();
+				}
+				else
+				{
+					ooctabs(objRoutineObjects,driver);
+				}
+			}		
+			else
+			{
+				ooctabs(objRoutineObjects,driver);
+			}
+
+
+
+		}}		
+
+	public void fordateprimary2(RoutineObjects objRoutineObjects,List<List<Object>> results1,WebDriver driver) throws IOException, SQLException, ParseException, Exception
+	{
+
+		//##int size1 = objRoutineObjects.dateselectradio.size();
+
+
+
+		for(int i=0;i<=2;i++)
+		{
+			click(objRoutineObjects.DateSelection);
+			WebElement element =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.dateselectionoption,i,driver);
+			waitFor(1);
+			click(element);
+			waitFor(1);
+			primarydepartment123(objRoutineObjects,driver);
+			click(objRoutineObjects.GenerateReport);
+			waitForJSandJQueryToLoad(driver);;
+
+			//##1
+
+			if(objRoutineObjects.msg.size()!=0)
+			{
+				msgtext1 = objRoutineObjects.msgtext.getText();
+				if(msgtext1.equals("Sorry, No records found."))
+				{
+					htmlToExtent(cName,mName,extLogger,driver, ""+msgtext1+";;;Pass");
+					//Report_AddStep("testcase", ""+mesg+"","","", "");
+					objRoutineObjects.close.click();
+					waitFor(3);
+					objRoutineObjects.generateoverstockreport.click();
+					waitFor(3);
+					objRoutineObjects.generateoverstockreport.click();
+					waitFor(5);
+				}
+			}else
+			{
+				paginationhandling(objRoutineObjects,driver);//from ##1 moved here
+				ooctabs(objRoutineObjects,driver);
+			}
+
+		}			
+
+
+
+
+	}
+
+	public void fordaily(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException, SQLException, Exception
+	{
+
+		//int size1 = objRoutineObjects.dateselectradio.size();
+		//date
+		for(int i=1;i<=1;i++)
+		{
+			objRoutinesPage.dateselect(objRoutineObjects,driver);
+			click(objRoutineObjects.DateSelection);
+			WebElement element =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.dateselectionoption,i);
+			click(element);
+			//waitFor(1);
+			PartialDepartment(objRoutineObjects,driver);
+			click(objRoutineObjects.GenerateReport);//##working fine till this
+			waitForJSandJQueryToLoad(driver);;
+			//##1
+
+
+			if(objRoutineObjects.msg.size()!=0)
+			{
+				String mesg = objRoutineObjects.msgtext.getText();
+				if(mesg.equals("Sorry, No records found."))
+				{
+					htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+					//Report_AddStep("testcase", ""+mesg+"","","", "PASS");
+					click(objRoutineObjects.close);
+					objRoutineObjects.generateoverstockreport.click();
+				}
+				else
+				{
+					paginationhandling(objRoutineObjects,driver);
+
+				}
+			}		
+			else//works till here
+			{
+				ooctabspartialdaily(objRoutineObjects,driver);
+			}
+
+
+
+		}}
+
+	public List<List<Object>> ooctabspartialdaily(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException, SQLException, ParseException, AWTException  
+	{	
+
+
+		String articleType;
+		String article_No=null;
+		List<List<Object>> results1;
+
+		List<List<Object>> results2 = null;
+
+		//DB validation
+		List <String>article = new ArrayList<String>();//##		
+		article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);//##fails here
+
+
+		for(int i=0;i<article.size();i++)//after this sql
+		{
+			String indiv_UomArticle_sql1 = data.getText("partialdeptdaily");
+			results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);//results1 is displayed wen debugg
+			//System.out.println(results1);
+
+
+			if(results1.size()!=0)
+		 {
+		 articleType = results1.get(i).get(1).toString();//HAWA 0,1->get(1)
+
+		if(articleType.equalsIgnoreCase("HAWA"))
+		{
+			article_No = results1.get(i).get(0).toString();
+			break;
+
+		}}
+
+		}
+
+
+
+		String indiv_UomArticle_sql2 = data.getText("alldeptdaily").replace("numbr",article_No);// Local db//##error while debugg
+		results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+		replacenullToZero(results2);
+		removeLastZero(results2,5);
+		removeLastZero(results2,6);
+
+		objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);;
+		return results2;
+
+
+	}
+
+	public List<List<Object>> ooctabs(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException, SQLException, ParseException, AWTException  
+	{	
+
+
+		String articleType;
+		String article_No=null;
+		List<List<Object>> results1;
+
+		List<List<Object>> results2 = null;
+		String indiv_UomArticle_sql11 = data.getText("primarydeptdaily").replace("numbr",article_No);// Local db//##error while debugg
+		results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql11);
+
+
+
+		//Select date from drop down
+		objRoutinesPage.DateSelect(objRoutineObjects,driver);
+		//DB validation
+		List <String>article = new ArrayList<String>();//##		
+		article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);
+
+		for(int i=0;i<article.size();i++)//after this sql
+		{
+			String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i).toString());// Action
+			results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);//results1 is displayed wen debugg
+			//System.out.println(results1);
+
+
+			if(results1.size()!=0)
+		 {
+		 articleType = results1.get(i).get(1).toString();//HAWA 0,1->get(1)
+
+		if(articleType.equalsIgnoreCase("HAWA"))
+		{
+			article_No = results1.get(i).get(0).toString();
+			break;
+
+		}}
+
+		}
+
+		String indiv_UomArticle_sql2 = data.getText("primarydeptdaily").replace("numbr",article_No);// Local db//##error while debugg
+		results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+		replacenullToZero(results2);
+		removeLastZero(results2,5);
+		removeLastZero(results2,6);
+
+		objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);;
+		return results2;
+
+
+	}
+
+
+	public void weekselect(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException, SQLException, ParseException
+	{
+		List<List<Object>> results1;
+		List<List<Object>> result_temp;
+		List<List<Object>> results2 = null;
+		String articleType;
+		String article_No = null;
+		int size = objRoutineObjects.dateradio.size();
+
+		for(int i=1;i<=2;i++)
+		{
+			WebElement elements =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.datetypesdyn, i,driver);//Click Current week and last week
+			click(elements);
+
+			paginationhandling(objRoutineObjects,driver);
+
+			overstock(objRoutineObjects,driver);//Report is generated in browser
+			//Query validation ## current week query
+			if(i==1)
+			{
+				List <String>article = new ArrayList<String>();//##		
+				article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);
+
+
+				for(int i1=0;i1<article.size();i1++)//after this sql
+				{
+					String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i1).toString());// Action
+					results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);//results1 is displayed wen debugg
+					//System.out.println(results1);
+
+
+					if(results1.size()!=0)
+					{
+						articleType = results1.get(i1).get(1).toString();//HAWA 0,1->get(1)
+
+						if(articleType.equalsIgnoreCase("HAWA"))
+						{
+							article_No = results1.get(i1).get(0).toString();
+							break;
+
+						}}
+
+				}
+
+
+
+				String indiv_UomArticle_sql2 = data.getText("alldeptdaily").replace("numbr",article_No);// Local db//##error while debugg
+				results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+				replacenullToZero(results2);
+				removeLastZero(results2,5);
+				removeLastZero(results2,6);
+
+				objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);
+			}
+
+			if(i==2)
+			{
+				//Query validation ## last week query
+				List <String>article = new ArrayList<String>();//##		
+				article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);
+
+
+				for(int i1=0;i1<article.size();i1++)//after this sql
+				{
+					String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i1).toString());// Action
+					results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);//results1 is displayed wen debugg
+					//System.out.println(results1);
+
+
+					if(results1.size()!=0)
+					{
+						articleType = results1.get(i1).get(1).toString();//HAWA 0,1->get(1)
+
+						if(articleType.equalsIgnoreCase("HAWA"))
+						{
+							article_No = results1.get(i1).get(0).toString();
+							break;
+
+						}}
+
+				}
+
+
+
+				String indiv_UomArticle_sql2 = data.getText("alldeptdaily").replace("numbr",article_No);// Local db//##error while debugg
+				results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+				replacenullToZero(results2);
+				removeLastZero(results2,5);
+				removeLastZero(results2,6);
+
+				objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);
+			}
+
+		}
+
+	}
+
+	public void dateselect(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException, AWTException
+	{
+
+
+		dynmicdatedrpdwnclick(objRoutineObjects,driver);
+
+		click(objRoutineObjects.DateSelection);
+
+		overstock(objRoutineObjects,driver);
+
+
+	}
+
+	public void DateSelect(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException
+	{
+		selectByIndex(objRoutineObjects.DateSelection,1);
+		click(objRoutineObjects.DateSelection);
+		//overstock(objRoutineObjects,driver);
+	}
+
+	//captures primary dept names
+	public void primarydepartment123(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException {
+		List<String> deptNameListApp = new ArrayList<String>();
+
+		click(objRoutineObjects.dropdownselect);
+		waitForJSandJQueryToLoad(driver);;
+
+
+
+
+
+		int deptsize=objRoutineObjects.innerDD.size();
+		for(int i=2;i<deptsize;i++)
+		{
+			WebElement deptCheckbox =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.partialcheckboxselectiondynamic,i,driver);
+
+			Coordinates coordinate = ((Locatable)deptCheckbox).getCoordinates(); 
+			coordinate.onPage(); 
+			coordinate.inViewPort();
+
+
+			if(isSelected(deptCheckbox))
+			{
+				WebElement element =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.partialdeptselectiondynamic,i,driver);
+				String dptName = element.getText().trim();
+				deptNameListApp.add(dptName);
+				htmlToExtent(cName,mName,extLogger,driver, "Checking for Department name - "+deptNameListApp+";;;Pass");
+				//Report_AddStep("testcase", "Checking for Department name - "+deptNameListApp+" ","","", "");
+			}
+
+		}}
+
+
+
+
+
+	public void dbvalidationalldept_weekly(RoutineObjects objRoutineObjects,List<List<Object>> results,WebDriver driver) throws IOException, ParseException 
+
+	{
+		List<Object> firstvalue = new ArrayList<Object>();
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		List<Object> dbvalue = new ArrayList<Object>();
+		List<List<Object>> tempdb = new ArrayList<List<Object>>();
+		temp = getValuesFromTable(objRoutineObjects.AllValuesFromTable);
+		//System.out.println("VALUES FROM TABLE IS " +temp);
+		String reasoncode = results.get(0).get(3).toString();
+		String mondaycount = results.get(1).get(6).toString();
+		String ReasonCode1 = results.get(0).get(0).toString();
+		String ReasonCode2 = results.get(0).get(7).toString();
+		String MondayCount1 = results.get(1).get(6).toString();
+		String mondaypercentage = results.get(1).get(7).toString();
+		String tuesdaycount = results.get(3).get(6).toString();
+		String tuesdaypercentage = results.get(3).get(7).toString();
+		String wednesdaycount = results.get(6).get(6).toString();
+		String wednesdaypercentage = results.get(6).get(7).toString();
+		String thursdaycount = results.get(5).get(6).toString();
+		String thursdaypercentage = results.get(5).get(7).toString();
+		String fridaycount = results.get(0).get(6).toString();
+		String fridaypercentage = results.get(0).get(7).toString();
+		String saturdaycount = results.get(4).get(6).toString();
+		String saturdaypercentage = results.get(4).get(7).toString();
+		String sundaycount = results.get(2).get(6).toString();
+		String sundaypercentage = results.get(2).get(7).toString();
+
+		dbvalue.add(reasoncode);
+		dbvalue.add(mondaycount);
+		dbvalue.add(mondaypercentage);
+		dbvalue.add(tuesdaycount);
+		dbvalue.add(tuesdaypercentage);
+		dbvalue.add(wednesdaycount);
+		dbvalue.add(wednesdaypercentage);
+		dbvalue.add(thursdaycount);
+		dbvalue.add(thursdaypercentage);
+		dbvalue.add(fridaycount);
+		dbvalue.add(fridaypercentage);
+		//dbvalue.add(actioned);
+
+
+		String description = results.get(0).get(1).toString();
+
+
+
+		String last_received_date = results.get(0).get(9).toString();
+
+		if(!last_received_date.equalsIgnoreCase("0"))
+		{
+
+			try {		
+				//System.out.println("*************Date Before Formatting 1st time date********"+last_received_date);
+				DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
+				Date startDate = df.parse(last_received_date);
+				DateFormat df2 = new SimpleDateFormat("dd/MM/yy"); 
+				last_received_date = df2.format(startDate);
+				//System.out.println("Date in format dd/MM/yy: " + last_received_date);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		String last_received_qty = results.get(0).get(11).toString();
+		String last_received_orderno = results.get(0).get(10).toString();
+
+		String OM = results.get(0).get(15).toString();
+		String SOH = decimalFormat(results.get(0).get(8).toString());
+		String UOM = results.get(0).get(20).toString();
+		String SOH1 = SOH + " " + UOM;
+		String Units_to_fill = results.get(0).get(16).toString();
+		String LTO = results.get(0).get(6).toString();
+		String comment = results.get(0).get(4).toString();
+		String actioned = results.get(0).get(14).toString();
+
+
+
+		// dbvalue.add(artno);
+		// dbvalue.add(promo_ind);
+		dbvalue.add(description);
+		dbvalue.add(last_received_date);
+		dbvalue.add(last_received_qty);
+		dbvalue.add(last_received_orderno);
+		dbvalue.add(OM);
+		dbvalue.add(SOH1);
+		dbvalue.add(Units_to_fill);
+		dbvalue.add(LTO);
+		dbvalue.add(comment);
+		dbvalue.add(actioned);
+
+		tempdb.add(dbvalue);
+		removeExtraSpaces(tempdb,1);
+
+		gapScanArtScenarios.put(gapScanArttestname, "" + tempdb + ";;;Pass");
+
+		ElementContains1(cName, mName,extLogger,driver,  temp,tempdb);
+
+
+	}
+
+
+
+	public void paginationhandling(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException {
+
+		if (objRoutineObjects.msg.size() != 0) {
+			String mesg = objRoutineObjects.msgtext.getText();
+			if (mesg.equals("Sorry, No records found.")) {
+				htmlToExtent(cName,mName,extLogger,driver, ""+ mesg + ";;;Pass");
+				//Report_AddStep("testcase", "" + mesg + "", "", "", "");
+				click(objRoutineObjects.close);
+			}
+
+
+		} else {
+			int pagesize = objRoutineObjects.check2.size();// To calc how many pages are there
+
+
+
+			if (pagesize  != 0) {
+				pagesize  = pagesize -2;// As Prev & next are included we are subtracting it by 2
+				for (int k = 1; k <= pagesize; k++) {
+					WebElement elements = prepareWebElementWithDynamicXpathWithInt(
+							objRoutineObjects.chec, k + 1,driver);// Click on the respective page
+					elements.click();
+					waitFor(1);
+					click(objRoutineObjects.firstpage);
+				}}
+
+		}
+
+	}
+
+
+
+
+	public List<String> dbvalidationdaily(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException {
+		List <String>article = new ArrayList<String>();
+		for(int j=0;j<objRoutineObjects.matnrvalues.size();j++)
+		{
+			String matnrvalue = objRoutineObjects.matnrvalues.get(j).getText();
+			//System.out.println(matnrvalue);//matnrvalue is article no
+			if(matnrvalue.length()<7){//##
+				article.add(matnrvalue);
+			}
+		}
+		return article;
+	}
+
+
+
+	public void dbvalidation_final_alldept(RoutineObjects objRoutineObjects,List<List<Object>> results2,String article_No) throws IOException, ParseException 
+
+	{
+		//List<Object> firstvalue = new ArrayList<Object>();
+		List<List<Object>> tempDb = new ArrayList<List<Object>>();
+		List<Object> dbvalue = new ArrayList<Object>();
+		List<Object> browserValue = new ArrayList<Object>();
+		List<List<Object>> browsertwod = new ArrayList<List<Object>>();
+		//List<List<Object>> tempdb = new ArrayList<List<Object>>();
+
+		String article_number = results2.get(0).get(0).toString();
+		String promo_indicator = results2.get(0).get(1).toString();
+		String article_description = results2.get(0).get(2).toString();
+		String soh = results2.get(0).get(3).toString();
+		String soh_uom = results2.get(0).get(4).toString();
+		String sohuom = soh + soh_uom;
+		String mpl = results2.get(0).get(5).toString();
+		String capacity = results2.get(0).get(6).toString();
+
+
+			firstvalue.add(article_number);
+		 firstvalue.add(promo_indicator);
+		 firstvalue.add(article_description);
+		 firstvalue.add(sohuom);
+		 firstvalue.add(mpl);
+		 firstvalue.add(capacity);
+		 
+
+		dbvalue.add(article_number);
+		dbvalue.add(promo_indicator);
+		dbvalue.add(article_description);
+		dbvalue.add(sohuom);
+		dbvalue.add(mpl);
+		dbvalue.add(capacity);
+
+		tempDb.add(dbvalue);
+
+		List<WebElement> elements = prepareListWebElementWithDynamicXpathWithString(objRoutineObjects.articleDetails, article_No,driver);
+		// Click on the respective page
+		int pgsize = objRoutineObjects.check2.size();
+		pgsize = pgsize-2;
+
+		for(int i=1;i<=pgsize;i++)
+		{
+			WebElement pagielem = prepareWebElementWithDynamicXpathWithInt(
+					objRoutineObjects.chec, i + 1,driver);// Click on the respective page
+			pagielem.click();
+			try{
+				String promotion = elements.get(1).getText();//Getting browser values
+				String description= elements.get(2).getText().trim();
+				String sohUI= elements.get(3).getText().trim();
+				String mplUI= elements.get(4).getText().trim();
+				String capacityUI= elements.get(5).getText().trim();
+
+				browserValue.add(article_No);
+				browserValue.add(promotion);
+				browserValue.add(description);
+				browserValue.add(soh);
+				browserValue.add(mpl);
+				browserValue.add(capacity);
+
+				browsertwod.add(browserValue);
+			}
+			catch(Exception e)
+			{
+			}
+		}
+
+
+		ElementContains1(cName, mName,extLogger,driver,  browsertwod, tempDb);
+
+
+	}*/
+	
+	
+/*	
+	public List<String> dbvalidationdaily(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException {
+		List <String>article = new ArrayList<String>();
+		for(int j=0;j<objRoutineObjects.matnrvalues.size();j++)
+		{
+			String matnrvalue = objRoutineObjects.matnrvalues.get(j).getText();
+			//System.out.println(matnrvalue);//matnrvalue is article no
+			if(matnrvalue.length()<7){//##
+				article.add(matnrvalue);
+			}
+		}
+		return article;
+	}
+
+	public void weekSelectCurrentWeek(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException, SQLException, ParseException
+	{
+		List<List<Object>> results1;
+		List<List<Object>> result_temp;
+		List<List<Object>> results2 = null;
+		String articleType;
+		String article_No = null;
+		int size = objRoutineObjects.dateradio.size();
+
+		for(int i=1;i<=1;i++)
+		{
+			WebElement elements =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.datetypesdyn, i,driver);//Click Current week and last week
+			click(elements);
+
+//			paginationhandling(objRoutineObjects,driver);
+
+//			overstock(objRoutineObjects,driver);//Report is generated in browser
+			//Query validation ## current week query
+			if(i==1)
+			{
+				List <String>article = new ArrayList<String>();//##		
+				article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);
+				
+				
+				for(int i1=0;i1<article.size();i1++)//after this sql
+				{
+				String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i1).toString());// Action
+				 results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);//results1 is displayed wen debugg
+				 //System.out.println(results1);
+				
+				 
+				 if(results1.size()!=0)
+				 {
+				 articleType = results1.get(i1).get(1).toString();//HAWA 0,1->get(1)
+				 
+				if(articleType.equalsIgnoreCase("HAWA"))
+				{
+					article_No = results1.get(i1).get(0).toString();
+					break;
+					
+				}}
+				 
+				 }
+				
+					 
+					 
+					String indiv_UomArticle_sql2 = data.getText("alldeptdaily").replace("numbr",article_No);// Local db//##error while debugg
+					 results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+					 replacenullToZero(results2);
+					 removeLastZero(results2,5);
+					 removeLastZero(results2,6);
+					
+				dbvalidation_final_alldept(objRoutineObjects,results2,article_No);
+			}
+
+			if(i==2)
+			{
+//Query validation ## last week query
+				List <String>article = new ArrayList<String>();//##		
+				article = objRoutinesPage.dbvalidationdaily(objRoutineObjects,driver);
+				
+				
+				for(int i1=0;i1<article.size();i1++)//after this sql
+				{
+				String indiv_UomArticle_sql1 = data.getText("getArticleType").replace("art_no", article.get(i1).toString());// Action
+				 results1 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);//results1 is displayed wen debugg
+				 //System.out.println(results1);
+				
+				 
+				 if(results1.size()!=0)
+				 {
+				 articleType = results1.get(i1).get(1).toString();//HAWA 0,1->get(1)
+				 
+				if(articleType.equalsIgnoreCase("HAWA"))
+				{
+					article_No = results1.get(i1).get(0).toString();
+					break;
+					
+				}}
+				 
+				 }
+				
+					 
+					 
+					String indiv_UomArticle_sql2 = data.getText("alldeptdaily").replace("numbr",article_No);// Local db//##error while debugg
+					 results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql2); 
+					 replacenullToZero(results2);
+					 removeLastZero(results2,5);
+					 removeLastZero(results2,6);
+					
+				objRoutinesPage.dbvalidation_final_alldept(objRoutineObjects,results2,article_No);
+			}
+
+		}
+
+	}*/
+	
+	//srivinith
+	public void AllDepartmentDropDown(RoutineObjects objRoutineObjects,WebDriver driver) {
+		objRoutineObjects.dropdownselect.click();
+		waitFor(2);
+		if (!objRoutineObjects.alldept.isSelected())
+		{
+			click(objRoutineObjects.alldept);
+			objRoutineObjects.Done.click();
+			waitForJSandJQueryToLoad(driver);;
+		}
+		else{
+			objRoutineObjects.Done.click();
+			waitForJSandJQueryToLoad(driver);;
+		}
+		htmlToExtent(cName,mName,extLogger,driver, "The department Selected is : All Departments;;;Pass");
+		objRoutineObjects.GenerateReport.click(); 
+	}
+	
+	
+	public void overstockReportCurrentWeek(RoutineObjects objRoutineObjects,List<List<Object>> results,WebDriver driver) throws IOException, SQLException, ParseException, AWTException
+	{
+    
+//			paginationhandling(objRoutineObjects,driver);//##
+		
+          //Sorry no records>click close button>click generateoverstockreport
+			if(objRoutineObjects.msg.size()!=0)//Error message
+			{
+				String mesg = objRoutineObjects.msgtext.getText();
+				if(mesg.equals("Sorry, No records found."))
+				{
+					htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+					//Report_AddStep("testcase", ""+mesg+"","","", "");
+					objRoutineObjects.close.click();
+					//Check overstock report has scrolled up
+					objRoutineObjects.generateoverstockreport.click();
+					objRoutineObjects.generateoverstockreport.click();
+				}
+
+				}
+			else
+			{
+				printPageWeekly(objRoutineObjects,driver);
+				dbvalidationalldept_Currentweekly(objRoutineObjects,results,driver);//##
+
+			}
+			}
+	
+	public void dbvalidationalldept_Currentweekly(RoutineObjects objRoutineObjects,List<List<Object>> results,WebDriver driver) throws IOException, ParseException 
+
+	{
+		List<List<Object>> temp1 = new ArrayList<List<Object>>();
+		
+		List<Object> firstvalue = new ArrayList<Object>();
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		List<Object> dbvalue = new ArrayList<Object>();
+		List<List<Object>> tempdb = new ArrayList<List<Object>>();
+		int resultSizeDb= results.size();
+		int resultSizeDbFinal = resultSizeDb/7;
+		int resultSizePage = objRoutineObjects.listSizeFromPage.size()-2;
+
+		/*int  listsize = gsrobject.listsize.size()-1;
+	int resultspmsize = resultspm.size();*/
+
+	if(resultSizeDbFinal==resultSizePage)
+
+		{
+			htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ resultSizePage + ";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultSizeDbFinal + ";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		
+		}
+	
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ resultSizePage + ";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultSizeDbFinal + ";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are not getting matched ;;;Fail");	
+		}
+		 
+		for(int i=1;i<=objRoutineObjects.listSizeFromPage.size()-2;i++){
+			
+			List<WebElement> element = driver.findElements(By.xpath("//*[@id='Overstock_Daily_Weekly_table']/tbody/tr["+i+"]"));
+			
+			temp = getValuesFromTable(element);
+			temp.get(0).remove(16);
+			temp1.addAll(temp);
+			removeLastZero(temp, 2);
+			removeLastZero(temp, 4);
+			removeLastZero(temp, 6);
+			removeLastZero(temp, 8);
+			removeLastZero(temp, 10);
+			removeLastZero(temp, 12);
+			removeLastZero(temp, 14);
+			removeLastZero(temp, 16);
+		}
+		
+		String reasoncode = results.get(0).get(3).toString();
+		String mondaycount = results.get(1).get(6).toString();
+		String mondaypercentage = results.get(1).get(7).toString();
+		String tuesdaycount = results.get(3).get(6).toString();
+		String tuesdaypercentage = results.get(3).get(7).toString();
+		String wednesdaycount = results.get(6).get(6).toString();
+		String wednesdaypercentage = results.get(6).get(7).toString();
+		String thursdaycount = results.get(5).get(6).toString();
+		String thursdaypercentage = results.get(5).get(7).toString();
+		String fridaycount = results.get(0).get(6).toString();
+		String fridaypercentage = results.get(0).get(7).toString();
+		String saturdaycount = results.get(4).get(6).toString();
+		String saturdaypercentage = results.get(4).get(7).toString();
+		String sundaycount = results.get(2).get(6).toString();
+		String sundaypercentage = results.get(2).get(7).toString();
+
+		int mondaycount1 = Integer.parseInt(mondaycount);
+		int tuesdaycount1 = Integer.parseInt(tuesdaycount);
+		int wednesdaycount1 = Integer.parseInt(wednesdaycount);
+		int thursdaycount1 = Integer.parseInt(thursdaycount);
+		int fridaycount1 = Integer.parseInt(fridaycount);
+		int saturdaycount1 = Integer.parseInt(saturdaycount);
+		int sundaycount1 = Integer.parseInt(sundaycount);
+		
+		int totalCt = mondaycount1 + tuesdaycount1 + wednesdaycount1 + thursdaycount1 + fridaycount1 + saturdaycount1 + sundaycount1;
+		String totalCount =  new Integer(totalCt).toString();
+		
+		dbvalue.add(reasoncode);
+		dbvalue.add(mondaycount);
+		dbvalue.add(mondaypercentage);
+		dbvalue.add(tuesdaycount);
+		dbvalue.add(tuesdaypercentage);
+		dbvalue.add(wednesdaycount);
+		dbvalue.add(wednesdaypercentage);
+		dbvalue.add(thursdaycount);
+		dbvalue.add(thursdaypercentage);
+		dbvalue.add(fridaycount);
+		dbvalue.add(fridaypercentage);
+		dbvalue.add(saturdaycount);
+		dbvalue.add(saturdaypercentage);
+		dbvalue.add(sundaycount);
+		dbvalue.add(sundaypercentage);
+		dbvalue.add(totalCount);
+		//dbvalue.add(actioned);
+		
+		
+		tempdb.add(dbvalue);
+		removeLastZero(tempdb, 2);
+		removeLastZero(tempdb, 4);
+		removeLastZero(tempdb, 6);
+		removeLastZero(tempdb, 8);
+		removeLastZero(tempdb, 10);
+		removeLastZero(tempdb, 12);
+		removeLastZero(tempdb, 14);
+		removeLastZero(tempdb, 16);
+
+//		gapScanArtScenarios.put(gapScanArttestname, "" + tempdb + ";;;Pass");
+
+		ElementContains1(cName, mName,extLogger,driver, tempdb ,temp1);
+
+	}
+	
+	public List<String> primarydepartment(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException {
+		List<String> deptNameListApp = new ArrayList<String>();
+		
+		objRoutineObjects.dropdownselect.click();
+		waitForJSandJQueryToLoad(driver);;
+
+//		int deptsize=gsrobject.innerDD.size();
+		int deptsize=objRoutineObjects.checkBoxSize.size();
+		for(int i=1;i<=deptsize;i++)
+		{
+			WebElement deptCheckbox =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.partialdeptselectiondynamic1,i,driver);
+			
+			Coordinates coordinate = ((Locatable)deptCheckbox).getCoordinates(); 
+			coordinate.onPage(); 
+			coordinate.inViewPort();
+			
+			if(i==1){
+				if(deptCheckbox.isSelected())
+				{
+					WebElement element =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.partialdeptselectiondynamic2,i,driver);
+					String dptName = element.getText().trim();
+					String e =dptName.substring(0, 3).trim();
+					deptNameListApp.add(e);
+					break;
+				}
+			}
+			if(deptCheckbox.isSelected())
+			{
+				WebElement element =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.partialdeptselectiondynamic2,i,driver);
+				String dptName = element.getText().trim();
+				deptNameListApp.add(dptName);
+			}
+		}
+		try{
+		objRoutineObjects.Done.click();}catch(Exception e){}
+		objRoutineObjects.GenerateReport.click();
+		htmlToExtent(cName,mName,extLogger,driver, "The Primary Departments are : "+deptNameListApp+";;;Pass");
+		return deptNameListApp;
+	}
+	
+	
+	public String dateselection(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException
+	{
+		Random rand = new Random();
+		int i = rand.nextInt(7) + 1;
+//		int i = 3;
+		
+//		String i = Integer.toString(num);
+		/*selectByIndex(objRoutineObjects.DateSelection,0);
+		
+		click(objRoutineObjects.DateSelection);
+
+		overstock(objRoutineObjects,driver);*/
+
+		objRoutineObjects.DateSelection.click();
+		
+		WebElement element =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.randomDateSelection,i,driver);
+		String dates = element.getText();
+		element.click();
+		
+		htmlToExtent(cName,mName,extLogger,driver, "The Date Selected is : "+dates+";;;Pass");
+		
+		if(dates.contains("/"))
+		{
+			String[] dt=dates.split("/");
+			String date=dt[0];
+			String month = dt[1];
+			String year=dt[2];
+			dates=dt[2]+dt[1]+dt[0];
+		}
+		return dates;
+	}
+	
+	public void overstockReportDaily(RoutineObjects objRoutineObjects,List<List<Object>> results,WebDriver driver) throws IOException, SQLException, ParseException, AWTException
+	{
+    
+//			paginationhandling(objRoutineObjects,driver);//##
+		
+          //Sorry no records>click close button>click generateoverstockreport
+			if(objRoutineObjects.msg.size()!=0)//Error message
+			{
+				String mesg = objRoutineObjects.msgtext.getText();
+				if(mesg.equals("Sorry, No records found."))
+				{
+					htmlToExtent(cName,mName,extLogger,driver, ""+mesg+";;;Pass");
+					//Report_AddStep("testcase", ""+mesg+"","","", "");
+					objRoutineObjects.close.click();
+					//Check overstock report has scrolled up
+					objRoutineObjects.generateoverstockreport.click();
+					objRoutineObjects.generateoverstockreport.click();
+				}
+
+				}
+			else
+			{
+				printPage(objRoutineObjects,driver);
+				dbvalidationalldeptDaily(objRoutineObjects,results,driver);//##
+
+			}
+			}
+	
+	public void dbvalidationalldeptDaily(RoutineObjects objRoutineObjects,List<List<Object>> results,WebDriver driver) throws IOException, ParseException 
+
+	{
+		int totalRecordCount =0;
+		List<Object> firstvalue = new ArrayList<Object>();
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		List<Object> dbvalue = new ArrayList<Object>();
+		List<List<Object>> tempdb = new ArrayList<List<Object>>();
+		int resultSizeDb= results.size();
+//		int resultSizeDbFinal = resultSizeDb;
+//		int resultSizePage = objRoutineObjects.listSizeFromPage.size()-2;
+
+		/*int  listsize = gsrobject.listsize.size()-1;
+	int resultspmsize = resultspm.size();*/
+		
+		if(objRoutineObjects.listSizePageSize.size()!=0){
+			int i = objRoutineObjects.lastPage.size()-1;
+			WebElement ele = prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.lastPageClick,i,driver);
+			String webPageCount = ele.getText();
+			verticalinternalscroll(ele, driver);
+			click(ele);
+			int pageCount = Integer.parseInt(webPageCount)-1;
+//			int  listsize = objRoutineObjects.listsize.size();
+			int  listsizePage = objRoutineObjects.listSizeFromPageDaily.size();
+			int exactCount = listsizePage - 2;
+			totalRecordCount = (pageCount * 10) + exactCount;
+			
+			if(resultSizeDb==totalRecordCount)
+
+			{
+				htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultSizeDb + ";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		
+			}
+		
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultSizeDb + ";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are not matched ;;Fail");	
+			}
+			
+		}
+		
+		else{
+			int  listsizePage = objRoutineObjects.listSizeFromPageDaily.size();
+			int exactCount = listsizePage - 2;
+			totalRecordCount = exactCount;
+			
+			if(resultSizeDb==totalRecordCount)
+
+			{
+				htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultSizeDb + ";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are getting matched ;;;Pass");
+		
+			}
+		
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,  "BrowserSize "+ totalRecordCount + ";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver,  "DB Size is "+ resultSizeDb + ";;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver,  "The DB count and Application count are not matched ;;Fail");	
+			}
+		}
+		
+		temp = getValuesFromTable(objRoutineObjects.firstvalueDaily);
+		replaceblankspaceToZero(temp);
+		removeKGfromList(temp,3);
+		System.out.println(temp);
+
+//		gapScanArtScenarios.put(gapScanArttestname, "" + tempdb + ";;;Pass");
+
+		ElementContains1(cName, mName,extLogger,driver,  temp,results);
+
+	}
+	
+	public List<List<Object>> removetriplezero(List<List<Object>> one,
+			int position) throws IOException {
+
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next();
+			for (int i = 0; i < elem.size(); i++) {
+				if (i == position) {
+					String s1 = elem.get(i).toString().replaceAll(".000", "");
+					elem.set(i, s1);
+				}
+			}
+		}
+		return one;
+	}
+	
+	public List<List<Object>> removedoublezero(List<List<Object>> one,
+			int position) throws IOException {
+
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next();
+			for (int i = 0; i < elem.size(); i++) {
+				if (i == position) {
+					String s1 = elem.get(i).toString().replaceAll(".00", "");
+					elem.set(i, s1);
+				}
+			}
+		}
+		return one;
+	}
+	
+	public List<List<Object>> removeconvertion(List<List<Object>> one,int position) throws IOException {
+
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next();
+			for (int i = 0; i < elem.size(); i++) {
+				if (i == position) {
+					
+					String s2 = elem.get(i).toString();
+					float s3 = Float.valueOf(s2);
+					int y=Math.round(s3);
+					String s1 = String.valueOf(y);
+					elem.set(i, s1);
+				}
+			}
+		}
+		return one;
+	}
+	
+	public List<List<Object>> removeKGfromList(List<List<Object>> one,int position) throws IOException {
+
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next();
+			for (int i = 0; i < elem.size(); i++) {
+				if (i == position) {
+					String s2 = elem.get(i).toString();
+					String[] s3 = s2.split(" ");
+					String s4 = s3[0];
+//					String s1 = elem.get(i).toString().replace(" KG","");
+					//s1 = elem.get(i).toString().replace(" EA", " ");
+					elem.set(i, s4);
+				}
+			}
+		}
+		return one;
+	}
+	
+	public void printPage(RoutineObjects objRoutineObjects,WebDriver driver) {
+		try{
+			//gsrobject.printButton.click();
+			
+			String winHandleBefore = driver.getWindowHandle();
+			// Perform the click operation that opens new window
+			waitFor(2);
+			objRoutineObjects.printButton.click();
+			waitFor(2);
+			
+			for(String winHandle : driver.getWindowHandles()){
+			    driver.switchTo().window(winHandle);
+			}
+			driver.close();
+			driver.switchTo().window(winHandleBefore);
+			htmlToExtent(cName, mName, extLogger, driver, "Print Page Navigated Successfully;;;Pass");
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public List<List<Object>> removesinglezero(List<List<Object>> one,
+			int position) throws IOException {
+
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next();
+			for (int i = 0; i < elem.size(); i++) {
+				if (i == position) {
+					String s1 = elem.get(i).toString().replaceAll(".0", "");
+					elem.set(i, s1);
+				}
+			}
+		}
+		return one;
+	}
+	
+	public void printPageWeekly(RoutineObjects objRoutineObjects,WebDriver driver) {
+		try{
+			//gsrobject.printButton.click();
+			
+			String winHandleBefore = driver.getWindowHandle();
+			// Perform the click operation that opens new window
+			waitFor(2);
+			objRoutineObjects.printButtonWeekly.click();
+			waitFor(2);
+			
+			for(String winHandle : driver.getWindowHandles()){
+			    driver.switchTo().window(winHandle);
+			}
+			driver.close();
+			driver.switchTo().window(winHandleBefore);
+			htmlToExtent(cName, mName, extLogger, driver, "Print Page Navigated Successfully;;;Pass");
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}	
+	
+	public List<String> PartialDepartment(RoutineObjects objRoutineObjects,WebDriver driver) throws IOException
+	{
+		List<String> selectedDept = new ArrayList<String>();
+		//Calculate size of dept drop down
+		int max = objRoutineObjects.innerDD.size();
+		int min = 2;
+
+		List<Integer> randomNumbers = new ArrayList<Integer>();
+		objRoutineObjects.dropdownselect.click();
+
+		if (isSelected(objRoutineObjects.alldept))
+
+		{
+			click(objRoutineObjects.alldept);
+//			click(objRoutineObjects.alldept);
+			waitForJSandJQueryToLoad(driver);;
+		}
+
+		else//## check if required
+		{
+			click(objRoutineObjects.alldept);
+			waitForJSandJQueryToLoad(driver);;
+
+			click(objRoutineObjects.alldept);
+			waitForJSandJQueryToLoad(driver);;
+		}
+
+
+
+		randomNumbers = generateMultiplRandomNumber(min, max, 3);
+
+
+
+
+		for(int i=0;i<3;i++)
+		{
+			WebElement element =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.partialdeptselectiondynamic,randomNumbers.get(i),driver);
+			String dptName = element.getText().trim();
+
+			Coordinates coordinate = ((Locatable)element).getCoordinates(); 
+			coordinate.onPage(); 
+			coordinate.inViewPort();
+
+			WebElement deptCheckbox =  prepareWebElementWithDynamicXpathWithInt(objRoutineObjects.partialcheckboxselectiondynamic,randomNumbers.get(i),driver);
+			click(deptCheckbox);
+
+			//Report_AddStep("testcase","The department Selected is : "+dptName,"" ,"" , "Pass");
+			selectedDept.add(dptName);
+		}
+		objRoutineObjects.Done.click();
+		objRoutineObjects.GenerateReport.click();
+		htmlToExtent(cName,mName,extLogger,driver, "The department Selected is : "+selectedDept+";;;Pass");
+		return selectedDept;
+	}	
+}
+
+
+
+
+

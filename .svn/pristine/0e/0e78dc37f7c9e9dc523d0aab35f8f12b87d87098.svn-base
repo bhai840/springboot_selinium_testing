@@ -1,0 +1,1239 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.InstoreOMAObject;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.InstoreOMAPage1;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+public class InstoreOMATest1 extends TestBase{
+
+	//Declare and initialize the logger, status, sql and page objects
+	private Logger log = LogManager.getLogger(InstoreOMATest1.class);
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	InstoreOMAPage1 objInstoreOMAPage1;
+	InstoreOMAObject objInstoreOMAObjects;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;			
+	List<List<Object>> result;
+	List<List<Object>> result_temp;
+	public static XMLDataReader data;
+
+
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+	int count=0;		
+	int MCcount=0;
+	public static WebDriver driver;
+	public static boolean isFirstTest=true;
+
+	public String returnedString;
+
+	String freshfood = "('25','30','40','45','47','55')";
+	String nonfreshfood = "('20','27','05','15','28','10','00')";
+
+
+	public InstoreOMATest1(){
+		super.log=log;
+	}
+
+	public void deletePromotionTable() throws SQLException{
+
+		List<List<Object>> deleteResult = new ArrayList<List<Object>>();
+		String deletePromo = data.getText("deleteQuery");
+		deleteResult = sql.executeQuery(getContext(), deletePromo);	
+
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Store Manager for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_SMNF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSMOMA(status);
+			deletePromotionTable();
+			String Art = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 30,driver);
+				if(returnedString.equals("nodata")){
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Non Fresh food article under Store Manager role is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Department Manager for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_DMNF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreDMOMA(status);
+			String Art = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Non Fresh food article under Department Manager role is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Team Member for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_TMNF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreTMOMA(status);
+			String Art = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Non Fresh food article under Team Member role is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Office Assistant for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_OANF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOAOMA(status);
+			String Art = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Non Fresh food article under Office Assistant role is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Office Supervisor for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_OSNF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOSOMA(status);
+			String Art = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Non Fresh food article under Office Supervisor role is created;;;Pass");
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Customer Assistant for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_CANF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreCAOMA(status);
+			String Art = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Non Fresh food article under Customer Assistant role is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Stock Take Manager for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_STMNF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSTMOMA(status);
+			String Art = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Non Fresh food article under Stock Take Managerrole is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Business Review for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_BRNF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreBROMA(status);
+			String Art = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Business Review users not able to add promotion to draft;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify error message for maximum duration for NON FRESH FOOD article in OTHER MARKDOWN - ADVERTISEMENT")
+	public void MaxDurationOMAdvt_ErrNF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		//	String users[] = new String[6];
+		try{
+			for(int i=0;i<=6;i++){
+				if(i ==0) {
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS STORE MANAGER-----------------;;;Pass");
+					navToInstoreSMOMA(status);
+					navToUsers_DurationError();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Store Manager;;;Pass");
+				}else if (i ==1){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS OFFICE ASSISTANT-----------------;;;Pass");
+					navToInstoreOAOMA(status);
+					navToUsers_DurationError();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Office Assistant;;;Pass");
+				}
+				else if (i ==2){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS OFFICE SUPERVISOR-----------------;;;Pass");
+					navToInstoreOSOMA(status);
+					navToUsers_DurationError();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Office Supervisor;;;Pass");
+				}else if (i ==3){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS TEAM MEMBER-----------------;;;Pass");
+					navToInstoreTMOMA(status);
+					navToUsers_DurationError();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Team Member;;;Pass");
+				}else if (i ==4){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS STOCKTAKE MANAGER-----------------;;;Pass");
+					navToInstoreSTMOMA(status);
+					navToUsers_DurationError();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for StockTake Manager;;;Pass");
+				}else if (i ==5){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS CUSTOMER ASSISTANT-----------------;;;Pass");
+					navToInstoreCAOMA(status);
+					navToUsers_DurationError();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Customer Assistant;;;Pass");
+				}else if (i ==6){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS DEPARTMENT MANAGER-----------------;;;Pass");
+					navToInstoreDMOMA(status);
+					navToUsers_DurationError();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Department Manager;;;Pass");
+				}
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));}
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();}
+
+
+	//-------------------------------------------FRESH FOOD------------------------------------------------------------
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Store Manager for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_SMFF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSMOMA(status);
+			String Art = data.getText("articles").replace("freshfood", freshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Fresh food article under Store Manager role is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Department Manager for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_DMFF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreDMOMA(status);
+			String Art = data.getText("articles").replace("freshfood", freshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 6,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Fresh food article under Department Manager role is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Team Member for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_TMFF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreTMOMA(status);
+			String Art = data.getText("articles").replace("freshfood", freshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString= objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Fresh food article under Team Member role is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Stock Take Manager for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_STMFF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSTMOMA(status);
+			String Art = data.getText("articles").replace("freshfood", freshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Fresh food article under Stock Take Manager role is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Customer Assistant for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_CAFF() //throws IOException, AWTException, SQLException,  ParseException
+	{	
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreCAOMA(status);
+			String Art = data.getText("articles").replace("freshfood", freshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Fresh food article under Customer Assistant role is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Office Assistant for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_OAFF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOAOMA(status);
+			String Art = data.getText("articles").replace("freshfood", freshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Fresh food article under Office Assistant role is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Office Supervisor for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_OSFF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreOSOMA(status);
+			String Art = data.getText("articles").replace("freshfood", freshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Fresh food article under Office Supervisor role is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify the maximum duration for Business Review for OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_BRFF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreBROMA(status);
+			String Art = data.getText("articles").replace("freshfood", freshfood);
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString = objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article, 0,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Business Review users not able to add promotion to draft;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify error message for maximum duration for NON FRESH FOOD article under OTHER MARKDOWN - ADVERTISEMENT Promotion")
+	public void MaxDurationOMAdvt_ErrFF() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		//	String users[] = new String[6];
+		try{
+			for(int i=0;i<=6;i++){
+				if(i ==0) {
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS STORE MANAGER-----------------;;;Pass");
+					navToInstoreSMOMA(status);
+					navToUsers_DurationError2();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Store Manager;;;Pass");
+				}else if (i ==1){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS OFFICE ASSISTANT-----------------;;;Pass");
+					navToInstoreOAOMA(status);
+					navToUsers_DurationError2();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Office Assistant;;;Pass");				
+				}
+				else if (i ==2){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS OFFICE SUPERVISOR-----------------;;;Pass");
+					navToInstoreOSOMA(status);
+					navToUsers_DurationError2();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Office Supervisor;;;Pass");
+				}else if (i ==3){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS TEAM MEMBER-----------------;;;Pass");
+					navToInstoreTMOMA(status);
+					navToUsers_DurationError2();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Team Member;;;Pass");				
+				} else if (i ==4){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS STOCKTAKE MANAGER-----------------;;;Pass");
+					navToInstoreSTMOMA(status);
+					navToUsers_DurationError2();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for StockTake Manager;;;Pass");				
+				}else if (i ==5){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS CUSTOMER ASSISTANT-----------------;;;Pass");
+					navToInstoreCAOMA(status);
+					navToUsers_DurationError2();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Customer Assistant;;;Pass");
+				}else if (i ==6){
+					htmlToExtent(cName,mName,extLogger,driver,"-----------------LOGIN AS DEPARTMENT MANAGER-----------------;;;Pass");
+					navToInstoreDMOMA(status);
+					navToUsers_DurationError2();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Error Message is Successfully displayed for Department Manager;;;Pass");
+				}
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));}
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();}
+	//---------------------------------------SPECIAL ARTICLE-----------------------------------------------------
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify OTHER MARKDOWN - ADVERTISEMENT promotion can be created for Blocked Procurement articles")
+	public void BlockedProcurement() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSMOMA(status);
+			String Art = data.getText("article");
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				Article = "11251";
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				returnedString =objInstoreOMAPage1.MaxDuration(objInstoreOMAObjects, Article,30,driver);
+				if(returnedString.equals("nodata")){
+					htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+					return;
+				}
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}	
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Blocked Procurement article is created;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify OTHER MARKDOWN - ADVERTISEMENT Promotion is blocked if ALC status is End Of Stock")
+	public void ESArticles() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSMOMA(status);
+			String Art = data.getText("article");
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				//objInstorePage.MaxDuration(objInstoreObjects, Article, 1);
+				objInstoreOMAPage1.BlockedArticle(objInstoreOMAObjects, Article,driver);
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}	
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for ALC Status = ES article is not added to draft;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify OTHER MARKDOWN - ADVERTISEMENT Promotion is blocked if ALC status is End Of Stock Confirmation")
+	public void ECArticles() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSMOMA(status);
+			String Art = data.getText("article");
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				objInstoreOMAPage1.BlockedArticle(objInstoreOMAObjects, Article,driver);
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}	
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for ALC Status = EC articls is not added to draft;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify OTHER MARKDOWN - ADVERTISEMENT Promotion is blocked if PS status is Product Recall")
+	public void ProductRecallArticles() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSMOMA(status);
+			String Art = data.getText("article");
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				objInstoreOMAPage1.BlockedArticle(objInstoreOMAObjects, Article,driver);
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}	
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Recalled article is not added to draft;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},priority=0,description = "Verify OTHER MARKDOWN - ADVERTISEMENT Promotion is blocked if PS status is Ready for archiving")
+	public void ReadyForArchiving() //throws IOException, AWTException, SQLException,  ParseException
+	{
+		if(inStoreOMA1ArtpreCount2==-1){
+			MCcount =MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInstoreSMOMA(status);
+			String Art = data.getText("article");
+			results = sql.executeQuery(getContext(), Art);
+			if(results.size()!=0){
+				int num = common.RandomFromDB(results);
+				String Article = results.get(num).get(0).toString();
+				objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+				objInstoreOMAPage1.BlockedArticle(objInstoreOMAObjects, Article,driver);
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+			}	
+			htmlToExtent(cName,mName,extLogger,driver,"Promotion for Ready for artchiving articles are not added to draft;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(inStoreOMA1ArtScenarios,inStoreOMA1Arttestname,driver));
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	//---------------------------------------USER FUNCTIONS--------------------------------------------------------------	
+	public void navToUsers_DurationError() throws IOException, AWTException, SQLException,  ParseException{
+		String Art = data.getText("articles").replace("nonfreshfood", nonfreshfood);
+		results = sql.executeQuery(getContext(), Art);
+		if(results.size()!=0){
+			int num = common.RandomFromDB(results);
+			String Article = results.get(num).get(0).toString();
+			objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+			objInstoreOMAPage1.MaxDuratioError(objInstoreOMAObjects,Article,driver);
+			//objInstorePage.MaxDuration(objInstoreObjects, Article, 32);
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+		}}
+
+	public void navToUsers_DurationError2() throws IOException, AWTException, SQLException,  ParseException{
+		String Art = data.getText("articles").replace("freshfood", freshfood);
+		results = sql.executeQuery(getContext(), Art);
+		if(results.size()!=0){
+			int num = common.RandomFromDB(results);
+			String Article = results.get(num).get(0).toString();
+			objInstoreOMAPage1.DeletePreArticle(objInstoreOMAObjects,driver);
+			objInstoreOMAPage1.MaxDuratioError(objInstoreOMAObjects,Article,driver);
+			//objInstorePage.MaxDuration(objInstoreObjects, Article, 32);
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver,"NO DATA FOUND - Please check DB;;;Fail");
+		}}
+	
+	
+	//Login function
+	
+	
+	public void navToInstoreOMA(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "--------Login into Application as IT Admin-----------;;;Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objInstoreOMAPage1 = loginPage.navToInstoreOMAPromotiontester901(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store);
+			objInstoreOMAPage1 = loginPage.navToInstoreOMAPromotiontester901(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "------------Navigate To Instore Other Markdown Promotion Page-----------;;;Pass");
+			objInstoreOMAPage1.clickOnInstoreOMA(objInstoreOMAObjects,driver);
+	}
+	
+	public void navToInstorePBDOMA(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objInstoreOMAPage1 = loginPage.navToInstoreOMAPromotiontester901(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store);
+			objInstoreOMAPage1 = loginPage.navToInstoreOMAPromotiontester901(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "-----------Navigate To Instore Other Markdown Promotion Page----------;;;Pass");
+			objInstoreOMAPage1.clickOnInstoreOMA(objInstoreOMAObjects,driver);
+	}
+	
+	public void navToInstoreDMOMA(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------Login into Application as Dept Manager--------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstoreOMAPage1 = loginPage.navToInstorePromotionDMOMA1(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------;;;Pass");
+		objInstoreOMAPage1.clickOnInstoreOMA(objInstoreOMAObjects,driver);
+	}
+	
+	public void navToInstoreTMOMA(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------Login into Application as Team Member-----------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstoreOMAPage1 = loginPage.navToInstorePromotionTMOMA1(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------------;;;Pass");
+		objInstoreOMAPage1.clickOnInstoreOMA(objInstoreOMAObjects,driver);
+	}
+	
+	public void navToInstoreCAOMA(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------Login into Application as Customer Assistance----------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstoreOMAPage1 = loginPage.navToInstorePromotionCAOMA1(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------------;;;Pass");
+		objInstoreOMAPage1.clickOnInstoreOMA(objInstoreOMAObjects,driver);
+	}
+	
+	public void navToInstoreOAOMA(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "--------Login into Application as Office Assistance---------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstoreOMAPage1 = loginPage.navToInstorePromotionOAOMA1(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------------;;;Pass");
+		objInstoreOMAPage1.clickOnInstoreOMA(objInstoreOMAObjects,driver);
+	}
+	
+	public void navToInstoreOSOMA(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------Login into Application as Office Supervisor----------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstoreOMAPage1 = loginPage.navToInstorePromotionOSOMA1(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------------;;;Pass");
+		objInstoreOMAPage1.clickOnInstoreOMA(objInstoreOMAObjects,driver);
+	}
+	
+	public void navToInstoreSMOMA(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------Login into Application as Store Manager--------;;;Pass");
+		
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		objInstoreOMAPage1 = loginPage.navToInstorePromotionSMOMA1(store,driver);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------------;;;Pass");
+		objInstoreOMAPage1.clickOnInstoreOMA(objInstoreOMAObjects,driver);
+	}
+	
+	public void navToInstoreSTMOMA(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "--------Login into Application as Stock Take manager---------;;;Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store: " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objInstoreOMAPage1 = loginPage.navToInstorePromotionSTMOMA1(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store: " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store);
+			objInstoreOMAPage1 = loginPage.navToInstorePromotionSTMOMA1(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate To Instore Other Markdown Promotion Page--------------------;;;Pass");
+			objInstoreOMAPage1.clickOnInstoreOMA(objInstoreOMAObjects,driver);
+	}
+	
+	public void navToInstoreBROMA(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------Login into Application as Business Review----------;;;Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objInstoreOMAPage1 = loginPage.navToInstorePromotionBROMA1(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store);
+			objInstoreOMAPage1 = loginPage.navToInstorePromotionBROMA1(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "-----------Navigate To Instore Other Markdown Promotion Page---------;;;Pass");
+			objInstoreOMAPage1.clickOnInstoreOMA(objInstoreOMAObjects,driver);
+	}
+	
+	
+	
+	
+	//----------------------------------------------------------------------
+
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		waitFor(1);
+		System.out.println("test1 - beforemethod");
+
+		mName=m9.getName().toString().trim();			
+		if(!methodList.contains(m9.getName().toString().trim())){
+			methodList.add(m9.getName().toString().trim());
+			extLogger = extReport.startTest(m9.getName().toString().trim());
+		}
+
+		initializeTestcontext();
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		}else{
+			String title = driver.getCurrentUrl();
+			if(title.contains("logginOut"))
+			{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+			}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+						WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+						scrolltoElement(home,driver);
+						home.click();
+						TimeUnit.SECONDS.sleep(5);
+						loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+						driver.navigate().refresh();
+						TimeUnit.SECONDS.sleep(5);}
+				}
+			}
+		}
+		isFirstTest=false;
+		//driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser"));
+		setDriver(driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		inStoreOMA1Arttestname = m9.getName().toString().trim();
+		inStoreOMA1Arttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		objInstoreOMAObjects = PageFactory.initElements(this.driver, InstoreOMAObject.class);
+		objInstoreOMAPage1 = PageFactory.initElements(this.driver, InstoreOMAPage1.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+	}
+
+	@BeforeClass
+	public void loadXMLFile(){	
+		//initializeTestcontext();
+		System.out.println("test1 - Beforeclass");	
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\InstoreOMA.xml");
+		customreport.createExtentReport();
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+	}
+
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitForJSandJQueryToLoad(driver);
+		System.out.println("afterclass");
+
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(), MCcount);
+		//System.out.println(extentList);
+		//System.out.println(methodList);
+		extReport.endTest(extLogger);
+		extReport.flush();
+		removeDriver();
+		closeDriver(driver);
+		moduleName.put("Modules", inStoreOMA1ArtModules);
+		waitFor(1);
+		int OMAArtMC=MCcount;
+		inStoreOMA1ArtMC=""+OMAArtMC;
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+		System.out.println("AffterMethod");
+
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				//System.out.println();
+
+			}
+
+		waitFor(1);
+		/*Date ppMEndDate1 = new Date();
+DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+inStoreOMA1ArtMEndDate = dateFormat.format(ppMEndDate1);
+//System.out.println(inStoreOMA1ArtMEndDate); // 12/01/2011 4:48:16 PM
+String EnhancedArtTime = inStoreOMA1Arttestdesc +";"+ inStoreOMA1ArtStartdat +";" + inStoreOMA1ArtMEndDate;
+
+htmlToExtent(cName,mName,extLogger,driver, "Running Completed Status;;;Pass"); 
+inStoreOMA1ArtTime.put(inStoreOMA1Arttestname, EnhancedArtTime);
+waitFor(4);
+closeDriver(driver);*/
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info"))
+		{
+			int cnt = inStoreOMA1ArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			inStoreOMA1ArtpreCount2++;
+		}
+		/*waitForJSandJQueryToLoad(driver);
+if((getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")) && inStoreOMA1ArtpreCount2!=reCount)
+{
+	waitForJSandJQueryToLoad(driver);
+	inStoreOMA1ArtTime.removeAll(inStoreOMA1Arttestname);
+	waitForJSandJQueryToLoad(driver);
+	inStoreOMA1ArtScenarios.removeAll(inStoreOMA1Arttestname);
+}
+waitForJSandJQueryToLoad(driver);*/
+		if(inStoreOMA1ArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass"))
+		{
+			inStoreOMA1ArtpreCount2=-1;
+		}
+		waitFor(1);
+	}
+
+}

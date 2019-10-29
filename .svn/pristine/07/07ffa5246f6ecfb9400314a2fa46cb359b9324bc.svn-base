@@ -1,0 +1,839 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.oocreportobjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.WoWLoginPage;
+import au.wow.ngbomain.pages.oocreportpages;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+//import au.wow.ngbomain.pages.OrderEnquiryPage;
+
+public class oocreporttest extends TestBase {
+
+	private Logger log = LogManager.getLogger(oocreporttest.class);
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+	int count=0;		
+	int MCcount=0;
+	public static XMLDataReader data;
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	public static WebDriver driver;
+	public static boolean isFirstTest=true;
+
+
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	oocreportpages oocpage;
+	oocreporttest ooctest;
+	oocreportobjects oocobj;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;
+	List<List<Object>> result;
+	List<List<Object>> result_temp;
+	private List<List<Object>> listDept;
+
+
+
+
+
+
+	public oocreporttest() {
+		super.log = log;
+	}
+
+
+
+
+	/*@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Full Dept")
+	public void verifyreport() throws SQLException, IOException, AWTException,
+			ParseException {
+
+
+		if(oocReportArtpreCount2==-1){
+		MCcount = MCcount+2;}
+		TestStatus status = getTestStatus();
+		waitFor(1);
+		navToOocreport(status);
+		waitFor(1);
+		String convdate= common.ConvertdateFormatWithoutHiphen();		
+		String convtodate=common.ConvertdateFormatWithoutHiphenandAddDays();
+
+
+		###LocalDate fdate = LocalDate.now().minusDays(27);
+		LocalDate tdate = LocalDate.now().plusDays(0);
+		String indiv_UomArticle_sql2 = data.getText("logsdb").replaceFirst("2017-09-29",fdate.toString());
+		indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replaceFirst("2017-09-30", tdate.toString());
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		Timestamp time1 = Timestamp.valueOf(sdf.format("2018-02-06"));
+		Calendar.getInstance().add(Calendar.DAY_OF_MONTH, 5);
+		Timestamp time2 = Timestamp.valueOf(sdf.format("2018-02-28"));
+
+
+		String datef = common.addDaystoCurrentDate(+0);
+		oocobj.fromdate.clear();
+		oocobj.fromdate.sendKeys(datef);
+		waitFor(1);
+
+		String datet = common.addDaystoCurrentDate(+27);
+		oocobj.todate.clear();
+		oocobj.todate.sendKeys(datet);// Enter text() insert
+		waitFor(1);
+		click(oocobj.chummadate);
+		String indiv_UomArticle_sql = data.getText("pavcode");	
+		String indiv_UomArticle_sql_exp = data.getText("pavcodeexpiry");	
+		String indiv_UomArticle_sql = data.getText("oocprocrak");			
+		indiv_UomArticle_sql = indiv_UomArticle_sql.replaceAll("todaydate", convdate);
+		indiv_UomArticle_sql=indiv_UomArticle_sql.replaceAll("todate", convtodate);//##
+		List<List<Object>> results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		List<List<Object>> resultsexp = sql.executeQuery(getContext(),indiv_UomArticle_sql_exp);
+		//###error
+		//System.out.println(results);
+		List<List<Object>> results0 = oocpage.removeLastZeromodi(results, 2);
+		//System.out.println(results0);
+		List<List<Object>> results1 = oocpage.removeExtraSpacesmodi(results0, 1); 
+		//System.out.println(results1);
+
+		oocpage.removeExtraSpacesmodi(resultsexp, 1);
+		oocpage.removeLastZeromodi(resultsexp, 3);
+		oocpage.removeminus(resultsexp,2);
+		//int actiontodaysize = oocobj.actiontodaytable.size();
+
+		int size = oocobj.innerDD1.size();
+		oocpage.random_no(size);
+
+
+		oocpage.outOfCode(oocobj,results1);
+		waitFor(5);
+		oocpage.outOfCode_DateRange(oocobj,resultsexp);
+
+
+		waitFor(1);
+		log.info("-----------------Logout from Application------------------");
+		loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver);
+		status.assertAll();
+
+	}*/
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Full Dept")
+	public void verifypagination() //throws SQLException, IOException, AWTException,			ParseException 
+	{
+
+		if(oocReportArtpreCount2==-1){
+			MCcount = MCcount+1;}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			String datef = common.addDaystoCurrentDate(+0);
+			oocobj.fromdate.clear();
+			oocobj.fromdate.sendKeys(datef);
+			String datet = common.addDaystoCurrentDate(+27);
+			oocobj.todate.clear();
+			oocobj.todate.sendKeys(datet);// Enter text() insert
+			click(oocobj.chummadate);
+			click(oocobj.generatereport);
+			waitForJSandJQueryToLoad(driver);;
+			oocpage.paginationhandling(oocobj,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Action today count")
+	public void verifyactiontodaycount()// throws SQLException, IOException,			AWTException, ParseException 
+	{
+		if(oocReportArtpreCount2==-1)
+		{
+			MCcount = MCcount+3;
+		}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			String datef = common.addDaystoCurrentDate(+0);
+			oocobj.fromdate.clear();
+			oocobj.fromdate.sendKeys(datef);
+			String datet = common.addDaystoCurrentDate(+27);
+			oocobj.todate.clear();
+			oocobj.todate.sendKeys(datet);// Entertesxt() insert
+			oocobj.chummadate.click();
+			oocpage.PartialDept(oocobj,driver);// clicks random depts
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Partial Dept")
+	public void verifyreportpartial() //throws SQLException, IOException,			AWTException, ParseException 
+	{
+		if(oocReportArtpreCount2==-1){
+			MCcount = MCcount+3;}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			String datef = common.addDaystoCurrentDate(+0);
+			oocobj.fromdate.clear();
+			oocobj.fromdate.sendKeys(datef);
+			String datet = common.addDaystoCurrentDate(+27);
+			oocobj.todate.clear();
+			oocobj.todate.sendKeys(datet);// Entertesxt() insert
+			oocobj.chummadate.click();
+			String indiv_UomArticle_sql = data.getText("pavcode");
+			String indiv_UomArticle_sql1 = data.getText("pavcodeexpiry");
+			List<List<Object>> results00 = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			List<List<Object>> results0 = oocpage.removeLastZeromodi(results00, 2);
+			List<List<Object>> results1 = oocpage.removeExtraSpacesmodi(results0, 1);
+			List<List<Object>> results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			List<List<Object>> results22 = oocpage.removeLastZeromodi(results2, 2);
+			List<List<Object>> results222 = oocpage.removeExtraSpacesmodi(results22, 1);
+			oocpage.PartialDepartment(oocobj,driver);// clicks random depts
+			click(oocobj.done);
+			click(oocobj.generatereport);
+			waitForJSandJQueryToLoad(driver);;
+			int size = oocobj.innerDD.size();
+			oocpage.random_no(size);
+			oocpage.outOfCodePartial(oocobj,results1,driver);//Partial dept validation
+			oocpage.outOfCode_DateRange(oocobj, results222,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Date Discrepancy Criteria")
+	public void dateselectiondiscrepancy() //throws SQLException, IOException,			AWTException, ParseException 
+	{
+		if(oocReportArtpreCount2==-1){
+			MCcount = MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			//past fromdate should show error msg
+			oocpage.datediscrepancyfromdatepast(oocobj,driver);
+			//past todate should show error msg
+			oocpage.datediscrepancytodatepast(oocobj,driver);
+			//date exceeds 28 days error msg should be displayed
+			oocpage.datediscrepancy28daysmore(oocobj,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Primary Department")
+	public void primarydepartment1()// throws SQLException, IOException,			AWTException, ParseException 
+	{
+		if(oocReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			String datef = common.addDaystoCurrentDate(+0);
+			oocobj.fromdate.clear();
+			oocobj.fromdate.sendKeys(datef);
+			String datet = common.addDaystoCurrentDate(+5);
+			oocobj.todate.clear();
+			oocobj.todate.sendKeys(datet);// Entertesxt() insert
+			click(oocobj.chummadate);
+			String indiv_UomArticle_sql = data.getText("pavcode");
+			String indiv_UomArticle_sql1 = data.getText("pavcodeexpiry");// Action
+			List<List<Object>> results00 = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			List<List<Object>> results0 = oocpage.removeLastZeromodi(results00, 2);
+			List<List<Object>> results1 = oocpage.removeExtraSpacesmodi(results0, 1);
+			List<List<Object>> results2 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			List<List<Object>> results22 = oocpage.removeLastZeromodi(results2, 2);
+			List<List<Object>> results222 = oocpage.removeExtraSpacesmodi(results22, 1);
+			List<List<Object>> results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			oocpage.primarydepartment123(oocobj,driver);// PrimaryDeptvalidationincludingDB 
+			click(oocobj.done);
+			click(oocobj.generatereport);
+			waitForJSandJQueryToLoad(driver);;
+			oocpage.ooctabs(oocobj,results1,driver);
+			oocpage.outOfCode_DateRange(oocobj, results222,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	//select any department error msg is displayed
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "No Department selected")
+	public void nodepartment() throws SQLException, IOException, AWTException,			ParseException 
+	{
+		if(oocReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			String datef = common.addDaystoCurrentDate(+0);
+			oocobj.fromdate.clear();
+			oocobj.fromdate.sendKeys(datef);
+			String datet = common.addDaystoCurrentDate(+5);
+			oocobj.todate.clear();
+			oocobj.todate.sendKeys(datet);// Entertesxt() insert
+			click(oocobj.chummadate);
+			click(oocobj.dropdownselect);
+			if (isSelected(oocobj.alldept)) {
+				click(oocobj.alldept);
+			} else {
+				click(oocobj.alldept);
+				click(oocobj.alldept);
+
+			}
+			click(oocobj.done);
+			click(oocobj.generatereport);
+			waitForJSandJQueryToLoad(driver);
+			//String nodeptsmsg = oocobj.nodept.getText();
+			oocpage.fnNoDeptselected(oocobj,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	//@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify the action count for partial departments")
+	public void actiontodaycount() //throws SQLException, IOException, AWTException,			ParseException 
+	{
+		if(oocReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			String datef = common.addDaystoCurrentDate(+0);
+			oocobj.fromdate.clear();
+			oocobj.fromdate.sendKeys(datef);
+			String datet = common.addDaystoCurrentDate(+5);
+			oocobj.todate.clear();
+			oocobj.todate.sendKeys(datet);// Entertesxt() insert
+			click(oocobj.chummadate);
+			click(oocobj.dropdownselect);
+			oocpage.PartialDept(oocobj,driver);	
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify Report Print")
+	public void verifyprintreport() //throws SQLException, IOException,			AWTException, ParseException 
+	{
+		if(oocReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			String datef = common.addDaystoCurrentDate(+0);
+			oocobj.fromdate.clear();
+			oocobj.fromdate.sendKeys(datef);
+			String datet = common.addDaystoCurrentDate(+5);
+			oocobj.todate.clear();
+			oocobj.todate.sendKeys(datet);// Entertesxt() insert
+			click(oocobj.chummadate);
+			oocpage.PartialDepartment(oocobj,driver);
+			click(oocobj.done);
+			click(oocobj.generatereport);
+			waitForJSandJQueryToLoad(driver);;
+			if (oocobj.msg.size() != 0)//For No records found
+			{
+				String mesg = oocobj.msgtext.getText();
+				if (mesg.equals("Sorry, No records found.")) 
+				{					
+					htmlToExtent(cName,mName,extLogger,driver, ""+ mesg + ";;;Pass");
+				}
+				oocobj.close.click();
+			}else{
+			click(oocobj.printrep);
+			htmlToExtent(cName,mName,extLogger,driver, "The Report is Printed Successfully;;;Pass");}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Multiple departments or Sub-categories- Segment ")
+	public void segment() //throws SQLException, IOException,			AWTException, ParseException 
+	{
+		if(oocReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			String datef = common.addDaystoCurrentDate(+0);
+			oocobj.fromdate.clear();
+			oocobj.fromdate.sendKeys(datef);
+			String datet = common.addDaystoCurrentDate(+27);
+			oocobj.todate.clear();
+			oocobj.todate.sendKeys(datet);// Entertesxt() insert
+			click(oocobj.chummadate);
+			click(oocobj.multipledeptsorsubcategories);//All departments ALSO  clicked
+			click(oocobj.deptclick);
+			//###oocpage.segmentlevel(oocobj,driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Verifying based on SubCategary;;;Info");
+			oocpage.subcategory(oocobj,driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Verifying based on Segment;;;Info");
+			oocpage.segmentlevel(oocobj,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Multiple departments or Sub-categories- Subcategory ")
+	public void subcategory() //throws SQLException, IOException,			AWTException, ParseException 
+	{
+		if(oocReportArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			String datef = common.addDaystoCurrentDate(+0);
+			oocobj.fromdate.clear();
+			oocobj.fromdate.sendKeys(datef);
+			String datet = common.addDaystoCurrentDate(+27);
+			oocobj.todate.clear();
+			oocobj.todate.sendKeys(datet);// Entertesxt() insert
+			click(oocobj.chummadate);
+			click(oocobj.multipledeptsorsubcategories);
+			click(oocobj.deptclick);
+			oocpage.subcateglevel(oocobj,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Multiple departments or Sub-categories- Category ")
+	public void category() //throws SQLException, IOException,			AWTException, ParseException 
+	{
+		if(oocReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			String datef = common.addDaystoCurrentDate(+0);
+			oocobj.fromdate.clear();
+			oocobj.fromdate.sendKeys(datef);
+			String datet = common.addDaystoCurrentDate(+27);
+			oocobj.todate.clear();
+			oocobj.todate.sendKeys(datet);// Entertesxt() insert
+			click(oocobj.chummadate);
+			click(oocobj.multipledeptsorsubcategories);
+			click(oocobj.deptclick);
+			oocpage.categorylevel(oocobj,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Date should not exceed 28 days")
+	public void datediscrepancy() //throws SQLException, IOException,			AWTException, ParseException 
+	{
+		if(oocReportArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			String datef = common.addDaystoCurrentDate(+0);
+			oocobj.fromdate.clear();
+			oocobj.fromdate.sendKeys(datef);
+			String datet = common.addDaystoCurrentDate(+28);
+			oocobj.todate.clear();
+			oocobj.todate.sendKeys(datet);// Entertesxt() insert
+			click(oocobj.chummadate);
+			oocobj.generatereport.click();
+			if(oocobj.msg.size()!=0)
+			{
+				oocpage.dateexceed(oocobj,driver);
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "No Department selected")
+	public void nodepartmentselect() //throws SQLException, IOException, AWTException,			ParseException 
+	{
+		if(oocReportArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			oocobj.dropdownselect.click();
+			boolean a = oocobj.alldept.isSelected();
+			if(a==false)
+			{
+				oocobj.alldept.click();
+				oocobj.alldept.click();
+				oocobj.done.click();
+			}
+			htmlToExtent(cName,mName,extLogger,driver, "Checking whether report is available for No Department;;;Info");
+			click(oocobj.generatereport);
+			waitForJSandJQueryToLoad(driver);;
+			if(oocobj.msg.size()!=0)
+			{
+				String nodeptsmsg = oocobj.nodept.getText();
+				if(nodeptsmsg.contains("Please select any department and proceed"))
+				{
+					htmlToExtent(cName,mName,extLogger,driver, ""+nodeptsmsg+" validation is displayed;;;Pass");
+					oocobj.close.click();
+					waitFor(1);		
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, ""+nodeptsmsg+";;;Fail");
+					oocobj.close.click();
+					waitFor(1);		
+				}	
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "No message is Displayed;;;Fail");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Multiple departments or Sub-categories- Department ")
+	public void multdept() throws SQLException, IOException,			AWTException, ParseException 
+	{
+		if(oocReportArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		TestStatus status = getTestStatus();
+		try{
+			navToOocreport(status);
+			String indiv_UomArticle_sql = data.getText("pavcode");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+			List<List<Object>> results0 = oocpage.removeLastZeromodi(results, 2);
+			List<List<Object>> results1 = oocpage.removeExtraSpacesmodi(results0, 1); 
+			String datef = common.addDaystoCurrentDate(+0);
+			oocobj.fromdate.clear();
+			oocobj.fromdate.sendKeys(datef);
+			String datet = common.addDaystoCurrentDate(+27);
+			oocobj.todate.clear();
+			oocobj.todate.sendKeys(datet);// Entertesxt() insert
+			click(oocobj.chummadate);
+			//##multipledeptsorsubcategories check box below departments drop down is clicked
+			click(oocobj.multipledeptsorsubcategories);
+			click(oocobj.deptclick);
+			oocpage.departmentlevel(oocobj,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(oocReportArtScenarios, oocReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout From application;;;Pass");
+		}
+		status.assertAll();
+
+	}	
+
+
+
+
+
+
+	public void navToOocreport(TestStatus status) throws IOException,
+	AWTException, NumberFormatException, ParseException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application-------------------- ;;;Pass");
+		//Report_AddStep("testcase","---------------Login into Application--------------------","", "", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(),
+				log, status, data, WoWLoginPage.class);
+		if (System.getProperty("store") == null) {
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : "+ getContext().getStringProperty("store")+" ;;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : "+ getContext().getStringProperty("store"), "", "", "Pass");
+			// articleLookUpPage =
+			// loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			oocpage = loginPage.navToOocreport(getContext().getStringProperty(
+					"store"),driver);
+		} else {
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : " + store, "","", "Pass");
+			// articleLookUpPage = loginPage.navToArticlLookUp(store);
+			oocpage = loginPage.navToOocreport(store,driver);
+		}
+
+		log.info("-------------Navigate to Routines Page------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to Routines Page--------------------;;;Pass");
+		//Report_AddStep("testcase","----------------Navigate to Routines Page--------------------","", "", "Pass");
+		oocpage.clickOnroutines(oocobj,driver);
+		// oocpage.oocrepo(oocobj,driver);
+	}
+
+	/*@BeforeMethod
+	public void setUp(Method m, ITestContext testcontext) throws IOException {
+		initializeTestcontext();
+		//System.out.println("test1 - beforemethod");
+		log.info("Loading Testdata for the test case: "
+				+ m.getName().toString());
+		data.getTCNameFromChildren(m.getName().toString().trim());
+		createDriver(getContext().getStringProperty("baseURL"), getContext()
+				.getStringProperty("browser"));
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		moduledesc = m.getName().toString().trim();
+		dtmoduledesc = m.getAnnotation(Test.class).description();
+
+		testcasesttime = new Date();
+		// objArticleLookup = PageFactory.initElements(this.driver,
+		// ArticleLookUpObjects.class);
+		oocobj = PageFactory.initElements(this.driver,
+				oocreportobjects.class);
+		oocpage = PageFactory.initElements(this.driver,
+				oocreportpages.class);
+		// objArticleDetail = PageFactory.initElements(this.driver,
+		// ArticleDetailsObjects.class);
+
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver,
+				CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver,
+				StoreProperties.class);
+
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy_hmmss");
+		String formattedDate = sdf.format(date);
+		//System.out.println(formattedDate); // 12/01/2011 4:48:16 PM
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String formattedDate1 = dateFormat.format(date);
+		//System.out.println(formattedDate1); // 12/01/2011 4:48:16 PM
+		String dat = formattedDate1;
+		Report_Header("testcase", reportPath, moduledesc, dat);
+
+	}
+
+	@BeforeClass
+	public void loadXMLFile() {
+		// initializeTestcontext();
+		//System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport = new CustomExtentReports();
+		log.info("Loading data for the class: ");
+		data.loadTestDataXML(System.getProperty("user.dir")
+				+ "\\TestData\\NGBO\\OOC.xml");
+		customreport.createExtentReport();
+	}*/
+
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		waitFor(1);
+		System.out.println("test1 - beforemethod");
+		mName=m9.getName().toString().trim();			
+		if(!methodList.contains(m9.getName().toString().trim())){
+			methodList.add(m9.getName().toString().trim());
+			extLogger = extReport.startTest(m9.getName().toString().trim());
+		}
+		initializeTestcontext();
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		}else{
+			String title = driver.getCurrentUrl();
+			if(title.contains("logginOut"))
+			{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+			}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+						WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+						scrolltoElement(home,driver);
+						home.click();
+						TimeUnit.SECONDS.sleep(5);
+						loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+						driver.navigate().refresh();
+						TimeUnit.SECONDS.sleep(5);}
+				}
+			}
+		}
+			isFirstTest=false;
+		
+		//	driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser"));
+			setDriver(driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		oocReportArttestname = m9.getName().toString().trim();
+		oocReportArttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		oocobj = PageFactory.initElements(this.driver,oocreportobjects.class);
+		oocpage = PageFactory.initElements(this.driver,	oocreportpages.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+	}
+
+	@BeforeClass
+	public void loadXMLFile(){	
+		//initializeTestcontext();
+		System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir")	+ "\\TestData\\NGBO\\OOC.xml");
+		customreport.createExtentReport();
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+	}
+
+
+
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitFor(1);
+		System.out.println("afterclass");
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(), MCcount);
+		//System.out.println(extentList);
+		//System.out.println(methodList);
+		extReport.endTest(extLogger);
+		extReport.flush();
+		removeDriver();
+		closeDriver(driver);
+		waitFor(1);
+		moduleName.put("Modules", oocReportArtModules);
+		waitFor(1);
+		int oocArtM=MCcount;
+		oocReportArtMC=""+oocArtM;
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+		System.out.println("AffterMethod");
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				//System.out.println();
+			}
+
+	/*	waitFor(1);
+		Date ppMEndDate1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		oocReportArtMEndDate = dateFormat.format(ppMEndDate1);
+		//System.out.println(oocReportArtMEndDate); // 12/01/2011 4:48:16 PM
+		String EnhancedArtTime = oocReportArttestdesc +";"+ oocReportArtStartdat +";" + oocReportArtMEndDate;
+
+		oocReportArtTime.put(oocReportArttestname, EnhancedArtTime);
+		//Report_AddStep("testcase", "Running Completed Status","","", getResultStatusName(result.getStatus()));
+		waitFor(4);
+		closeDriver(driver);*/
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")){
+			int cnt = oocReportArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			oocReportArtpreCount2++;
+		}
+	/*	waitFor(1);
+		if((getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")) && oocReportArtpreCount2!=reCount){
+			waitFor(1);
+			oocReportArtTime.removeAll(oocReportArttestname);
+			waitFor(1);
+			oocReportArtScenarios.removeAll(oocReportArttestname);
+		}
+		waitFor(1);*/
+		if(oocReportArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+			oocReportArtpreCount2=-1;
+		}
+		waitFor(1);
+	//	Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");//#
+	}
+}

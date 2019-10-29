@@ -1,0 +1,331 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import org.openqa.selenium.By;
+
+import org.openqa.selenium.support.ui.Select;
+import java.awt.Robot;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbomain.objects.InstoreClearanceObject;
+import au.wow.ngbomain.objects.PromotionEndTypeObjects;
+import au.wow.ngbomain.tests.PromotionEndTypeTest;
+
+public class PromotionEndTypePage extends BasePage {
+	
+	CommonFunctions common = PageFactory.initElements(PromotionEndTypeTest.driver, CommonFunctions.class);
+	private Logger log = LogManager.getLogger(PromotionEndTypeTest.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	//public static XMLDataReader data;
+	
+	ExtentTest extLogger=PromotionEndTypeTest.extLogger;
+	String cName= PromotionEndTypeTest.cName;
+	String mName=PromotionEndTypeTest.mName;
+    WebDriver driver;
+    public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}	
+    
+    public void clickOnPromoEndType(PromotionEndTypeObjects objPromoEndTypeObjects,WebDriver driver) throws AWTException{
+		//waitForJSandJQueryToLoad(driver);; 
+		waitFor(5);
+		Point coordinates = objPromoEndTypeObjects.pricingTab.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(objPromoEndTypeObjects.pricingTab).click().build().perform();	
+		waitFor(5);
+		
+		Point coordinates2 = objPromoEndTypeObjects.promotions.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates2.getX(),coordinates2.getY()+100);
+		
+	
+		action.moveToElement(objPromoEndTypeObjects.promotions).click().build().perform();
+		waitFor(5);
+		
+		Point coordinates3 = objPromoEndTypeObjects.promoEndType.getLocation();
+		Robot robo1t1 = new Robot();
+		robo1t1.mouseMove(coordinates3.getX(),coordinates3.getY()+120);
+		
+		
+		action.moveToElement(objPromoEndTypeObjects.promoEndType).click().build().perform();
+		waitFor(5);
+		robot.mouseMove(5,5);
+			
+	}
+    
+    public void clickOnPromoManagemt (PromotionEndTypeObjects objPromoEndTypeObjects,WebDriver driver) throws AWTException{
+		//waitForJSandJQueryToLoad(driver);; 
+		waitFor(5);
+		Point coordinates = objPromoEndTypeObjects.pricingTab.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(objPromoEndTypeObjects.pricingTab).click().build().perform();	
+		waitFor(5);
+		
+		Point coordinates2 = objPromoEndTypeObjects.promotions.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates2.getX(),coordinates2.getY()+100);
+		
+	
+		action.moveToElement(objPromoEndTypeObjects.promotions).click().build().perform();
+		waitFor(5);
+		
+		Point coordinates3 = objPromoEndTypeObjects.promoManagemnt.getLocation();
+		Robot robo1t1 = new Robot();
+		robo1t1.mouseMove(coordinates3.getX(),coordinates3.getY()+120);
+		
+		
+		action.moveToElement(objPromoEndTypeObjects.promoManagemnt).click().build().perform();
+		waitFor(5);
+		robot.mouseMove(5,5);
+			
+	}
+    
+    public void clickOnPromo(PromotionEndTypeObjects objPromoEndTypeObjects,WebDriver driver) throws AWTException{
+		//waitForJSandJQueryToLoad(driver);; 
+		waitFor(5);
+		Point coordinates = objPromoEndTypeObjects.pricingTab.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(objPromoEndTypeObjects.pricingTab).click().build().perform();	
+		waitFor(5);
+		
+		Point coordinates2 = objPromoEndTypeObjects.promotions.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates2.getX(),coordinates2.getY()+100);
+		
+	
+		action.moveToElement(objPromoEndTypeObjects.promotions).click().build().perform();
+		waitFor(5);
+	
+			
+	}
+    
+    public void clickOnAuditTrail (PromotionEndTypeObjects objPromoEndTypeObjects,WebDriver driver) throws AWTException{
+		//waitForJSandJQueryToLoad(driver);; 
+		waitFor(5);
+		Point coordinates = objPromoEndTypeObjects.pricingTab.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(objPromoEndTypeObjects.pricingTab).click().build().perform();	
+		waitFor(5);
+		
+		Point coordinates2 = objPromoEndTypeObjects.promotions.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates2.getX(),coordinates2.getY()+100);
+		
+	
+		action.moveToElement(objPromoEndTypeObjects.promotions).click().build().perform();
+		waitFor(5);
+		
+		Point coordinates3 = objPromoEndTypeObjects.auditTrail.getLocation();
+		Robot robo1t1 = new Robot();
+		robo1t1.mouseMove(coordinates3.getX(),coordinates3.getY()+120);
+		
+		
+		action.moveToElement(objPromoEndTypeObjects.auditTrail).click().build().perform();
+		waitFor(5);
+		robot.mouseMove(5,5);
+			
+	}
+    
+    
+    public void enablingPromoEndType(PromotionEndTypeObjects objPromoEndTypeObjects,WebDriver driver) throws ParseException, IOException {
+    	htmlToExtent(cName,mName,extLogger,driver, "Enabling the promotion end type from app setting;;;Pass");
+		objPromoEndTypeObjects.promoEndTypeCheckBox.click(); waitFor(4);
+		objPromoEndTypeObjects.saveAppSetting.click(); waitFor(4);
+		waitForJSandJQueryToLoad(driver);
+		objPromoEndTypeObjects.okAppSetting.click(); waitFor(2);
+		objPromoEndTypeObjects.pricingTab.click(); waitFor(2);
+		//act.moveToElement(objPromoEndTypeObjects.promotions).click().build().perform();
+		objPromoEndTypeObjects.promotions.click(); waitFor(2);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type is displayed after enabling from app setting;;;Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type is not displayed after enabling from app setting;;;Fail");
+		}
+    }
+		
+	 public void disablingPromoEndType(PromotionEndTypeObjects objPromoEndTypeObjects,WebDriver driver) throws ParseException, IOException {
+		htmlToExtent(cName,mName,extLogger,driver, "Disabling the promotion end type from app setting;;;Pass");
+		objPromoEndTypeObjects.promoEndTypeCheckBox.click(); waitFor(4);
+		objPromoEndTypeObjects.saveAppSetting.click(); waitFor(4);
+		waitForJSandJQueryToLoad(driver);
+		objPromoEndTypeObjects.okAppSetting.click(); waitFor(2);
+		objPromoEndTypeObjects.pricingTab.click(); waitFor(2);
+		//act.moveToElement(objPromoEndTypeObjects.promotions).click().build().perform();
+		objPromoEndTypeObjects.promotions.click(); waitFor(2);
+		if(objPromoEndTypeObjects.promoEndType.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type is not displayed even after disabling from app setting;;;Fail");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Promotion End Type is displayed after disabling from app setting;;;Pass");
+		}
+	 }
+		
+	public void enablingPromoEndTypeForSelectedStore(PromotionEndTypeObjects objPromoEndTypeObjects,WebDriver driver) throws ParseException, IOException {
+		
+			  
+	}
+    
+	 
+	 public void selectingPromoWeek(PromotionEndTypeObjects objPromoEndTypeObjects,WebDriver driver) throws ParseException, IOException {
+		 int min=1,max=objPromoEndTypeObjects.promotionWeekDropDownList.size();
+		 Random rand=new Random();
+		 int randNum = rand.nextInt((max+1) - min) + min;
+		 System.out.println("Random Num:::"+randNum);
+		 //for(int i=2;i<=objPromoEndTypeObjects.promotionWeekDropDownList.size();i++){
+			 WebElement promoWeekFromDD =  prepareWebElementWithDynamicXpathWithInt(objPromoEndTypeObjects.promoWeekDropDownValues, randNum,driver);
+			 System.out.println("week:::"+promoWeekFromDD.getText());
+			 promoWeekFromDD.click();
+			 htmlToExtent(cName,mName,extLogger,driver, "Promotion Week Selected From Drop Down as "+promoWeekFromDD.getText()+";;;Pass");
+
+	 }
+	 
+	 public void selectingdepartment(PromotionEndTypeObjects objPromoEndTypeObjects,WebDriver driver) throws ParseException, IOException {
+		 int min=1,max=objPromoEndTypeObjects.departmentDropDownList.size();
+		 Random rand=new Random();
+		 int randNum = rand.nextInt((max+1) - min) + min;
+		 System.out.println("Random Num:::"+randNum);
+		 //for(int i=2;i<=objPromoEndTypeObjects.promotionWeekDropDownList.size();i++){
+			 WebElement deptFromDD =  prepareWebElementWithDynamicXpathWithInt(objPromoEndTypeObjects.deptDropDownValues, randNum,driver);
+			 System.out.println("dept:::"+deptFromDD.getText());
+			 deptFromDD.click();
+			 htmlToExtent(cName,mName,extLogger,driver, "Department Selected From Drop Down as "+deptFromDD.getText()+";;;Pass");
+
+	 }
+	 
+	 public void valuesInPromoWeekDD(PromotionEndTypeObjects objPromoEndTypeObjects,List<List<Object>> weekFromDB,WebDriver driver) throws ParseException, IOException {
+		 //int min=1,max=objPromoEndTypeObjects.promotionWeekDropDownList.size();
+		// Random rand=new Random();
+		// int randNum = rand.nextInt((max+1) - min) + min;
+		// System.out.println("Random Num:::"+randNum);
+		 List<List<Object>>  weekList = new ArrayList<List<Object>>();	
+		 for(int i=2;i<=objPromoEndTypeObjects.promotionWeekDropDownList.size();i++){
+			 WebElement promoWeekFromDD =  prepareWebElementWithDynamicXpathWithInt(objPromoEndTypeObjects.promoWeekDropDownValues, i,driver);
+			 System.out.println("week:::"+promoWeekFromDD.getText());
+			// promoWeekFromDD.click();
+			// htmlToExtent(cName,mName,extLogger,driver, "Promotion Week From Drop Down as "+promoWeekFromDD.getText()+";;;Pass");
+			 String str = ""+promoWeekFromDD.getText().replaceAll("[^\\d/]","").substring(1);
+			 weekList.addAll(StringToListCreation(str));
+		 }
+		 
+		 htmlToExtent(cName,mName,extLogger,driver, "*****Comparing weeks available between Application and DB*****;;;Info");
+		 ElementContains1(cName,mName,extLogger,driver,weekList,weekFromDB);
+		 //htmlToExtent(cName,mName,extLogger,driver, "Promotion Week From Drop Down are "+weekList+";;;Pass");
+		 
+		 if(weekList.size()==9){
+			 htmlToExtent(cName,mName,extLogger,driver, "There are total of "+weekList.size()+" elements in promotion week drop down;;;Pass"); 
+		 
+		 
+		// ElementContains1(cName,mName,extLogger,driver,weekList,weekFromDB);
+		 
+		 htmlToExtent(cName,mName,extLogger,driver, "Promotion Week From Drop Down contains "+weekList+";;;Pass");
+		 
+		 if(weekList.get(0).get(0).toString().contains("Current Week")&&weekList.get(1).get(0).toString().contains("Next Week")&&weekList.get(2).get(0).toString().contains("Two Weeks Out")&&
+				 weekList.get(3).get(0).toString().contains("Three Weeks Out")&&weekList.get(4).get(0).toString().contains("Four Weeks Out")&&weekList.get(5).get(0).toString().contains("Five Weeks Out")
+				 &&weekList.get(6).get(0).toString().contains("Six Weeks Out")&&weekList.get(7).get(0).toString().contains("Seven Weeks Out")&&weekList.get(8).get(0).toString().contains("Eight Weeks Out")){
+			 htmlToExtent(cName,mName,extLogger,driver, "Application Week dropdown contains \" Current week,Next Week,Two Weeks Out,Three Weeks Out,"
+			 		+ "Four Weeks Out,Five Weeks Out,Six Weeks Out,Seven Weeks Out,Eight Weeks Out \";;;Pass"); 
+		 	}
+		 }
+
+	 }
+	 
+	 public void selectingendtype(PromotionEndTypeObjects objPromoEndTypeObjects,WebDriver driver) throws ParseException, IOException {
+		 int min=1,max=objPromoEndTypeObjects.endTypeDropDownOptions.size();
+		 Random rand=new Random();
+		 //int randNum = rand.nextInt((max+1) - min) + min;
+		 Select endtypedropdowndefault = new Select(driver.findElement(By.xpath("//*[contains(@class,'endTypeDropDown')]")));
+		 String endtypeApp2 = endtypedropdowndefault.getFirstSelectedOption().getText();
+		 //System.out.println("Random Num:::"+randNum);
+		//waitFor(2);// objPromoEndTypeObjects.endTypeDropDown.click();
+		 for(int i=0;i<2;i++){
+			 int randNum = rand.nextInt((max+1) - min) + min;
+			 WebElement endTypeFromDD =  prepareWebElementWithDynamicXpathWithInt(objPromoEndTypeObjects.endTypeDropDownSelection, randNum,driver);
+			 System.out.println("dept:::"+endTypeFromDD.getText());
+			 if(endTypeFromDD.getText().equals(endtypeApp2)){
+				 continue;
+			 }
+			 else{
+				 endTypeFromDD.click();
+				 htmlToExtent(cName,mName,extLogger,driver, "Only one end type is selected and also displayed which is  "+endTypeFromDD.getText()+";;;Pass");
+			 }
+			 
+		 }
+	 }
+	 
+	 public void endtypevalues(PromotionEndTypeObjects objPromoEndTypeObjects,List<List<Object>> endtypeDBlist,WebDriver driver) throws ParseException, IOException {
+		 List<String> endtypelist = new ArrayList();
+		 List<List<Object>> endtypeAppList = new ArrayList<List<Object>>(); 
+		 System.out.println("Size endtype::"+objPromoEndTypeObjects.endTypeDropDownOptions.size());
+		 int count=0;
+		 for(int i=1;i<=objPromoEndTypeObjects.endTypeDropDownOptions.size();i++){
+			 WebElement endTypeFromDD =  prepareWebElementWithDynamicXpathWithInt(objPromoEndTypeObjects.endTypeDropDownSelection, i,driver);
+			 endtypelist.add(endTypeFromDD.getText());
+			 endtypeAppList.addAll(StringToListCreation(endTypeFromDD.getText()));
+			 if(endTypeFromDD.getText().equals("BIN")||endTypeFromDD.getText().equals("BULK")||endTypeFromDD.getText().equals("WRAP")||endTypeFromDD.getText().equals("WRAP AND SPILL")){
+				count=count+1;
+			 }
+		 }
+		 if(count==objPromoEndTypeObjects.endTypeDropDownOptions.size()){
+			 htmlToExtent(cName,mName,extLogger,driver, "End Type drop down is displayed with following options "+endtypelist+";;;Pass");
+		 }
+		 else{
+			 htmlToExtent(cName,mName,extLogger,driver, "End Type drop down is displayed with following options "+endtypelist+";;;Fail");
+		 }
+		 
+		 htmlToExtent(cName,mName,extLogger,driver, "*****Comparing Endtype dropdown option between application and DB*****;;;Info");
+		 ElementContains1(cName,mName,extLogger,driver,endtypeAppList,endtypeDBlist);
+	 }
+	 
+	 public List<List<Object>> weekconversion(PromotionEndTypeObjects objPromoEndTypeObjects,List<String> weekList,WebDriver driver) throws ParseException, IOException{
+		 
+		 List<List<Object>> weekDB = new ArrayList<List<Object>>();	
+		 Date date = new Date();	
+		 DateFormat dateP = new SimpleDateFormat("yyyy/MM/dd");
+		DateFormat dateF = new SimpleDateFormat("dd/MM/yyyy");
+		 
+		 for(int i=0;i<weekList.size();i++){
+		 	
+			//Date date = new Date();
+			date = dateP.parse(weekList.get(i));
+			String dateString = dateF.format(date);
+			weekDB.addAll(StringToListCreation(dateString));
+		 }
+		 
+		 return weekDB;
+		 
+	 }
+	 
+	 
+}

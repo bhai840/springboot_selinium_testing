@@ -1,0 +1,1380 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+//import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+
+//import javax.swing.text.html.HTMLDocument.Iterator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.support.PageFactory;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.oocreportobjects;
+import au.wow.ngbomain.tests.AdjustmentLogReportTests;
+import au.wow.ngbomain.tests.oocreporttest;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+public class oocreportpages extends BasePage {
+	ExtentTest extLogger=oocreporttest.extLogger;
+	String cName= oocreporttest.cName;
+	String mName=oocreporttest.mName;
+
+	public XMLDataReader data;
+	private static final List<List<Object>> NULL = null;
+	WebDriver driver;
+    public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+	CommonFunctions common = PageFactory.initElements(driver,
+			CommonFunctions.class);
+	private Logger log = LogManager.getLogger(oocreporttest.class);
+	SQLWrapper sql = new SQLWrapper(log);
+
+	public void clickOnroutines(oocreportobjects oocobj,WebDriver driver) throws AWTException {
+		// TODO Auto-generated method stub
+		waitForJSandJQueryToLoad(driver);;
+		verticalScroll(driver);
+		waitForElement(oocobj.reports,driver);
+
+		driver.findElement(By.id("reports")).click();
+		driver.findElement(By.linkText("Stock Management")).click();
+		driver.findElement(By.linkText("Out of Code")).click();
+		
+		waitForInvisibilityOfElement(By.id("statusImg"),driver);
+		waitForJSandJQueryToLoad(driver);
+	}
+
+	public void reportFn(int size, oocreportobjects oocobj,WebDriver driver)
+			throws NumberFormatException, AWTException, IOException,
+			ParseException {
+		/*
+		 * for(int i=1;i<=size;i++) { if(i==1) {
+		 * 
+		 * } WebElement element =
+		 * prepareWebElementWithDynamicXpathWithInt(oocobj.indiv_dept,i);//14
+		 * elements(depts oda Xpath) scrollToElement(element);//Scrolling
+		 * click(element);
+		 */
+
+		oocobj.dropdownselect.click();
+		oocobj.alldept.click();
+		oocobj.alldept.click();
+
+		oocobj.done.click();
+		oocobj.generatereport.click();
+		waitForJSandJQueryToLoad(driver);
+		// ooc(oocobj);
+	}
+
+	public void scrollUp(WebDriver driver) {
+		((JavascriptExecutor) driver).executeScript("scrollBy(0, -1000);");
+	}
+
+	public void verticalinternalscrolltest(WebElement element,WebDriver driver) {
+		((JavascriptExecutor) driver).executeScript(
+				"arguments[0].scrollIntoView();", element);
+	}
+
+	public int random_no(int size) {
+		Random rand = new Random();
+		int n = rand.nextInt(size);
+		return n;
+	}
+
+	public void outOfCode(oocreportobjects oocobj,List<List<Object>> results1,WebDriver driver)
+			throws IOException {
+
+		for (int l = 1; l <= 1; l++) {
+			oocobj.dropdownselect.click();
+			WebElement DDclick = prepareWebElementWithDynamicXpathWithInt(
+					oocobj.clickinnerDD, l,driver);
+			String deptname = DDclick.getText();
+			htmlToExtent(cName,mName,extLogger,driver, "" + deptname + ";;;Pass");
+			//Report_AddStep("testcase", "Checking for Department name - "+ deptname + " ", "", "", "");
+			if ((l != 1) && (l != 2)) {
+				WebElement DDclick1 = prepareWebElementWithDynamicXpathWithInt(
+						oocobj.clickinnerDD, 1,driver);
+				DDclick1.click();
+				DDclick1.click();
+			}
+			if (l == 2) {
+				WebElement DDclick1 = prepareWebElementWithDynamicXpathWithInt(
+						oocobj.clickinnerDD, 1,driver);
+				DDclick1.click();
+			}
+			verticalinternalscroll(DDclick,driver);
+			//DDclick.click();// department is clicked
+		
+			oocobj.done.click();// clicks done button 
+			oocobj.generatereport.click();// clicks generate report button
+			waitForJSandJQueryToLoad(driver);;
+			if (oocobj.msg.size() != 0) {
+				String mesg = oocobj.msgtext.getText();
+				if (mesg.equals("Sorry, No records found.")) {
+					
+					htmlToExtent(cName,mName,extLogger,driver, "" + mesg + ";;;Pass");
+					//Report_AddStep("testcase", "" + mesg + "", "", "", "");
+					oocobj.close.click();
+					oocobj.generateoocreport.click();
+					waitForJSandJQueryToLoad(driver);
+				} }else {
+					ooctabs(oocobj,results1,driver);//validation is done here
+				}
+			
+			
+			scrollUp(driver);
+			oocobj.generateoocreport.click();// Generate an Out Of Code Report is clickd
+			waitForJSandJQueryToLoad(driver);
+		}
+	}
+
+	public List<List<Object>> ooctabs(oocreportobjects oocobj,List<List<Object>> results1,WebDriver driver)
+			throws IOException {
+
+		int tabsize = oocobj.tabsize.size();// checks how many tabs are present->2 tabs
+
+		for(int i=1;i<=tabsize;i++)
+		{
+			waitFor(1);
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(oocobj.dynamictabclick, i,driver);//tab clicking dynamically
+			element.click();//Clicks the respective tab
+			paginationhandling(oocobj,driver);//pagination is done
+			List<List<Object>> Allticket = NULL;
+			List<Object> firstvalue = new ArrayList<Object>();
+			List<List<Object>> temp = new ArrayList<List<Object>>();
+			List<Object> secondvalue = new ArrayList<Object>();// article in Second
+			// tab
+			List<List<Object>> temp2 = new ArrayList<List<Object>>();
+			temp= getValuesFromTable(oocobj.firstvalue);
+			String articleno = getText(oocobj.articleno);
+			//System.out.println(articleno);
+			String desc = getText(oocobj.description);
+			firstvalue.add(articleno);
+			firstvalue.add(desc);
+			//System.out.println(results1);
+			ElementContains1(cName, mName,extLogger,driver,  temp,results1);
+			return Allticket;
+		}
+		return results1;
+
+	}
+	/*
+	 * String art = getText(oocobj.articleno);//Action Today tab article details
+	 * String desc = getText(oocobj.description); String soh =
+	 * getText(oocobj.soh);
+	 * 
+	 * String art2 = getText(oocobj.articleno2);//Date range tab article details
+	 * String desc2 = getText(oocobj.description2); String exp2 =
+	 * getText(oocobj.expirydate2); String soh2 = getText(oocobj.soh2);
+	 * 
+	 * 
+	 * Double ordnum = Double.parseDouble(soh.replaceAll("[^0-9\\.]+", ""));
+	 * String uom = soh.replaceAll("[^A-Z\\.]+", "");
+	 * //System.out.println(ordnum); String OrdNo = Double.toString(ordnum); OrdNo
+	 * = decimalFormat(OrdNo); //System.out.println("Order No is " +ordnum);
+	 * //System.out.println("UOM is" +uom);
+	 */
+
+	// float ordno= Float.valueOf(OrdNo);
+	/*
+	 * firstvalue.add(art); firstvalue.add(desc); firstvalue.add(OrdNo);
+	 * 
+	 * temp.add(firstvalue);
+	 * 
+	 * for(int i=0;i<=results.size();i++) { String SOH2 =
+	 * decimalFormat(results.get(i).get(2).toString());
+	 * 
+	 * 
+	 * String randsoh = decimalFormat(results.get(i).get(3).toString());
+	 * 
+	 * if(art.equals(results.get(i).get(0)) &&
+	 * desc.equals(results.get(i).get(1)) && OrdNo.equals(SOH2)) {
+	 * Report_AddStep
+	 * ("testcase","The Article details are matched with DB article-"
+	 * +art+", description-"+desc+",Stock on hand-"+SOH2+" ","", "", "Pass");
+	 * 
+	 * break; }
+	 * 
+	 * else if(art.equals(results.get(i).get(0)) &&
+	 * desc.equals(results.get(i).get(1)) && OrdNo.equals(randsoh)) {
+	 * Report_AddStep
+	 * ("testcase","The Random Weight Article details are matched with DB article-"
+	 * +art+", description-"+desc+",Stock on hand-"+randsoh+" ","", "", "Pass");
+	 * 
+	 * }
+	 * 
+	 * else{ }
+	 * 
+	 * Double ordnum2 = Double.parseDouble(soh2.replaceAll("[^0-9\\.]+", ""));
+	 * String uom2 = soh2.replaceAll("[^A-Z\\.]+", "");
+	 * //System.out.println(ordnum2); String OrdNo2 = Double.toString(ordnum2);
+	 * OrdNo2 = decimalFormat(OrdNo2); //System.out.println("Order No is "
+	 * +ordnum2); //System.out.println("UOM is" +uom2);
+	 * 
+	 * secondvalue.add(art2); secondvalue.add(desc2); secondvalue.add(exp2);
+	 * secondvalue.add(OrdNo2);
+	 * 
+	 * for(int j=0;j<=results1.size();j++)
+	 * 
+	 * { String SOH3 = decimalFormat(results.get(j).get(2).toString());
+	 * 
+	 * 
+	 * String randsoh3 = decimalFormat(results.get(j).get(3).toString());
+	 * 
+	 * if(art2.equals(results1.get(j).get(0)) &&
+	 * desc2.equals(results1.get(j).get(1)) && OrdNo2.equals(SOH3)) {
+	 * Report_AddStep
+	 * ("testcase","The Article details are matched with DB article-"
+	 * +art+", description-"+desc+",Stock on hand-"+SOH2+" ","", "", "Pass");
+	 * 
+	 * break; }
+	 * 
+	 * else if(art.equals(results.get(i).get(0)) &&
+	 * desc.equals(results.get(i).get(1)) && OrdNo.equals(randsoh)) {
+	 * Report_AddStep
+	 * ("testcase","The Random Weight Article details are matched with DB article-"
+	 * +art+", description-"+desc+",Stock on hand-"+randsoh+" ","", "", "Pass");
+	 * 
+	 * }
+	 * 
+	 * 
+	 * }
+	 * 
+	 * int v = oocobj.check4.size(); // to know the tab size for(int
+	 * j=1;j<=v;j++) {
+	 * 
+	 * 
+	 * 
+	 * WebElement element =
+	 * prepareWebElementWithDynamicXpathWithInt(oocobj.chec56, j);
+	 * element.click();//For 2nd tab click waitFor(1);
+	 * 
+	 * int u = oocobj.check2.size();//To calc how many pages are there
+	 * u=u-2;//As Prev & next are included we are subtracting it by 2 if(u!=0) {
+	 * for(int k=1;k<=u;k++) { if(i!=1) { WebElement elements =
+	 * prepareWebElementWithDynamicXpathWithInt(oocobj.chec, i+1);//Click on the
+	 * respective page elements.click(); waitFor(1);
+	 * 
+	 * 
+	 * //System.out.println(temp); Report_AddStep("testcase",
+	 * "The below details is about article, description,Stock on hand", "", "",
+	 * ""); Report_AddStep("testcase",""+temp+"", "", "", "");
+	 * ElementContains1(results,temp);
+	 * 
+	 * 
+	 * 
+	 * 
+	 * //fn(allticket, art, desc, SOH); } }} else { allticket=
+	 * getValuesFromTable(oocobj.check1);//Extracting table values
+	 * //System.out.println(allticket); Report_AddStep("testcase",
+	 * "The below details is about article, description,Stock on hand", "", "",
+	 * ""); Report_AddStep("testcase",""+temp+"", "", "", "");
+	 * ElementContains1(results,allticket); } } return allticket; } return
+	 * temp2;
+	 * 
+	 * }
+	 */
+
+	public void fn(List<List<Object>> allticket, String art, String desc,
+			String SOH,WebDriver driver) throws IOException {
+		for (Iterator<List<Object>> it = allticket.iterator(); it.hasNext();) {// 2D
+																				// list
+			List<Object> elem = it.next(); // Single Dimension list
+			for (int i = 0; i < elem.size(); i++) {
+				if (i == 0) {
+					art = (String) elem.get(i);
+				}
+				if (i == 1) {
+					desc = (String) elem.get(i);
+				}
+				if (desc == null) {
+					desc = "";
+				}
+				if (i == 2) {
+					SOH = (String) elem.get(i);
+				}
+				if (SOH == null) {
+					SOH = "";
+				}
+			}
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The details are " + art + "," + desc+ "," + SOH + ";;;Pass");
+			//Report_AddStep("testcase", "The details are " + art + "," + desc+ "," + SOH + "", "", "", "");
+		}
+	}
+
+	public void waitfn(WebDriver driver) {
+		waitForJSandJQueryToLoad(driver);;
+	}
+
+	public List<List<Object>> oocrepo(oocreportobjects oocobj,WebDriver driver)
+			throws IOException {
+		String art = null;
+		String desc = null;
+		String numb = null;
+
+		List<List<Object>> allticket = getValuesFromTable(oocobj.check2);
+
+		//System.out.println(allticket);
+		htmlToExtent(cName,mName,extLogger,driver, "Action Today;;;Pass");
+		//Report_AddStep("testcase", "Action Today", "", "", "");
+
+		for (Iterator<List<Object>> it = allticket.iterator(); it.hasNext();) {
+			List<Object> elem = it.next();
+
+			for (int i = 0; i < elem.size(); i++) {
+				if (i == 0) {
+					art = (String) elem.get(i);
+				}
+				if (i == 1) {
+					desc = (String) elem.get(i);
+				}
+				if (i == 2) {
+					numb = (String) elem.get(i);
+				}
+			}
+			if (art.equals("Aisle NO AISLE")) {
+
+			} else {
+				htmlToExtent(cName,mName,extLogger,driver, "The details are  + art + 	+ desc + , + numb +;;;Pass");
+				//Report_AddStep("testcase", "The details are " + art + ","
+						//+ desc + "," + numb + "", "", "", "");
+			}
+		}
+		return allticket;
+
+	}
+
+	public void partdept(oocreportobjects oocobj,WebDriver driver) throws AWTException {
+		// TODO Auto-generated method stub
+		// handling partial dept--refer
+		List<List<Object>> dep = getValuesFromTable(oocobj.listDept);
+		int i = common.RandomFromDB(dep);
+		String dept = dep.get(i).get(0).toString();
+
+		WebElement ele = prepareWebElementWithDynamicXpathStringInt(
+				oocobj.indiv_dept, dept, "str", driver);
+		{
+			ele.click();
+			waitForJSandJQueryToLoad(driver);
+		}
+
+	}
+
+	public List<Integer> generateMultiplRandomNumber(int min, int max,
+			int multiple) {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+
+		for (int i = min; i <= max; i++) {
+			list.add(new Integer(i));
+		}
+		Collections.shuffle(list);
+		for (int i = 0; i < multiple; i++) {
+			//System.out.println(list.get(i));
+		}
+
+		return list;
+	}
+
+	/*public List<String> PartialDept(oocreportobjects oocobj, WebDriver driver)
+			throws IOException {*/
+	public void PartialDept(oocreportobjects oocobj,WebDriver driver)
+			throws IOException {
+		int partialdep1;
+		List<String> selectedDept = new ArrayList<String>();
+		//int max = oocobj.listDept.size();
+		int max=3;
+		int min = 2;
+		oocobj.dropdownselect.click();
+		waituntilClickable(oocobj.ChkBxone, min,driver);	
+		oocobj.ChkBxone.click();
+		//oocobj.ChkBxtwo.click();		
+		oocobj.generatereport.click();
+		waitForJSandJQueryToLoad(driver);;
+		
+		/*int tabsize = oocobj.tabsize.size();
+		
+		for(int i=1;i<=tabsize;i++)
+		{
+		
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(oocobj.dynamictabclick, i);
+			click(element);*/
+		
+		//paginationhandling(oocobj);
+		
+		int partialdept1= Integer.parseInt(getText(oocobj.partialdept1).replace("Action", "").replace("Today", "").replace("(", "").replace(")", "").trim());	
+		oocobj.dropdownselect.click();
+		oocobj.ChkBxone.click();
+		oocobj.done.click();
+		oocobj.dropdownselect.click();
+		//oocobj.ChkBxthree.click();
+		//oocobj.ChkBxfour.click();
+		oocobj.ChkBxtwo.click();
+		oocobj.done.click();
+		waitForJSandJQueryToLoad(driver);
+		oocobj.generatereport.click();
+		waitForJSandJQueryToLoad(driver);;
+		int partialdept2= Integer.parseInt(getText(oocobj.partialdept1).replace("Action", "").replace("Today", "").replace("(", "").replace(")", "").trim());
+		//System.out.println(partialdept2);
+		oocobj.dropdownselect.click();
+		oocobj.ChkBxone.click();
+		oocobj.done.click();
+		oocobj.generatereport.click();
+		waitForJSandJQueryToLoad(driver);
+		int totalCount= Integer.parseInt(getText(oocobj.partialdept1).replace("Action", "").replace("Today", "").replace("(", "").replace(")", "").trim());
+		int aciontodayCount=partialdept1+partialdept2;
+		if(aciontodayCount>=totalCount)
+			htmlToExtent(cName,mName,extLogger,driver, "The number of records generated is correct;;;Pass");
+		
+		else
+			htmlToExtent(cName,mName,extLogger,driver, "The number of records generated is incorrect;;;Fail");
+	}
+		/*oocobj.daterangetab.click();
+		waitFor(2);	
+		oocobj.dropdownselect.click();
+		waitFor(2);
+		oocobj.ChkBxfive.click();
+		oocobj.ChkBxone.click();
+		
+		
+		oocobj.ChkBxthree.click();
+		//oocobj.ChkBxfour.click();
+		
+		oocobj.done.click();
+		oocobj.generatereport.click();
+		waitForJSandJQueryToLoad(driver);;
+		
+		int dateCount1= Integer.parseInt(getText(oocobj.daterangetab).replace("08/03/2018", "").replace("-", "").replace("04/04/2018", "").replace("(", "").replace(")", "").trim());
+		waitFor(2);
+		oocobj.dropdownselect.click();
+		oocobj.ChkBxone.click();
+		oocobj.done.click();
+		waitFor(2);
+		oocobj.dropdownselect.click();
+		waitFor(2);
+		//oocobj.ChkBxthree.click();
+		//oocobj.ChkBxfour.click();
+		oocobj.ChkBxfive.click();
+		oocobj.done.click();
+		waitFor(2);
+		oocobj.generatereport.click();
+		waitForJSandJQueryToLoad(driver);;
+		int dateCount2= Integer.parseInt(getText(oocobj.daterangetab).replace("08/03/2018", "").replace("-", "").replace("04/04/2018", "").replace("(", "").replace(")", "").trim());
+		//System.out.println(partialdept2);
+		oocobj.dropdownselect.click();
+		waitFor(2);
+		oocobj.ChkBxone.click();
+		oocobj.done.click();
+		waitFor(2);
+		oocobj.generatereport.click();
+		waitFor(5);
+		int totalCount2= Integer.parseInt(getText(oocobj.daterangetab).replace("08/03/2018", "").replace("-", "").replace("04/04/2018", "").replace("(", "").replace(")", "").trim());
+		int aciontodayCount2=dateCount1+dateCount2;
+		if(aciontodayCount2==totalCount2)
+			htmlToExtent(cName,mName,extLogger,driver, "The number of records generated is correct;;;Pass");
+		
+		else
+			htmlToExtent(cName,mName,extLogger,driver, "The number of records generated is incorrect;;;Fail");*/
+	//}
+	
+	
+		/*List<Integer> randomNumbers = new ArrayList<Integer>();
+		 * 
+
+		
+         waitFor(5);
+		if (isEnabled(oocobj.alldept))
+
+		{
+			
+			click(oocobj.alldept);
+			waitForJSandJQueryToLoad(driver);;
+		}
+
+		else {
+			click(oocobj.alldept);
+			waitForJSandJQueryToLoad(driver);;
+
+			click(oocobj.alldept);
+			waitForJSandJQueryToLoad(driver);;
+		}
+
+		randomNumbers = generateMultiplRandomNumber(min, max, 3);
+
+		int partialdept1 = 0;
+		for (int i = 0; i <=1; i++) {
+	WebElement element = prepareWebElementWithDynamicXpathWithInt(oocreportobjects.partialdeptselectiondynamic,randomNumbers.get(i));
+	String dptName = element.getText().trim();
+
+			Coordinates coordinate = ((Locatable) element).getCoordinates();
+			coordinate.onPage();
+			coordinate.inViewPort();
+
+    WebElement deptCheckbox = prepareWebElementWithDynamicXpathWithInt(oocreportobjects.partialcheckboxselectiondynamic,randomNumbers.get(i));
+			click(deptCheckbox);// The respective random dept is clicked
+			htmlToExtent(cName,mName,extLogger,driver, "The department Selected is:"+ dptName+";;;Pass");
+			//Report_AddStep("testcase", "The department Selected is : "
+		//			+ dptName, "", "", "Pass");
+			selectedDept.add(dptName);
+			waitFor(2);
+			click(oocobj.done);
+			waitFor(2);
+			oocobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);;
+			String t=getText(oocobj.partialdept1);
+					t.replace("Action", "").replace("Today", "").replace("(", "").replace(")", "").trim();//getText(oocobj.subcategorycount)
+			//System.out.println(t);
+			partialdept1= Integer.parseInt(getText(oocobj.partialdept1).replace("Action", "").replace("Today", "").replace("(", "").replace(")", "").trim());//getText(oocobj.subcategorycount);
+	
+			waitFor(2);
+		   waituntilClickable(oocobj.dropdownselect, 5);
+			click(oocobj.dropdownselect);
+		}		
+			
+			for (int j = 0; j <=2; j++) {
+				max++;
+   WebElement element1 = prepareWebElementWithDynamicXpathWithInt(oocreportobjects.partialdeptselectiondynamic,randomNumbers.get(j));
+				String dptName1 = element1.getText().trim();
+
+				Coordinates coordinate1 = ((Locatable) element1).getCoordinates();
+				coordinate1.onPage();
+				coordinate1.inViewPort();
+
+   WebElement deptCheckbox1 = prepareWebElementWithDynamicXpathWithInt(oocreportobjects.partialcheckboxselectiondynamic,randomNumbers.get(j));
+				click(deptCheckbox1);// The respective random dept is clicked
+				htmlToExtent(cName,mName,extLogger,driver, "The department Selected is:"+ dptName1+";;;Pass");
+				//Report_AddStep("testcase", "The department Selected is : "
+			//			+ dptName, "", "", "Pass");
+				selectedDept.add(dptName1);
+				click(oocobj.done);
+				oocobj.generatereport.click();
+				waitForJSandJQueryToLoad(driver);;
+				
+				//int partialdept2= Integer.parseInt(getText(oocobj.partialdept2));
+				int partialdept2= Integer.parseInt(getText(oocobj.partialdept1).replace("Action", "").replace("Today", "").replace("(", "").replace(")", "").trim());//getText(oocobj.subcategorycount);
+				if(partialdept1<=partialdept2)
+					htmlToExtent(cName,mName,extLogger,driver, "The number of records generated is correct;;;Pass");
+				
+				else
+					htmlToExtent(cName,mName,extLogger,driver, "The number of records generated is incorrect;;;Fail");
+				
+			}	
+			
+		
+
+		return selectedDept;*/
+		
+	
+	
+	public List<String> PartialDepartment(oocreportobjects oocobj,WebDriver driver)
+			throws IOException {
+		List<String> selectedDept = new ArrayList<String>();
+		int max = oocobj.listDept.size();
+		//System.out.println("The no.of elements is " + max);
+		int min = 2;
+		List<Integer> randomNumbers = new ArrayList<Integer>();
+		oocobj.dropdownselect.click();
+		if (isEnabled(oocobj.alldept))
+		{
+			click(oocobj.alldept);
+			waitForJSandJQueryToLoad(driver);;
+		}
+		else
+		{
+			click(oocobj.alldept);
+			waitForJSandJQueryToLoad(driver);;
+			click(oocobj.alldept);
+			waitForJSandJQueryToLoad(driver);;
+		}
+		randomNumbers = generateMultiplRandomNumber(min, max, 3);
+		for (int i = 0; i < 3; i++) {
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(oocreportobjects.partialdeptselectiondynamic,randomNumbers.get(i),driver);
+			String dptName = element.getText().trim();
+			Coordinates coordinate = ((Locatable) element).getCoordinates();
+			coordinate.onPage();
+			coordinate.inViewPort();
+			WebElement deptCheckbox = prepareWebElementWithDynamicXpathWithInt(oocreportobjects.partialcheckboxselectiondynamic,randomNumbers.get(i),driver);
+			click(deptCheckbox);// The respective random dept is clicked
+			htmlToExtent(cName,mName,extLogger,driver, "The department Selected is:"+ dptName+";;;Pass");
+			selectedDept.add(dptName);
+		}
+		return selectedDept;
+	}
+
+	public void outOfCodePartial(oocreportobjects oocobj, List<List<Object>> results1,WebDriver driver)
+			throws IOException {
+		if (oocobj.msg.size() != 0)//For No records found
+		{
+			String mesg = oocobj.msgtext.getText();
+			if (mesg.equals("Sorry, No records found."))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, ""+ mesg + ";;;Pass");
+				oocobj.close.click();
+				oocobj.generateoocreport.click();waitForJSandJQueryToLoad(driver);
+			} }
+
+		else {
+			ooctabs(oocobj,results1,driver);
+		}
+		scrollUp(driver);
+		oocobj.generateoocreport.click();waitForJSandJQueryToLoad(driver);
+
+	}
+
+	public void datediscrepancyfromdatepast(oocreportobjects oocobj,WebDriver driver)
+			throws ParseException, IOException {
+		String datef = common.addDaystoCurrentDate(-2);
+		oocobj.fromdate.clear();
+		oocobj.fromdate.sendKeys(datef);
+		String datet = common.addDaystoCurrentDate(+5);
+		oocobj.todate.clear();
+		oocobj.todate.sendKeys(datet);// Entertesxt() insert
+		oocobj.chummadate.click();
+		oocobj.dropdownselect.click();
+		oocobj.alldept.click();
+		oocobj.generatereport.click();
+		waitForJSandJQueryToLoad(driver);
+		String frompast = oocobj.fromdatepastdate.getText();		
+		htmlToExtent(cName,mName,extLogger,driver, ""+ frompast + ";;;Pass");
+		oocobj.pastdateclose.click();
+	}
+
+	public void datediscrepancytodatepast(oocreportobjects oocobj,WebDriver driver)
+			throws ParseException, IOException {
+		String datef = common.addDaystoCurrentDate(+0);
+		oocobj.fromdate.clear();
+		oocobj.fromdate.sendKeys(datef);
+		String datet = common.addDaystoCurrentDate(-2);
+		oocobj.todate.clear();
+		oocobj.todate.sendKeys(datet);	
+		oocobj.chummadate.click();
+		oocobj.dropdownselect.click();		
+		oocobj.alldept.click();
+		oocobj.generatereport.click();
+		waitForJSandJQueryToLoad(driver);
+		String toopast = oocobj.fromdatepastdate.getText();		
+		htmlToExtent(cName,mName,extLogger,driver, ""+ toopast + ";;;Pass");
+		oocobj.pastdateclose.click();
+	}
+
+	public void datediscrepancy28daysmore(oocreportobjects oocobj,WebDriver driver)
+			throws ParseException, IOException {
+		String datef = common.addDaystoCurrentDate(+0);
+		oocobj.fromdate.clear();
+		oocobj.fromdate.sendKeys(datef);
+		String datet = common.addDaystoCurrentDate(+29);
+		oocobj.todate.clear();	
+		oocobj.todate.sendKeys(datet);
+		oocobj.chummadate.click();
+		oocobj.dropdownselect.click();
+		oocobj.alldept.click();
+		oocobj.generatereport.click();
+		waitForJSandJQueryToLoad(driver);
+		String todate28 = oocobj.todate28days.getText();
+		htmlToExtent(cName,mName,extLogger,driver, ""+ todate28 + ";;;Pass");
+		oocobj.todate28daysclose.click();
+
+	}
+
+	/*
+	 * public void primarydepartment(oocreportobjects oocobj, WebDriver driver) throws
+	 * ParseException, IOException { String datef =
+	 * common.addDaystoCurrentDate(+0); oocobj.fromdate.clear();
+	 * oocobj.fromdate.sendKeys(datef); waitFor(1); String datet =
+	 * common.addDaystoCurrentDate(+29); waitFor(1); oocobj.todate.clear();
+	 * waitFor(1); oocobj.todate.sendKeys(datet); waitFor(1);
+	 * oocobj.chummadate.click(); waitFor(1); oocobj.dropdownselect.click();
+	 * waitFor(1);
+	 * 
+	 * 
+	 * 
+	 * for(int i=1;i<=16;i++) { WebElement deptnames =
+	 * prepareWebElementWithDynamicXpathWithInt(oocobj.departmentnames, i);
+	 * String fulldeptnames = deptnames.getText();
+	 * 
+	 * boolean correctdept = isSelected(deptnames);
+	 * 
+	 * if(correctdept == true) { Report_AddStep("testcase",
+	 * "The Primary Departments are - "+fulldeptnames+" ","","", ""); }
+	 * 
+	 * else { Report_AddStep("testcase","The Primary Depts are not selected",
+	 * "", "", ""); } } }
+	 */
+
+	public void primarydepartment123(oocreportobjects oocobj, WebDriver driver)
+			throws IOException {
+		List<String> deptNameListApp = new ArrayList<String>();
+
+		click(oocobj.dropdownselect);
+		waitForJSandJQueryToLoad(driver);;
+
+		int deptsize = oocobj.innerDD.size();
+		for (int i = 2; i < deptsize; i++) {
+			WebElement deptCheckbox = prepareWebElementWithDynamicXpathWithInt(
+					oocobj.partialcheckboxselectiondynamic, i,driver);
+
+			Coordinates coordinate = ((Locatable) deptCheckbox)
+					.getCoordinates();
+			coordinate.onPage();
+			coordinate.inViewPort();
+
+			if (isSelected(deptCheckbox)) {
+				WebElement element = prepareWebElementWithDynamicXpathWithInt(
+						oocobj.partialdeptselectiondynamic, i,driver);
+				String dptName = element.getText().trim();
+				deptNameListApp.add(dptName);
+				
+			}
+
+		}
+	}
+
+	public String decimalFormat(String text) {
+		double d1 = Double.parseDouble(text);
+		DecimalFormat format1 = new DecimalFormat("0.#");//##format to format1
+		//System.out.println("soh decimal::::" + format1.format(d1));
+		return format1.format(d1);
+
+	}
+	
+	public void multipledeptorsubcategory1(oocreportobjects oocobj,
+			List<List<Object>> results, List<List<Object>> results1,List<List<Object>> resultsdaterange1, WebDriver driver)
+			throws ParseException, IOException
+
+	{
+
+		for (int i = 1; i <= 1; i++) {
+			if (i != 3) {
+				WebElement element = prepareWebElementWithDynamicXpathWithInt(
+						oocobj.multipledeptselect, i,driver);
+				click(element);
+
+				WebElement element1 = prepareWebElementWithDynamicXpathWithInt(
+						oocobj.multiplecategselect, i + 1,driver);
+				click(element1);
+
+				WebElement element2 = prepareWebElementWithDynamicXpathWithInt(
+						oocobj.multiplesubcategselect, i + 1,driver);
+				click(element2);
+
+				WebElement element3 = prepareWebElementWithDynamicXpathWithInt(
+						oocobj.multiplesegmentselect, i + 1,driver);
+				click(element2);
+
+				click(oocobj.generatereport);
+
+				ooctabs(oocobj,results1,driver);
+			}
+		}
+
+	}
+
+	public void paginationhandling(oocreportobjects oocobj, WebDriver driver) throws IOException {
+
+		if (oocobj.msg.size() != 0) {
+			String mesg = oocobj.msgtext.getText();
+			if (mesg.equals("Sorry, No records found.")) {
+				htmlToExtent(cName,mName,extLogger,driver, ""+ mesg + ";;;Pass");
+				//Report_AddStep("testcase", "" + mesg + "", "", "", "");
+				click(oocobj.close);
+			}
+
+			else {
+
+			}
+		} else {
+			int u = oocobj.check2.size();// To calc how many pages are there
+			// As Prev & next are included we are subtracting it by 2
+			
+			
+			if (u != 0) {
+				u = u-2;
+				for (int k = 1; k <= u; k++) {
+					WebElement elements = prepareWebElementWithDynamicXpathWithInt(
+							oocobj.chec, k + 1,driver);// Click on the respective page
+					elements.click();
+					waitFor(1);
+				}}
+				
+				else
+				{
+
+			
+
+			}
+			
+			if(u==0)
+			{
+				
+				
+			}
+			else
+			{
+				click(oocobj.firstpage);
+				
+			}
+			
+		}
+		htmlToExtent(cName,mName,extLogger,driver, "Pagination is done successfully;;;Pass");
+	}//ArticleLookUptests
+	
+
+
+public void segmentlevel(oocreportobjects oocobj, WebDriver driver) throws IOException 
+{
+	int max = oocobj.sizedep.size();
+	int min = 2;
+	//int min = 1;
+	click(oocobj.deptclick);
+	click(oocobj.deptclick);
+	int randomNum = ThreadLocalRandom.current().nextInt(min, max);	
+	WebElement depclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multipledeptdevselect, randomNum,driver);
+	click(depclick);
+	click(oocobj.categoryselect);	
+	int categorymax = oocobj.categorylistsize.size();
+	if(min== categorymax)// condition is when category contains only one selection
+	{
+		WebElement categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,min,driver);		
+		click(categclick);//clicking the respective category
+	}
+	else
+	{
+		WebElement categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,categorymax,driver);
+		verticalinternalscroll(categclick, driver);;
+		click(categclick);//clicking the respective category
+	}
+
+	click(oocobj.subcategoryselect);	
+	int subcategorymax = oocobj.subcategorysize.size();
+	if(min== subcategorymax)// condition is when category contains only one selection
+	{
+		WebElement subcategclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplesubcategselect,min,driver);		
+		click(subcategclick);//clicking the respective category
+	}
+	else
+	{
+		int subcategrandomnum = ThreadLocalRandom.current().nextInt(min, subcategorymax);	
+		WebElement subcategclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplesubcategselect,subcategrandomnum,driver);
+		click(subcategclick);
+	}
+	click(oocobj.segmentselect);	
+	int segmentmax = oocobj.segmentsize.size();
+	if(min== segmentmax)// condition is when category contains only one selection
+	{
+		WebElement segmentclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplesegmentselect,min,driver);		
+		click(segmentclick);//clicking the respective category
+	}
+	else
+	{
+		int segementrandomnum = ThreadLocalRandom.current().nextInt(min, subcategorymax);	
+		WebElement segmentclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplesegmentselect,segementrandomnum,driver);
+		click(segmentclick);
+	}
+	click(oocobj.generatereport);
+	waitForJSandJQueryToLoad(driver);
+	if(oocobj.norecords.size()!=0)
+	{
+		String norecords = oocobj.sorryno.getText();
+		htmlToExtent(cName,mName,extLogger,driver, ""+ norecords + ";;;Pass");
+		click(oocobj.closenorecords);
+	}
+	else
+	{
+		//ooctabs(oocobj,results1);
+		htmlToExtent(cName,mName,extLogger,driver, "Segment level Report is generated;;;Pass");
+	}	
+}	
+
+public  void fnNoDeptselected(oocreportobjects oocobj, WebDriver driver)
+{	
+	String nodeptsmsg = oocobj.nodept.getText();
+	if(nodeptsmsg.contains("Please select any department and proceed"))
+	{
+		htmlToExtent(cName,mName,extLogger,driver, ""+nodeptsmsg+";;;Pass");
+		oocobj.close.click();
+		waitFor(1);		
+	}else{
+		htmlToExtent(cName,mName,extLogger,driver, "The eror message is not displayed- "+nodeptsmsg+" ;;;Fail");
+	}	
+}
+
+public  void dateexceed(oocreportobjects oocobj, WebDriver driver){
+	
+	String dateexceedsmsg = oocobj.msgdateexceed.getText();
+	if(dateexceedsmsg.contains("Date range should not exceed 28 days"))
+	{
+		htmlToExtent(cName,mName,extLogger,driver, ""+dateexceedsmsg+";;;Pass");
+		//Report_AddStep("testcase", ""+mesg+"","","", "");
+		oocobj.close.click();		
+		
+	}else{
+		htmlToExtent(cName,mName,extLogger,driver, "The eror message is not displayed- "+dateexceedsmsg+" ;;;Fail");
+	}
+	
+}
+
+public void subcategory(oocreportobjects oocobj, WebDriver driver) throws IOException 
+{	
+	int max = oocobj.sizedep.size();
+	int min = 2;	
+	//dept
+	click(oocobj.deptclick);//No dept is selected
+	int randomNum = ThreadLocalRandom.current().nextInt(min, max);	
+	WebElement depclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multipledeptdevselect, randomNum,driver);
+	verticalinternalscroll(depclick, driver);
+	click(depclick);//click on randomNumth depts
+	
+	//cateogary
+	click(oocobj.categoryselect);	
+	int categorymax = oocobj.categorylistsize.size();
+	if(categorymax!=0){
+		if(min== categorymax)
+		{
+			WebElement categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,min,driver);
+			verticalinternalscroll(categclick, driver);
+			click(categclick);//clicking the respective category
+		}
+		else
+		{
+			int categoryrandomNum = ThreadLocalRandom.current().nextInt(min, categorymax);
+			WebElement categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,categoryrandomNum,driver);
+			verticalinternalscroll(categclick, driver);
+			click(categclick);//clicking the respective category randomly
+		}
+
+	//subcategory
+	oocobj.subcategoryselect.click();
+	int subcategorymax = oocobj.subcategorysize.size();
+	if(subcategorymax!=0){
+	int min1 =2;
+	if(min1== subcategorymax)
+	{
+		WebElement subcategclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplesubcategselect,min1,driver);verticalinternalscroll(subcategclick, driver);
+		verticalinternalscroll(subcategclick, driver);
+		click(subcategclick);
+	}
+	else
+	{	
+		int subcategrandomnum = ThreadLocalRandom.current().nextInt(min1, subcategorymax);
+		WebElement subcategclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplesubcategselect,subcategrandomnum,driver);verticalinternalscroll(subcategclick, driver);
+		verticalinternalscroll(subcategclick, driver);
+		click(subcategclick);////clicking the respective category randomly
+	}
+	}
+	int min2 =2;
+	if(min2== categorymax)
+	{
+		WebElement categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,min,driver);
+		verticalinternalscroll(categclick, driver);
+		click(categclick);//clicking the respective category
+	}
+	else
+	{
+		int categoryrandomNum = ThreadLocalRandom.current().nextInt(min2, categorymax);
+		WebElement categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,categoryrandomNum,driver);
+		verticalinternalscroll(categclick, driver);
+		click(categclick);//clicking the respective category randomly
+		categoryrandomNum = ThreadLocalRandom.current().nextInt(min2, categorymax);
+		categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,categoryrandomNum,driver);
+		verticalinternalscroll(categclick, driver);
+		click(categclick);//clicking the respective category randomly
+	}
+	
+	
+	/*int categoryrandomNum = ThreadLocalRandom.current().nextInt(min2, categorymax);
+	WebElement categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,categoryrandomNum,driver);
+	click(categclick);
+	int categoryrandomNum1 = ThreadLocalRandom.current().nextInt(min, categorymax);
+	WebElement categclick1 = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,categoryrandomNum1,driver);
+	click(categclick1);*/
+
+	int min3 =2;
+	int subcategorymax11 = oocobj.subcategorysize.size();
+	if(subcategorymax11!=0){
+		if(min3== subcategorymax11)
+		{
+			WebElement subcategclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplesubcategselect,min3,driver);verticalinternalscroll(subcategclick, driver);
+			verticalinternalscroll(subcategclick, driver);
+			click(subcategclick);
+		}
+		else
+		{	
+			int subcategrandomnum11 = ThreadLocalRandom.current().nextInt(min3, subcategorymax11);
+			WebElement subcategclick11 = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplesubcategselect,subcategrandomnum11,driver);
+			verticalinternalscroll(subcategclick11, driver);
+			click(subcategclick11);////clicking the respective category randomly
+		}
+	}
+	int countPartial= Integer.parseInt(getText(oocobj.segcountpartial));
+	int categorymax1 = oocobj.categorylistsize.size();
+	//int categoryrandomNum1 = ThreadLocalRandom.current().nextInt(min, categorymax1);
+	//WebElement categclick1 = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,categoryrandomNum1);
+	////click(categclick1);
+
+	int subcategorymax1 = oocobj.subcategorysize.size();
+	if(subcategorymax1!=0){
+		if(min3== subcategorymax1)
+		{
+			WebElement subcategclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplesubcategselect,min3,driver);verticalinternalscroll(subcategclick, driver);
+			verticalinternalscroll(subcategclick, driver);
+			click(subcategclick);
+		}
+		else
+		{	
+			int subcategrandomnum1 = ThreadLocalRandom.current().nextInt(min, subcategorymax1);
+			WebElement subcategclick1 = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplesubcategselect,subcategrandomnum1,driver);
+			verticalinternalscroll(subcategclick1, driver);
+			click(subcategclick1);
+		}
+	}
+	int countAlldept = Integer.parseInt(getText(oocobj.segcountallDept));//getText(oocobj.subcategorycount);
+
+	if(countPartial<=countAlldept){
+		htmlToExtent(cName,mName,extLogger,driver, "The number of records generated is correct;;;Pass");
+	}else{
+		htmlToExtent(cName,mName,extLogger,driver, "The number of records generated is incorrect;;;Fail");}
+}else{
+	htmlToExtent(cName,mName,extLogger,driver, "No cateogary is available;;;Fail");
+}
+}
+
+ 
+	
+public void subcateglevel(oocreportobjects oocobj, WebDriver driver) throws IOException 
+{	
+	int max = oocobj.sizedep.size();
+	int min = 2;	
+	click(oocobj.deptclick);//No dept is selected
+	int randomNum = ThreadLocalRandom.current().nextInt(min, max);	
+	WebElement depclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multipledeptdevselect, randomNum,driver);
+	verticalinternalscroll(depclick, driver);
+	click(depclick);//click on random depts
+	click(oocobj.categoryselect);
+	int categorymax = oocobj.categorylistsize.size();
+	if(min== categorymax)
+	{
+		WebElement categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,min,driver);		
+		verticalinternalscroll(categclick, driver);
+		click(categclick);//clicking the respective category
+	}
+	else
+	{	
+		int categoryrandomNum = ThreadLocalRandom.current().nextInt(min, categorymax);	
+		WebElement categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,categoryrandomNum,driver);	
+		verticalinternalscroll(categclick, driver);
+		click(categclick);//clicking the respective category randomly
+	}
+	click(oocobj.subcategoryselect);	
+	int subcategorymax = oocobj.subcategorysize.size();
+	if(min== subcategorymax)
+	{
+		WebElement subcategclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplesubcategselect,min,driver);		
+		verticalinternalscroll(subcategclick, driver);
+		click(subcategclick);//clicking the respective category
+	}
+	else
+	{	
+		int subcategrandomnum = ThreadLocalRandom.current().nextInt(min, subcategorymax);	
+		WebElement subcategclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplesubcategselect,subcategrandomnum,driver);
+		verticalinternalscroll(subcategclick, driver);
+		click(subcategclick);////clicking the respective category randomly
+	}
+	if(min== categorymax)
+	{
+		WebElement categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,min,driver);		
+		verticalinternalscroll(categclick, driver);
+		click(categclick);//clicking the respective category
+	}
+	else
+	{
+		int categoryrandomNum = ThreadLocalRandom.current().nextInt(min, categorymax);
+		WebElement categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,categoryrandomNum,driver);
+		verticalinternalscroll(categclick, driver);
+		click(categclick);
+	}
+	int countAlldept = Integer.parseInt(getText(oocobj.subcategorycountalldept));
+	int countPartial = Integer.parseInt(getText(oocobj.subcategorycountpartial));//getText(oocobj.subcategorycount);	
+	if(countPartial<=countAlldept)
+		htmlToExtent(cName,mName,extLogger,driver, "The number of records generated is correct;;;Pass");	
+	else
+		htmlToExtent(cName,mName,extLogger,driver, "The number of records generated is incorrect;;;Fail");	
+}	 
+	 
+
+public void categorylevel(oocreportobjects oocobj, WebDriver driver) throws IOException, SQLException 
+{
+
+	int max = oocobj.sizedep.size();//##max=16 depats
+	int min = 2;
+
+	click(oocobj.deptclick);
+	int randomNum = ThreadLocalRandom.current().nextInt(min, max);
+
+	WebElement depclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multipledeptdevselect, randomNum,driver);
+	click(depclick);
+	click(oocobj.categoryselect);
+
+	int categorymax = oocobj.categorylistsize.size();
+	try{
+		if(min== categorymax)
+		{
+			WebElement categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,min,driver);
+
+			click(categclick);//clicking the respective category
+		}
+		else{
+
+
+			//##issue
+			int categoryrandomNum = ThreadLocalRandom.current().nextInt(min, categorymax);
+
+			WebElement categclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multiplecategselect,categoryrandomNum,driver);
+
+			click(categclick);//clicking the respective category
+		}
+	}catch(WebDriverException c)
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "category is not displayed for department;;;Pass");
+	}
+
+
+	click(oocobj.generatereport);
+	waitForJSandJQueryToLoad(driver);;
+
+
+
+	if(oocobj.norecords.size()!=0)
+	{
+		String norecords = oocobj.sorryno.getText();
+		htmlToExtent(cName,mName,extLogger,driver, "" + norecords + ";;;Pass");
+		//Report_AddStep("testcase", "" + norecords + "", "", "", "");
+		click(oocobj.closenorecords);
+	}
+
+	else
+	{
+		List<List<Object>> results;
+
+		htmlToExtent(cName,mName,extLogger,driver, "Category level Report is generated;;;Pass");
+		//Report_AddStep("testcase", "Category level Report is generated", "", "", "");
+		String indiv_UomArticle_sql = testdata.getText("pavcodecategory");
+		results = sql.executeQuery(getContext(),indiv_UomArticle_sql);
+		List<List<Object>> results0 = removeLastZeromodi(results, 2);
+		List<List<Object>> results1 = removeExtraSpacesmodi(results0, 1); 
+		//ooctabs_multdept(oocobj,results1);
+
+
+		//oocpage.multipledeptorsubcategory1(oocobj, result, results1);
+		ooctabs(oocobj,results1,driver);
+	}
+}	
+	
+	
+	
+public void departmentlevel(oocreportobjects oocobj, WebDriver driver) throws IOException 
+{
+	
+	int max = oocobj.sizedep.size();
+	int min = 2;
+	
+	click(oocobj.deptclick);
+	int randomNum = ThreadLocalRandom.current().nextInt(min, max);
+	
+	WebElement depclick = prepareWebElementWithDynamicXpathWithInt(oocobj.multipledeptdevselect, randomNum,driver);
+	click(depclick);
+	
+	
+	
+	click(oocobj.generatereport);
+	waitForJSandJQueryToLoad(driver);;
+	
+	
+	if(oocobj.norecords.size()!=0)
+	{
+		String norecords = oocobj.sorryno.getText();
+		htmlToExtent(cName,mName,extLogger,driver, "" + norecords + ";;;Pass");
+		//Report_AddStep("testcase", "" + norecords + "", "", "", "");
+		click(oocobj.closenorecords);
+		
+	}
+	
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "Department level Report is generated;;;Pass");
+		//oocpage.multipledeptorsubcategory1(oocobj, result, results1);
+      //ooctabs_multdept(oocobj,results1);
+		//Report_AddStep("testcase", "Department level Report is generated", "", "", "");
+	}
+}
+	
+	
+	
+	
+public List<List<Object>> removeLastZeromodi(List<List<Object>> one,
+		int position) throws IOException {
+
+	for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+		List<Object> elem = it.next();
+		for (int i = 0; i < elem.size(); i++) {
+			if (i == position) {
+				String s1 = elem.get(i).toString()
+						.replaceAll(".000", "");
+				elem.set(i, s1);
+			}
+		}
+	}
+	return one;
+}
+	
+public List<List<Object>> removeminus(List<List<Object>> one,
+		int position) throws IOException {
+
+	for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+		List<Object> elem = it.next();
+		for (int i = 0; i < elem.size(); i++) {
+			if (i == position) {
+				String s1 = elem.get(i).toString()
+						.replaceAll("-", "");
+				elem.set(i, s1);
+			}
+		}
+	}
+	return one;
+}
+
+public List<List<Object>> removeexpday(List<List<Object>> one,
+		int position) throws IOException {
+
+	for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+		List<Object> elem = it.next();
+		for (int i = 0; i < elem.size(); i++) {
+			if (i == position) {
+				String s1 = elem.get(i).toString()
+						.replaceAll(" day", "");
+				elem.set(i, s1);
+			}
+		}
+	}
+	return one;
+}
+
+
+
+public List<List<Object>> removeExtraSpacesmodi(List<List<Object>> one,
+		int position) throws IOException {
+
+	for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+		List<Object> elem = it.next();
+		for (int i = 0; i < elem.size(); i++) {
+			if (i == position) {
+				String s = elem.get(i).toString()
+						.replaceAll("\\s{2,}", " ");
+				elem.set(i, s);
+			}
+		}
+
+	}
+
+	return one;
+}
+
+
+
+
+
+public void outOfCode_DateRange(oocreportobjects oocobj, List<List<Object>> resultsexp, WebDriver driver)
+		throws IOException {
+	
+	click(oocobj.daterangetab);
+	waitForJSandJQueryToLoad(driver);
+	
+	paginationhandling(oocobj,driver);waitForJSandJQueryToLoad(driver);
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	
+	
+	temp= getValuesFromTable(oocobj.firstvalue);
+	removeexpday(temp, 2);
+	removeExtraSpacesmodi(temp, 2);
+	removeLastZero(temp, 3);
+	removeLastZero(resultsexp, 3);
+	//[[23097, Carlsberg Green Bottles 24x330ml, 0 day, 613 EA]]
+	ElementContains1(cName, mName,extLogger,driver,  temp,resultsexp);
+	
+	//March 6 expiry temp->[[8878, Alpine Filter Ctn 8x25pk, 0, 50 EA]]
+	//	               DB->[8878, Alpine Filter 25pk, 0, 50 EA]
+
+	
+	
+	
+}
+
+public List<List<Object>> ooctabs_multdept(oocreportobjects oocobj,List<List<Object>> results1, WebDriver driver)
+		throws IOException {
+
+	int tabsize = oocobj.tabsize.size();
+	
+	for(int i=1;i<=tabsize;i++)
+	{
+	
+		WebElement element = prepareWebElementWithDynamicXpathWithInt(oocobj.dynamictabclick, i,driver);
+		click(element);
+	
+	paginationhandling(oocobj,driver);
+	List<List<Object>> Allticket = NULL;
+	List<Object> firstvalue = new ArrayList<Object>();
+	List<List<Object>> temp = new ArrayList<List<Object>>();
+	List<Object> secondvalue = new ArrayList<Object>();// article in Second
+														// tab
+	List<List<Object>> temp2 = new ArrayList<List<Object>>();
+	temp= getValuesFromTable(oocobj.firstvalue);
+	
+String articleno = getText(oocobj.articleno);
+String desc = getText(oocobj.description);
+
+firstvalue.add(articleno);
+firstvalue.add(desc);
+
+temp.add(firstvalue);
+
+	
+
+
+	htmlToExtent(cName,mName,extLogger,driver, "" + temp + ";;;Pass");
+	//Report_AddStep("testcase", "" + temp + "", "", "", "");//Extracting table values
+	
+	ElementContains1(cName, mName,extLogger,driver,  temp,results1);
+	
+
+	return Allticket;
+	
+
+}
+	return results1;
+	
+}
+}
+
+
+		

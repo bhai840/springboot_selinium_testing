@@ -1,0 +1,1061 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.ReceivingObjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.ReceivingPages;
+import au.wow.ngbomain.pages.WoWLoginPage;
+import bsh.ParseException;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+//import org.apache.xerces.impl.xs.identity.Selector.Matcher;
+
+public class ReceivingTests extends TestBase {
+
+		//Declare and initialize the logger, status, sql and page objects
+		private Logger log = LogManager.getLogger(ReceivingTests.class);
+		List<List<Object>> results;
+		List<List<Object>> results1;
+		TestStatus status;
+		SQLWrapper sql = new SQLWrapper(log);
+		WoWLoginPage loginPage;
+		ReceivingPages objReceivingPages;
+		ReceivingObjects objReceivingObjects;
+		BasePage BaseObj;
+		CommonFunctions common;
+		StoreProperties storeprop;
+		int MCcount=0;
+		String OrdNo;
+		public static XMLDataReader data;
+		List<List<Object>> result;
+		List<List<Object>> result_temp;
+		List<List<Object>> orderResult;
+		List<List<Object>> result1;
+		List<List<Object>> result2;
+		List<List<Object>> result3;
+		List<List<Object>> result_temp1;
+		List<List<Object>> result_temp2;
+		List<List<Object>> result_temp3;
+		List<List<Object>> result_temp4;
+		List<List<Object>> result_temp5;
+		List<List<Object>> result_temp6;
+		public ReceivingTests(){
+			super.log=log;
+		}
+		public static String mName="";
+		public static String cName ="";
+		public static ArrayList<String> methodList = new ArrayList<String>();
+		public static  ExtentTest extLogger;
+		public static ExtentReports extReport;	
+		public static boolean isExceptionCaptured=false;
+        int count=0;	
+        public static WebDriver driver;
+
+       
+		
+
+		public void navToOrderEnq(TestStatus status) throws IOException, AWTException {
+			log.info("---------------Login into Application--------------------");
+			htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+			//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+			loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+			if(System.getProperty("store")==null){
+				StoreNo = getContext().getStringProperty("store");
+				htmlToExtent(cName,mName,extLogger,driver,"Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+				//Report_AddStep("testcase", "Login with the Store : " + getContext().getStringProperty("store"),"","", "Pass");
+				//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+				objReceivingPages = loginPage.navToReceiving(getContext().getStringProperty("store"),driver);
+
+			}else{
+				storeprop.getStoreDetails(System.getProperty("store"));
+				System.out.println(store);
+				StoreNo = store;
+				htmlToExtent(cName,mName,extLogger,driver,"Login with the Store : " + store+";;;Pass");
+				//Report_AddStep("testcase", "Login with the Store : " + store,"","", "Pass");
+				//articleLookUpPage = loginPage.navToArticlLookUp(store);
+				objReceivingPages = loginPage.navToReceiving(store,driver);
+			}
+
+			log.info("-------------Navigate to Order Enquiry Page------------");
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to Order Enquiry Page--------------------;;;Pass");
+			//Report_AddStep("testcase", "----------------Navigate to Order Enquiry Page--------------------","","", "Pass");
+			objReceivingPages.clickOnOrderEnquiry(objReceivingObjects,driver);
+			}
+		public void RevertOrder(String OrderNo) throws SQLException, IOException
+		{
+			try {
+				String orderCheck = data.getText("revertOrder").replace("ordno", OrderNo).trim();	
+				sql.executeQuery_CUD(getContext(), orderCheck);	
+				System.out.println("Reverting Order Completed");
+			} catch(Exception e)
+			{
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+		}
+		
+		
+
+		//@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Receiving IBT Order in Full")//Abhi
+		public void ReceivingIBTOrderInFull() throws SQLException, IOException, AWTException, ParseException
+		{				
+			if(ReceiveArtpreCount2==-1){
+				MCcount=MCcount+15;}
+			TestStatus status = getTestStatus();
+			try{
+			navToOrderEnq(status);
+			waitForJSandJQueryToLoad(driver);
+			System.out.println("Order Enquiry Opened");
+
+			List<List<Object>> DBList = new ArrayList<List<Object>>();
+			List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+			
+			String Ordnumber ="";
+			if(StoreNo.equals("3064"))
+			{
+				Ordnumber = data.getText("Vendororder1");
+			}
+			if(StoreNo.equals("1786"))
+			{
+				Ordnumber = data.getText("SITStore");
+			}
+			Ordnumber=Ordnumber.trim();
+			
+		//	String Ordnumber = data.getText("Vendororder1");
+			RevertOrder(Ordnumber);
+			
+			
+			
+			String invoice = data.getText("Invoice");
+			String ChilledTemp=data.getText("Chilledtemp");
+			String FrozenTemp=data.getText("Frozentemp");
+			String OrdDetls = data.getText("OrderDetails").replace("ord_no",Ordnumber);
+			results = sql.executeQuery(getContext(), OrdDetls);
+
+			String vndr = results.get(0).get(4).toString();
+			String Deldate = results.get(0).get(1).toString();
+			String onShwdate = results.get(0).get(2).toString();
+
+			String supplier = data.getText("vendorname").replace("DC_no",vndr);
+			results1 = sql.executeQuery(getContext(), supplier);
+
+			String suplrname = results1.get(0).get(0).toString() + " (" +vndr +")";
+
+			String TotCart = data.getText("TotCart").replace("ord_no",Ordnumber);
+			result2 = sql.executeQuery(getContext(), TotCart);
+
+			String TotalCartons = decimalFormat1(result2.get(0).get(0).toString());
+
+			String TotArt = data.getText("TotArt").replace("ord_no",Ordnumber);
+			result3 = sql.executeQuery(getContext(), TotArt);
+
+			String Str = ""+results.get(0).get(0).toString()+":"+Deldate+":"+onShwdate+":"+results.get(0).get(3).toString()+":"+suplrname+":"+TotalCartons+":"+result3.get(0).get(0).toString();
+			DBList.addAll(StringToListCreation(Str));
+			System.out.println("DBlist values="+DBList);
+
+			String Artdet = data.getText("Artdet").replace("ord_no",Ordnumber);
+			result_temp = sql.executeQuery(getContext(), Artdet);
+			
+
+			for (int i =0;i<result_temp.size();i++){
+
+
+
+				String OM_SQL = data.getText("OM").replace("ord_no",Ordnumber);
+				result_temp1 = sql.executeQuery(getContext(), OM_SQL);
+				String OmCount = decimalFormat1(result_temp1.get(i).get(0).toString());
+				String Qty=decimalFormat1(result_temp.get(i).get(1).toString());
+
+				String baseuom = data.getText("Base_UOM").replace("art_no",result_temp.get(i).get(0).toString());
+				result_temp2 = sql.executeQuery(getContext(), baseuom);
+
+				String SOH_sql = data.getText("SOH").replace("art_no",result_temp.get(i).get(0).toString());
+				result_temp3 = sql.executeQuery(getContext(), SOH_sql);
+				String SOHval=decimalFormat1(result_temp3.get(0).get(0).toString());
+
+				String Str1 = ""+result_temp.get(i).get(0).toString()+":"+Qty+":"+result_temp.get(i).get(2).toString()+":"+OmCount+":"+result_temp2.get(0).get(0).toString()+":"+SOHval;
+				DBList1.addAll(StringToListCreation(Str1));
+
+			}
+			System.out.println("DBlist1 values="+DBList1);
+			
+			
+
+			System.out.println("Details are loaded successfully for the order"+Ordnumber);
+			objReceivingPages.IBTOrdRecInFull(objReceivingObjects,Ordnumber,invoice, DBList, DBList1,ChilledTemp,FrozenTemp,driver);
+			
+			
+			for (int i=0;i<DBList1.size();i++){
+				
+				double OldSOH=Double.parseDouble(DBList1.get(i).get(5).toString().replaceAll("\\.?0+$",""));	
+				double OdrQnty=Double.parseDouble(DBList1.get(i).get(1).toString()) * Double.parseDouble(DBList1.get(i).get(3).toString());
+				String Newval=decimalFormat1(Double.toString(OldSOH+OdrQnty));
+
+				String SOH_sql1 = data.getText("SOH").replace("art_no",DBList1.get(i).get(0).toString());
+				result_temp5 = sql.executeQuery(getContext(), SOH_sql1);
+
+				String SOHval=decimalFormat1(result_temp5.get(0).get(0).toString());
+
+
+
+				if(Newval.equals(SOHval)){
+
+					htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;;;PASS");
+
+					//htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+Newval+"]; DB Value is ["+SOHval+";Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;;;Fail");
+//				}
+//					htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+Newval+"]; DB Value is ["+SOHval+";Fail");
+				}
+			}
+
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ReceiveArtScenarios,ReceiveArttestname,driver));
+			RevertOrder(Ordnumber);
+		}  catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			status.assertAll();
+		}
+		
+		
+		//@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Receiving Vendor Order by changing OM")//Abhi
+		public void ReceivingVendorOrderByChangingOM() throws SQLException, IOException, AWTException, ParseException
+		{try{
+			if(ReceiveArtpreCount2==-1){
+				MCcount=MCcount+20;}
+			List<List<Object>> DBList = new ArrayList<List<Object>>();
+			List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+			List<List<Object>>app5 = new ArrayList<List<Object>>();
+			List<List<Object>>DBVal = new ArrayList<List<Object>>();
+			List<List<Object>> DispList = new ArrayList<List<Object>>();
+			String Ordnumber = data.getText("Vendororder1");
+			RevertOrder(Ordnumber);
+			TestStatus status = getTestStatus();
+			navToOrderEnq(status);
+			waitForJSandJQueryToLoad(driver);
+			System.out.println("Order Enquiry Opened");
+			
+			String invoice = data.getText("Invoice");
+			String NwOM2 = data.getText("NewOM1");
+			String NwOM1 = data.getText("NewOM");
+			String ChilledTemp=data.getText("ChillTemp");
+			String FrozenTemp=data.getText("FrozTemp");
+
+			String OrdDetls = data.getText("OrderDetails").replace("ord_no",Ordnumber);
+			results = sql.executeQuery(getContext(), OrdDetls);
+
+			String vndr = results.get(0).get(4).toString();
+			String Deldate = results.get(0).get(1).toString();
+			String onShwdate = results.get(0).get(2).toString();
+
+			String supplier = data.getText("vendorname").replace("vendor_no",vndr);
+			results1 = sql.executeQuery(getContext(), supplier);
+
+			String suplrname = results1.get(0).get(0).toString() + " (" + results1.get(0).get(1).toString() +")";
+
+			String TotCart = data.getText("TotCart").replace("ord_no",Ordnumber);
+			result2 = sql.executeQuery(getContext(), TotCart);
+
+			String TotalCartons = decimalFormat1(result2.get(0).get(0).toString());
+
+			String TotArt = data.getText("TotArt").replace("ord_no",Ordnumber);
+			result3 = sql.executeQuery(getContext(), TotArt);
+
+			String Str = ""+results.get(0).get(0).toString()+":"+Deldate+":"+onShwdate+":"+results.get(0).get(3).toString()+":"+suplrname+":"+TotalCartons+":"+result3.get(0).get(0).toString();
+			DBList.addAll(StringToListCreation(Str));
+			System.out.println("DBLIST-"+DBList);
+			
+			String artDetails = data.getText("ArtdetNw").replace("ord_no",Ordnumber);
+			DBVal = sql.executeQuery(getContext(), artDetails);
+			System.out.println("DBVal values="+DBVal);
+			for (int i =0;i<DBVal.size();i++){
+				
+				if (DBVal.get(i).get(7).toString().equals("0")&&DBVal.get(i).get(9).toString().equals("Y"))
+				{
+					
+					String Displayart = data.getText("DispArt").replace("ord_no",Ordnumber).replace("art_no",DBVal.get(i).get(1).toString());
+					DispList = sql.executeQuery(getContext(), Displayart);
+					
+				}
+			}
+			
+			String Artdet = data.getText("Artdet").replace("ord_no",Ordnumber);
+			result_temp = sql.executeQuery(getContext(), Artdet);
+
+			for (int i =0;i<result_temp.size();i++){
+
+				String SOHRndmval="";
+				String SOHval="";
+
+				String OM_SQL = data.getText("OM").replace("ord_no",Ordnumber);
+				result_temp1 = sql.executeQuery(getContext(), OM_SQL);
+				String OmCount = decimalFormat1(result_temp1.get(i).get(0).toString());			
+				
+				String Qty=decimalFormat1(result_temp.get(i).get(1).toString());
+				String baseuom = data.getText("Base_UOM").replace("art_no",result_temp.get(i).get(0).toString());
+				result_temp2 = sql.executeQuery(getContext(), baseuom);
+				
+				if (DBVal.get(i).get(7).toString().equals("1")&&DBVal.get(i).get(9).toString().equals("Y"))
+				{
+					String SOH_sql = data.getText("CPBDSOH1").replace("CPBD_no",DBVal.get(i).get(8).toString());
+					result_temp3 = sql.executeQuery(getContext(), SOH_sql);
+					
+					String SOH_sql1 = data.getText("CPBDSOH2").replace("CPBD_no",result_temp3.get(0).get(0).toString());
+					result_temp6 = sql.executeQuery(getContext(), SOH_sql1);
+					SOHval=decimalFormat1(result_temp6.get(0).get(1).toString());
+				}else if((DBVal.get(i).get(7).toString().equals("0")&&DBVal.get(i).get(9).toString().equals("Y"))){
+					for(int k=0;k< DispList.size();k++){
+					String SOH_sql = data.getText("SOH").replace("art_no",DispList.get(k).get(0).toString());
+					result_temp3 = sql.executeQuery(getContext(), SOH_sql);
+					SOHval=decimalFormat1(result_temp3.get(0).get(0).toString());
+					
+				}}
+				
+				else{
+				String SOH_sql = data.getText("SOH").replace("art_no",result_temp.get(i).get(0).toString());
+				result_temp3 = sql.executeQuery(getContext(), SOH_sql);
+				SOHval=decimalFormat1(result_temp3.get(0).get(0).toString());
+				if(result_temp3.get(0).get(1)==null)
+				{
+					SOHRndmval= "0";
+				}
+				else{
+				SOHRndmval=decimalFormat1(result_temp3.get(0).get(1).toString());
+				}}
+				if(DBVal.get(i).get(4).toString().equals("Y"))
+				{
+				String PiOm = decimalFormat1(DBVal.get(i).get(5).toString());						
+				/*
+				String StrSOHval=decimalFormat1(result_temp4.get(0).get(0).toString());
+				String RndmSOHval=decimalFormat1(result_temp4.get(0).get(1).toString());*/				
+				int TotOdrQty =Integer.parseInt(OmCount)* Integer.parseInt(Qty);
+				int TotOdrQtyEA =Integer.parseInt(PiOm)* Integer.parseInt(Qty);
+				String CalOdrQty=(""+Integer.toString(TotOdrQty)+" "+result_temp2.get(0).get(0).toString()+" "+"("+Integer.toString(TotOdrQtyEA)+" "+"EA"+")");
+				
+				String Str1 = ""+result_temp.get(i).get(0).toString()+":"+Qty+":"+result_temp.get(i).get(2).toString()+":"+OmCount+":"+result_temp2.get(0).get(0).toString()+":"+CalOdrQty+":"+SOHval+":"+SOHRndmval;
+				DBList1.addAll(StringToListCreation(Str1));
+				}
+				else{
+					int OmCount1=Integer.parseInt(OmCount);
+					  int Qty1=Integer.parseInt(Qty);
+					  int TotOdrQty =OmCount1* Qty1;
+					  String CalOdrQty=""+Integer.toString(TotOdrQty)+" "+result_temp2.get(0).get(0).toString();
+
+
+					
+
+					String Str1 = ""+result_temp.get(i).get(0).toString()+":"+Qty+":"+result_temp.get(i).get(2).toString()+":"+OmCount+":"+result_temp2.get(0).get(0).toString()+":"+CalOdrQty+":"+SOHval+":"+SOHRndmval;
+					DBList1.addAll(StringToListCreation(Str1));
+				}
+			}
+			System.out.println("DBlist1 values="+DBList1);
+			
+
+			for (int i =0;i<DBList1.size();i++){
+
+
+			}
+
+			System.out.println("Details are loaded successfully for the order"+Ordnumber);
+			app5 = objReceivingPages.VendorOrdRecByChangingOM(objReceivingObjects,Ordnumber,invoice,DispList,DBVal,DBList, DBList1,NwOM2,NwOM1,ChilledTemp,FrozenTemp,driver);
+			for (int i=0;i<DBList1.size();i++)
+			{
+				if(DBVal.get(i).get(4).toString().equals("Y")
+						){
+					String[] Rcqty=splitString(app5.get(i).get(9).toString(),"\n");
+					String[] Rcqty1=splitString(Rcqty[0]," ");
+					String[] Rcqtyrndm=splitString(Rcqty[1]," ");
+					String OldSOHval=DBList1.get(i).get(6).toString();
+					float CalSOHVal= Float.parseFloat(decimalFormat1(OldSOHval)) + Float.parseFloat(decimalFormat1(Rcqty1[0]));
+					double val=round(CalSOHVal, 1);
+					String CalSOHVal2=decimalFormat1(String.valueOf(val));
+					
+					String OldSOHvalrndm=DBList1.get(i).get(7).toString().replaceAll("[^0-9\\.]+", "");
+					float CalSOHValrndm= Float.parseFloat(decimalFormat1(OldSOHvalrndm)) + Float.parseFloat(decimalFormat1(Rcqtyrndm[0].replaceAll("[^0-9\\.]+", "")));
+					double val1=round(CalSOHValrndm, 1);
+					String CalSOHValrndm1=decimalFormat1(String.valueOf(val1));
+					String CalSOHVal1=""+CalSOHVal2+":"+CalSOHValrndm1;
+					String SOH_sql = data.getText("SOH").replace("art_no",result_temp.get(i).get(0).toString());
+
+					result_temp5 = sql.executeQuery(getContext(), SOH_sql);
+					String SOHNwval1=decimalFormat1(result_temp5.get(0).get(0).toString());
+					double val2=round(Float.parseFloat(SOHNwval1), 1);
+					String SOHNwval2=decimalFormat1(String.valueOf(val2));
+					
+					String RndmSOHNwval1=decimalFormat1(result_temp5.get(0).get(1).toString());
+					double val3=round(Float.parseFloat(RndmSOHNwval1), 1);
+					String RndmSOHNwval=decimalFormat1(String.valueOf(val3));
+					String SOHNwval=""+SOHNwval2+":"+RndmSOHNwval;
+					if(SOHNwval.equals(CalSOHVal1)){
+
+						htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+CalSOHVal1+"]; DB Value is ["+SOHNwval+"];PASS");
+					}else{
+						htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+CalSOHVal1+"]; DB Value is ["+SOHNwval+"];Fail");
+						
+					}
+					
+				}
+				else{
+				String OldSOHval=DBList1.get(i).get(6).toString();
+				String OldSOHval1=app5.get(i).get(9).toString().replaceAll("[^0-9\\.]+", "");
+				float CalSOHVal= Float.parseFloat(decimalFormat1(OldSOHval)) + Float.parseFloat(decimalFormat1(OldSOHval1));
+				double val=round(CalSOHVal, 1);
+				String CalSOHVal1=decimalFormat1(String.valueOf(val));
+				String SOH_sql = data.getText("SOH").replace("art_no",result_temp.get(i).get(0).toString());
+				result_temp3 = sql.executeQuery(getContext(), SOH_sql);
+				String SOHNwval1=decimalFormat1(result_temp3.get(0).get(0).toString());
+				double val1=round(Float.parseFloat(SOHNwval1), 1);
+				String SOHNwval=decimalFormat1(String.valueOf(val1));
+				
+				if(SOHNwval.equals(CalSOHVal1)){
+
+					htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+CalSOHVal1+"]; DB Value is ["+SOHNwval+"];Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+CalSOHVal1+"]; DB Value is ["+SOHNwval+"];Fail");
+					
+				}}
+				
+			}
+			
+
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ReceiveArtScenarios,ReceiveArttestname,driver));
+			RevertOrder(Ordnumber);
+			status.assertAll();
+
+
+		} catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+		}
+		
+		
+		//@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Receive an VIRTUAL DC Order through Receive by Exception option")//Abhi
+		public void ReceivingVirtualDCOrderByException() throws SQLException, IOException, AWTException, ParseException
+		{
+			if(ReceiveArtpreCount2==-1){
+		
+				MCcount=MCcount+20;}
+			TestStatus status = getTestStatus();
+			try{
+			navToOrderEnq(status);
+			waitForJSandJQueryToLoad(driver);
+			System.out.println("Order Enquiry Opened");
+
+			List<List<Object>> DBList = new ArrayList<List<Object>>();
+			List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+			List<List<Object>> DBVal = new ArrayList<List<Object>>();
+			List<List<Object>>DBList3 = new ArrayList<List<Object>>();
+			
+			String Ordnumber ="";
+			if(StoreNo.equals("3064"))
+			{
+				Ordnumber = data.getText("Vendororder1");
+			}
+			if(StoreNo.equals("1786"))
+			{
+				Ordnumber = data.getText("SITStore");
+			}
+			Ordnumber=Ordnumber.trim();
+			//String Ordnumber = data.getText("Vendororder1");
+			RevertOrder(Ordnumber);
+								
+			String NwOM2 = data.getText("NewOM1");
+			String NwOM1 = data.getText("NewOM");
+			String ChilledTemp=data.getText("Chilledtemp");
+			String FrozenTemp=data.getText("Frozentemp");
+			
+			
+			//-----new//
+			String OrdDetls = data.getText("OrderDetails").replace("ord_no",Ordnumber);
+			results = sql.executeQuery(getContext(), OrdDetls);
+
+			String dc = results.get(0).get(4).toString();
+			String Deldate = results.get(0).get(1).toString();
+			String onShwdate = results.get(0).get(2).toString();
+
+			String supplier = data.getText("Whsename").replace("DC_no",dc);
+			results1 = sql.executeQuery(getContext(), supplier);
+
+			String suplrname = results1.get(0).get(0).toString() + " (" + dc +")";
+
+			String TotCart = data.getText("TotCart").replace("ord_no",Ordnumber);
+			result2 = sql.executeQuery(getContext(), TotCart);
+
+			String TotalCartons = decimalFormat1(result2.get(0).get(0).toString());
+
+			String TotArt = data.getText("TotArt").replace("ord_no",Ordnumber);
+			result3 = sql.executeQuery(getContext(), TotArt);
+
+			String Str = ""+results.get(0).get(0).toString()+":"+Deldate+":"+onShwdate+":"+results.get(0).get(3).toString()+":"+suplrname+":"+TotalCartons+":"+result3.get(0).get(0).toString();
+			DBList.addAll(StringToListCreation(Str));
+			System.out.println("DBLIST-"+DBList);
+			String orderDetails = data.getText("OrdDet").replace("ord_no",Ordnumber);
+			DBList1 = sql.executeQuery(getContext(), orderDetails);
+			System.out.println("DBlist1 values="+DBList1);
+			
+
+			for (int i =0;i<DBList1.size();i++){
+				String OdrQy =decimalFormat1(DBList1.get(i).get(3).toString());
+				String OdrQy1 = ""+decimalFormat1(DBList1.get(i).get(3).toString())+" "+DBList1.get(i).get(4).toString()+"";
+				String ArtOm = decimalFormat1(DBList1.get(i).get(8).toString());
+				String PiOm = decimalFormat1(DBList1.get(i).get(7).toString());
+				String baseuom = data.getText("Base_UOM").replace("art_no",DBList1.get(i).get(2).toString());
+				result_temp5 = sql.executeQuery(getContext(), baseuom);			
+				String SOH_sql = data.getText("SOHSQL").replace("art_no",DBList1.get(i).get(2).toString());
+				result_temp4 = sql.executeQuery(getContext(), SOH_sql);
+				String StrSOHval=decimalFormat1(result_temp4.get(0).get(0).toString());
+				String RndmSOHval=decimalFormat1(result_temp4.get(0).get(1).toString());
+				
+				int TotOdrQty =Integer.parseInt(ArtOm)* Integer.parseInt(OdrQy);
+				int TotOdrQtyEA =Integer.parseInt(PiOm)* Integer.parseInt(OdrQy);
+				 String CalOdrQty=""+Integer.toString(TotOdrQty)+" "+result_temp5.get(0).get(0)+" "+"("+Integer.toString(TotOdrQtyEA)+" "+"EA"+")";
+				
+				String Strng1=""+OdrQy1+":"+ArtOm+":"+PiOm+":"+result_temp5.get(0).get(0)+":"+StrSOHval+":"+RndmSOHval+":"+CalOdrQty;
+				
+				DBVal.addAll(StringToListCreation(Strng1));
+			}
+			System.out.println("DBval values="+DBVal);
+			objReceivingPages.VirtualDCOrderRecByException(objReceivingObjects,Ordnumber,DBList3, DBList, DBList1,DBVal,NwOM2,NwOM1,ChilledTemp,FrozenTemp,driver);
+			
+
+			for (int i=0;i<DBList1.size();i++){
+				int Size=DBList1.size();
+				float OldSOHwt1=Float.parseFloat((DBVal.get(Size-1-i).get(4).toString()));
+				float OldSOHRndwt1=Float.parseFloat((DBVal.get(Size-1-i).get(5).toString()));
+				float OdrQntywt1=Float.parseFloat((DBList3.get(i).get(7).toString())); 
+				float OdrQntRndywt1=Float.parseFloat((DBList3.get(i).get(6).toString())) * Integer.parseInt(decimalFormat1(DBVal.get(Size-1-i).get(2).toString()));
+				
+				float CalSOHwt = OldSOHwt1 + OdrQntywt1;
+				double val=round(CalSOHwt, 1);
+				String CalSOHVal1=decimalFormat1(String.valueOf(val));
+				float CalSOHRndwt=OldSOHRndwt1 + OdrQntRndywt1;
+				double val1=round(CalSOHRndwt, 1);
+				String CalRNDVal1=decimalFormat1(String.valueOf(val1));
+				
+
+				String Newval= ""+CalSOHVal1+":"+CalRNDVal1;
+
+				String SOH_sql1 = data.getText("SOHSQL").replace("art_no",DBList1.get(Size-1-i).get(2).toString());
+				result_temp5 = sql.executeQuery(getContext(), SOH_sql1);
+				String SOHNwval1=decimalFormat1(result_temp5.get(0).get(0).toString());
+				double val2=round(Float.parseFloat(SOHNwval1), 1);
+				String SOHNwval=decimalFormat1(String.valueOf(val2));
+				
+				String RndmSOHNwval1=decimalFormat1(result_temp5.get(0).get(1).toString());
+				double val3=round(Float.parseFloat(RndmSOHNwval1), 1);
+				String RndmSOHNwval=decimalFormat1(String.valueOf(val3));
+
+
+				String SOHval=""+SOHNwval+":"+RndmSOHNwval;
+
+
+
+				if(Newval.equals(SOHval)){
+
+					htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+Newval+"]; DB Value is ["+SOHval+";Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+Newval+"]; DB Value is ["+SOHval+";Fail");
+				}
+			}
+			
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ReceiveArtScenarios,ReceiveArttestname,driver));
+			RevertOrder(Ordnumber);
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			status.assertAll();
+		}
+		
+		//@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Receive an IBT Order through Receive by Exception option")//Abhi
+		public void ReceivingIBTOrderByException() throws SQLException, IOException, AWTException, ParseException
+		{
+			try{
+			if(ReceiveArtpreCount2==-1){
+				MCcount=MCcount+18;}
+			List<List<Object>> DBList = new ArrayList<List<Object>>();
+			List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+			List<List<Object>> DBVal = new ArrayList<List<Object>>();
+			List<List<Object>>applist1 = new ArrayList<List<Object>>();
+			String Ordnumber = data.getText("Vendororder1");
+			RevertOrder(Ordnumber);
+			TestStatus status = getTestStatus();
+			navToOrderEnq(status);
+			waitForJSandJQueryToLoad(driver);
+			System.out.println("Order Enquiry Opened");
+			String NwOM2 = data.getText("NewOM1");
+			String NwOM1 = data.getText("NewOM");
+			String ChilledTemp=data.getText("Chilledtemp");
+			String FrozenTemp=data.getText("Frozentemp");
+			
+			String invoice = data.getText("Invoice");
+
+			String OrdDetls = data.getText("OrderDetails").replace("ord_no",Ordnumber);
+			results = sql.executeQuery(getContext(), OrdDetls);
+
+			String vndr = results.get(0).get(4).toString();
+			String Deldate = results.get(0).get(1).toString();
+			String onShwdate = results.get(0).get(2).toString();
+
+			String supplier = data.getText("vendorname").replace("DC_no",vndr);
+			results1 = sql.executeQuery(getContext(), supplier);
+
+			String suplrname = results1.get(0).get(0).toString() + " (" +vndr +")";
+
+			String TotCart = data.getText("TotCart").replace("ord_no",Ordnumber);
+			result2 = sql.executeQuery(getContext(), TotCart);
+
+			String TotalCartons = decimalFormat1(result2.get(0).get(0).toString());
+
+			String TotArt = data.getText("TotArt").replace("ord_no",Ordnumber);
+			result3 = sql.executeQuery(getContext(), TotArt);
+
+			String Str = ""+results.get(0).get(0).toString()+":"+Deldate+":"+onShwdate+":"+results.get(0).get(3).toString()+":"+suplrname+":"+TotalCartons+":"+result3.get(0).get(0).toString();
+			DBList.addAll(StringToListCreation(Str));
+			System.out.println("DBlist values="+DBList);
+
+			String Artdet = data.getText("Artdet").replace("ord_no",Ordnumber);
+			result_temp = sql.executeQuery(getContext(), Artdet);
+			
+
+			for (int i =0;i<result_temp.size();i++){
+
+
+
+				String OM_SQL = data.getText("OM").replace("ord_no",Ordnumber);
+				result_temp1 = sql.executeQuery(getContext(), OM_SQL);
+				String OmCount = decimalFormat1(result_temp1.get(i).get(0).toString());
+				String Qty=decimalFormat1(result_temp.get(i).get(1).toString());
+
+				String baseuom = data.getText("Base_UOM").replace("art_no",result_temp.get(i).get(0).toString());
+				result_temp2 = sql.executeQuery(getContext(), baseuom);
+
+				String SOH_sql = data.getText("SOH").replace("art_no",result_temp.get(i).get(0).toString());
+				result_temp3 = sql.executeQuery(getContext(), SOH_sql);
+				String SOHval;
+				if (result_temp3.isEmpty()){
+				 SOHval= Double.toString(6);
+				}else{
+				SOHval=decimalFormat1(result_temp3.get(0).get(0).toString());
+				}
+
+				String Str1 = ""+result_temp.get(i).get(0).toString()+":"+Qty+":"+result_temp.get(i).get(2).toString()+":"+OmCount+":"+result_temp2.get(0).get(0).toString()+":"+SOHval;
+				DBList1.addAll(StringToListCreation(Str1));
+
+			}
+			System.out.println("DBlist1 values="+DBList1);
+			objReceivingPages.IBTOrderRecByException(objReceivingObjects,Ordnumber,applist1, DBList, DBList1,NwOM2,NwOM1,ChilledTemp,FrozenTemp,driver);
+			String Newval="";
+				for (int i=0;i<DBList1.size();i++)
+					
+				{
+				if (DBList1.get(i).get(0).toString().equals(applist1.get(i).get(0).toString()))
+				{
+					String[] Rcqty=splitString(applist1.get(i).get(7).toString()," ");
+					float OldSOH=Float.parseFloat(DBList1.get(i).get(5).toString());	
+					float RcvQnty=Float.parseFloat(Rcqty[0]);
+
+					float CalSOH=OldSOH+RcvQnty;
+					double val=round(CalSOH, 1);
+					String CalSOHVal1=decimalFormat1(String.valueOf(val));
+
+					Newval= CalSOHVal1;
+				}
+				else{
+					for (int j=0;j<DBList1.size();j++)
+					{
+					if (DBList1.get(i).get(0).toString().equals(applist1.get(j).get(0).toString()))
+					{
+						String[] Rcqty=splitString(applist1.get(j).get(7).toString()," ");
+					float OldSOH=Float.parseFloat(DBList1.get(i).get(5).toString());	
+					float RcvQnty=Float.parseFloat(Rcqty[0]);
+
+					float CalSOH=OldSOH+RcvQnty;double val=round(CalSOH, 1);
+					String CalSOHVal1=decimalFormat1(String.valueOf(val));
+
+					Newval= CalSOHVal1;
+					break;
+					}
+					else{}
+					
+				}
+					
+				}
+				String SOH_sql1 = data.getText("SOH").replace("art_no",DBList1.get(i).get(0).toString());
+				result_temp5 = sql.executeQuery(getContext(), SOH_sql1);
+				String SOHval;
+				if (result_temp5.isEmpty()){
+				 SOHval= Double.toString(0.0);
+				}else{
+				String SOHval1=decimalFormat1(result_temp5.get(0).get(0).toString());
+				double val3=round(Float.parseFloat(SOHval1), 1);
+				SOHval=decimalFormat1(String.valueOf(val3));
+				}
+
+
+
+				if(Newval.equals(SOHval)){
+
+					htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+Newval+"]; DB Value is ["+SOHval+"];Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+Newval+"]; DB Value is ["+SOHval+"];Fail");
+				}
+			}
+
+			
+			
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ReceiveArtScenarios,ReceiveArttestname,driver));
+			RevertOrder(Ordnumber);
+			status.assertAll();
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+		}	
+
+		//@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Receive the Vendor ASN Order through Receive by Exception option")//Abhi
+		public void ReceivingVendorASNOrderByException() throws SQLException, IOException, AWTException, ParseException
+		{
+			if(ReceiveArtpreCount2==-1){
+				MCcount=MCcount+18;}
+			TestStatus status = getTestStatus();
+			try{
+			navToOrderEnq(status);
+			waitForJSandJQueryToLoad(driver);
+			System.out.println("Order Enquiry Opened");
+
+			List<List<Object>> DBList = new ArrayList<List<Object>>();
+			List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+			List<List<Object>> DBVal = new ArrayList<List<Object>>();
+			List<List<Object>>applist1 = new ArrayList<List<Object>>();
+			
+			String Ordnumber ="";
+			if(StoreNo.equals("3064"))
+			{
+				Ordnumber = data.getText("Vendororder1");
+			}
+			if(StoreNo.equals("1786"))
+			{
+				Ordnumber = data.getText("SITStore");
+			}
+			Ordnumber=Ordnumber.trim();
+			//String Ordnumber = data.getText("Vendororder1");
+			RevertOrder(Ordnumber);
+			
+			
+			String Ordnumber1 = data.getText("VBELN").replace("ord_no",Ordnumber);
+			result_temp1 = sql.executeQuery(getContext(), Ordnumber1);
+			String Odernum=result_temp1.get(0).get(0).toString();
+			String NwOM2 = data.getText("NewOM1");
+			String NwOM1 = data.getText("NewOM");
+			String ChilledTemp=data.getText("Chilledtemp");
+			String FrozenTemp=data.getText("Frozentemp");
+			String OrdDetls = data.getText("OrderDetails").replace("ord_no",Odernum);
+			results = sql.executeQuery(getContext(), OrdDetls);
+			String invoice = data.getText("Invoice");
+			String dc = results.get(0).get(4).toString();
+			String Deldate = results.get(0).get(1).toString();
+			String onShwdate = results.get(0).get(2).toString();
+
+			String supplier = data.getText("vendorname").replace("vendor_no",dc);
+			results1 = sql.executeQuery(getContext(), supplier);
+
+			String suplrname = results1.get(0).get(0).toString() + " (" + dc +")";
+
+			String TotCart = data.getText("TotCart").replace("ord_no",Odernum);
+			result2 = sql.executeQuery(getContext(), TotCart);
+
+			String TotalCartons = decimalFormat1(result2.get(0).get(0).toString());
+
+			String TotArt = data.getText("TotArt").replace("ord_no",Odernum);
+			result3 = sql.executeQuery(getContext(), TotArt);
+
+			String Str = ""+results.get(0).get(0).toString()+":"+Deldate+":"+onShwdate+":"+results.get(0).get(3).toString()+":"+suplrname+":"+TotalCartons+":"+result3.get(0).get(0).toString();
+			DBList.addAll(StringToListCreation(Str));
+			System.out.println("DBLIST-"+DBList);
+			String orderDetails = data.getText("OrdDet").replace("ord_no",Odernum);
+			DBList1 = sql.executeQuery(getContext(), orderDetails);
+			System.out.println("DBlist1 values="+DBList1);
+			
+
+			for (int i =0;i<DBList1.size();i++){
+				String OdrQy =decimalFormat1(DBList1.get(i).get(3).toString());
+				String OdrQy1 = ""+decimalFormat1(DBList1.get(i).get(3).toString())+" "+DBList1.get(i).get(4).toString()+"";
+				String ArtOm = decimalFormat1(DBList1.get(i).get(8).toString());
+				String baseuom = data.getText("Base_UOM").replace("art_no",DBList1.get(i).get(2).toString());
+				result_temp5 = sql.executeQuery(getContext(), baseuom);
+				if(DBList1.get(i).get(6).toString().equals("Y"))
+				{
+				String PiOm = decimalFormat1(DBList1.get(i).get(7).toString());							
+				String SOH_sql = data.getText("SOHSQL").replace("art_no",DBList1.get(i).get(2).toString());
+				result_temp4 = sql.executeQuery(getContext(), SOH_sql);
+				String StrSOHval=decimalFormat1(result_temp4.get(0).get(0).toString());
+				String RndmSOHval=decimalFormat1(result_temp4.get(0).get(1).toString());				
+				int TotOdrQty =Integer.parseInt(ArtOm)* Integer.parseInt(OdrQy);
+				int TotOdrQtyEA =Integer.parseInt(PiOm)* Integer.parseInt(OdrQy);
+				String CalOdrQty=(""+Integer.toString(TotOdrQty)+" "+result_temp5.get(0).get(0)+"z"+"("+Integer.toString(TotOdrQtyEA)+" "+"EA"+")").replace("z","\n");
+				
+					
+				String Strng1=""+OdrQy1+":"+ArtOm+":"+PiOm+":"+result_temp5.get(0).get(0)+":"+StrSOHval+":"+RndmSOHval+":"+CalOdrQty;
+				
+				DBVal.addAll(StringToListCreation(Strng1));
+				}
+				else{
+					String SOH_sql = data.getText("SOHSQL").replace("art_no",DBList1.get(i).get(2).toString());
+					result_temp4 = sql.executeQuery(getContext(), SOH_sql);
+					String StrSOHval=decimalFormat1(result_temp4.get(0).get(0).toString());
+					int TotOdrQty =Integer.parseInt(ArtOm)* Integer.parseInt(OdrQy);
+					String CalOdrQty=""+Integer.toString(TotOdrQty)+" "+"EA";
+					
+						
+					String Strng1=""+OdrQy1+":"+ArtOm+"::"+result_temp5.get(0).get(0)+":"+StrSOHval+"::"+CalOdrQty;
+					DBVal.addAll(StringToListCreation(Strng1));
+					replacenullToZero(DBVal);	
+					
+				}
+			}
+			System.out.println("DBval values="+DBVal);
+			objReceivingPages.VendorASNOrderRecByException(objReceivingObjects,Ordnumber,invoice,applist1, DBList, DBList1,DBVal,NwOM2,NwOM1,ChilledTemp,FrozenTemp,driver);
+			
+
+			for (int i=0;i<DBList1.size();i++){
+				int Size=DBList1.size();
+				
+				if(DBList1.get(Size-1-i).get(6).toString().equals("Y"))
+				{
+				float OldSOHwt1=Float.parseFloat((DBVal.get(Size-1-i).get(4).toString()));
+				float OldSOHRndwt1=Float.parseFloat((DBVal.get(Size-1-i).get(5).toString()));
+				float OdrQntywt1=Float.parseFloat((applist1.get(i).get(6).toString())) * Integer.parseInt(decimalFormat1(DBVal.get(Size-1-i).get(1).toString())); 
+				float OdrQntRndywt1=Float.parseFloat((applist1.get(i).get(7).toString())) * Integer.parseInt(decimalFormat1(DBVal.get(Size-1-i).get(2).toString()));
+				
+				float CalSOHwt = OldSOHwt1 + OdrQntywt1;
+				float CalSOHRndwt=OldSOHRndwt1 + OdrQntRndywt1;
+
+				String Newval= ""+decimalFormat1(Float.toString(CalSOHwt))+":"+decimalFormat1(Float.toString(CalSOHRndwt));
+
+				String SOH_sql1 = data.getText("SOHSQL").replace("art_no",DBList1.get(Size-1-i).get(2).toString());
+				result_temp = sql.executeQuery(getContext(), SOH_sql1);
+
+				String SOHval=""+decimalFormat1(result_temp.get(0).get(0).toString())+":"+decimalFormat1(result_temp.get(0).get(1).toString());
+
+
+
+				if(Newval.equals(SOHval)){
+
+					htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+Newval+"]; DB Value is ["+SOHval+";Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+Newval+"]; DB Value is ["+SOHval+";Fail");
+				}
+				
+			}
+				else{
+					float OldSOHwt1=Float.parseFloat((DBVal.get(Size-1-i).get(4).toString()));
+					
+					float OdrQntywt1=Float.parseFloat((applist1.get(i).get(6).toString()))* Integer.parseInt(decimalFormat1(DBVal.get(Size-1-i).get(1).toString())); 
+					//float OdrQntRndywt1=Float.parseFloat((DBList3.get(i).get(6).toString())) * Integer.parseInt(decimalFormat1(DBVal.get(Size-1-i).get(2).toString()));
+					
+					float CalSOHwt = OldSOHwt1 + OdrQntywt1;
+					//float CalSOHRndwt=OldSOHRndwt1 + OdrQntRndywt1;
+
+					String Newval= decimalFormat1(Float.toString(CalSOHwt));
+
+					String SOH_sql1 = data.getText("SOHSQL").replace("art_no",DBList1.get(Size-1-i).get(2).toString());
+					result_temp = sql.executeQuery(getContext(), SOH_sql1);
+
+					String SOHval=decimalFormat1(result_temp.get(0).get(0).toString());
+
+
+
+					if(Newval.equals(SOHval)){
+
+						htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+Newval+"]; DB Value is ["+SOHval+";Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver,"New SOH Value is;Local Value is ["+Newval+"]; DB Value is ["+SOHval+";Fail");
+					}
+				}
+			}
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ReceiveArtScenarios,ReceiveArttestname,driver));
+			RevertOrder(Ordnumber);
+		}catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			status.assertAll();
+		}
+		
+		@BeforeMethod(alwaysRun=true)
+		public void setUp(Method m9,ITestContext testcontext) throws IOException{	
+			waitFor(2);
+			initializeTestcontext();
+			System.out.println("test1 - beforemethod");
+			 mName=m9.getName().toString().trim();			
+  			if(!methodList.contains(m9.getName().toString().trim())){
+  			methodList.add(m9.getName().toString().trim());
+  			extLogger = extReport.startTest(m9.getName().toString().trim());
+  			}
+			log.info("Loading Testdata for the test case: " + m9.getName().toString());
+			data.getTCNameFromChildren(m9.getName().toString().trim());
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+			setDriver(driver);
+			testcontext.setAttribute("WebDriver", driver);
+			testcontext.setAttribute("Customreports", this.customreport);
+			customreport.startTest(m9.getName().toString());
+			initializeTestStatus();
+			reportPath = new File(getContext().getStringProperty("reportPath"));
+			ReceiveArttestname = m9.getName().toString().trim();
+			ReceiveArttestdesc = m9.getAnnotation(Test.class).description();
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+			objReceivingObjects = PageFactory.initElements(this.driver, ReceivingObjects.class);
+			objReceivingPages = PageFactory.initElements(this.driver, ReceivingPages.class);
+			/*objOrderEnquiryPage = PageFactory.initElements(this.driver, OrderEnquiryPage.class);
+			objOrderEnquiryObjects = PageFactory.initElements(this.driver, OrderEnquiryObjects.class);*/
+			//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+			BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+			common = PageFactory.initElements(this.driver, CommonFunctions.class);
+			storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+
+			Date ppStartdat1 = new Date();
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			String formattedDatepp = dateFormat.format(ppStartdat1);
+			System.out.println(formattedDatepp); // 12/01/2011 4:48:16 PM
+			ReceiveArtStartdat = formattedDatepp;
+
+		}
+
+		@BeforeClass
+		public void loadXMLFile(){	
+			//initializeTestcontext();
+			System.out.println("test1 - Beforeclass");
+			cName=this.getClass().getSimpleName();
+			reportPath = new File(TestContext.getStringProperty("reportPath"));			
+			extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+			classList.add(this.getClass().getSimpleName());
+			data = new XMLDataReader(log);
+			customreport=new CustomExtentReports();
+			log.info("Loading data for the class: " );
+			data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\Receiving.xml");
+			customreport.createExtentReport();
+
+			Date enhancedArtMod = new Date();
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			ReceiveArtStdateex = dateFormat.format(enhancedArtMod);
+		}
+
+
+
+		@AfterClass(alwaysRun=true)
+		public void tearDown() throws IOException, ParseException{
+			waitFor(1);
+			System.out.println("afterclass");
+			sceCtMap.put(cName+"_totalCt", methodList.size());
+			sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+			sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+			tcCt.put(this.getClass().getSimpleName().toString(), MCcount);
+			System.out.println(extentList);
+			System.out.println(methodList);
+            extReport.endTest(extLogger);
+			extReport.flush();
+			 removeDriver();
+			String Pp1className = this.getClass().getSimpleName().toString();
+			ReceiveArtModules.put(Pp1className, ReceiveArtScenarios);
+			waitFor(1);
+			moduleName.put("Modules", ReceiveArtModules);
+			waitFor(1);
+			Date ppModEnd2 = new Date();
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			ReceiveArtenddateex = dateFormat.format(ppModEnd2);
+
+			System.out.println(ReceiveArtenddateex);
+			waitFor(2);
+			
+			int RArtM=MCcount;
+			ReceiveArtMC=""+RArtM;
+			waitFor(2);
+			System.out.println("Receive - " +ReceiveArtMC);
+			waitFor(2);
+		}
+
+		@AfterMethod(alwaysRun=true)
+		protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+			System.out.println("AffterMethod");
+			waitFor(1);
+			extReport.endTest(extLogger);
+			extReport.flush();
+			try{
+				if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+					htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+					result9.removeAttribute("isFail");
+				}}catch(Exception e ){
+					System.out.println();
+				
+				}
+			Date ppMEndDate1 = new Date();
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			ReceiveArtMEndDate = dateFormat.format(ppMEndDate1);
+			System.out.println(ReceiveArtMEndDate); // 12/01/2011 4:48:16 PM
+			String EnhancedArtTime = ReceiveArttestdesc +";"+ ReceiveArtStartdat +";" + ReceiveArtMEndDate;
+
+			ReceiveArtTime.put(ReceiveArttestname, EnhancedArtTime);
+			//Report_AddStep("testcase", "Running Completed Status","","", getResultStatusName(result.getStatus()));
+			waitFor(4);
+			closeDriver(driver);
+			customreport.getExtentReport().endTest(customreport.getExtentTest());
+			customreport.getExtentReport().flush();
+			waitFor(1);
+			if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")){
+				int cnt = ReceiveArtpreCount2+1;
+				htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+				ReceiveArtpreCount2++;
+			}
+			waitFor(1);
+			if((getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")) && ReceiveArtpreCount2!=reCount){
+				waitFor(1);
+				ReceiveArtTime.removeAll(ReceiveArttestname);
+				waitFor(1);
+				ReceiveArtScenarios.removeAll(ReceiveArttestname);
+			}
+			waitFor(1);
+			if(ReceiveArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+				ReceiveArtpreCount2=-1;
+			}
+		}
+}
+

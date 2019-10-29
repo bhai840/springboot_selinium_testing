@@ -1,0 +1,406 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.Date;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbomain.objects.InstoreCompetitionObject;
+import au.wow.ngbomain.tests.InstoreCompetitionTest1;
+
+public class InstoreCompetitionPage1 extends BasePage{
+	
+	CommonFunctions common = PageFactory.initElements(InstoreCompetitionTest1.driver, CommonFunctions.class);
+	private Logger log = LogManager.getLogger(InstoreCompetitionTest1.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	
+	String retString;
+	
+	ExtentTest extLogger=InstoreCompetitionTest1.extLogger;
+	String cName= InstoreCompetitionTest1.cName;
+	String mName=InstoreCompetitionTest1.mName;
+	WebDriver driver ;
+	
+	public String returnedString;
+	
+    public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+	
+	public void DatePicker(InstoreCompetitionObject objInstoreCompetitionObjects,int i,int d, WebDriver driver)throws ParseException, IOException {
+		
+		objInstoreCompetitionObjects.startDate.clear();
+		String sDate = common.addDaystoCurrentDate(i); //
+		objInstoreCompetitionObjects.startDate.sendKeys(sDate);
+		htmlToExtent(cName,mName,extLogger,driver,"Starting Date of the promotion : " +sDate+" ;;;Pass");
+		objInstoreCompetitionObjects.endDate.clear();
+		String eDate = common.AddDate(common.ConvertdateFormatddmmyy(sDate),d);
+		objInstoreCompetitionObjects.endDate.sendKeys(eDate);
+		htmlToExtent(cName,mName,extLogger,driver,"Ending Date of the promotion : " +eDate+";;;Pass");
+		//waitFor(1);
+		
+		try{
+			
+			objInstoreCompetitionObjects.searchAndAdd.click();
+			
+		}catch(Exception e){
+			
+			 WebElement ele = driver.findElement(By.id("searchAndAdd"));
+			 JavascriptExecutor executor = (JavascriptExecutor)driver;
+			 executor.executeScript("arguments[0].click();", ele);
+			
+		}
+		
+		//objInstoreCompetitionObjects.searchAndAdd.click();
+		
+	}
+	
+	public void clickOnInstoreComp(InstoreCompetitionObject objInstoreCompetitionObjects,WebDriver driver) throws AWTException{
+		//waitForJSandJQueryToLoad(driver);;
+		waitFor(5);
+		Point coordinates = objInstoreCompetitionObjects.Pricing.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(objInstoreCompetitionObjects.Pricing).click().build().perform();	
+		waitFor(5);
+		
+		Point coordinates2 = objInstoreCompetitionObjects.InstorePromotions.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates2.getX(),coordinates2.getY()+100);
+		
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objInstoreCompetitionObjects.InstorePromotions).click().build().perform();
+		waitFor(5);
+		
+		Point coordinates3 = objInstoreCompetitionObjects.CompetitionPromotions.getLocation();
+		Robot robo1t1 = new Robot();
+		robo1t1.mouseMove(coordinates3.getX(),coordinates3.getY()+100);
+		
+		Actions action3= new Actions(driver);
+		action3.moveToElement(objInstoreCompetitionObjects.CompetitionPromotions).click().build().perform();
+		waitFor(5);
+		robot.mouseMove(5,5);	
+	}
+	
+public void DeletePreArticle(InstoreCompetitionObject objInstoreCompetitionObjects,WebDriver driver) throws ParseException, IOException {
+		
+		if(objInstoreCompetitionObjects.Checkboxall.isDisplayed())
+		{
+			
+			int DeleteSize = objInstoreCompetitionObjects.deletedraftAll.size();
+			for(int i=1;i<=DeleteSize;i++)
+			{
+				WebElement delete =  prepareWebElementWithDynamicXpathWithInt(objInstoreCompetitionObjects.deletedraftdynamic, 1,driver);
+				delete.click();
+				waitFor(5);
+				objInstoreCompetitionObjects.conformdeleteRecord.click();
+			}
+			//objInstoreCompetitionObjects.DeleteIcon.click();
+		
+		
+		System.out.println("Article deleted in the draft");
+		}
+		
+	}
+
+public void viewinstoreBRComp(InstoreCompetitionObject objInstoreCompetitionObjects,	String ranData,WebDriver driver) throws ParseException, IOException {
+	
+	String currentDate=null;
+	ranData = ranData.replaceAll("\\s{2,}"," ");
+	objInstoreCompetitionObjects.article.sendKeys(ranData);
+	htmlToExtent(cName,mName,extLogger,driver, "Article selected is:"+ ranData+";;;Pass");
+	objInstoreCompetitionObjects.endDate.clear();
+	currentDate = formatDate1(new Date());
+	htmlToExtent(cName,mName,extLogger,driver, "Clearance promotion start date is: "+currentDate+";;;Pass");
+	String endDate=null;
+	endDate = common.AddDate(common.ConvertdateFormatddmmyy(currentDate), 30);
+	objInstoreCompetitionObjects.endDate.sendKeys(endDate);
+	objInstoreCompetitionObjects.ClickOutside.click();
+	htmlToExtent(cName,mName,extLogger,driver, "Clearance promotion end date is: "+endDate+";;;Pass");
+	waitFor(5);
+	verticalScroll(driver);
+	//waitFor(1);
+	
+	try{
+		
+		objInstoreCompetitionObjects.searchAndAdd.click();
+		
+	}catch(Exception e){
+		
+		 WebElement ele = driver.findElement(By.id("searchAndAdd"));
+		 JavascriptExecutor executor = (JavascriptExecutor)driver;
+		 executor.executeScript("arguments[0].click();", ele);
+		
+	}
+	
+	//objInstoreCompetitionObjects.searchAndAdd.click();
+	htmlToExtent(cName,mName,extLogger,driver,"Search and Add button is clicked;;;Pass");
+	waitFor(5);
+	
+	pbdArticleSelection(objInstoreCompetitionObjects, ranData, driver);
+	waitFor(5);
+	waitForJSandJQueryToLoad(driver);
+	
+	if(objInstoreCompetitionObjects.proceedtocreate.isDisplayed())
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Business Review user has only view access;;;Pass");
+		//htmlToExtent(cName,mName,extLogger,driver,"Proceed to create button should not display for Business Review role;;;Fail");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver,"Business Review user has only view access;;;Pass");
+	}
+}
+	
+
+	public String Duration (InstoreCompetitionObject objInstoreCompetitionObjects,String ranData,int dateDiff, WebDriver driver) throws ParseException, IOException {
+			
+		htmlToExtent(cName,mName,extLogger,driver,"MAXIMUM DURATION from Start to End Date is "+(dateDiff+1)+";;;Pass");
+//		try{
+			if(objInstoreCompetitionObjects.proceedtocreate.isDisplayed()){
+				objInstoreCompetitionObjects.proceedtocreate.click();
+				waitForJSandJQueryToLoad(driver);;
+				waitFor(5);
+				clickPercentage(objInstoreCompetitionObjects,driver);
+				htmlToExtent(cName,mName,extLogger,driver,"Promotion Percentage is given as 55% ;;;Pass");
+				
+				sendCompetitor(objInstoreCompetitionObjects,driver);
+			
+				objInstoreCompetitionObjects.validateButton.click();
+				waitForJSandJQueryToLoad(driver);;
+				
+				retString = promoPriceError(objInstoreCompetitionObjects, driver);
+				if(retString.equals("nodata")){
+					return "nodata";
+				}
+				
+				waitForJSandJQueryToLoad(driver);;
+				
+				waitFor(5);
+				objInstoreCompetitionObjects.create.click();
+				waitFor(1);
+				try{
+					waitForElement(objInstoreCompetitionObjects.nodatafound, driver);
+					if(objInstoreCompetitionObjects.nodatafound.isDisplayed()){
+						return "nodata";
+					}
+				}catch(Exception e){
+					
+				}
+				waitForJSandJQueryToLoad(driver);;
+				htmlToExtent(cName,mName,extLogger,driver,"Promotion has been created successfully for "+ranData+";;;Pass");
+				waitForJSandJQueryToLoad(driver);;
+				objInstoreCompetitionObjects.ok.click();
+			}
+		//}catch(Exception e){
+			else{htmlToExtent(cName,mName,extLogger,driver,"Proceed to Create Promotion button doesnot exists;;;Pass");
+		}return "available";
+		
+	}	
+
+
+	public String MaxDuration(InstoreCompetitionObject objInstoreCompetitionObjects,String ranData,int dateDiff, WebDriver driver) throws ParseException, IOException {
+		
+		objInstoreCompetitionObjects.article.sendKeys(ranData);
+		htmlToExtent(cName,mName,extLogger,driver,"Article number fetched from DB : " +ranData+" ;;;Pass");
+		//try{
+		DatePicker(objInstoreCompetitionObjects,-1,dateDiff,driver);
+		htmlToExtent(cName,mName,extLogger,driver,"Starting date is been given as PREVIOUS date;;;Pass");
+		waitFor(5);
+		try{
+		    if(objInstoreCompetitionObjects.ErrorMessage.isDisplayed()){
+		    htmlToExtent(cName,mName,extLogger,driver,"ERROR MESSAGE : "+objInstoreCompetitionObjects.ErrorMessage.getAttribute("title")+";;;Pass");
+		}}catch(Exception e){
+			    htmlToExtent(cName,mName,extLogger,driver,"No Error Message Displayed when giving previous date as start date;;;Fail");
+		}	
+		DatePicker(objInstoreCompetitionObjects,0,dateDiff,driver);
+		try{
+		    if(objInstoreCompetitionObjects.ErrorMessage.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver,"ERROR MESSAGE : "+objInstoreCompetitionObjects.ErrorMessage.getAttribute("title")+";;;Fail");
+		}}		
+	    catch(Exception e){
+		    returnedString = Duration(objInstoreCompetitionObjects,ranData,dateDiff,driver);
+		    if(returnedString.equals("nodata")){
+		    	return "nodata";
+		    }
+	    }
+		objInstoreCompetitionObjects.article.sendKeys(ranData);
+		int randomNum = common.generateRandomNumber(1, 50);
+		DatePicker(objInstoreCompetitionObjects,randomNum,dateDiff,driver);
+		try{
+		if(objInstoreCompetitionObjects.ErrorMessage.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver,"ERROR MESSAGE : "+objInstoreCompetitionObjects.ErrorMessage.getAttribute("title")+";;;Fail");
+		}}		
+	  catch(Exception e){
+		  returnedString = Duration(objInstoreCompetitionObjects,ranData,dateDiff,driver);
+		  if(returnedString.equals("nodata")){
+		    	return "nodata";
+		    }
+	  }return "available";
+	}
+
+
+	public void clickPercentage(InstoreCompetitionObject objInstoreCompetitionObjects,WebDriver driver)  throws ParseException, IOException {
+		
+		if(objInstoreCompetitionObjects.filterInd.isDisplayed()){
+			
+			int perSize = objInstoreCompetitionObjects.dynpercent.size();
+			for(int i=1;i<=perSize;i++){
+				WebElement percentage = prepareWebElementWithDynamicXpathWithInt(objInstoreCompetitionObjects.dynamicpercent, i,driver);
+				WebElement percentageText = prepareWebElementWithDynamicXpathWithInt(objInstoreCompetitionObjects.dynamicpercentvalue, i,driver);
+				//percentage.click();
+				if(percentage.isDisplayed()){
+					percentage.click();
+					percentageText.sendKeys("55");
+				}
+			}
+		}
+	}
+					
+	public void sendCompetitor(InstoreCompetitionObject objInstoreCompetitionObjects,WebDriver driver)  throws ParseException, IOException{
+				  
+		int i = common.generateRandomNumber(2, 50);
+		WebElement competitorSelct = prepareWebElementWithDynamicXpathWithInt(objInstoreCompetitionObjects.compSelector, i,driver);
+		System.out.println("Competitor Name : "+competitorSelct.getAttribute("value"));
+		htmlToExtent(cName,mName,extLogger,driver,"COMPETITOR : "+competitorSelct.getAttribute("value")+" ;;;Pass");
+		objInstoreCompetitionObjects.competitor.sendKeys(competitorSelct.getAttribute("value"));
+	}
+
+	public void MaxDuratioError(InstoreCompetitionObject objInstoreCompetitionObjects,String ranData,WebDriver driver) throws ParseException, IOException {
+		
+		objInstoreCompetitionObjects.article.sendKeys(ranData);
+		String  Date = common.getCurrentDate();
+		objInstoreCompetitionObjects.startDate.sendKeys(Date);
+		htmlToExtent(cName,mName,extLogger,driver,"Starting Date of the promotion " +Date+" ;;;Pass");
+		
+		objInstoreCompetitionObjects.endDate.clear();
+		String eDate = common.AddDate(common.ConvertdateFormatddmmyy(Date),32);
+		objInstoreCompetitionObjects.endDate.sendKeys(eDate);
+		htmlToExtent(cName,mName,extLogger,driver,"Ending Date of the promotion " +eDate+";;;Pass");
+		//waitFor(1);
+		
+		try{
+			
+			objInstoreCompetitionObjects.searchAndAdd.click();
+			
+		}catch(Exception e){
+			
+			 WebElement ele = driver.findElement(By.id("searchAndAdd"));
+			 JavascriptExecutor executor = (JavascriptExecutor)driver;
+			 executor.executeScript("arguments[0].click();", ele);
+			
+		}
+		
+		//objInstoreCompetitionObjects.searchAndAdd.click();
+		if(objInstoreCompetitionObjects.ErrorMessage.isDisplayed()){
+			htmlToExtent(cName,mName,extLogger,driver,"Difference between Start and End dates is 32;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"Error Message: "+objInstoreCompetitionObjects.ErrorMessage.getAttribute("title")+";;;Pass");
+		}else{
+			
+		    htmlToExtent(cName,mName,extLogger,driver,"No such Error Message is displayed ;;;Fail");
+		}
+		
+		
+	}
+			
+	public void BlockedArticle(InstoreCompetitionObject objInstoreCompetitionObjects,String ranData,WebDriver driver) throws ParseException, IOException {
+		
+	objInstoreCompetitionObjects.article.sendKeys(ranData);
+	htmlToExtent(cName,mName,extLogger,driver,"Article : " +ranData+" ;;;Pass");
+	//waitFor(1);
+
+	try{
+		
+		objInstoreCompetitionObjects.searchAndAdd.click();
+		
+	}catch(Exception e){
+		
+		 WebElement ele = driver.findElement(By.id("searchAndAdd"));
+		 JavascriptExecutor executor = (JavascriptExecutor)driver;
+		 executor.executeScript("arguments[0].click();", ele);
+		
+	}
+
+	//objInstoreCompetitionObjects.searchAndAdd.click();
+	waitFor(5);
+	if(objInstoreCompetitionObjects.MessageBox.isDisplayed()){
+		htmlToExtent(cName,mName,extLogger,driver,"Error Message : " +objInstoreCompetitionObjects.MessageBox.getText()+" ;;;Pass");
+		objInstoreCompetitionObjects.ok.click();	
+	}else if(objInstoreCompetitionObjects.nodatafound.isDisplayed()){
+		htmlToExtent(cName,mName,extLogger,driver,"Error Message : " +objInstoreCompetitionObjects.nodatafound.getText()+";;;Pass");
+	}else{
+		htmlToExtent(cName,mName,extLogger,driver,"No Such Error Message displayed while adding article to the promotion ;;;Fail");
+		}
+	}
+
+	public void pbdArticleSelection(InstoreCompetitionObject objInstoreCompetitionObjects,String artNum,WebDriver driver) throws ParseException, IOException {
+		
+		try{
+			for(int j=1;j<=objInstoreCompetitionObjects.pbdArticlePopUpList.size();j++){
+				WebElement popupCheck = prepareWebElementWithDynamicXpathWithInt(objInstoreCompetitionObjects.pbdPop,j,driver);
+				if(popupCheck.isDisplayed()){
+				for(int i=2;i<=objInstoreCompetitionObjects.articlelist.size();i++){
+					WebElement artDync = prepareWebElementWithDynamicXpathWithIntInt(objInstoreCompetitionObjects.articledyn, i,1,driver);
+					String art = artDync.getText();
+					if(art.equals(artNum)){
+						WebElement checkBox = prepareWebElementWithDynamicXpathWithIntInt(objInstoreCompetitionObjects.articledyn, i,4,driver);
+						checkBox.click();
+						waitFor(2);
+						objInstoreCompetitionObjects.addtolist.click();
+						break;
+					}
+				}
+			}
+				else{
+					continue;
+				}
+			
+			}
+		}catch(Exception e){
+			System.out.println("Not a pbd article");
+		}
+		
+		
+		}
+
+	public String promoPriceError(InstoreCompetitionObject objCompetitionObject,WebDriver driver) throws ParseException, IOException {
+		
+		try{
+			waitFor(1);
+			if(objCompetitionObject.MaxpercentError.isDisplayed()){
+				String errorText =  objCompetitionObject.MaxpercentError.getText();
+				if(errorText.contains("less than Promo price")){
+					htmlToExtent(cName,mName,extLogger,driver, ""+errorText+";;;Info");
+					driver.findElement(By.xpath("//*[@id='errorWrapper']/div/div[1]/a")).click();
+					return "nodata";
+				}
+				
+			}
+		}catch(Exception e){
+			System.out.println("No error message -- less than Promo price ");
+		}
+		return "available";
+	}
+
+
+
+
+
+}

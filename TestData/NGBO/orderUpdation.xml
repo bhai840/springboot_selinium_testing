@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+<TCName name = "OrderUpdationOfSugoSTO_ZUBW" >
+<orderNumber>7011438186</orderNumber>
+<orderNumber_7051>7011417428</orderNumber_7051>
+<orderdetails>
+<![CDATA[select PO_NO,CREATED_DATE,DLVY_DATE,ARTICLE_COUNT,ORDER_QTY,SUPPLIER_NO,SUPPLIER_NAME,SOURCE,STATUS,CUT_OFF_DATE,CUT_OFF_TIME from LOCAL_WOW_ORDER_INFO_TILL_PO where po_no = 'order_no']]>
+</orderdetails>
+<articledetails>
+<![CDATA[select distinct(info.matnr),master.article_desc,info.meins,soh.store_soh,info.menge,info.article_om,stock.soo,stock.sit
+from LOCAL_ORDER_PO_INFO info,local_wow_soh soh,ZWOWC_ARTICLE_UOM uom,zwowc_article_master master,
+local_wow_stock_info stock,ZWOWC_ART_SALES_PRICE sales
+where info.ebeln = 'order_no' and 
+info.matnr = soh.article and 
+master.matnr = info.matnr and
+stock.matnr = info.matnr ]]>
+</articledetails>
+<article>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.PERPETUAL_FLAG = 'Y'
+and master.mtart = 'HAWA'
+and master.PBD_IND = 'N']]>
+</article>
+<randKGarticle>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.RANDOM_WEIGHT_FLG = 'randFlag'
+and master.RANDOM_WEIGHT_FLG = 'Y'
+and listing.PERPETUAL_FLAG = 'Y']]>
+</randKGarticle>
+<blockText>
+<![CDATA[select matnr,blckt from ZWOWO_PREQ where banfn = 'order_no']]>
+</blockText>
+</TCName>
+
+<TCName name = "OrderUpdationOfSugoPREQ_ZSW" >
+<orderNumber_7051>71628836</orderNumber_7051>
+<article>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.PERPETUAL_FLAG = 'Y'
+and master.mtart = 'HAWA'
+and master.PBD_IND = 'N']]>
+</article>
+<randKGarticle>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.RANDOM_WEIGHT_FLG = 'randFlag'
+and master.RANDOM_WEIGHT_FLG = 'Y'
+and listing.PERPETUAL_FLAG = 'Y']]>
+</randKGarticle>
+<orderdetails>
+<![CDATA[select PREQ_NO,CREATED_DATE,DLVY_DATE,ARTICLE_COUNT,ORDER_QTY,SUPPLIER_NO,SUPPLIER_NAME,SOURCE,STATUS,CUT_OFF_DATE,CUT_OFF_TIME from LOCAL_WOW_ORDER_INFO_TILL_PO where PREQ_NO = 'order_no']]>
+</orderdetails>
+<articlecount>
+<![CDATA[select count(distinct matnr) from ZWOWO_PREQ where banfn = 'order_no']]>
+</articlecount>
+<blockText>
+<![CDATA[select matnr,blckt from ZWOWO_PREQ where banfn = 'order_no']]>
+</blockText>
+<articledetails>
+<![CDATA[select distinct(info.matnr),master.article_desc,info.meins,soh.store_soh,info.menge,info.article_om,stock.soo,stock.sit,uom.meins
+--convert(double,info.article_om) || ' ' || uom.meins as om
+from ZWOWO_PREQ info,local_wow_soh soh,ZWOWC_ARTICLE_UOM uom,zwowc_article_master master,
+local_wow_stock_info stock,ZWOWC_ART_SALES_PRICE sales
+where info.banfn = 'order_no' and 
+info.matnr = soh.article and 
+master.matnr = info.matnr and info.matnr=uom.matnr and
+stock.matnr = info.matnr and
+uom.order_uom_ind = 'Y']]>
+</articledetails>
+</TCName>
+
+<TCName name = "OrderUpdationOfSugoPREQ_ZSP" >
+<orderNumber_7051>71470182</orderNumber_7051>
+<orderdetails>
+<![CDATA[select PREQ_NO,CREATED_DATE,DLVY_DATE,ARTICLE_COUNT,ORDER_QTY,SUPPLIER_NO,SUPPLIER_NAME,SOURCE,STATUS,CUT_OFF_DATE,CUT_OFF_TIME from LOCAL_WOW_ORDER_INFO_TILL_PO where PREQ_NO = 'order_no']]>
+</orderdetails>
+<articlecount>
+<![CDATA[select count(distinct matnr) from ZWOWO_PREQ where banfn = 'order_no']]>
+</articlecount>
+<blockText>
+<![CDATA[select matnr,blckt from ZWOWO_PREQ where banfn = 'order_no']]>
+</blockText>
+<articledetails>
+<![CDATA[select distinct(info.matnr),master.article_desc,info.meins,soh.store_soh,info.menge,info.article_om,stock.soo,stock.sit,uom.meins
+--convert(double,info.article_om) || ' ' || uom.meins as om
+from ZWOWO_PREQ info,local_wow_soh soh,ZWOWC_ARTICLE_UOM uom,zwowc_article_master master,
+local_wow_stock_info stock,ZWOWC_ART_SALES_PRICE sales
+where info.banfn = 'order_no' and 
+info.matnr = soh.article and 
+master.matnr = info.matnr and info.matnr=uom.matnr and
+stock.matnr = info.matnr and
+uom.order_uom_ind = 'Y']]>
+</articledetails>
+</TCName>
+
+
+<TCName name = "OrderUpdationOfManualPO_ZMW" >
+<orderNumber>700001412</orderNumber>7011086763
+<orderNumber_7051>700001412</orderNumber_7051>
+<orderdetails>
+<![CDATA[select PO_NO,CREATED_DATE,DLVY_DATE,ARTICLE_COUNT,ORDER_QTY,SUPPLIER_NO,SUPPLIER_NAME,SOURCE,STATUS,CUT_OFF_DATE,CUT_OFF_TIME from LOCAL_WOW_ORDER_INFO_TILL_PO where po_no = 'order_no']]>
+</orderdetails>
+<articledetails>
+<![CDATA[select distinct(info.matnr),master.article_desc,info.meins,soh.store_soh,info.menge,info.article_om,stock.soo,stock.sit
+from LOCAL_ORDER_PO_INFO info,local_wow_soh soh,ZWOWC_ARTICLE_UOM uom,zwowc_article_master master,
+local_wow_stock_info stock,ZWOWC_ART_SALES_PRICE sales
+where info.ebeln = 'order_no' and 
+info.matnr = soh.article and 
+master.matnr = info.matnr and
+stock.matnr = info.matnr ]]>
+</articledetails>
+<article>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in ('suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.PERPETUAL_FLAG = 'Y'
+and master.mtart = 'HAWA'
+and master.PBD_IND = 'N']]>
+</article>
+<randKGarticle>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.RANDOM_WEIGHT_FLG = 'randFlag'
+and master.RANDOM_WEIGHT_FLG = 'Y'
+and listing.PERPETUAL_FLAG = 'Y']]>
+</randKGarticle>
+<blockText>
+<![CDATA[select matnr,blocking_text from zwowo_po_itm where ebeln = 'order_no']]>
+</blockText>
+</TCName>
+
+<TCName name = "OrderUpdationOfManualPREQ_ZMW" >
+<orderNumber_7051>50007940</orderNumber_7051>
+<article>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.PERPETUAL_FLAG = 'Y'
+and master.mtart = 'HAWA'
+and master.PBD_IND = 'N']]>
+</article>
+<randKGarticle>
+<![CDATA[select soh.article from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master
+where master.matnr = listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.RANDOM_WEIGHT_FLG = 'randFlag'
+and master.RANDOM_WEIGHT_FLG = 'Y'
+and listing.PERPETUAL_FLAG = 'Y']]>
+</randKGarticle>
+<orderdetails>
+<![CDATA[select PREQ_NO,CREATED_DATE,DLVY_DATE,ARTICLE_COUNT,ORDER_QTY,SUPPLIER_NO,SUPPLIER_NAME,SOURCE,STATUS,CUT_OFF_DATE,CUT_OFF_TIME from LOCAL_WOW_ORDER_INFO_TILL_PO where PREQ_NO = 'order_no']]>
+</orderdetails>
+<articlecount>
+<![CDATA[select count(distinct matnr) from ZWOWO_PREQ where banfn = 'order_no']]>
+</articlecount>
+<blockText>
+<![CDATA[select matnr,blckt from ZWOWO_PREQ where banfn = 'order_no']]>
+</blockText>
+<articledetails>
+<![CDATA[select distinct(info.matnr),master.article_desc,info.meins,soh.store_soh,info.menge,info.article_om,stock.soo,stock.sit,uom.meins
+--convert(double,info.article_om) || ' ' || uom.meins as om
+from ZWOWO_PREQ info,local_wow_soh soh,ZWOWC_ARTICLE_UOM uom,zwowc_article_master master,
+local_wow_stock_info stock,ZWOWC_ART_SALES_PRICE sales
+where info.banfn = 'order_no' and 
+info.matnr = soh.article and 
+master.matnr = info.matnr and info.matnr=uom.matnr and
+stock.matnr = info.matnr and
+uom.order_uom_ind = 'Y']]>
+</articledetails>
+</TCName>
+
+<TCName name = "OrderUpdationByAddingArticleByEAN" >
+<orderNumber_7051>23549488</orderNumber_7051>
+<article>
+<![CDATA[select ean.EAN11 from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master,zwowc_article_ean ean
+where master.matnr = listing.matnr and 
+ean.matnr=listing.matnr and  
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.PERPETUAL_FLAG = 'Y'
+and master.mtart = 'HAWA'
+and master.PBD_IND = 'N']]>
+</article>
+<randKGarticle>
+<![CDATA[select ean.EAN11 from local_wow_soh soh,ZWOWC_ARTICLE_LISTING listing,zwowc_article_master master,zwowc_article_ean ean
+where master.matnr = listing.matnr and 
+ean.matnr=listing.matnr and 
+master.matnr = soh.article and 
+listing.lifnr in (select lifnr from ZWOWC_VENDOR_MASTER where lifnr_trim = 'suppliername') and
+soh.store_soh > 0
+and listing.alc_status in ('RA','NA')
+and listing.PS_ARTICLE_STATUS =''
+and listing.RANDOM_WEIGHT_FLG = 'randFlag'
+and master.RANDOM_WEIGHT_FLG = 'Y'
+and listing.PERPETUAL_FLAG = 'Y']]>
+</randKGarticle>
+<orderdetails>
+<![CDATA[select PREQ_NO,CREATED_DATE,DLVY_DATE,ARTICLE_COUNT,ORDER_QTY,SUPPLIER_NO,SUPPLIER_NAME,SOURCE,STATUS,CUT_OFF_DATE,CUT_OFF_TIME from LOCAL_WOW_ORDER_INFO_TILL_PO where PREQ_NO = 'order_no']]>
+</orderdetails>
+<articlecount>
+<![CDATA[select count(distinct matnr) from ZWOWO_PREQ where banfn = 'order_no']]>
+</articlecount>
+<blockText>
+<![CDATA[select matnr,blckt from ZWOWO_PREQ where banfn = 'order_no']]>
+</blockText>
+<articledetails>
+<![CDATA[select distinct(info.matnr),master.article_desc,info.meins,soh.store_soh,info.menge,info.article_om,stock.soo,stock.sit,uom.meins
+--convert(double,info.article_om) || ' ' || uom.meins as om
+from ZWOWO_PREQ info,local_wow_soh soh,ZWOWC_ARTICLE_UOM uom,zwowc_article_master master,
+local_wow_stock_info stock,ZWOWC_ART_SALES_PRICE sales
+where info.banfn = 'order_no' and 
+info.matnr = soh.article and 
+master.matnr = info.matnr and info.matnr=uom.matnr and
+stock.matnr = info.matnr and
+uom.order_uom_ind = 'Y']]>
+</articledetails>
+</TCName>
+
+<TCName name = "AdvanceSearchByArticleByEAN" >
+<EAN>
+<![CDATA[9300633965488]]>
+</EAN>
+</TCName>
+
+</configuration>

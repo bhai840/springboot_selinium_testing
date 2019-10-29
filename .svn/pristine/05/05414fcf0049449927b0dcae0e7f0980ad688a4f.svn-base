@@ -1,0 +1,3402 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.StockTransferObjects;
+import au.wow.ngbomain.tests.AdjustmentLogReportTests;
+import au.wow.ngbomain.tests.StockTransferTests;
+//import org.apache.xerces.impl.xs.identity.Selector.Matcher;
+
+
+public class StockTransferPage extends BasePage {
+
+	//WebDriver driver = StockTransferTests.driver;
+	CommonFunctions common = PageFactory.initElements(driver,
+			CommonFunctions.class);
+	private Logger log = LogManager.getLogger(StockTransferTests.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	//public XMLDataReader data;
+	StockTransferTests StockTransferTest;
+	
+	ExtentTest extLogger=StockTransferTests.extLogger;
+	String cName= StockTransferTests.cName;
+	String mName=StockTransferTests.mName;
+	public static XMLDataReader data=StockTransferTests.data;
+   	public static WebDriver driver;
+    public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+
+
+	public void clickOnstockTransfer(StockTransferObjects StockTransferObj,WebDriver driver) throws AWTException{
+		waitFor(1);
+		Point coordinates = StockTransferObj.StockMange.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+
+		Actions action = new Actions(driver);
+		action.moveToElement(StockTransferObj.StockMange).click().build().perform();	
+		waitFor(1);
+
+		Point coordinates1 = StockTransferObj.StockTransfr.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(),coordinates1.getY()+100);
+
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(StockTransferObj.StockTransfr).click().build().perform();
+		waitFor(1);
+		robot.mouseMove(5,5);	
+	}
+
+	public void clickOnOrderEnquiry(StockTransferObjects StockTransferObj,WebDriver driver) throws AWTException{
+		waitFor(1);
+		Point coordinates = StockTransferObj.Orders.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+
+		Actions action = new Actions(driver);
+		action.moveToElement(StockTransferObj.Orders).click().build().perform();	
+		waitFor(1);
+
+		Point coordinates1 = StockTransferObj.orderEnquiry.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(),coordinates1.getY()+100);
+
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(StockTransferObj.orderEnquiry).click().build().perform();
+		waitFor(1);
+		robot.mouseMove(5,5);	
+
+	}
+
+	public void waitFn(WebDriver driver)
+	{
+		waitForJSandJQueryToLoad(driver);;
+	}
+
+	public void scrolldown(WebDriver driver)
+	{
+		verticalScroll(driver);
+	}
+
+	public void scrollUp1(WebDriver driver)
+	{
+		scrollUp(driver);
+	}
+
+	public String randart(List<List<Object>> results, int num) 
+	{	
+		String first = results.get(num).get(0).toString();
+		return first;	
+	}
+
+
+	public List<String> articleSplit(String articlesget, WebDriver driver){
+		String[] arrSplit = articlesget.split(",");
+		List<String> articlelist = new ArrayList<String>(Arrays.asList(arrSplit));
+
+		return articlelist;
+	}
+
+	public void statusOfIBTOrder(StockTransferObjects StockTransferObj, String OrdNum) throws AWTException, IOException{
+
+		StockTransferObj.EnterOrderNo.sendKeys(OrdNum);
+		htmlToExtent(cName,mName,extLogger,driver,"**** Checking the status of created IBT order "+OrdNum+" in Order Enquiry ****;;;Pass");
+		//Report_AddStep("testcase","**** Checking the status of created IBT order "+OrdNum+" in Order Enquiry ****" , "", "", "Pass");
+		click(StockTransferObj.clckGo);
+		waitForJSandJQueryToLoad(driver);
+		//System.out.println(StockTransferObj.checkStatus.getText());
+		if(StockTransferObj.checkStatus.getText().equals("SUBMITTED")){
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Order "+OrdNum+" created is in SUBMITTED Status;;;Pass");
+			//Report_AddStep("testcase","IBT Order "+OrdNum+" created is in SUBMITTED Status" , "", "", "Pass");	
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Order "+OrdNum+" created is in " +StockTransferObj.checkStatus.getText()+ " Status;;;Pass");
+			//Report_AddStep("testcase","IBT Order "+OrdNum+" created is in " +StockTransferObj.checkStatus.getText()+ " Status" , "", "", "Fail");	
+		}
+	}
+
+	public int random_no(int max) {
+		Random rand = new Random();
+		int n = rand.nextInt(max);
+		return n;
+	}
+
+	public void articlesaddition(List<String> articlelist,StockTransferObjects StockTransferObj, String Articleqty) throws IOException
+	{
+		for (int i =0; i < articlelist.size();i++){
+
+			String art = articlelist.get(i);
+			//System.out.println(art);
+			enterText(StockTransferObj.enterArticle, art,driver);
+			enterText(StockTransferObj.enterQty, Articleqty,driver);
+			click(StockTransferObj.ClickSearch);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.clickArticleSearch);
+			click(StockTransferObj.clickAddtoList);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"*** Article "+art+" is added successfully in Draft ***;;;Pass");
+			//Report_AddStep("testcase","*** Article "+art+" is added successfully in Draft ***" , "", "", "Pass");
+		}
+	}
+
+
+	public void articlesadditionforCPBD(List<String> articlelist,StockTransferObjects StockTransferObj, String Articleqty) throws IOException
+	{
+		for (int i =0; i < articlelist.size();i++){
+
+			String art = articlelist.get(i);
+			//System.out.println(art);
+			enterText(StockTransferObj.enterArticle, art,driver);
+			enterText(StockTransferObj.enterQty, Articleqty,driver);
+			click(StockTransferObj.ClickSearch);
+			waitForJSandJQueryToLoad(driver);
+			int k = 1;
+			for(int j=1;j<StockTransferObj.CPBDArtList.size();j++){
+				WebElement table = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.POtablevalue11, k+1,driver);
+				String Art1 = table.getText();
+				if(art.equals(Art1)){
+					WebElement table1 = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.POtablevalue12, k+1,driver);
+					click(table1);
+					break;
+				}
+				k++;
+			}
+			click(StockTransferObj.clickAddtoList);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"*** Article "+art+" is added successfully in Draft ***;;;Pass");
+		}
+	}
+
+	public void vendorOrderCancelFlow(StockTransferObjects StockTransferObj, String OrderNum2) throws IOException, AWTException
+
+	{
+		StockTransferObj.EnterOrderNo.sendKeys(OrderNum2);
+		waitFn(driver);
+		click(StockTransferObj.clckGo);
+		htmlToExtent(cName,mName,extLogger,driver,"***Checking the status of Vendor order "+OrderNum2+" in Order Enquiry ***;;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver,"Status of the order is "  +StockTransferObj.checkStatus.getText()+";;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver, "Type of the order is " +StockTransferObj.CheckType.getText()+";;;Pass");
+		//Report_AddStep("testcase","***Checking the status of Vendor order "+OrderNum2+" in Order Enquiry ***" , "", "", "Pass");
+		//Report_AddStep("testcase","Status of the order is "  +StockTransferObj.checkStatus.getText(), "", "", "Pass");
+		//Report_AddStep("testcase","Type of the order is " +StockTransferObj.CheckType.getText(), "", "", "Pass");
+
+		waitForJSandJQueryToLoad(driver);
+		//System.out.println(StockTransferObj.checkStatus.getText());
+		if(StockTransferObj.checkStatus.getText().equals("AUTHORISED") && StockTransferObj.CheckType.getText().equals("VENDOR")){
+			click(StockTransferObj.checkStatus);
+			waitForJSandJQueryToLoad(driver);
+		}
+
+		if(StockTransferObj.CheckVendorCancelbutton.isEnabled()){
+			htmlToExtent(cName,mName,extLogger,driver, "**** Cancel Order option is present in order ****;;;Pass");
+			//Report_AddStep("testcase","**** Cancel Order option is present in order ****", "", "", "Pass");
+			click(StockTransferObj.ClickVendorCancelbutton);
+			waitForJSandJQueryToLoad(driver);
+			if(StockTransferObj.Checkpopup.getText().equals("Are you sure you want to cancel the order?")){
+				htmlToExtent(cName,mName,extLogger,driver, ""+StockTransferObj.Checkpopup.getText()+" ---- Clicked YES ----;;;Pass");
+				//Report_AddStep("testcase",""+StockTransferObj.Checkpopup.getText()+" ---- Clicked YES ----" , "", "", "Pass");
+				click(StockTransferObj.Clickpopup);
+				waitFn(driver);
+			}
+			String msg1 = StockTransferObj.msg.getText();
+			//System.out.println(msg1);
+			if(msg1.equals("Errors")){
+				htmlToExtent(cName,mName,extLogger,driver,"Order was not Cancelled due to the  - "+StockTransferObj.CaptureErrorMsg.getText()+";;;Fail");
+				//Report_AddStep("testcase","Order was not Cancelled due to the  - "+StockTransferObj.CaptureErrorMsg.getText() , "", "", "Fail");
+				click(StockTransferObj.clickClosebutton);
+				waitForJSandJQueryToLoad(driver);
+			}
+			else if(msg1.equals("STATUS")){
+				htmlToExtent(cName,mName,extLogger,driver,"---- Order has been Cancelled successfully ----;;;Pass");
+				//Report_AddStep("testcase","---- Order has been Cancelled successfully ----", "", "", "Pass");
+				click(StockTransferObj.Clickclose);
+				clickOnOrderEnquiry(StockTransferObj, driver);
+				waitForJSandJQueryToLoad(driver);
+				StockTransferObj.EnterOrderNo.sendKeys(OrderNum2);
+				waitFn(driver);
+				click(StockTransferObj.clckGo);
+				waitFn(driver);
+				htmlToExtent(cName,mName,extLogger,driver,"***Checking the status ofvendor order "+OrderNum2+" in Order Enquiry after Cancelling the order***;;;Pass");
+				//Report_AddStep("testcase","***Checking the status of IBT order "+OrderNum2+" in Order Enquiry after Cancelling the order***" , "", "", "Pass");
+				if(StockTransferObj.checkStatus.getText().equals("SUBMITTED")){
+					htmlToExtent(cName,mName,extLogger,driver,"Status of the order is "  +StockTransferObj.checkStatus.getText()+";;;Pass");
+					//Report_AddStep("testcase","Status of the order is "  +StockTransferObj.checkStatus.getText(), "", "", "Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver,"Status of the order is "  +StockTransferObj.checkStatus.getText()+";;;Fail");	
+				}
+
+			}
+		}
+	}
+	public void IBTOrderCancelFlow(StockTransferObjects StockTransferObj, String OrderNum1) throws IOException, AWTException{
+		StockTransferObj.EnterOrderNo.sendKeys(OrderNum1);
+		waitFn(driver);
+		click(StockTransferObj.clckGo);
+		waitForJSandJQueryToLoad(driver);
+		htmlToExtent(cName,mName,extLogger,driver,"***Checking the status of IBT order "+OrderNum1+" in Order Enquiry  ***;;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver,"Status of the order is "  +StockTransferObj.checkStatus.getText()+";;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver, "Type of the order is " +StockTransferObj.CheckType.getText()+";;;Pass");
+		/*Report_AddStep("testcase","***Checking the status of IBT order "+OrderNum1+" in Order Enquiry ***" , "", "", "Pass");
+		Report_AddStep("testcase","Status of the order "+OrderNum1+" is "  +StockTransferObj.checkStatus.getText(), "", "", "Pass");
+		Report_AddStep("testcase","Type of the order "+OrderNum1+" is " +StockTransferObj.CheckType.getText(), "", "", "Pass");*/
+		//System.out.println(StockTransferObj.checkStatus.getText());
+		if(StockTransferObj.checkStatus.getText().equals("AUTHORISED") && StockTransferObj.CheckType.getText().equals("STOCK TRANSFER")){
+			click(StockTransferObj.checkStatus);
+			waitForJSandJQueryToLoad(driver);
+		}
+		if(StockTransferObj.CheckIBTCancelbutton.isEnabled()){	
+			htmlToExtent(cName,mName,extLogger,driver,"**** Cancel Order option is present in order ****;;;Pass");
+			//Report_AddStep("testcase","**** Cancel Order option is present in order ****", "", "", "Pass");
+			click(StockTransferObj.CheckIBTCancelbutton);
+			waitForJSandJQueryToLoad(driver);
+			//if(StockTransferObj.CheckSuccessStatus.getText().equals("STATUS")){
+			String msg1 = StockTransferObj.msg.getText();
+			if(msg1.equals("Errors")){
+				htmlToExtent(cName,mName,extLogger,driver,"Order was not Cancelled due to the  - "+StockTransferObj.CaptureErrorMsg.getText()+";;;Fail");
+				//Report_AddStep("testcase","Order was not Cancelled due to the  - "+StockTransferObj.CaptureErrorMsg.getText() , "", "", "Fail");
+				click(StockTransferObj.clickClosebutton);
+				waitForJSandJQueryToLoad(driver);
+			}
+			else if(msg1.equals("STATUS")){
+				htmlToExtent(cName,mName,extLogger,driver,"---- Order has been Cancelled successfully ----;;;Pass");
+				//Report_AddStep("testcase","---- Order has been Cancelled successfully ----", "", "", "Pass");
+				click(StockTransferObj.Clickclose);
+				clickOnOrderEnquiry(StockTransferObj, driver);
+				waitForJSandJQueryToLoad(driver);
+				StockTransferObj.EnterOrderNo.sendKeys(OrderNum1);
+				waitFn(driver);
+				click(StockTransferObj.clckGo);
+				waitFn(driver);
+				htmlToExtent(cName,mName,extLogger,driver,"***Checking the status of Vendor order "+OrderNum1+" in Order Enquiry after Cancelling the order***;;;Pass");
+				//Report_AddStep("testcase","***Checking the status of Vendor order "+OrderNum1+" in Order Enquiry after Cancelling the order***" , "", "", "Pass");
+				if(StockTransferObj.checkStatus.getText().equals("SUBMITTED")){
+					htmlToExtent(cName,mName,extLogger,driver,"Status of the order is "  +StockTransferObj.checkStatus.getText()+";;;Pass");
+					//Report_AddStep("testcase","Status of the order is "  +StockTransferObj.checkStatus.getText(), "", "", "Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver,"Status of the order is "  +StockTransferObj.checkStatus.getText()+";;;Fail");	
+				}
+
+			}
+		}
+	}
+
+
+	public List<List<Object>> IBTCreationflow(StockTransferObjects StockTransferObj, List<String> articlelist, String Frozentemp, String Chilledtemp, List<List<Object>> DBList, String Articleqty, String SiteTo, String sendStore, String Supplier, String username, WebDriver driver) throws IOException, SQLException, AWTException{
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+		List<String> artlist = new ArrayList();
+		String OrdNo;
+		String ChilledTemp1;
+		String FrozenTemp1;
+		String status = "D";
+		String Order_type = "OADV";
+		List<List<Object>> UOMdetails = new ArrayList<List<Object>>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		String formattedDate1 = dateFormat.format(date);
+		//System.out.println("Details are loaded successfully");
+		enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SearchAndAdd);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i,driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i,driver);
+				if(getSite.getText().contains(SiteTo)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				click(StockTransferObj.deletearticle);
+
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+SiteTo+";;;Pass");
+			//Report_AddStep("testcase","Existing articles are deleted for Site "+SiteTo , "", "", "Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.SearchAndAdd);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully after deleting the existing articles;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is added successfully after deleting the existing articles" , "", "", "Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is added successfully in Stock Transfer Page" , "", "", "Pass");
+		}
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		articlesaddition(articlelist, StockTransferObj, Articleqty);
+
+		if (sendStore.equals("Normalstore")){
+			int k = 4;
+			for(int i=0;i< articlelist.size();i++)
+			{  
+				WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+				WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+				WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+				WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+				WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+				String Art2 =getArticl.getText();
+				String SOH2 = getSOH.getText();
+				SOH2 = decimalFormat1(SOH2);
+				String OMvthUOM = getOM.getText();
+				String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+				OM2 = decimalFormat1(OM2);
+				String UOM2 = getUOM.getText();
+				String RcvdunitsvthUOM = getRecvd.getText();
+				String  String1 [] = splitString(RcvdunitsvthUOM," ");
+				String Rcvdunits = decimalFormat1(String1[0]);			
+				//String BaseUOM = String1[2];
+				//String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+				//Rcvdunits = decimalFormat1(Rcvdunits);
+				k = k+2;
+				//System.out.println("Article is "+Art2+" -- SOH is "+SOH2+"--- OM is "+OM2);
+				artlist.add(Art2);
+				for (int j = 0; j < articlelist.size(); j++)
+				{
+					String Art1 = (String) DBList.get(j).get(0);
+					String SOH1 = "";
+					//Double SOH = round(Double.parseDouble(DBList.get(j).get(1).toString()),0);
+					//String SOH1 = decimalFormat1(SOH.toString());					
+					SOH1 = decimalFormat1(DBList.get(j).get(1).toString());					
+					String OM1 = (String) DBList.get(j).get(2);
+					Double DBRecvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+					String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+					//System.out.println("Article is "+Art1+" -- SOH is "+SOH1+"--- OM is "+OM1);
+
+					if(Art1.equals(Art2)){
+						String Str = ""+Art1+":"+UOM2;
+						UOMdetails.addAll(StringToListCreation(Str));
+						if((SOH1.equals(SOH2)) && (OM1.equals(OM2)) && (DBRecvdunits1.equals(Rcvdunits))){
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits1+"];Pass");
+							//Report_AddStep("testcase","SOH, OM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits1+"]", "Pass");	
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits1+"];Fail");
+							//Report_AddStep("testcase","SOH, OM, Received Units of the article "+Art1+" is not displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits+"]", "Fail");	
+						}
+					}
+				}
+			}
+			click(StockTransferObj.clickSubmit);
+			waitForJSandJQueryToLoad(driver);
+
+			int count = 0;
+			for(int i=0;i< articlelist.size();i++)
+			{    		
+				String DB1 = (String) DBList.get(i).get(1);
+				String OM1 = (String) DBList.get(i).get(2);
+				//System.out.println(DB1);
+				Double Recvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+				String SOH = (String) DBList.get(i).get(1);
+				Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+				//System.out.println(Db2);
+				if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+					++ count;
+				}
+			}
+			if(count > 0){
+				click(StockTransferObj.ClikAcceptQty);
+				waitForJSandJQueryToLoad(driver);
+				//System.out.println("Pop up not appeared");
+			}
+		}
+		else if ((sendStore.equals("ALH")) || sendStore.equals("Costcenter")){
+			int k = 4;
+			for(int i=0;i< articlelist.size();i++)
+			{  
+				WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+				WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+				WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+				WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+				WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+				String Art2 =getArticl.getText();
+				String SOH2 = getSOH.getText();
+
+				SOH2 = decimalFormat1(SOH2);
+				String OMvthUOM = getOM.getText();
+				String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+				OM2 = decimalFormat1(OM2);
+				String UOM2 = getUOM.getText();
+				String RcvdunitsvthUOM = getRecvd.getText();
+				String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+				Rcvdunits = decimalFormat1(Rcvdunits);
+				k = k+2;
+				//System.out.println("Article is "+Art2+"--- OM is "+OM2);
+				artlist.add(Art2);
+				for (int j = 0; j < articlelist.size(); j++)
+				{
+					String Art1 = (String) DBList.get(j).get(0);
+					//String SOH1 = (String) DBList.get(j).get(1);
+					//Double SOH = round(Double.parseDouble(DBList.get(j).get(1).toString()),0);
+					String SOH1 = decimalFormat1(DBList.get(j).get(1).toString());
+					String OM1 = (String) DBList.get(j).get(2);
+					String UOM1 = (String) DBList.get(j).get(3);
+					Double DBRecvdunits = Double.parseDouble(Articleqty) * 1;
+					String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+					//System.out.println("Article is "+Art1+"--- OM is "+OM1);
+
+					if(Art1.equals(Art2)){
+						String Str = ""+Art1+":"+UOM2;
+						UOMdetails.addAll(StringToListCreation(Str));
+						if(SOH2.equals("")){
+							htmlToExtent(cName,mName,extLogger,driver,"SOH Value is not displayed for VERP Article "+Art2+";;;Pass");
+							//Report_AddStep("testcase","SOH Value is not displayed for VERP Article "+Art2,"","","Pass");	
+						}
+
+						if((OM2.equals("1")) && (UOM1.equals(UOM2)) && (DBRecvdunits1.equals(Rcvdunits))){
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", 1, "+UOM1+", "+DBRecvdunits1+"];Pass");
+							//Report_AddStep("testcase","SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", 1, "+UOM1+", "+DBRecvdunits1+"]", "Pass");	
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", 1, "+UOM1+", "+DBRecvdunits1+"];Fail");	
+						}
+					}
+				}
+			}
+			click(StockTransferObj.clickSubmit);
+			waitForJSandJQueryToLoad(driver);
+
+			int count = 0;
+			for(int i=0;i< articlelist.size();i++)
+			{    		
+				String DB1 = (String) DBList.get(i).get(1);
+				String OM1 = (String) DBList.get(i).get(2);
+				//System.out.println(DB1);
+				Double Recvdunits = Double.parseDouble(Articleqty) * 1;
+				String SOH = (String) DBList.get(i).get(1);
+				Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+				//System.out.println(Db2);
+				if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+					++ count;
+				}
+			}
+			if(count > 0){
+				click(StockTransferObj.ClikAcceptQty);
+				waitForJSandJQueryToLoad(driver);
+				//System.out.println("Pop up not appeared");
+			}
+		}
+
+		if(StockTransferObj.clickHelpsize.size() > 0){
+			//System.out.println("Pop up appeared");
+			click(StockTransferObj.clickNote);
+			waitForJSandJQueryToLoad(driver);
+		}
+
+		if(StockTransferObj.CheckChilledTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterChilledTemp, Chilledtemp,driver);
+			waitFor(2);
+			ChilledTemp1 = Chilledtemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+Chilledtemp+" is entered;;;Pass");
+			//Report_AddStep("testcase","Chilled Temperature of "+Chilledtemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			ChilledTemp1 = "0.00";
+		}
+		if(StockTransferObj.CheckFrozenTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterFrozenTemp, Frozentemp,driver);
+			waitFor(2);
+			FrozenTemp1 = Frozentemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+Frozentemp+" is entered;;;Pass");
+			//Report_AddStep("testcase","Frozen Temperature of "+Frozentemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			FrozenTemp1 = "0.00";
+		}
+		scrolldown(driver);
+
+		if(StockTransferObj.checkNextbutton.getAttribute("class").equals("actionBtn")){
+			click(StockTransferObj.clickNext);
+			htmlToExtent(cName,mName,extLogger,driver,"Delivery Details are entered successfully;;;Pass");
+			//Report_AddStep("testcase","Delivery Details are entered successfully" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			scrollUp1(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"ULD details are entered successfully;;;Pass");
+			//Report_AddStep("testcase","ULD details are entered successfully" , "", "", "Pass");
+		}
+		click(StockTransferObj.clickFinish);
+		waitForJSandJQueryToLoad(driver);
+		WebElement getTitlemsg = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkTitle1, StockTransferObj.CheckTitle.size(),driver);
+		String msg1 = getTitlemsg.getText();
+		//String msg1 = "STATUS";
+		//System.out.println(msg1);
+		if(msg1.equals("STATUS")){
+			String S = StockTransferObj.Ordernum.getText();
+			Long OrdNum =  Long.parseLong(S.replaceAll("[^0-9\\.]+", ""));
+			//System.out.println(OrdNum);
+			OrdNo = Long.toString(OrdNum);
+			//System.out.println("Order No is " +OrdNum);
+			htmlToExtent(cName,mName,extLogger,driver,"" +S+ ";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Order Number created is " +OrdNum+";;;Pass");
+			//Report_AddStep("testcase","" +S , "", "", "Pass");
+			//Report_AddStep("testcase","IBT Order Number created is " +OrdNum , "", "", "Pass");
+
+			click(StockTransferObj.clickMesg);
+			waitForJSandJQueryToLoad(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			waitFn(driver);
+			clickOnOrderEnquiry(StockTransferObj, driver);
+			waitFn(driver);
+			statusOfIBTOrder(StockTransferObj, OrdNo);
+			waitForJSandJQueryToLoad(driver);
+			for(int i=0;i< articlelist.size();i++)
+			{ 
+				for(int j=0;j<UOMdetails.size();j++){
+					if(articlelist.get(i).equals(UOMdetails.get(j).get(0).toString())){
+						String Str = ""+msg1+":"+Supplier+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1+":"+formattedDate1+":"+ChilledTemp1+":"+FrozenTemp1+":"+OrdNo+":"+UOMdetails.get(j).get(0).toString()+":"+UOMdetails.get(j).get(1).toString();
+						DBList4.addAll(StringToListCreation(Str));
+					}
+				}
+			}
+		}
+		else if(msg1.equals("Errors")){
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Creation failed for the added articles "+StockTransferObj.CaptureErrorMsg.getText()+";;;Fail");
+			//Report_AddStep("testcase","IBT Creation failed for the added articles "+StockTransferObj.CaptureErrorMsg.getText() , "", "", "Fail");
+			click(StockTransferObj.CaptureErrorMsg);
+			waitForJSandJQueryToLoad(driver);
+			String Str = ""+msg1+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1;
+			DBList4.addAll(StringToListCreation(Str));
+			scrollUp1(driver);
+			waitFor(2);
+		}
+		return DBList4;
+	}
+
+	public List<List<Object>> IBTCreationflowforRW(StockTransferObjects StockTransferObj, List<String> articlelist, String Frozentemp, String Chilledtemp, List<List<Object>> DBList, String Articleqty, String SiteTo, String sendStore, String Supplier, String username) throws IOException, SQLException, AWTException{
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+		List<String> artlist = new ArrayList();
+		String OrdNo;
+		String ChilledTemp1;
+		String FrozenTemp1;
+		String status = "D";
+		String Order_type = "OADV";
+		List<List<Object>> UOMdetails = new ArrayList<List<Object>>();
+		//List<String> RcvdQtyDetails = new ArrayList();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		String formattedDate1 = dateFormat.format(date);
+		//System.out.println("Details are loaded successfully");
+		enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SearchAndAdd);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i,driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i,driver);
+				if(getSite.getText().contains(SiteTo)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				click(StockTransferObj.deletearticle);
+
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+SiteTo+";;;Pass");
+			//Report_AddStep("testcase","Existing articles are deleted for Site "+SiteTo , "", "", "Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.SearchAndAdd);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully after deleting the existing articles;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is added successfully after deleting the existing articles" , "", "", "Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is added successfully in Stock Transfer Page" , "", "", "Pass");
+		}
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		articlesaddition(articlelist, StockTransferObj, Articleqty);
+
+		if (sendStore.equals("Normalstore")){
+			int k = 4;
+			for(int i=0;i< articlelist.size();i++)
+			{  
+				WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+				WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+				WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+				WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+				WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+				WebElement enterWeight = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.enterWgt, k,driver);
+				String Art2 =getArticl.getText();
+				String SOH2 = getSOH.getText();
+				SOH2 = decimalFormat1(SOH2);
+				String OMvthUOM = getOM.getText();
+				String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+				OM2 = decimalFormat1(OM2);
+				String UOM2 = getUOM.getText();
+				String RcvdunitsvthUOM = getRecvd.getText();
+				String  String1 [] = splitString(RcvdunitsvthUOM," ");
+				String Rcvdunits = decimalFormat1(String1[0]);
+				Double Weight = random_no(20) +1.765;
+				Actions action = new Actions(driver);
+				action.moveToElement(enterWeight).doubleClick().perform();
+				String Weight1 = decimalFormat1(Weight.toString());
+				enterWeight.sendKeys(""+Weight1);
+				//String BaseUOM = String1[2];
+				//String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+				//Rcvdunits = decimalFormat1(Rcvdunits);
+				k = k+2;
+				//System.out.println("Article is "+Art2+" -- SOH is "+SOH2+"--- OM is "+OM2);
+				artlist.add(Art2);
+				for (int j = 0; j < articlelist.size(); j++)
+				{
+					String Art1 = (String) DBList.get(j).get(0);
+					//String SOH1 = "";
+					Double SOH = round(Double.parseDouble(DBList.get(j).get(1).toString()),0);
+					String SOH1 = decimalFormat1(SOH.toString());					
+					//SOH1 = decimalFormat1(DBList.get(j).get(1).toString());					
+					String OM1 = (String) DBList.get(j).get(2);
+					Double DBRecvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+					String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+					//System.out.println("Article is "+Art1+" -- SOH is "+SOH1+"--- OM is "+OM1);
+
+					if(Art1.equals(Art2)){
+						String Str = ""+Art1+":"+UOM2+":"+DBRecvdunits1+":"+Weight1;
+						UOMdetails.addAll(StringToListCreation(Str));
+						if((SOH1.equals(SOH2)) && (OM1.equals(OM2)) && (DBRecvdunits1.equals(Rcvdunits))){
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits1+"];Pass");
+							//Report_AddStep("testcase","SOH, OM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits1+"]", "Pass");	
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits1+"];Fail");
+							//Report_AddStep("testcase","SOH, OM, Received Units of the article "+Art1+" is not displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits+"]", "Fail");	
+						}
+					}
+				}
+			}
+			click(StockTransferObj.clickSubmit);
+			waitForJSandJQueryToLoad(driver);
+
+			int count = 0;
+			for(int i=0;i< articlelist.size();i++)
+			{    		
+				String DB1 = (String) DBList.get(i).get(1);
+				String OM1 = (String) DBList.get(i).get(2);
+				//System.out.println(DB1);
+				Double Recvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+				String SOH = (String) DBList.get(i).get(1);
+				Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+				//System.out.println(Db2);
+				if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+					++ count;
+				}
+			}
+			if(count > 0){
+				click(StockTransferObj.ClikAcceptQty);
+				waitForJSandJQueryToLoad(driver);
+				//System.out.println("Pop up not appeared");
+			}
+		}
+		else if ((sendStore.equals("ALH")) || sendStore.equals("Costcenter")){
+			int k = 4;
+			for(int i=0;i< articlelist.size();i++)
+			{  
+				WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+				WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+				WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+				WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+				WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+				WebElement enterWeight = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.enterWgt, k,driver);
+				String Art2 =getArticl.getText();
+				String SOH2 = getSOH.getText();
+
+				SOH2 = decimalFormat1(SOH2);
+				String OMvthUOM = getOM.getText();
+				String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+				OM2 = decimalFormat1(OM2);
+				String UOM2 = getUOM.getText();
+				String RcvdunitsvthUOM = getRecvd.getText();
+				String  String1 [] = splitString(RcvdunitsvthUOM," ");
+				String Rcvdunits = decimalFormat1(String1[0]);
+				Double Weight = random_no(20) +1.765;
+				Actions action = new Actions(driver);
+				action.moveToElement(enterWeight).doubleClick().perform();
+				String Weight1 = decimalFormat1(Weight.toString());
+				enterWeight.sendKeys(""+Weight1);
+				k = k+2;
+				//System.out.println("Article is "+Art2+" -- SOH is "+SOH2+"--- OM is "+OM2);
+				artlist.add(Art2);
+				for (int j = 0; j < articlelist.size(); j++)
+				{
+					String Art1 = (String) DBList.get(j).get(0);
+					//String SOH1 = (String) DBList.get(j).get(1);
+					//Double SOH = round(Double.parseDouble(DBList.get(j).get(1).toString()),0);
+					String SOH1 = decimalFormat1(DBList.get(j).get(1).toString());
+					String OM1 = (String) DBList.get(j).get(2);
+					String UOM1 = (String) DBList.get(j).get(4);
+					Double DBRecvdunits = Double.parseDouble(Articleqty) * 1;
+					String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+					//System.out.println("Article is "+Art1+"--- OM is "+OM1);
+					if(Art1.equals(Art2)){
+						String Str = ""+Art1+":"+UOM2+":"+DBRecvdunits1+":"+Weight1;
+						UOMdetails.addAll(StringToListCreation(Str));
+
+						if((OM2.equals("1")) && (UOM1.equals(UOM2)) && (DBRecvdunits1.equals(Rcvdunits)) && (SOH1.equals(SOH2))){
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", 1, "+UOM1+", "+DBRecvdunits1+"];Pass");
+							//Report_AddStep("testcase","SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", 1, "+UOM1+", "+DBRecvdunits1+"]", "Pass");	
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", 1, "+UOM1+", "+DBRecvdunits1+"];Fail");	
+						}
+					}
+				}
+			}
+			click(StockTransferObj.clickSubmit);
+			waitForJSandJQueryToLoad(driver);
+
+			int count = 0;
+			for(int i=0;i< articlelist.size();i++)
+			{    		
+				String DB1 = (String) DBList.get(i).get(1);
+				String OM1 = (String) DBList.get(i).get(2);
+				//System.out.println(DB1);
+				Double Recvdunits = Double.parseDouble(Articleqty) * 1;
+				String SOH = (String) DBList.get(i).get(1);
+				Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+				//System.out.println(Db2);
+				if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+					++ count;
+				}
+			}
+			if(count > 0){
+				click(StockTransferObj.ClikAcceptQty);
+				waitForJSandJQueryToLoad(driver);
+				//System.out.println("Pop up not appeared");
+			}
+		}
+
+		if(StockTransferObj.clickHelpsize.size() > 0){
+			//System.out.println("Pop up appeared");
+			click(StockTransferObj.clickNote);
+			waitForJSandJQueryToLoad(driver);
+		}
+
+		if(StockTransferObj.CheckChilledTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterChilledTemp, Chilledtemp,driver);
+			waitFor(2);
+			ChilledTemp1 = Chilledtemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+Chilledtemp+" is entered;;;Pass");
+			//Report_AddStep("testcase","Chilled Temperature of "+Chilledtemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			ChilledTemp1 = "0.00";
+		}
+		if(StockTransferObj.CheckFrozenTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterFrozenTemp, Frozentemp,driver);
+			waitFor(2);
+			FrozenTemp1 = Frozentemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+Frozentemp+" is entered;;;Pass");
+			//Report_AddStep("testcase","Frozen Temperature of "+Frozentemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			FrozenTemp1 = "0.00";
+		}
+		scrolldown(driver);
+
+		if(StockTransferObj.checkNextbutton.getAttribute("class").equals("actionBtn")){
+			click(StockTransferObj.clickNext);
+			htmlToExtent(cName,mName,extLogger,driver,"Delivery Details are entered successfully;;;Pass");
+			//Report_AddStep("testcase","Delivery Details are entered successfully" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			scrollUp1(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"ULD details are entered successfully;;;Pass");
+			//Report_AddStep("testcase","ULD details are entered successfully" , "", "", "Pass");
+		}
+		click(StockTransferObj.clickFinish);
+		waitForJSandJQueryToLoad(driver);
+		WebElement getTitlemsg = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkTitle1, StockTransferObj.CheckTitle.size(),driver);
+		String msg1 = getTitlemsg.getText();
+		//String msg1 = "STATUS";
+		//System.out.println(msg1);
+		if(msg1.equals("STATUS")){
+			String S = StockTransferObj.Ordernum.getText();
+			Long OrdNum =  Long.parseLong(S.replaceAll("[^0-9\\.]+", ""));
+			//System.out.println(OrdNum);
+			OrdNo = Long.toString(OrdNum);
+			//System.out.println("Order No is " +OrdNum);
+			htmlToExtent(cName,mName,extLogger,driver,"" +S+ ";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Order Number created is " +OrdNum+";;;Pass");
+			//Report_AddStep("testcase","" +S , "", "", "Pass");
+			//Report_AddStep("testcase","IBT Order Number created is " +OrdNum , "", "", "Pass");
+
+			click(StockTransferObj.clickMesg);
+			waitForJSandJQueryToLoad(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			waitFn(driver);
+			clickOnOrderEnquiry(StockTransferObj, driver);
+			waitFn(driver);
+			statusOfIBTOrder(StockTransferObj, OrdNo);
+			waitForJSandJQueryToLoad(driver);
+			for(int i=0;i< articlelist.size();i++)
+			{ 
+				for(int j=0;j<UOMdetails.size();j++){
+					if(articlelist.get(i).toString().equals(UOMdetails.get(j).get(0).toString())){
+						String Str = ""+msg1+":"+Supplier+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1+":"+formattedDate1+":"+ChilledTemp1+":"+FrozenTemp1+":"+OrdNo+":"+artlist.get(i)+":"+UOMdetails.get(j).get(1).toString()+":"+UOMdetails.get(j).get(2).toString()+":"+UOMdetails.get(j).get(3).toString();
+						DBList4.addAll(StringToListCreation(Str));
+					}
+				}
+			}
+
+		}
+		else if(msg1.equals("Errors")){
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Creation failed for the added articles "+StockTransferObj.CaptureErrorMsg.getText()+";;;Fail");
+			//Report_AddStep("testcase","IBT Creation failed for the added articles "+StockTransferObj.CaptureErrorMsg.getText() , "", "", "Fail");
+			click(StockTransferObj.CaptureErrorMsg);
+			waitForJSandJQueryToLoad(driver);
+			String Str = ""+msg1+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1;
+			DBList4.addAll(StringToListCreation(Str));
+			scrollUp1(driver);
+			waitFor(2);
+		}
+		return DBList4;
+	}
+
+
+	public String IBTCreationflowforALHforVERP(StockTransferObjects StockTransferObj, List<String> articlelist, String Frozentemp, String Chilledtemp, List<List<Object>> DBList, String Articleqty, String SiteTo, WebDriver driver) throws IOException, SQLException, AWTException{
+
+		//System.out.println("Details are loaded successfully");
+		enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SearchAndAdd);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i,driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i,driver);
+				if(getSite.getText().contains(SiteTo)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				click(StockTransferObj.deletearticle);
+
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+SiteTo+";;;Pass");
+			//Report_AddStep("testcase","Existing articles are deleted for Site "+SiteTo , "", "", "Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.SearchAndAdd);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully after deleting the existing articles;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is added successfully after deleting the existing articles" , "", "", "Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is added successfully in Stock Transfer Page" , "", "", "Pass");
+		}
+
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		articlesaddition(articlelist, StockTransferObj, Articleqty);
+		for(int i=0;i< articlelist.size();i++)
+		{  
+			String Art1 = (String) DBList.get(i).get(0);
+			//String SOH1 = (String) DBList.get(i).get(1);
+			//Double SOH = round(Double.parseDouble(DBList.get(i).get(1).toString()),0);
+			String SOH1 = decimalFormat1(DBList.get(i).get(1).toString());
+			String OM1 = "1";
+			String UOM1 = (String) DBList.get(i).get(3);
+			Double DBRecvdunits = Double.parseDouble(Articleqty) * 1;
+			String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+			//System.out.println("Article is "+Art1+"--- OM is "+OM1);
+			int k = 4;
+			for (int j = 0; j < articlelist.size(); j++)
+			{
+				WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+				WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+				WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+				WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+				WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+				String Art2 =getArticl.getText();
+				String SOH2 = getSOH.getText();
+				//SOH2 = decimalFormat(SOH2);
+				String OMvthUOM = getOM.getText();
+				String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+				OM2 = decimalFormat1(OM2);
+				String UOM2 = getUOM.getText();
+				String RcvdunitsvthUOM = getRecvd.getText();
+				String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+				Rcvdunits = decimalFormat1(Rcvdunits);
+				k = k+2;
+				//System.out.println("Article is "+Art2+"--- OM is "+OM2);
+				if(Art1.equals(Art2)){
+					if(SOH2.equals("")){
+						htmlToExtent(cName,mName,extLogger,driver,"SOH Value is not displayed for VERP Article "+Art2+";;;Pass");
+						//Report_AddStep("testcase","SOH Value is not displayed for VERP Article "+Art2,"","","Pass");	
+					}
+					if((OM1.equals(OM2)) && (DBRecvdunits1.equals(Rcvdunits)) && (UOM1.equals(UOM2))){
+						htmlToExtent(cName,mName,extLogger,driver,"OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is [ "+OM1+", "+UOM1+", "+DBRecvdunits1+"];Pass");
+						//Report_AddStep("testcase","OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+OM2+", "+UOM2+", "+Rcvdunits+"]", "DB Value is [ "+OM1+", "+UOM1+", "+DBRecvdunits1+"]", "Pass");	
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver,"OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is [ "+OM1+", "+UOM1+", "+DBRecvdunits1+"];Fail");	
+					}
+				}
+			}
+		}
+		//comparisionOfSOHValueDisplayed(StockTransferObj, articlelist,DBList);
+		click(StockTransferObj.clickSubmit);
+		waitForJSandJQueryToLoad(driver);
+
+		int count = 0;
+		for(int i=0;i< articlelist.size();i++)
+		{    		
+			String DB1 = (String) DBList.get(i).get(1);
+			String OM1 = (String) DBList.get(i).get(2);
+			//System.out.println(DB1);
+			Double Recvdunits = Double.parseDouble(Articleqty) * 1;
+			String SOH = (String) DBList.get(i).get(1);
+			Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+			//System.out.println(Db2);
+			if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+				++ count;
+			}
+		}
+		if(count > 0){
+			click(StockTransferObj.ClikAcceptQty);
+			waitForJSandJQueryToLoad(driver);
+			//System.out.println("Pop up not appeared");
+		}
+
+		if(StockTransferObj.clickHelpsize.size() > 0){
+			//System.out.println("Pop up appeared");
+			click(StockTransferObj.clickNote);
+			waitForJSandJQueryToLoad(driver);
+		}
+
+		if(StockTransferObj.CheckChilledTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterChilledTemp, Chilledtemp,driver);
+			waitFor(2);
+			htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+Chilledtemp+" is entered;;;Pass");
+			//Report_AddStep("testcase","Chilled Temperature of "+Chilledtemp+" is entered" , "", "", "Pass");
+		}
+		if(StockTransferObj.CheckFrozenTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterFrozenTemp, Frozentemp,driver);
+			waitFor(2);
+			htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+Frozentemp+" is entered;;;Pass");
+			//Report_AddStep("testcase","Frozen Temperature of "+Frozentemp+" is entered" , "", "", "Pass");
+		}
+		scrolldown(driver);
+
+		if(StockTransferObj.checkNextbutton.getAttribute("class").equals("actionBtn")){
+			click(StockTransferObj.clickNext);
+			htmlToExtent(cName,mName,extLogger,driver,"Delivery Details are entered successfully;;;Pass");
+			//Report_AddStep("testcase","Delivery Details are entered successfully" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			scrollUp1(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"ULD details are entered successfully;;;Pass");
+			//Report_AddStep("testcase","ULD details are entered successfully" , "", "", "Pass");
+		}
+		click(StockTransferObj.clickFinish);
+		waitForJSandJQueryToLoad(driver);
+		WebElement getTitlemsg = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkTitle1, StockTransferObj.CheckTitle.size(),driver);
+		String msg1 = getTitlemsg.getText();
+		//System.out.println(msg1);
+		if(msg1.equals("Errors")){
+
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Creation failed for the added articles "+StockTransferObj.CaptureErrorMsg.getText()+";;;Pass");
+			//Report_AddStep("testcase","IBT Creation failed for the added articles "+StockTransferObj.CaptureErrorMsg.getText() , "", "", "Pass");
+			if(StockTransferObj.CaptureErrorMsg.getText().contains("IBT of Non Stock Article to ALH Venue is not possible")){
+				htmlToExtent(cName,mName,extLogger,driver,"**** Error Message is Displayed properly in Browser ****;;;Pass");
+				//Report_AddStep("testcase","**** Error Message is Displayed properly in Browser ****" , "", "", "Pass");	
+			}
+			click(StockTransferObj.CaptureErrorMsg);
+			waitForJSandJQueryToLoad(driver);
+			scrollUp1(driver);
+			waitFor(2);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"IBT has been created for the added articles "+StockTransferObj.CaptureErrorMsg.getText()+";;;Fail");
+			//Report_AddStep("testcase","IBT has been created for the added articles "+StockTransferObj.CaptureErrorMsg.getText() , "", "", "Fail"); 
+		}
+		return msg1;
+	}
+
+	public List<List<Object>> IBTCreationflowforVERP(StockTransferObjects StockTransferObj, List<String> articlelist, String Frozentemp, String Chilledtemp, List<List<Object>> DBList, String Articleqty, String SiteTo, String sendStore, String Supplier, String username, WebDriver driver) throws IOException, SQLException, AWTException{
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+		List<String> artlist = new ArrayList();
+		String OrdNo;
+		String ChilledTemp1;
+		String FrozenTemp1;
+		String status = "D";
+		String Order_type = "OADV";
+		List<List<Object>> UOMdetails = new ArrayList<List<Object>>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		String formattedDate1 = dateFormat.format(date);
+		//System.out.println("Details are loaded successfully");
+		enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SearchAndAdd);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i,driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i,driver);
+				if(getSite.getText().contains(SiteTo)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				//System.out.println(StockTransferObj.checkarticlessize.size());
+				click(StockTransferObj.deletearticle);
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+SiteTo+";;;Pass");
+			//Report_AddStep("testcase","Existing articles are deleted for Site "+SiteTo , "", "", "Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.SearchAndAdd);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully after deleting the existing articles;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is added successfully after deleting the existing articles" , "", "", "Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is added successfully in Stock Transfer Page" , "", "", "Pass");
+		}
+
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		articlesaddition(articlelist, StockTransferObj, Articleqty);
+		if (sendStore.equals("Normalstore"))
+		{
+			int k = 4;
+			for(int i=0;i< articlelist.size();i++)
+			{  
+
+				WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+				WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+				WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+				WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+				WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+				String Art2 =getArticl.getText();
+				String SOH2 = getSOH.getText();
+
+				//SOH2 = decimalFormat(SOH2);
+				String OMvthUOM = getOM.getText();
+				String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+				OM2 = decimalFormat1(OM2);
+				String UOM = getUOM.getText();
+				String RcvdunitsvthUOM = getRecvd.getText();
+				String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+				Rcvdunits = decimalFormat1(Rcvdunits);
+				k = k+2;
+				//System.out.println("Article is "+Art2+"--- OM is "+OM2);
+				artlist.add(Art2);
+				for (int j = 0; j < articlelist.size(); j++)
+				{
+					String Art1 = (String) DBList.get(j).get(0);
+					//String SOH1 = (String) DBList.get(i).get(1);
+					String OM1 = (String) DBList.get(j).get(2);
+					Double DBRecvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+					String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+					//System.out.println("Article is "+Art1+"--- OM is "+OM1);
+
+					if(Art1.equals(Art2)){
+						String Str = ""+Art1+":"+UOM;
+						UOMdetails.addAll(StringToListCreation(Str));
+						if(SOH2.equals("")){
+							htmlToExtent(cName,mName,extLogger,driver,"SOH Value is not displayed for VERP Article "+Art2+";;;Pass");
+							//Report_AddStep("testcase","SOH Value is not displayed for VERP Article "+Art2,"","","Pass");	
+						}
+						if((OM1.equals(OM2)) && (DBRecvdunits1.equals(Rcvdunits))){
+							htmlToExtent(cName,mName,extLogger,driver,"OM, UOM and Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+OM2+", "+Rcvdunits+"];DB Value is [ "+OM1+", "+DBRecvdunits1+"];Pass");
+							//Report_AddStep("testcase","OM, UOM and Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+OM2+", "+Rcvdunits+"]", "DB Value is [ "+OM1+", "+DBRecvdunits1+"]", "Pass");	
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver,"OM, UOM and Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+OM2+", "+Rcvdunits+"];DB Value is [ "+OM1+", "+DBRecvdunits1+"];Fail");	
+						}
+					}
+				}
+			}
+			click(StockTransferObj.clickSubmit);
+			waitForJSandJQueryToLoad(driver);
+
+			int count = 0;
+			for(int i=0;i< articlelist.size();i++)
+			{    		
+				String DB1 = (String) DBList.get(i).get(1);
+				String OM1 = (String) DBList.get(i).get(2);
+				//System.out.println(DB1);
+				Double Recvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+				String SOH = (String) DBList.get(i).get(1);
+				Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+				//System.out.println(Db2);
+				if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+					++ count;
+				}
+			}
+			if(count > 0){
+				click(StockTransferObj.ClikAcceptQty);
+				waitForJSandJQueryToLoad(driver);
+				//System.out.println("Pop up not appeared");
+			}
+
+			if(StockTransferObj.clickHelpsize.size() > 0){
+				//System.out.println("Pop up appeared");
+				click(StockTransferObj.clickNote);
+				waitForJSandJQueryToLoad(driver);
+			}
+		}
+		else if (sendStore.equals("CostCenter")){
+			int k = 4;
+			for(int i=0;i< articlelist.size();i++)
+			{  
+				WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+				WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+				WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+				WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+				WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+				String Art2 =getArticl.getText();
+				String SOH2 = getSOH.getText();
+
+				//SOH2 = decimalFormat(SOH2);
+				String OMvthUOM = getOM.getText();
+				String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+				OM2 = decimalFormat1(OM2);
+				String UOM2 = getUOM.getText();
+				String RcvdunitsvthUOM = getRecvd.getText();
+				String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+				Rcvdunits = decimalFormat1(Rcvdunits);
+				k = k+2;
+				artlist.add(Art2);
+				for (int j = 0; j < articlelist.size(); j++)
+				{
+
+					String Art1 = (String) DBList.get(j).get(0);
+					//String SOH1 = (String) DBList.get(i).get(1);
+					String OM1 = (String) DBList.get(j).get(2);
+					String UOM1 = (String) DBList.get(j).get(3);
+					Double DBRecvdunits = Double.parseDouble(Articleqty) * 1;
+					String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+					//System.out.println("Article is "+Art1+"--- OM is "+OM1);
+
+					//System.out.println("Article is "+Art2+"--- OM is "+OM2);
+					if(Art1.equals(Art2)){
+						String Str = ""+Art1+":"+UOM2;
+						UOMdetails.addAll(StringToListCreation(Str));
+						if(SOH2.equals("")){
+							htmlToExtent(cName,mName,extLogger,driver,"SOH Value is not displayed for VERP Article "+Art2+";;;Pass");
+							//Report_AddStep("testcase","SOH Value is not displayed for VERP Article "+Art2,"","","Pass");	
+						}
+
+						if((OM2.equals("1")) && (UOM1.equals(UOM2)) && (DBRecvdunits1.equals(Rcvdunits))){
+							htmlToExtent(cName,mName,extLogger,driver,"OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is [ 1, "+UOM1+", "+DBRecvdunits1+"];Pass");
+							//Report_AddStep("testcase","OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+OM2+", "+UOM2+", "+Rcvdunits+"]", "DB Value is [ 1, "+UOM1+", "+DBRecvdunits1+"]", "Pass");	
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver,"OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is [ 1, "+UOM1+", "+DBRecvdunits1+"];Fail");	
+						}
+					}
+				}
+			}
+			click(StockTransferObj.clickSubmit);
+			waitForJSandJQueryToLoad(driver);
+
+			int count = 0;
+			for(int i=0;i< articlelist.size();i++)
+			{    		
+				String DB1 = (String) DBList.get(i).get(1);
+				String OM1 = (String) DBList.get(i).get(2);
+				//System.out.println(DB1);
+				Double Recvdunits = Double.parseDouble(Articleqty) * 1;
+				String SOH = (String) DBList.get(i).get(1);
+				Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+				//System.out.println(Db2);
+				if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+					++ count;
+				}
+			}
+			if(count > 0){
+				click(StockTransferObj.ClikAcceptQty);
+				waitForJSandJQueryToLoad(driver);
+				//System.out.println("Pop up not appeared");
+			}
+
+			if(StockTransferObj.clickHelpsize.size() > 0){
+				//System.out.println("Pop up appeared");
+				click(StockTransferObj.clickNote);
+				waitForJSandJQueryToLoad(driver);
+			}
+		}
+		if(StockTransferObj.CheckChilledTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterChilledTemp, Chilledtemp,driver);
+			waitFor(2);
+			ChilledTemp1 = Chilledtemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+Chilledtemp+" is entered;;;Pass");
+
+		}
+		else
+		{
+			ChilledTemp1 = "0.00";
+		}
+		if(StockTransferObj.CheckFrozenTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterFrozenTemp, Frozentemp,driver);
+			waitFor(2);
+			FrozenTemp1 = Frozentemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+Frozentemp+" is entered;;;Pass");
+			//Report_AddStep("testcase","Frozen Temperature of "+Frozentemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			FrozenTemp1 = "0.00";
+		}
+		scrolldown(driver);
+
+		if(StockTransferObj.checkNextbutton.getAttribute("class").equals("actionBtn")){
+			click(StockTransferObj.clickNext);
+			htmlToExtent(cName,mName,extLogger,driver,"Delivery Details are entered successfully;;;Pass");
+
+			//Report_AddStep("testcase","Delivery Details are entered successfully" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			scrollUp1(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"ULD details are entered successfully;;;Pass");
+		}
+		click(StockTransferObj.clickFinish);
+		waitForJSandJQueryToLoad(driver);
+		WebElement getTitlemsg = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkTitle1, StockTransferObj.CheckTitle.size(),driver);
+		String msg1 = getTitlemsg.getText();
+		//String msg1 = getTitlemsg.getText();
+		//System.out.println(msg1);
+		if(msg1.equals("STATUS")){
+			String S = StockTransferObj.Ordernum.getText();
+			Long OrdNum =  Long.parseLong(S.replaceAll("[^0-9\\.]+", ""));
+			//System.out.println(OrdNum);
+			OrdNo = Long.toString(OrdNum);
+			//System.out.println("Order No is " +OrdNum);
+			htmlToExtent(cName,mName,extLogger,driver,"" +S+ ";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Order Number created is " +OrdNum+";;;Pass");
+
+			click(StockTransferObj.clickMesg);
+			waitForJSandJQueryToLoad(driver);
+			waitFn(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnOrderEnquiry(StockTransferObj, driver);
+			waitFn(driver);
+			statusOfIBTOrder(StockTransferObj, OrdNo);
+			waitForJSandJQueryToLoad(driver);
+			for(int i=0;i< articlelist.size();i++)
+			{ 
+				for(int j=0;j<UOMdetails.size();j++){
+					if(articlelist.get(i).equals(UOMdetails.get(j).get(0).toString())){
+						String Str = ""+msg1+":"+Supplier+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1+":"+formattedDate1+":"+ChilledTemp1+":"+FrozenTemp1+":"+OrdNo+":"+UOMdetails.get(j).get(0).toString()+":"+UOMdetails.get(j).get(1).toString();
+						DBList4.addAll(StringToListCreation(Str));
+					}
+				}
+			}
+		}
+		else if(msg1.equals("Errors")){
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Creation failed for the added articles "+StockTransferObj.CaptureErrorMsg.getText()+";;;Fail");
+			click(StockTransferObj.CaptureErrorMsg);
+			waitForJSandJQueryToLoad(driver);
+			String Str = ""+msg1+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1;
+			DBList4.addAll(StringToListCreation(Str));
+			scrollUp1(driver);
+			waitFor(2);
+		}
+		return DBList4;
+	}
+
+	public List<List<Object>> IBTCreationflowforConsignment(StockTransferObjects StockTransferObj, List<String> articlelist, String Frozentemp, String Chilledtemp, List<List<Object>> DBList, String Articleqty, String SiteTo, String sendStore, String Supplier, String username, WebDriver driver) throws IOException, SQLException, AWTException{
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+		List<String> artlist = new ArrayList();
+		String OrdNo;
+		String ChilledTemp1;
+		String FrozenTemp1;
+		String status = "D";
+		String Order_type = "OADV";
+		List<List<Object>> UOMdetails = new ArrayList<List<Object>>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		String formattedDate1 = dateFormat.format(date);
+		//System.out.println("Details are loaded successfully");
+		enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SearchAndAdd);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i,driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i,driver);
+				if(getSite.getText().contains(SiteTo)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				//System.out.println(StockTransferObj.checkarticlessize.size());
+				click(StockTransferObj.deletearticle);
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+SiteTo+";;;Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.SearchAndAdd);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully after deleting the existing articles;;;Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully in Stock Transfer Page;;;Pass");
+		}
+
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		articlesaddition(articlelist, StockTransferObj, Articleqty);
+		int k = 4;
+		for(int i=0;i< articlelist.size();i++)
+		{  
+
+			WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+			WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+			WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+			WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+			WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+			String Art2 =getArticl.getText();
+			String SOH2 = getSOH.getText();
+
+			SOH2 = decimalFormat1(SOH2);
+			String OMvthUOM = getOM.getText();
+			String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+			OM2 = decimalFormat1(OM2);
+			String UOM = getUOM.getText();
+			String RcvdunitsvthUOM = getRecvd.getText();
+			String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+			Rcvdunits = decimalFormat1(Rcvdunits);
+			k = k+2;
+			//System.out.println("Article is "+Art2+"--- OM is "+OM2);
+			artlist.add(Art2);
+			for (int j = 0; j < articlelist.size(); j++)
+			{
+				String Art1 = (String) DBList.get(j).get(0);
+				//String SOH1 = (String) DBList.get(j).get(1);
+				//Double SOH = round(Double.parseDouble(DBList.get(j).get(1).toString()),0);
+				String SOH1 = decimalFormat1(DBList.get(j).get(1).toString());
+				String OM1 = (String) DBList.get(j).get(2);
+				Double DBRecvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+				String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+				//System.out.println("Article is "+Art1+"--- OM is "+OM1);
+				if(Art1.equals(Art2)){
+					String Str = ""+Art1+":"+UOM;
+					UOMdetails.addAll(StringToListCreation(Str));
+					if(SOH2.equals("")){
+						htmlToExtent(cName,mName,extLogger,driver,"SOH Value is not displayed for VERP Article "+Art2+";;;Pass");
+						//Report_AddStep("testcase","SOH Value is not displayed for VERP Article "+Art2,"","","Pass");	
+					}
+					if((OM1.equals(OM2)) && (DBRecvdunits1.equals(Rcvdunits)) && (SOH1.equals(SOH2))){
+						htmlToExtent(cName,mName,extLogger,driver,"SOH, OM and Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"];DB Value is [ "+SOH1+", "+OM1+", "+DBRecvdunits1+"];Pass");
+						//Report_AddStep("testcase","SOH, OM and Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"]", "DB Value is [ "+SOH1+", "+OM1+", "+DBRecvdunits1+"]", "Pass");	
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver,"SOH, OM and Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"];DB Value is [ "+SOH1+", "+OM1+", "+DBRecvdunits1+"];Fail");	
+					}
+				}
+			}
+		}
+		click(StockTransferObj.clickSubmit);
+		waitForJSandJQueryToLoad(driver);
+
+		int count = 0;
+		for(int i=0;i< articlelist.size();i++)
+		{    		
+			String DB1 = (String) DBList.get(i).get(1);
+			String OM1 = (String) DBList.get(i).get(2);
+			//System.out.println(DB1);
+			Double Recvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+			String SOH = (String) DBList.get(i).get(1);
+			Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+			//System.out.println(Db2);
+			if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+				++ count;
+			}
+		}
+		if(count > 0){
+			click(StockTransferObj.ClikAcceptQty);
+			waitForJSandJQueryToLoad(driver);
+			//System.out.println("Pop up not appeared");
+		}
+
+		if(StockTransferObj.clickHelpsize.size() > 0){
+			//System.out.println("Pop up appeared");
+			click(StockTransferObj.clickNote);
+			waitForJSandJQueryToLoad(driver);
+		}
+
+		if(StockTransferObj.CheckChilledTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterChilledTemp, Chilledtemp,driver);
+			waitFor(2);
+			ChilledTemp1 = Chilledtemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+Chilledtemp+" is entered;;;Pass");
+			//Report_AddStep("testcase","Chilled Temperature of "+Chilledtemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			ChilledTemp1 = "0.00";
+		}
+		if(StockTransferObj.CheckFrozenTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterFrozenTemp, Frozentemp,driver);
+			waitFor(2);
+			FrozenTemp1 = Frozentemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+Frozentemp+" is entered;;;Pass");
+			//Report_AddStep("testcase","Frozen Temperature of "+Frozentemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			FrozenTemp1 = "0.00";
+		}
+		scrolldown(driver);
+
+		if(StockTransferObj.checkNextbutton.getAttribute("class").equals("actionBtn")){
+			click(StockTransferObj.clickNext);
+			htmlToExtent(cName,mName,extLogger,driver,"Delivery Details are entered successfully;;;Pass");
+			waitForJSandJQueryToLoad(driver);
+			scrollUp1(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"ULD details are entered successfully;;;Pass");
+		}
+		click(StockTransferObj.clickFinish);
+		waitForJSandJQueryToLoad(driver);
+		WebElement getTitlemsg = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkTitle1, StockTransferObj.CheckTitle.size(),driver);
+		String msg1 = getTitlemsg.getText();
+		//String msg1 = getTitlemsg.getText();
+		//System.out.println(msg1);
+		if(msg1.equals("STATUS")){
+			String S = StockTransferObj.Ordernum.getText();
+			Long OrdNum =  Long.parseLong(S.replaceAll("[^0-9\\.]+", ""));
+			//System.out.println(OrdNum);
+			OrdNo = Long.toString(OrdNum);
+			//System.out.println("Order No is " +OrdNum);
+			htmlToExtent(cName,mName,extLogger,driver,"" +S+ ";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Order Number created is " +OrdNum+";;;Pass");
+			click(StockTransferObj.clickMesg);
+			waitForJSandJQueryToLoad(driver);
+			waitFn(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnOrderEnquiry(StockTransferObj, driver);
+			waitFn(driver);
+			statusOfIBTOrder(StockTransferObj, OrdNo);
+			waitForJSandJQueryToLoad(driver);
+			for(int i=0;i< articlelist.size();i++)
+			{ 
+				for(int j=0;j<UOMdetails.size();j++){
+					if(articlelist.get(i).equals(UOMdetails.get(j).get(0).toString())){
+						String Str = ""+msg1+":"+Supplier+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1+":"+formattedDate1+":"+ChilledTemp1+":"+FrozenTemp1+":"+OrdNo+":"+UOMdetails.get(j).get(0).toString()+":"+UOMdetails.get(j).get(1).toString();
+						DBList4.addAll(StringToListCreation(Str));
+					}
+				}
+			}
+		}
+		else if(msg1.equals("Errors")){
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Creation failed for the added articles "+StockTransferObj.CaptureErrorMsg.getText()+";;;Fail");
+			click(StockTransferObj.CaptureErrorMsg);
+			waitForJSandJQueryToLoad(driver);
+			String Str = ""+msg1+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1;
+			DBList4.addAll(StringToListCreation(Str));
+			scrollUp1(driver);
+			waitFor(2);
+		}
+		return DBList4;
+	}
+
+	public void IBTCreationflowforDisplayArticles(StockTransferObjects StockTransferObj, List<String> articlelist, List<List<Object>> DBList, String Articleqty, String SiteTo, String costcenter, String alh, String fromStore, WebDriver driver) throws IOException, SQLException, AWTException{
+
+		//System.out.println("Details are loaded successfully");
+		enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SearchAndAdd);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+		htmlToExtent(cName,mName,extLogger,driver,"**** Checking IBT Creation for Display Articles from "+fromStore+" Store to "+SiteTo+" Store ****;;;Pass");
+		//Report_AddStep("testcase","**** Checking IBT Creation for Display Articles from "+fromStore+" Store to "+SiteTo+" Store ****" , "", "", "Pass");
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i,driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i,driver);
+				if(getSite.getText().contains(SiteTo)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				//System.out.println(StockTransferObj.checkarticlessize.size());
+				click(StockTransferObj.deletearticle);
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+SiteTo+";;;Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.SearchAndAdd);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully after deleting the existing articles;;;Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully in Stock Transfer Page;;;Pass");
+		}
+
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		//articlesaddition(articlelist, StockTransferObj, Articleqty);
+		String art = articlelist.get(0);
+		//System.out.println(art);
+		enterText(StockTransferObj.enterArticle, art,driver);
+		enterText(StockTransferObj.enterQty, Articleqty,driver);
+		click(StockTransferObj.ClickSearch);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.clickArticleSearch);
+		click(StockTransferObj.clickAddtoList);
+		waitForJSandJQueryToLoad(driver);
+		if (StockTransferObj.CheckError.getText().equals("Errors"))
+		{
+			if( StockTransferObj.ErrorTxt.getText().contains("Display/Prepack articles "+art+" cannot be added")){
+				htmlToExtent(cName,mName,extLogger,driver,""+StockTransferObj.ErrorTxt.getText()+";;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver,""+StockTransferObj.ErrorTxt.getText()+";;;Fail");
+				//Report_AddStep("testcase","" , "", "", "Fail");
+			}
+		}
+		click(StockTransferObj.CheckError);
+		scrollUp1(driver);
+		scrollUp1(driver);
+		clickOnstockTransfer(StockTransferObj, driver);
+		waitForJSandJQueryToLoad(driver);
+		enterText(StockTransferObj.TargetSite, costcenter,driver);				
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SearchAndAdd);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+		htmlToExtent(cName,mName,extLogger,driver,"**** Checking IBT Creation for Display Articles from "+fromStore+" Store to "+costcenter+" Cost Center ****;;;Pass");
+		//Report_AddStep("testcase","**** Checking IBT Creation for Display Articles from "+fromStore+" Store to "+costcenter+" Cost Center ****" , "", "", "Pass");
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+costcenter+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+costcenter+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i,driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i,driver);
+				if(getSite.getText().contains(costcenter)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				//System.out.println(StockTransferObj.checkarticlessize.size());
+				click(StockTransferObj.deletearticle);
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+costcenter+";;;Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			waitForJSandJQueryToLoad(driver);
+			enterText(StockTransferObj.TargetSite, costcenter,driver);				
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.SearchAndAdd);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+costcenter+" is added successfully after deleting the existing articles;;;Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+costcenter+" is added successfully in Stock Transfer Page;;;Pass");
+		}
+
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		//articlesaddition(articlelist, StockTransferObj, Articleqty);
+
+		enterText(StockTransferObj.enterArticle, art,driver);
+		enterText(StockTransferObj.enterQty, Articleqty,driver);
+		click(StockTransferObj.ClickSearch);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.clickArticleSearch);
+		click(StockTransferObj.clickAddtoList);
+		
+		waitForJSandJQueryToLoad(driver);
+		if (StockTransferObj.CheckError.getText().equals("Errors"))
+		{
+			if( StockTransferObj.ErrorTxt.getText().contains("Display/Prepack articles "+art+" cannot be added")){
+				htmlToExtent(cName,mName,extLogger,driver,""+(StockTransferObj.ErrorTxt).getText()+";;;Pass");
+				//Report_AddStep("testcase",""+(StockTransferObj.ErrorTxt).getText() , "", "", "Pass");	
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver,""+(StockTransferObj.ErrorTxt).getText()+";;;Fail");
+			}
+		}
+		click(StockTransferObj.CheckError);
+		waitForJSandJQueryToLoad(driver);
+		scrollUp1(driver);
+		scrollUp1(driver);
+		waitForJSandJQueryToLoad(driver);
+		clickOnstockTransfer(StockTransferObj, driver);
+		waitForJSandJQueryToLoad(driver);
+		enterText(StockTransferObj.TargetSite, alh,driver);				
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SearchAndAdd);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+		htmlToExtent(cName,mName,extLogger,driver,"**** Checking IBT Creation for Display Articles from "+fromStore+" Store to "+alh+" ALH ****;;;Pass");
+		//Report_AddStep("testcase","**** Checking IBT Creation for Display Articles from "+fromStore+" Store to "+alh+" ALH ****" , "", "", "Pass");
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+alh+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+alh+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i,driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i,driver);
+				if(getSite.getText().contains(alh)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				//System.out.println(StockTransferObj.checkarticlessize.size());
+				click(StockTransferObj.deletearticle);
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+alh+";;;Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			enterText(StockTransferObj.TargetSite, alh,driver);				
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.SearchAndAdd);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+alh+" is added successfully after deleting the existing articles;;;Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+alh+" is added successfully in Stock Transfer Page;;;Pass");
+		}
+
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		//articlesaddition(articlelist, StockTransferObj, Articleqty);
+
+		enterText(StockTransferObj.enterArticle, art,driver);
+		enterText(StockTransferObj.enterQty, Articleqty,driver);
+		click(StockTransferObj.ClickSearch);
+		
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.clickArticleSearch);
+		click(StockTransferObj.clickAddtoList);
+		waitForJSandJQueryToLoad(driver);
+		if (StockTransferObj.CheckError.getText().equals("Errors"))
+		{
+			if( StockTransferObj.ErrorTxt.getText().contains("Display/Prepack articles "+art+" cannot be added")){
+				htmlToExtent(cName,mName,extLogger,driver,""+(StockTransferObj.ErrorTxt).getText()+";;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver,""+(StockTransferObj.ErrorTxt).getText()+";;;Fail");
+			}
+		}
+		click(StockTransferObj.CheckError);
+		scrollUp1(driver);
+		scrollUp1(driver);
+
+	}
+
+	public List<List<Object>> IBTCreationflowforCPBD(StockTransferObjects StockTransferObj, List<String> articlelist, String Frozentemp, String Chilledtemp, List<List<Object>> DBList, String Articleqty, String SiteTo, String sendStore,  String Supplier, String username, WebDriver driver) throws IOException, SQLException, AWTException{
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+		List<String> artlist = new ArrayList();
+		String OrdNo;
+		String ChilledTemp1;
+		String FrozenTemp1;
+		String status = "D";
+		String Order_type = "OADV";
+		List<List<Object>> UOMdetails = new ArrayList<List<Object>>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		String formattedDate1 = dateFormat.format(date);
+		//System.out.println("Details are loaded successfully");
+		enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SearchAndAdd);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i,driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i,driver);
+				if(getSite.getText().contains(SiteTo)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				click(StockTransferObj.deletearticle);
+
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+SiteTo+";;;Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.SearchAndAdd);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully after deleting the existing articles;;;Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully in Stock Transfer Page;;;Pass");
+		}
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		if((sendStore.equals("ALH")) || sendStore.equals("Costcenter")){
+			articlesaddition(articlelist, StockTransferObj, Articleqty);
+		}else{
+		articlesadditionforCPBD(articlelist, StockTransferObj, Articleqty);
+		}
+		if(sendStore.equals("Normalstore")){
+			int k = 4;
+			for(int i=0;i< articlelist.size();i++)
+			{  
+				WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+				WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+				WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+				WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+				WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+				String Art2 =getArticl.getText();
+				String SOH2 = getSOH.getText();
+				SOH2 = decimalFormat1(SOH2);
+				String OMvthUOM = getOM.getText();
+				String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+				OM2 = decimalFormat1(OM2);
+				String UOM2 = getUOM.getText();
+				String RcvdunitsvthUOM = getRecvd.getText();
+				String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+				Rcvdunits = decimalFormat1(Rcvdunits);
+				k = k+2;
+				//System.out.println("Article is "+Art2+" -- SOH is "+SOH2+"--- OM is "+OM2);
+				artlist.add(Art2);
+				for (int j = 0; j < articlelist.size(); j++)
+				{
+					String Art1 = (String) DBList.get(j).get(0);
+					//String SOH1 = (String) DBList.get(j).get(1);
+					//Double SOH = round(Double.parseDouble(DBList.get(j).get(1).toString()),0);
+					String SOH1 = decimalFormat1(DBList.get(j).get(1).toString());
+					String OM1 = (String) DBList.get(j).get(2);
+					String UOM1 = (String) DBList.get(j).get(3);
+					Double DBRecvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+					String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+					//System.out.println("Article is "+Art1+" -- SOH is "+SOH1+"--- OM is "+OM1);
+
+					if(Art1.equals(Art2)){
+						String Str = ""+Art1+":"+UOM2;
+						UOMdetails.addAll(StringToListCreation(Str));
+						if((SOH1.equals(SOH2)) && (OM1.equals(OM2)) && (DBRecvdunits1.equals(Rcvdunits)) && (UOM1.equals(UOM2))){
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"];Pass");
+							//Report_AddStep("testcase","SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"]", "Pass");	
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"];Fail");	
+						}
+					}
+				}
+			}
+			click(StockTransferObj.clickSubmit);
+			waitForJSandJQueryToLoad(driver);
+
+			int count = 0;
+			for(int i=0;i< articlelist.size();i++)
+			{    		
+				String DB1 = (String) DBList.get(i).get(1);
+				String OM1 = (String) DBList.get(i).get(2);
+				//System.out.println(DB1);
+				Double Recvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+				String SOH = (String) DBList.get(i).get(1);
+				Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+				//System.out.println(Db2);
+				if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+					++ count;
+				}
+			}
+			if(count > 0){
+				click(StockTransferObj.ClikAcceptQty);
+				waitForJSandJQueryToLoad(driver);
+				//System.out.println("Pop up not appeared");
+			}
+		}
+		else if ((sendStore.equals("ALH")) || sendStore.equals("Costcenter")){
+			int k = 4;
+			for(int i=0;i< articlelist.size();i++)
+			{  
+				WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+				WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+				WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+				WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+				WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+				String Art2 =getArticl.getText();
+				String SOH2 = getSOH.getText();
+
+				SOH2 = decimalFormat1(SOH2);
+				String OMvthUOM = getOM.getText();
+				String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+				OM2 = decimalFormat1(OM2);
+				String UOM2 = getUOM.getText();
+				String RcvdunitsvthUOM = getRecvd.getText();
+				String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+				Rcvdunits = decimalFormat1(Rcvdunits);
+				k = k+2;
+				//System.out.println("Article is "+Art2+"--- OM is "+OM2);
+				artlist.add(Art2);
+				for (int j = 0; j < articlelist.size(); j++)
+				{
+					String Art1 = (String) DBList.get(j).get(0);
+					//String SOH1 = (String) DBList.get(i).get(1);
+					//Double SOH = round(Double.parseDouble(DBList.get(j).get(1).toString()),0);
+					String SOH1 = decimalFormat1(DBList.get(j).get(1).toString());
+					String OM1 = (String) DBList.get(j).get(2);
+					String UOM1 = (String) DBList.get(j).get(3);
+					Double DBRecvdunits = Double.parseDouble(Articleqty) * 1;
+					String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+					//System.out.println("Article is "+Art1+"--- OM is "+OM1);
+					if(Art1.equals(Art2)){
+						String Str = ""+Art1+":"+UOM2;
+						UOMdetails.addAll(StringToListCreation(Str));
+						if(SOH2.equals("")){
+							htmlToExtent(cName,mName,extLogger,driver,"SOH Value is not displayed for VERP Article "+Art2+";;;Pass");
+							//Report_AddStep("testcase","SOH Value is not displayed for VERP Article "+Art2,"","","Pass");	
+						}
+
+						if((OM2.equals("1")) && (UOM1.equals(UOM2)) && (DBRecvdunits1.equals(Rcvdunits)) && (SOH1.equals(SOH2))){
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", 1, "+UOM1+", "+DBRecvdunits1+"];Pass");
+							//Report_AddStep("testcase","SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", 1, "+UOM1+", "+DBRecvdunits1+"]", "Pass");	
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", 1, "+UOM1+", "+DBRecvdunits1+"];Fail");	
+						}
+					}
+				}
+			}
+			click(StockTransferObj.clickSubmit);
+			waitForJSandJQueryToLoad(driver);
+
+			int count = 0;
+			for(int i=0;i< articlelist.size();i++)
+			{    		
+				String DB1 = (String) DBList.get(i).get(1);
+				String OM1 = (String) DBList.get(i).get(2);
+				//System.out.println(DB1);
+				Double Recvdunits = Double.parseDouble(Articleqty) * 1;
+				String SOH = (String) DBList.get(i).get(1);
+				Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+				//System.out.println(Db2);
+				if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+					++ count;
+				}
+			}
+			if(count > 0){
+				click(StockTransferObj.ClikAcceptQty);
+				waitForJSandJQueryToLoad(driver);
+				//System.out.println("Pop up not appeared");
+			}
+		}
+
+		if(StockTransferObj.clickHelpsize.size() > 0){
+			//System.out.println("Pop up appeared");
+			click(StockTransferObj.clickNote);
+			waitForJSandJQueryToLoad(driver);
+		}
+
+		if(StockTransferObj.CheckChilledTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterChilledTemp, Chilledtemp,driver);
+			waitFor(2);
+			ChilledTemp1 = Chilledtemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+Chilledtemp+" is entered;;;Pass");
+
+			//Report_AddStep("testcase","Chilled Temperature of "+Chilledtemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			ChilledTemp1 = "0.00";
+		}
+		if(StockTransferObj.CheckFrozenTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterFrozenTemp, Frozentemp,driver);
+			waitFor(2);
+			FrozenTemp1 = Frozentemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+Frozentemp+" is entered;;;Pass");
+		}
+		else
+		{
+			FrozenTemp1 = "0.00";
+		}
+		scrolldown(driver);
+
+		if(StockTransferObj.checkNextbutton.getAttribute("class").equals("actionBtn")){
+			click(StockTransferObj.clickNext);
+			htmlToExtent(cName,mName,extLogger,driver,"Delivery Details are entered successfully;;;Pass");
+			//Report_AddStep("testcase","Delivery Details are entered successfully" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			scrollUp1(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"ULD details are entered successfully;;;Pass");
+			//Report_AddStep("testcase","ULD details are entered successfully" , "", "", "Pass");
+		}
+		click(StockTransferObj.clickFinish);
+		waitForJSandJQueryToLoad(driver);
+		WebElement getTitlemsg = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkTitle1, StockTransferObj.CheckTitle.size(),driver);
+		String msg1 = getTitlemsg.getText();
+		//System.out.println(msg1);
+		if(msg1.equals("STATUS")){
+			String S = StockTransferObj.Ordernum.getText();
+			Long OrdNum =  Long.parseLong(S.replaceAll("[^0-9\\.]+", ""));
+			//System.out.println(OrdNum);
+			OrdNo = Long.toString(OrdNum);
+			//System.out.println("Order No is " +OrdNum);
+			htmlToExtent(cName,mName,extLogger,driver,"" +S+ ";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Order Number created is " +OrdNum+";;;Pass");
+			click(StockTransferObj.clickMesg);
+			waitForJSandJQueryToLoad(driver);
+			waitFn(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnOrderEnquiry(StockTransferObj, driver);
+			waitFn(driver);
+			statusOfIBTOrder(StockTransferObj, OrdNo);
+			waitForJSandJQueryToLoad(driver);
+			for(int i=0;i< articlelist.size();i++)
+			{ 
+				for(int j=0;j<UOMdetails.size();j++){
+					if(articlelist.get(i).equals(UOMdetails.get(j).get(0).toString())){
+						String Str = ""+msg1+":"+Supplier+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1+":"+formattedDate1+":"+ChilledTemp1+":"+FrozenTemp1+":"+OrdNo+":"+UOMdetails.get(j).get(0).toString()+":"+UOMdetails.get(j).get(1).toString();
+						DBList4.addAll(StringToListCreation(Str));
+					}
+				}
+			}
+		}
+		else if(msg1.equals("Errors")){
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Creation failed for the added articles "+StockTransferObj.CaptureErrorMsg.getText()+";;;Fail");
+			click(StockTransferObj.CaptureErrorMsg);
+			waitForJSandJQueryToLoad(driver);
+			String Str = ""+msg1+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1;
+			DBList4.addAll(StringToListCreation(Str));
+			scrollUp1(driver);
+			waitFor(2);
+		}
+		return DBList4;
+	}
+
+	public String IBTALHReturnstogetArticles(StockTransferObjects StockTransferObj, String OrderNum) throws SQLException, IOException{
+		List<String> articlelist = new ArrayList();
+		String Art2 = "";
+		click(StockTransferObj.clickCreateOrdrs);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.clickOrdrReceipt);
+		waitForJSandJQueryToLoad(driver);
+		htmlToExtent(cName,mName,extLogger,driver,"Order on Receipt screen is loaded;;;Pass");
+		//Report_AddStep("testcase","Order on Receipt screen is loaded", "", "", "Pass");
+		click(StockTransferObj.clickStore);
+		waitForJSandJQueryToLoad(driver);
+		htmlToExtent(cName,mName,extLogger,driver,"Order Number " +OrderNum+ " is entered in Browser;;;Pass");
+		//Report_AddStep("testcase","Order Number " +OrderNum+ " is entered in Browser", "", "", "Pass");
+		enterText(StockTransferObj.EnterOrdNo, OrderNum,driver);
+		StockTransferObj.EnterOrdNo.sendKeys(Keys.RETURN); 
+		waitForJSandJQueryToLoad(driver);
+		scrolldown(driver);
+		for (int i=StockTransferObj.GetArticlesize.size()-1;i>0;i=i-2){
+
+			if(((StockTransferObj.GetArticlesize.size())/2) > 2){
+				WebElement getArt = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.getArt, 1,driver);
+				String art2 = getArt.getText();
+				htmlToExtent(cName,mName,extLogger,driver,"Article " +art2+ " is deleted from the list;;;Pass");
+				//Report_AddStep("testcase","Article " +art2+ " is deleted from the list", "", "", "Pass");
+				WebElement delArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.deleteArticles, 1,driver);
+				click(delArticl);
+				waitForJSandJQueryToLoad(driver);
+				click(StockTransferObj.clickOK);
+				waitForJSandJQueryToLoad(driver);
+
+			}
+
+		}
+		for (int i=StockTransferObj.GetArticlesize.size()-1;i>0;i=i-2){
+
+			WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.getArt, i,driver);
+			String art2 = getArticl.getText();
+			//String art1 = "";
+			Art2 = Art2+art2+",";
+			htmlToExtent(cName,mName,extLogger,driver,"Article " +art2+ " is present in the article list;;;Pass");
+			//Report_AddStep("testcase","Article " +art2+ " is present in the article list", "", "", "Pass");
+		}
+
+
+		return Art2;
+	}
+
+	public List IBTALHReturnstocalcualteSOH(StockTransferObjects StockTransferObj, String OrderNum, List<String> articlelist, List<List<Object>> DBList) throws SQLException, IOException{
+		List<List<Object>> DBList3 = new ArrayList<List<Object>>();;
+		for(int i=0;i< articlelist.size();i++)
+		{  
+			String Art1 = (String) DBList.get(i).get(0);
+			String SOH1 = (String) DBList.get(i).get(1);
+			String OM1 = (String) DBList.get(i).get(2);
+			String UOM1 = (String) DBList.get(i).get(3);
+			//Double DBRecvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+			//String DBRecvdunits1 = decimalFormat(Double.toString(DBRecvdunits));
+			//System.out.println("Article is "+Art1+"--- OM is "+OM1);
+			for (int k=StockTransferObj.GetArticlesize.size()-1;k>0;k=k-2)
+			{
+				WebElement getArt = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.getArt, k,driver);
+				WebElement getBaseUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.getBaseUOM, k,driver);
+				WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.getSOH, k,driver);
+				WebElement getQty = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.getQty, k,driver);
+				WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.getOM, k,driver);
+				WebElement getRecvdunits = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.getRecvdUnits, k,driver);
+				String art2 = getArt.getText();
+				String UOM2 = getBaseUOM.getText();
+				String SOH2 = getSOH.getText();
+				SOH2 = decimalFormat1(SOH2);
+				String OMvthUOM = getOM.getText();
+				String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+				OM2 = decimalFormat1(OM2);
+				String Qty = getQty.getAttribute("value");
+				String Rcvdunits = getRecvdunits.getText();
+				//String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+				Rcvdunits = decimalFormat1(Rcvdunits);
+				Double DBRecvdunits = Double.parseDouble(Qty) * 1;
+				String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+				//System.out.println("Article is "+Art1+" -- SOH is "+SOH1+"--- OM is "+OM1);
+				if(Art1.equals(art2)){
+					if(SOH2.equals(SOH1) && (OM2.equals("1")) && (UOM1.equals(UOM2)) && (DBRecvdunits1.equals(Rcvdunits))){
+						htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", 1, "+UOM1+", "+DBRecvdunits1+"];Pass");
+						//Report_AddStep("testcase","SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", 1, "+UOM1+", "+DBRecvdunits1+"]", "Pass");	
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", 1, "+UOM1+", "+DBRecvdunits1+"];Fail");	
+					}
+				}
+				String Str = ""+Qty;
+				DBList3.addAll(StringToListCreation(Str));
+			}
+
+		}
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SubmitOrder);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickYES);
+		waitForJSandJQueryToLoad(driver);
+		if (StockTransferObj.Checktitle.getText().equals("STATUS")){
+			htmlToExtent(cName,mName,extLogger,driver,""+StockTransferObj.GetMSG.getText()+ ";;;Pass");
+			//Report_AddStep("testcase",""+StockTransferObj.GetMSG.getText() , "", "", "Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,""+StockTransferObj.GetMSG.getText()+ ";;;Fail");
+		}
+		click(StockTransferObj.Checktitle);
+		waitForJSandJQueryToLoad(driver);
+		scrollUp(driver);
+		return DBList3;
+	}
+
+	public List<List<Object>> IBTCreationflowfromStoretoDC(StockTransferObjects StockTransferObj, List<String> articlelist, String Frozentemp, String Chilledtemp, List<List<Object>> DBList, String Articleqty, String SiteTo, String sendStore, String ContactName, String AuthNo, String Supplier, String username, String ArtType, WebDriver driver) throws IOException, SQLException, AWTException{
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+		List<String> artlist = new ArrayList();
+		String OrdNo;
+		String ChilledTemp1;
+		String FrozenTemp1;
+		String status = "D";
+		String Order_type = "OADV";
+		List<List<Object>> UOMdetails = new ArrayList<List<Object>>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		String formattedDate1 = dateFormat.format(date);
+		//System.out.println("Details are loaded successfully");
+		enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SearchAndAdd);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i,driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i,driver);
+				if(getSite.getText().contains(SiteTo)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				click(StockTransferObj.deletearticle);
+
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+SiteTo+";;;Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.SearchAndAdd);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully after deleting the existing articles;;;Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully in Stock Transfer Page;;;Pass");
+		}
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		articlesaddition(articlelist, StockTransferObj, Articleqty);
+		if(sendStore.equals("Normalstore") && ArtType.equals("")){
+			int k = 4;
+			for(int i=0;i< articlelist.size();i++)
+			{  
+				WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+				WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+				WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+				WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+				WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+				String Art2 =getArticl.getText();
+				String SOH2 = getSOH.getText();
+
+				SOH2 = decimalFormat1(SOH2);
+				String OMvthUOM = getOM.getText();
+				String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+				OM2 = decimalFormat1(OM2);
+				String UOM2 = getUOM.getText();
+				String RcvdunitsvthUOM = getRecvd.getText();
+				String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+				Rcvdunits = decimalFormat1(Rcvdunits);
+				k = k+2;
+				//System.out.println("Article is "+Art2+"--- OM is "+OM2);
+				artlist.add(Art2);
+				for (int j = 0; j < articlelist.size(); j++)
+				{
+					String Art1 = (String) DBList.get(j).get(0);
+					//String SOH1 = (String) DBList.get(j).get(1);
+					//Double SOH = round(Double.parseDouble(DBList.get(j).get(1).toString()),0);
+					String SOH1 = decimalFormat1(DBList.get(j).get(1).toString());
+					String OM1 = (String) DBList.get(j).get(2);
+					String UOM1 = (String) DBList.get(j).get(3);
+					Double DBRecvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+					String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+					//System.out.println("Article is "+Art1+"--- OM is "+OM1);
+					if(Art1.equals(Art2)){
+						String Str = ""+Art1+":"+UOM2;
+						UOMdetails.addAll(StringToListCreation(Str));					
+						if((OM2.equals(OM2)) && (UOM1.equals(UOM2)) && (DBRecvdunits1.equals(Rcvdunits) && (SOH1.equals(SOH2)))){
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"];Pass");
+							//Report_AddStep("testcase","SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"]", "Pass");	
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"];Fail");	
+						}
+					}
+				}
+			}
+			click(StockTransferObj.clickSubmit);
+			waitForJSandJQueryToLoad(driver);
+
+			int count = 0;
+			for(int i=0;i< articlelist.size();i++)
+			{    		
+				String DB1 = (String) DBList.get(i).get(1);
+				String OM1 = (String) DBList.get(i).get(2);
+				//System.out.println(DB1);
+				Double Recvdunits = Double.parseDouble(Articleqty) * 1;
+				String SOH = (String) DBList.get(i).get(1);
+				Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+				//System.out.println(Db2);
+				if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+					++ count;
+				}
+			}
+			if(count > 0){
+				click(StockTransferObj.ClikAcceptQty);
+				waitForJSandJQueryToLoad(driver);
+				//System.out.println("Pop up not appeared");
+			}
+		}else{
+			int k = 4;
+			for(int i=0;i< articlelist.size();i++)
+			{  
+				WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+				WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+				WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+				WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+				WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+				WebElement enterWeight = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.enterWgt, k,driver);
+				String Art2 =getArticl.getText();
+				String SOH2 = getSOH.getText();
+
+				SOH2 = decimalFormat1(SOH2);
+				String OMvthUOM = getOM.getText();
+				String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+				OM2 = decimalFormat1(OM2);
+				String UOM2 = getUOM.getText();
+				String RcvdunitsvthUOM = getRecvd.getText();
+				String  String1 [] = splitString(RcvdunitsvthUOM," ");
+				String Rcvdunits = decimalFormat1(String1[0]);
+				Double Weight = random_no(20) +1.765;
+				Actions action = new Actions(driver);
+				action.moveToElement(enterWeight).doubleClick().perform();
+				String Weight1 = decimalFormat1(Weight.toString());
+				enterWeight.sendKeys(""+Weight1);
+				//String BaseUOM = String1[2];
+				//String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+				//Rcvdunits = decimalFormat1(Rcvdunits);
+				k = k+2;
+				//System.out.println("Article is "+Art2+" -- SOH is "+SOH2+"--- OM is "+OM2);
+				artlist.add(Art2);
+				for (int j = 0; j < articlelist.size(); j++)
+				{
+					String Art1 = (String) DBList.get(j).get(0);
+					//String SOH2 = (String) DBList.get(j).get(1);
+					Double SOH = round(Double.parseDouble(DBList.get(j).get(1).toString()),0);
+					String SOH1 = decimalFormat1(SOH.toString());
+					String OM1 = (String) DBList.get(j).get(2);
+					String UOM1 = (String) DBList.get(j).get(3);
+					Double DBRecvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+					String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+					//System.out.println("Article is "+Art1+"--- OM is "+OM1);
+					if(Art1.equals(Art2)){
+						String Str = ""+Art1+":"+UOM2+":"+DBRecvdunits1+":"+Weight1;
+						UOMdetails.addAll(StringToListCreation(Str));
+						if((OM2.equals(OM2)) && (UOM1.equals(UOM2)) && (DBRecvdunits1.equals(Rcvdunits) && (SOH1.equals(SOH2)))){
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"];Pass");
+							//Report_AddStep("testcase","SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"]", "Pass");	
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"];Fail");	
+						}
+					}
+				}
+			}
+			click(StockTransferObj.clickSubmit);
+			waitForJSandJQueryToLoad(driver);
+
+			int count = 0;
+			for(int i=0;i< articlelist.size();i++)
+			{    		
+				String DB1 = (String) DBList.get(i).get(1);
+				String OM1 = (String) DBList.get(i).get(2);
+				//System.out.println(DB1);
+				Double Recvdunits = Double.parseDouble(Articleqty) * 1;
+				String SOH = (String) DBList.get(i).get(1);
+				Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+				//System.out.println(Db2);
+				if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+					++ count;
+				}
+			}
+			if(count > 0){
+				click(StockTransferObj.ClikAcceptQty);
+				waitForJSandJQueryToLoad(driver);
+				//System.out.println("Pop up not appeared");
+			}
+		}
+
+		if(StockTransferObj.clickHelpsize.size() > 0){
+			//System.out.println("Pop up appeared");
+			click(StockTransferObj.clickNote);
+			waitForJSandJQueryToLoad(driver);
+		}
+		enterText(StockTransferObj.Entercntct, ContactName,driver);
+		enterText(StockTransferObj.EnterAuth, AuthNo,driver);
+
+		if(StockTransferObj.CheckChilledTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterChilledTemp, Chilledtemp,driver);
+			waitFor(2);
+			ChilledTemp1 = Chilledtemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+Chilledtemp+" is entered;;;Pass");
+
+			//Report_AddStep("testcase","Chilled Temperature of "+Chilledtemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			ChilledTemp1 = "0.00";
+		}
+		if(StockTransferObj.CheckFrozenTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterFrozenTemp, Frozentemp,driver);
+			waitFor(2);
+			FrozenTemp1 = Frozentemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+Frozentemp+" is entered;;;Pass");
+			//Report_AddStep("testcase","Frozen Temperature of "+Frozentemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			FrozenTemp1 = "0.00";
+		}
+		scrolldown(driver);
+
+		if(StockTransferObj.checkNextbutton.getAttribute("class").equals("actionBtn")){
+			click(StockTransferObj.clickNext);
+			htmlToExtent(cName,mName,extLogger,driver,"Delivery Details are entered successfully;;;Pass");
+
+
+			//Report_AddStep("testcase","Delivery Details are entered successfully" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			scrollUp1(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"ULD details are entered successfully;;;Pass");
+		}
+		click(StockTransferObj.clickFinish);
+		waitForJSandJQueryToLoad(driver);
+		WebElement getTitlemsg = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkTitle1, StockTransferObj.CheckTitle.size(),driver);
+		String msg1 = getTitlemsg.getText();
+		//System.out.println(msg1);
+		if(msg1.equals("STATUS")){
+			String S = StockTransferObj.Ordernum.getText();
+			Long OrdNum =  Long.parseLong(S.replaceAll("[^0-9\\.]+", ""));
+			//System.out.println(OrdNum);
+			OrdNo = Long.toString(OrdNum);
+			//System.out.println("Order No is " +OrdNum);
+			htmlToExtent(cName,mName,extLogger,driver,"" +S+ ";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Order Number created is " +OrdNum+";;;Pass");
+
+			click(StockTransferObj.clickMesg);
+			waitForJSandJQueryToLoad(driver);
+			waitFn(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnOrderEnquiry(StockTransferObj, driver);
+			waitFn(driver);
+			statusOfIBTOrder(StockTransferObj, OrdNo);
+			waitForJSandJQueryToLoad(driver);
+			for(int i=0;i< articlelist.size();i++)
+			{ 
+				for(int j=0;j<UOMdetails.size();j++){
+					if(articlelist.get(i).equals(UOMdetails.get(j).get(0).toString())){
+						String Str = ""+msg1+":"+Supplier+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1+":"+formattedDate1+":"+ChilledTemp1+":"+FrozenTemp1+":"+OrdNo+":"+UOMdetails.get(j).get(0).toString()+":"+UOMdetails.get(j).get(1).toString()+":"+ContactName+":"+AuthNo;
+						DBList4.addAll(StringToListCreation(Str));
+					}
+				}
+			}
+		}
+		else if(msg1.equals("Errors")){
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Creation failed for the added articles "+StockTransferObj.CaptureErrorMsg.getText()+";;;Fail");
+			click(StockTransferObj.CaptureErrorMsg);
+			waitForJSandJQueryToLoad(driver);
+			String Str = ""+msg1+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1;
+			DBList4.addAll(StringToListCreation(Str));
+			scrollUp1(driver);
+			waitFor(2);
+		}
+		return DBList4;
+	}
+
+	public List<List<Object>> IBTCreationflowforCPBDtoDC(StockTransferObjects StockTransferObj, List<String> articlelist, String Frozentemp, String Chilledtemp, List<List<Object>> DBList, String Articleqty, String SiteTo, String sendStore, String ContactName, String AuthNo, String Supplier, String username, WebDriver driver) throws IOException, SQLException, AWTException{
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+		List<String> artlist = new ArrayList();
+		String OrdNo;
+		String ChilledTemp1;
+		String FrozenTemp1;
+		String status = "D";
+		String Order_type = "OADV";
+		List<List<Object>> UOMdetails = new ArrayList<List<Object>>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		String formattedDate1 = dateFormat.format(date);
+		//System.out.println("Details are loaded successfully");
+		enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SearchAndAdd);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i,driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i,driver);
+				if(getSite.getText().contains(SiteTo)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				click(StockTransferObj.deletearticle);
+
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+SiteTo+";;;Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.SearchAndAdd);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully after deleting the existing articles;;;Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully in Stock Transfer Page;;;Pass");
+		}
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		articlesadditionforCPBD(articlelist, StockTransferObj, Articleqty);
+		if(sendStore.equals("Normalstore")){
+			int k = 4;
+			for(int i=0;i< articlelist.size();i++)
+			{  
+				WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+				WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+				WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+				WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+				WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+				String Art2 =getArticl.getText();
+				String SOH2 = getSOH.getText();
+				SOH2 = decimalFormat1(SOH2);
+				String OMvthUOM = getOM.getText();
+				String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+				OM2 = decimalFormat1(OM2);
+				String UOM2 = getUOM.getText();
+				String RcvdunitsvthUOM = getRecvd.getText();
+				String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+				Rcvdunits = decimalFormat1(Rcvdunits);
+				k = k+2;
+				//System.out.println("Article is "+Art2+" -- SOH is "+SOH2+"--- OM is "+OM2);
+				artlist.add(Art2);
+				for (int j = 0; j < articlelist.size(); j++)
+				{
+					String Art1 = (String) DBList.get(j).get(0);
+					//String SOH1 = (String) DBList.get(j).get(1);
+					//Double SOH = round(Double.parseDouble(DBList.get(j).get(1).toString()),0);
+					String SOH1 = decimalFormat1(DBList.get(j).get(1).toString());
+					String OM1 = (String) DBList.get(j).get(2);
+					String UOM1 = (String) DBList.get(j).get(3);
+					Double DBRecvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+					String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+					//System.out.println("Article is "+Art1+" -- SOH is "+SOH1+"--- OM is "+OM1);
+					if(Art1.equals(Art2)){
+						String Str = ""+Art1+":"+UOM2;
+						UOMdetails.addAll(StringToListCreation(Str));
+						if((SOH1.equals(SOH2)) && (OM1.equals(OM2)) && (DBRecvdunits1.equals(Rcvdunits)) && (UOM1.equals(UOM2))){
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"];Pass");
+							//Report_AddStep("testcase","SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"]", "Pass");	
+						}
+						else{
+							htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"];Fail");
+							//Report_AddStep("testcase","SOH, OM, UOM, Received Units of the article "+Art1+" is not displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits+"]", "Fail");	
+						}
+					}
+				}
+			}
+			click(StockTransferObj.clickSubmit);
+			waitForJSandJQueryToLoad(driver);
+
+			int count = 0;
+			for(int i=0;i< articlelist.size();i++)
+			{    		
+				String DB1 = (String) DBList.get(i).get(1);
+				String OM1 = (String) DBList.get(i).get(2);
+				//System.out.println(DB1);
+				Double Recvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+				String SOH = (String) DBList.get(i).get(1);
+				Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+				//System.out.println(Db2);
+				if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+					++ count;
+				}
+			}
+			if(count > 0){
+				click(StockTransferObj.ClikAcceptQty);
+				waitForJSandJQueryToLoad(driver);
+				//System.out.println("Pop up not appeared");
+			}
+		}
+
+
+		if(StockTransferObj.clickHelpsize.size() > 0){
+			//System.out.println("Pop up appeared");
+			click(StockTransferObj.clickNote);
+			waitForJSandJQueryToLoad(driver);
+		}
+		enterText(StockTransferObj.Entercntct, ContactName,driver);
+		enterText(StockTransferObj.EnterAuth, AuthNo,driver);
+		if(StockTransferObj.CheckChilledTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterChilledTemp, Chilledtemp,driver);
+			waitFor(2);
+			ChilledTemp1 = Chilledtemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+Chilledtemp+" is entered;;;Pass");
+
+			//Report_AddStep("testcase","Chilled Temperature of "+Chilledtemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			ChilledTemp1 = "0.00";
+		}
+		if(StockTransferObj.CheckFrozenTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterFrozenTemp, Frozentemp,driver);
+			waitFor(2);
+			FrozenTemp1 = Frozentemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+Frozentemp+" is entered;;;Pass");
+			//Report_AddStep("testcase","Frozen Temperature of "+Frozentemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			FrozenTemp1 = "0.00";
+		}
+		scrolldown(driver);
+
+		if(StockTransferObj.checkNextbutton.getAttribute("class").equals("actionBtn")){
+			click(StockTransferObj.clickNext);
+			htmlToExtent(cName,mName,extLogger,driver,"Delivery Details are entered successfully;;;Pass");
+			//Report_AddStep("testcase","Delivery Details are entered successfully" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			scrollUp1(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"ULD details are entered successfully;;;Pass");
+		}
+		click(StockTransferObj.clickFinish);
+		waitForJSandJQueryToLoad(driver);
+		WebElement getTitlemsg = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkTitle1, StockTransferObj.CheckTitle.size(),driver);
+		String msg1 = getTitlemsg.getText();
+		//System.out.println(msg1);
+		if(msg1.equals("STATUS")){
+			String S = StockTransferObj.Ordernum.getText();
+			Long OrdNum =  Long.parseLong(S.replaceAll("[^0-9\\.]+", ""));
+			//System.out.println(OrdNum);
+			OrdNo = Long.toString(OrdNum);
+			//System.out.println("Order No is " +OrdNum);
+			htmlToExtent(cName,mName,extLogger,driver,"" +S+ ";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Order Number created is " +OrdNum+";;;Pass");
+			click(StockTransferObj.clickMesg);
+			waitForJSandJQueryToLoad(driver);
+			waitFn(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnOrderEnquiry(StockTransferObj, driver);
+			waitFn(driver);
+			statusOfIBTOrder(StockTransferObj, OrdNo);
+			waitForJSandJQueryToLoad(driver);
+			for(int i=0;i< articlelist.size();i++)
+			{ 
+				for(int j=0;j<UOMdetails.size();j++){
+					if(articlelist.get(i).equals(UOMdetails.get(j).get(0).toString())){
+						String Str = ""+msg1+":"+Supplier+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1+":"+formattedDate1+":"+ChilledTemp1+":"+FrozenTemp1+":"+OrdNo+":"+UOMdetails.get(j).get(0).toString()+":"+UOMdetails.get(j).get(1).toString()+":"+ContactName+":"+AuthNo;
+						DBList4.addAll(StringToListCreation(Str));
+					}
+				}
+			}
+		}
+		else if(msg1.equals("Errors")){
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Creation failed for the added articles "+StockTransferObj.CaptureErrorMsg.getText()+";;;Fail");
+			click(StockTransferObj.CaptureErrorMsg);
+			waitForJSandJQueryToLoad(driver);
+			String Str = ""+msg1+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1;
+			DBList4.addAll(StringToListCreation(Str));
+			scrollUp1(driver);
+			waitFor(2);
+		}
+		return DBList4;
+	}
+
+	public void checkingSOOSITValues(StockTransferObjects StockTransferObj, List<String> articlelist, String Frozentemp, String Chilledtemp, List<List<Object>> DBList, String Articleqty, String SiteTo, WebDriver driver) throws IOException, SQLException, AWTException{
+
+		//System.out.println("Details are loaded successfully");
+		enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SearchAndAdd);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i,driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i,driver);
+				if(getSite.getText().contains(SiteTo)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				click(StockTransferObj.deletearticle);
+
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+SiteTo+";;;Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			enterText(StockTransferObj.TargetSite, SiteTo,driver);				
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.SearchAndAdd);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully after deleting the existing articles;;;Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully in Stock Transfer Page;;;Pass");
+		}
+
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		articlesaddition(articlelist, StockTransferObj, Articleqty);
+		int k = 4;
+		int l = 5;
+		for(int i=0;i< articlelist.size();i++)
+		{  
+			WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+			WebElement getExpand = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.ClckExpand, k,driver);
+			click(getExpand);
+
+			String Art2 =getArticl.getText();
+
+			WebElement getSOO = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOO, l,driver);
+			WebElement getSIT = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSIT, l,driver);
+			//SOH2 = decimalFormat(SOH2);
+			String SOO1 = getSOO.getText();
+
+			SOO1 = decimalFormat1(SOO1);
+			String SIT1 = getSIT.getText();
+			SIT1 = decimalFormat1(SIT1);
+			click(getExpand);
+			k = k+2;
+			l= l+2;
+
+			for (int j = 0; j < articlelist.size(); j++)
+			{
+				String Art1 = (String) DBList.get(j).get(0);
+				String SOO = (String) DBList.get(j).get(1);
+				String SIT = (String) DBList.get(j).get(2);
+				if(Art1.equals(Art2)){
+					if((SOO1.equals(SOO)) && (SIT1.equals(SIT))){
+						htmlToExtent(cName,mName,extLogger,driver,"SOO, SIT VAlues of the article "+Art1+" are displayed correctly in Browser;Local Value is ["+SOO1+", "+SIT1+"];DB Value is [ "+SOO+", "+SIT+"];Pass");
+						//Report_AddStep("testcase","SOO, SIT VAlues of the article "+Art1+" are displayed correctly in Browser" , "Local Value is ["+SOO1+", "+SIT1+"]", "DB Value is [ "+SOO+", "+SIT+"]", "Pass");
+
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver,"SOO, SIT VAlues of the article "+Art1+" are displayed correctly in Browser;Local Value is ["+SOO1+", "+SIT1+"];DB Value is [ "+SOO+", "+SIT+"];Fail");
+					}
+				}
+			}
+		}
+		scrollUp1(driver);
+		scrollUp1(driver);
+
+	}
+
+	public List<List<Object>> IBTCreationflowbyselectingNearbyStore(StockTransferObjects StockTransferObj, List<String> articlelist, String Frozentemp, String Chilledtemp, List<List<Object>> DBList, String Articleqty, String Supplier, String username, WebDriver driver) throws IOException, SQLException, AWTException{
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+		List<String> draftdetails = new ArrayList();
+		String OrdNo;
+		String ChilledTemp1;
+		String FrozenTemp1;
+		String status = "D";
+		String Order_type = "OADV";
+		List<List<Object>> UOMdetails = new ArrayList<List<Object>>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		String formattedDate1 = dateFormat.format(date);
+		//System.out.println("Details are loaded successfully");
+		click(StockTransferObj.NearBy);
+		waitForJSandJQueryToLoad(driver);
+		String SiteTo = StockTransferObj.GetSite.getText();
+		click(StockTransferObj.ClickSel);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i,driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i,driver);
+				if(getSite.getText().contains(SiteTo)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				click(StockTransferObj.deletearticle);
+
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+SiteTo+";;;Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			click(StockTransferObj.NearBy);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickSel);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully after deleting the existing articles;;;Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully in Stock Transfer Page;;;Pass");
+		}
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		articlesaddition(articlelist, StockTransferObj, Articleqty);
+
+		int k = 4;
+		for(int i=0;i< articlelist.size();i++)
+		{  
+			WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k,driver);
+			WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k,driver);
+			WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k,driver);
+			WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k,driver);
+			WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k,driver);
+			String Art2 =getArticl.getText();
+			String SOH2 = getSOH.getText();
+			SOH2 = decimalFormat1(SOH2);
+			String OMvthUOM = getOM.getText();
+			String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+			OM2 = decimalFormat1(OM2);
+			String UOM2 = getUOM.getText();
+			String RcvdunitsvthUOM = getRecvd.getText();
+			String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+			Rcvdunits = decimalFormat1(Rcvdunits);
+			k = k+2;
+			//System.out.println("Article is "+Art2+" -- SOH is "+SOH2+"--- OM is "+OM2);
+
+			for (int j = 0; j < articlelist.size(); j++)
+			{
+				String Art1 = (String) DBList.get(j).get(0);
+				//String SOH1 = (String) DBList.get(i).get(1);
+				//Double SOH = round(Double.parseDouble(DBList.get(j).get(1).toString()),0);
+				String SOH1 = decimalFormat1(DBList.get(j).get(1).toString());
+				String OM1 = (String) DBList.get(j).get(2);
+				Double DBRecvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+				String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+				//System.out.println("Article is "+Art1+" -- SOH is "+SOH1+"--- OM is "+OM1);
+
+				if(Art1.equals(Art2)){
+					String Str = ""+Art1+":"+UOM2;
+					UOMdetails.addAll(StringToListCreation(Str));
+					if((SOH1.equals(SOH2)) && (OM1.equals(OM2)) && (DBRecvdunits1.equals(Rcvdunits))){
+						htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits1+"];Pass");
+						//Report_AddStep("testcase","SOH, OM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits1+"]", "Pass");	
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits1+"];Fail");	
+					}
+				}
+			}
+		}
+		click(StockTransferObj.clickSubmit);
+		waitForJSandJQueryToLoad(driver);
+
+		int count = 0;
+		for(int i=0;i< articlelist.size();i++)
+		{    		
+			String DB1 = (String) DBList.get(i).get(1);
+			String OM1 = (String) DBList.get(i).get(2);
+			//System.out.println(DB1);
+			Double Recvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+			String SOH = (String) DBList.get(i).get(1);
+			Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+			//System.out.println(Db2);
+			if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+				++ count;
+			}
+		}
+		if(count > 0){
+			click(StockTransferObj.ClikAcceptQty);
+			waitForJSandJQueryToLoad(driver);
+			//System.out.println("Pop up not appeared");
+		}
+
+
+
+		if(StockTransferObj.clickHelpsize.size() > 0){
+			//System.out.println("Pop up appeared");
+			click(StockTransferObj.clickNote);
+			waitForJSandJQueryToLoad(driver);
+		}
+
+		if(StockTransferObj.CheckChilledTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterChilledTemp, Chilledtemp,driver);
+			waitFor(2);
+			ChilledTemp1 = Chilledtemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+Chilledtemp+" is entered;;;Pass");
+
+			//Report_AddStep("testcase","Chilled Temperature of "+Chilledtemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			ChilledTemp1 = "0.00";
+		}
+		if(StockTransferObj.CheckFrozenTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterFrozenTemp, Frozentemp,driver);
+			waitFor(2);
+			FrozenTemp1 = Frozentemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+Frozentemp+" is entered;;;Pass");
+			//Report_AddStep("testcase","Frozen Temperature of "+Frozentemp+" is entered" , "", "", "Pass");
+		}
+		else
+		{
+			FrozenTemp1 = "0.00";
+		}
+		scrolldown(driver);
+
+		if(StockTransferObj.checkNextbutton.getAttribute("class").equals("actionBtn")){
+			click(StockTransferObj.clickNext);
+			htmlToExtent(cName,mName,extLogger,driver,"Delivery Details are entered successfully;;;Pass");
+
+
+			//Report_AddStep("testcase","Delivery Details are entered successfully" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			scrollUp1(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"ULD details are entered successfully;;;Pass");
+		}
+		click(StockTransferObj.clickFinish);
+		waitForJSandJQueryToLoad(driver);
+		WebElement getTitlemsg = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkTitle1, StockTransferObj.CheckTitle.size(),driver);
+		String msg1 = getTitlemsg.getText();
+		//String msg1 = "STATUS";
+		//System.out.println(msg1);
+		if(msg1.equals("STATUS")){
+			String S = StockTransferObj.Ordernum.getText();
+			Long OrdNum =  Long.parseLong(S.replaceAll("[^0-9\\.]+", ""));
+			//System.out.println(OrdNum);
+			OrdNo = Long.toString(OrdNum);
+			//System.out.println("Order No is " +OrdNum);
+			htmlToExtent(cName,mName,extLogger,driver,"" +S+ ";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Order Number created is " +OrdNum+";;;Pass");
+			click(StockTransferObj.clickMesg);
+			waitForJSandJQueryToLoad(driver);
+			waitFn(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnOrderEnquiry(StockTransferObj, driver);
+			waitFn(driver);
+			statusOfIBTOrder(StockTransferObj, OrdNo);
+			waitForJSandJQueryToLoad(driver);
+			for(int i=0;i< articlelist.size();i++)
+			{ 
+				for(int j=0;j<UOMdetails.size();j++){
+					if(articlelist.get(i).equals(UOMdetails.get(j).get(0).toString())){
+						String Str = ""+msg1+":"+Supplier+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1+":"+formattedDate1+":"+ChilledTemp1+":"+FrozenTemp1+":"+OrdNo+":"+UOMdetails.get(j).get(0).toString()+":"+UOMdetails.get(j).get(1).toString();
+						DBList4.addAll(StringToListCreation(Str));
+					}
+				}
+			}
+		}
+		else if(msg1.equals("Errors")){
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Creation failed for the added articles "+StockTransferObj.CaptureErrorMsg.getText()+";;;Fail");
+			click(StockTransferObj.CaptureErrorMsg);
+			waitForJSandJQueryToLoad(driver);
+			String Str = ""+msg1+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1;
+			DBList4.addAll(StringToListCreation(Str));
+			scrollUp1(driver);
+			waitFor(2);
+		}
+		return DBList4;
+	}
+	public List<List<Object>> IBTCreationflowbyselectingWarehouse(StockTransferObjects StockTransferObj, List<String> articlelist, String Frozentemp, String Chilledtemp, List<List<Object>> DBList, String Articleqty, String SiteTo, String sendStore, String Supplier, String username,String ContactName, String AuthNo) throws IOException, SQLException, AWTException{
+		List<List<Object>> DBList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+		List<String> artlist = new ArrayList();
+		String OrdNo;
+		String ChilledTemp1;
+		String FrozenTemp1;
+		String status = "D";
+		String Order_type = "OADV";
+		List<List<Object>> UOMdetails = new ArrayList<List<Object>>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+		String formattedDate1 = dateFormat.format(date);
+		//System.out.println("Details are loaded successfully");
+		click(StockTransferObj.Warehuse);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SelectWarehuse);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.Selecting1944);
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.ClickCreate1);
+		waitForJSandJQueryToLoad(driver);
+
+		if(StockTransferObj.Titlesize.size() > 0){
+			click(StockTransferObj.ClicksiteTitle);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is already present in Stock Transfer Page;;;Pass");
+			//Report_AddStep("testcase","Site "+SiteTo+" is already present in Stock Transfer Page" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			for (int i = 1; i <= StockTransferObj.checkstoresize.size(); i++){
+				WebElement getSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checksite, i, driver);
+				WebElement clickSite = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.clicksite, i, driver);
+				if(getSite.getText().contains(SiteTo)){
+					click(clickSite);
+					break;
+				}
+			}
+			waitForJSandJQueryToLoad(driver);
+			for (int i = StockTransferObj.checkarticlessize.size(); i > 0;i--){
+				click(StockTransferObj.deletearticle);
+
+				waitForJSandJQueryToLoad(driver);
+				if(StockTransferObj.checkAlert.size() > 0){
+					click(StockTransferObj.clckYES);
+					waitForJSandJQueryToLoad(driver);
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"Existing articles are deleted for Site "+SiteTo+";;;Pass");
+			scrollUp1(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnstockTransfer(StockTransferObj, driver);
+			click(StockTransferObj.Warehuse);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.SelectWarehuse);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.Selecting1944);
+			waitForJSandJQueryToLoad(driver);
+			click(StockTransferObj.ClickCreate1);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully after deleting the existing articles;;;Pass");
+		}
+
+		else{
+			htmlToExtent(cName,mName,extLogger,driver,"Site "+SiteTo+" is added successfully in Stock Transfer Page;;;Pass");
+		}
+		//System.out.println("Site is added in draft");
+		click(StockTransferObj.ClickExpand);
+		waitFor(4);
+		articlesaddition(articlelist, StockTransferObj, Articleqty);
+
+		int k = 4;
+		for(int i=0;i< articlelist.size();i++)
+		{  
+			WebElement getArticl = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkArticle, k, driver);
+			WebElement getSOH = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkSOH, k, driver);
+			WebElement getOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkOM, k, driver);
+			WebElement getUOM = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkUOM, k, driver);
+			WebElement getRecvd = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkRecvdUnits, k, driver);
+			String Art2 =getArticl.getText();
+			String SOH2 = getSOH.getText();
+			SOH2 = decimalFormat1(SOH2);
+			String OMvthUOM = getOM.getText();
+			String OM2 =  OMvthUOM.replaceAll("[^0-9\\.]+", "");
+			OM2 = decimalFormat1(OM2);
+			String UOM2 = getUOM.getText();
+			String RcvdunitsvthUOM = getRecvd.getText();
+			//String Rcvdunits = RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", "");
+			//Rcvdunits = decimalFormat1(Rcvdunits);
+			String  String1 [] = splitString(RcvdunitsvthUOM," ");
+			String Rcvdunits = decimalFormat1(String1[0]);			
+			//String BaseUOM = String1[2];			
+			k = k+2;
+			//System.out.println("Article is "+Art2+" -- SOH is "+SOH2+"--- OM is "+OM2);
+			artlist.add(Art2);
+			for (int j = 0; j < articlelist.size(); j++)
+			{
+				String Art1 = (String) DBList.get(j).get(0);
+				String SOH1 = decimalFormat1(DBList.get(j).get(1).toString());
+				String OM1 = (String) DBList.get(j).get(2);
+				String UOM1 = (String) DBList.get(j).get(3);
+				Double DBRecvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+				String DBRecvdunits1 = decimalFormat1(Double.toString(DBRecvdunits));
+				//System.out.println("Article is "+Art1+" -- SOH is "+SOH1+"--- OM is "+OM1);
+
+				if(Art1.equals(Art2)){
+					String Str = ""+Art1+":"+UOM2;
+					UOMdetails.addAll(StringToListCreation(Str));
+					if((SOH1.equals(SOH2)) && (OM1.equals(OM2)) && (DBRecvdunits1.equals(Rcvdunits)) && (UOM1.equals(UOM2))){
+						htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"];Pass");
+						//Report_AddStep("testcase","SOH, OM, Received Units of the article "+Art1+" is displayed correctly in Browser" , "Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"]", "DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits1+"]", "Pass");	
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver,"SOH, OM, UOM, Received Units of the article "+Art1+" is displayed correctly in Browser;Local Value is ["+SOH2+", "+OM2+", "+UOM2+", "+Rcvdunits+"];DB Value is ["+SOH1+", "+OM1+", "+UOM1+", "+DBRecvdunits1+"];Fail");	
+					}
+				}
+			}
+		}
+		click(StockTransferObj.clickSubmit);
+		waitForJSandJQueryToLoad(driver);
+
+		int count = 0;
+		for(int i=0;i< articlelist.size();i++)
+		{    		
+			String DB1 = (String) DBList.get(i).get(1);
+			String OM1 = (String) DBList.get(i).get(2);
+			//System.out.println(DB1);
+			Double Recvdunits = Double.parseDouble(Articleqty) * Double.parseDouble(OM1);
+			String SOH = (String) DBList.get(i).get(1);
+			Double Db2 = (Double.parseDouble(SOH)) - ((Recvdunits));
+			//System.out.println(Db2);
+			if((Double.parseDouble(DB1) < 0) || (Db2 < 0)){
+				++ count;
+			}
+		}
+		if(count > 0){
+			click(StockTransferObj.ClikAcceptQty);
+			waitForJSandJQueryToLoad(driver);
+			//System.out.println("Pop up not appeared");
+		}
+
+
+
+		if(StockTransferObj.clickHelpsize.size() > 0){
+			//System.out.println("Pop up appeared");
+			click(StockTransferObj.clickNote);
+			waitForJSandJQueryToLoad(driver);
+		}
+		enterText(StockTransferObj.Entercntct, ContactName,driver);
+		enterText(StockTransferObj.EnterAuth, AuthNo, driver);
+
+		if(StockTransferObj.CheckChilledTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterChilledTemp, Chilledtemp, driver);
+			waitFor(2);
+			ChilledTemp1 = Chilledtemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+Chilledtemp+" is entered;;;Pass");
+
+			//Report_AddStep("testcase","Chilled Temperature of "+Chilledtemp+" is entered" , "", "", "Pass");
+			scrolldown(driver);
+		}
+		else
+		{
+			ChilledTemp1 = "0.00";
+		}
+		if(StockTransferObj.CheckFrozenTemp.getAttribute("class").equals("parameter")){
+			enterText(StockTransferObj.EnterFrozenTemp, Frozentemp,driver);
+			waitFor(2);
+			FrozenTemp1 = Frozentemp;
+			htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+Frozentemp+" is entered;;;Pass");
+			scrolldown(driver);
+		}
+		else
+		{
+			FrozenTemp1 = "0.00";
+		}
+
+
+		if(StockTransferObj.checkNextbutton.getAttribute("class").equals("actionBtn")){
+			click(StockTransferObj.clickNext);
+			htmlToExtent(cName,mName,extLogger,driver,"Delivery Details are entered successfully;;;Pass");
+
+
+			//Report_AddStep("testcase","Delivery Details are entered successfully" , "", "", "Pass");
+			waitForJSandJQueryToLoad(driver);
+			scrollUp1(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"ULD details are entered successfully;;;Pass");
+		}
+		click(StockTransferObj.clickFinish);
+		waitForJSandJQueryToLoad(driver);
+		WebElement getTitlemsg = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkTitle1, StockTransferObj.CheckTitle.size(),driver);
+		String msg1 = getTitlemsg.getText();
+		//String msg1 = "STATUS";
+		//System.out.println(msg1);
+		if(msg1.equals("STATUS")){
+			String S = StockTransferObj.Ordernum.getText();
+			Long OrdNum =  Long.parseLong(S.replaceAll("[^0-9\\.]+", ""));
+			//System.out.println(OrdNum);
+			OrdNo = Long.toString(OrdNum);
+			//System.out.println("Order No is " +OrdNum);
+			htmlToExtent(cName,mName,extLogger,driver,"" +S+ ";;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Order Number created is " +OrdNum+";;;Pass");
+
+			click(StockTransferObj.clickMesg);
+			waitForJSandJQueryToLoad(driver);
+			waitFn(driver);
+			scrollUp1(driver);
+			scrollUp1(driver);
+			clickOnOrderEnquiry(StockTransferObj, driver);
+			waitFn(driver);
+			statusOfIBTOrder(StockTransferObj, OrdNo);
+			waitForJSandJQueryToLoad(driver);
+			for(int i=0;i< articlelist.size();i++)
+			{ 
+				for(int j=0;j<UOMdetails.size();j++){
+					if(articlelist.get(i).equals(UOMdetails.get(j).get(0).toString())){
+						String Str = ""+msg1+":"+Supplier+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1+":"+formattedDate1+":"+ChilledTemp1+":"+FrozenTemp1+":"+OrdNo+":"+UOMdetails.get(j).get(0).toString()+":"+UOMdetails.get(j).get(1).toString()+":"+ContactName+":"+AuthNo;
+						DBList4.addAll(StringToListCreation(Str));
+					}
+				}
+			}
+		}
+		else if(msg1.equals("Errors")){
+			htmlToExtent(cName,mName,extLogger,driver,"IBT Creation failed for the added articles "+StockTransferObj.CaptureErrorMsg.getText()+";;;Fail");
+			click(StockTransferObj.CaptureErrorMsg);
+			waitForJSandJQueryToLoad(driver);
+			String Str = ""+msg1+":"+SiteTo+":"+username+":"+status+":"+Order_type+":"+formattedDate1;
+			DBList4.addAll(StringToListCreation(Str));
+			scrollUp1(driver);
+			waitFor(2);
+		}
+		return DBList4;
+	}
+
+	public void IBTCreationflowbygvngDCasSite(StockTransferObjects StockTransferObj,String SiteTo){
+
+		//System.out.println("Details are loaded successfully");
+		enterText(StockTransferObj.TargetSite, SiteTo, driver);				
+		waitForJSandJQueryToLoad(driver);
+		click(StockTransferObj.SearchAndAdd);
+		waitForJSandJQueryToLoad(driver);
+
+		WebElement getTitlemsg = prepareWebElementWithDynamicXpathWithInt(StockTransferObj.checkTitle1, StockTransferObj.CheckTitle.size(), driver);
+		String msg1 = getTitlemsg.getText();
+		if(msg1.equals("Errors")){
+			if(StockTransferObj.CaptureErrorMsg.getText().equals("Stock Transfer is not possible as this Warehouse does not supply to this store")){
+				htmlToExtent(cName,mName,extLogger,driver,"Error message is displayed Properly "+StockTransferObj.CaptureErrorMsg.getText()+";;;Pass");
+				click(StockTransferObj.CaptureErrorMsg);
+				waitForJSandJQueryToLoad(driver);
+
+				scrollUp1(driver);
+				waitFor(2);
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"Error message is displayed Properly ---'"+StockTransferObj.CaptureErrorMsg.getText()+"';;;Fail");
+				click(StockTransferObj.CaptureErrorMsg);
+				waitForJSandJQueryToLoad(driver);
+
+				scrollUp1(driver);
+				waitFor(2);
+			}
+		}
+	}
+
+}
+

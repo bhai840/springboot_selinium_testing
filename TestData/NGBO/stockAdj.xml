@@ -1,0 +1,1784 @@
+<configuration>
+
+<TCName name = "verifyStockAdjArt">
+<testcase>article</testcase>
+<sohvalidation>1
+</sohvalidation>
+<allarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11) 
+AND d.perpetual_flag='Y' and a.ARTICLE_CAT_ID='00' and (a.MTART='HAWA' or a.MTART='VERP' or a.MTART='ZBAK' or a.MTART='ZMEA' 
+or a.MTART='ZDEL' or a.MTART='ZPRD')]]>
+</allarticles>
+
+<zbakarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11)
+AND d.perpetual_flag='Y' and a.ARTICLE_CAT_ID='00' and a.MTART='ZBAK']]>
+</zbakarticles>
+
+<secondarydetails>
+<![CDATA[select store_soh from saap.LOCAL_WOW_SOH where article=]]>
+</secondarydetails>
+
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+<lastrcvdqty>
+<![CDATA[select matnr as ARTICLE, last_received_qty ||' '|| received_uom as "RECEIVED QTY" from saap.sp_wow_get_last_received_qty('article_num',null)]]>
+</lastrcvdqty>
+</TCName>
+
+<TCName name = "verifyStockAdjDesc">
+<testcase>Description</testcase>
+<validation99>100
+</validation99>
+
+<allarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11) 
+AND d.perpetual_flag='Y' and a.ARTICLE_CAT_ID='00' and (a.MTART='HAWA' or a.MTART='VERP' or a.MTART='ZBAK' or a.MTART='ZMEA' or a.MTART='ZDEL' or a.MTART='ZPRD')]]>
+</allarticles>
+
+<zbakarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11)
+AND d.perpetual_flag='Y' and a.ARTICLE_CAT_ID='00' and a.MTART='ZBAK']]>
+</zbakarticles>
+
+<secondarydetails>
+<![CDATA[select store_soh from saap.LOCAL_WOW_SOH where article=]]>
+</secondarydetails>
+
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.long_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<lastrcvdqty>
+<![CDATA[select matnr as ARTICLE, last_received_qty ||' '|| received_uom as "RECEIVED QTY" from saap.sp_wow_get_last_received_qty('article_num',null)]]>
+</lastrcvdqty>
+</TCName>
+
+<TCName name = "verifyStockAdjEAN">
+<testcase>EAN</testcase>
+<validation999>1000
+</validation999>
+<allarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11) 
+AND d.perpetual_flag='Y' and a.ARTICLE_CAT_ID='00' and (a.MTART='HAWA' or a.MTART='VERP' or a.MTART='ZBAK' or a.MTART='ZMEA' or a.MTART='ZDEL' or a.MTART='ZPRD')]]>
+</allarticles>
+
+<zbakarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+AND d.perpetual_flag='Y' and a.ARTICLE_CAT_ID='00' and a.MTART='ZBAK']]>
+</zbakarticles>
+
+<secondarydetails>
+<![CDATA[select store_soh from saap.LOCAL_WOW_SOH where article=]]>
+</secondarydetails>
+
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+<history>
+<![CDATA[select stk.long_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<lastrcvdqty>
+<![CDATA[select matnr as ARTICLE, last_received_qty ||' '|| received_uom as "RECEIVED QTY" from saap.sp_wow_get_last_received_qty('article_num',null)]]>
+</lastrcvdqty>
+
+</TCName>
+
+<TCName name = "verifyStockAdjPLU">
+<testcase>PLU</testcase>
+<sohvalidation>2
+</sohvalidation>
+<allarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11) 
+AND d.perpetual_flag='Y' and a.ARTICLE_CAT_ID='00' and (a.MTART='HAWA' or a.MTART='VERP' or a.MTART='ZBAK' or a.MTART='ZMEA' or a.MTART='ZDEL' or a.MTART='ZPRD')]]>
+</allarticles>
+
+<zbakarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,a.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_listing d ON (d.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11)
+AND d.perpetual_flag='Y' and a.ARTICLE_CAT_ID='00' 
+and a.MTART='ZBAK' 
+and a.PLU_CODE > '0']]>
+</zbakarticles>
+
+<secondarydetails>
+<![CDATA[select store_soh from saap.LOCAL_WOW_SOH where article=]]>
+</secondarydetails>
+
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+<lastrcvdqty>
+<![CDATA[select matnr as ARTICLE, last_received_qty ||' '|| received_uom as "RECEIVED QTY" from saap.sp_wow_get_last_received_qty('article_num',null)]]>
+</lastrcvdqty>
+</TCName>
+
+<!-- <TCName name = "checkWHoverdelivery">
+<allarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from zwowc_article_master a
+JOIN zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN local_wow_soh e ON (a.matnr=e.article)
+JOIN zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11) 
+AND d.perpetual_flag='Y' and a.ARTICLE_CAT_ID='00' and (a.MTART='HAWA' or a.MTART='VERP' or a.MTART='ZBAK' or a.MTART='ZMEA' or a.MTART='ZDEL' or a.MTART='ZPRD')]]>
+</allarticles>
+<dispatchQTY>
+<![CDATA[select VBELN, MATNR, LFIMG,VRKME,MEINS from ZWOWO_ORDER_NOTIF_ITM where VBELN='orderno' and MATNR='art_no']]>
+</dispatchQTY>
+<packsize>
+<![CDATA[SELECT MATNR,MEINH,PACK_SIZE FROM ZWOWC_ARTICLE_UOM WHERE MATNR='art_no' and MEINH='uomname']]>
+</packsize>
+<baseUOM>
+<![CDATA[SELECT ARTICLE,BASE_UOM,STORE_SOH FROM LOCAL_WOW_SOH WHERE ARTICLE='art_no']]>
+</baseUOM>
+<overdelivery>
+<![CDATA[SELECT ORDER_NO,MATNR,QTY,UOM,CREATED_DATE_TIME FROM LOCAL_WOW_WAREHOUSE_OVER_DLVY WHERE MATNR = 'art_no' AND ORDER_NO ='orderno']]>
+</overdelivery>
+<underdelivery>
+<![CDATA[SELECT ORDER_NO,MATNR,QTY,UOM,CREATED_DATE_TIME FROM LOCAL_WOW_WAREHOUSE_DLVY WHERE MATNR = 'art_no' AND ORDER_NO ='orderno']]>
+</underdelivery>
+</TCName> -->
+
+<TCName name = "checkWHdelivery">
+<allarticles>
+<![CDATA[select distinct a.matnr,AB.LFBNR,F.VRKME,F.Demand_qty from saap.zwowc_article_master a
+JOIN saap.zwowc_article_listing b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_ean c ON (b.matnr = c.matnr)
+JOIN saap.zwowc_article_uom d ON (c.matnr = d.matnr)
+JOIN saap.ZWOWC_ARTICLE_HIER_XREF e ON (d.matnr = e.matnr)
+JOIN O_MDOC_ITM BA ON (BA.MATNR = B.MATNR)
+JOIN zwowo_mdochd AB ON (BA.MBLNR = AB.MBLNR)
+JOIN ZWOWO_ORDER_NOTIF_ITM F ON (BA.MATNR=F.MATNR)
+where a.matnr in (select article_no from sp_wow_get_disp_info_by_article(' {"iv_article_no":"","iv_user_id":"111222","iv_pwd":"","iv_session_id":"111","iv_site_no":"1108","iv_sales_org":"1005","iv_article_no":"","iv_start_date":"","iv_end_date":"","iv_order_no":"","iv_reason_code":"75"}'))
+and a.article_cat_id ='00' and a.mtart='HAWA' and d.LWR_LVL_UOM='EA' and AB.LFBNR<>'']]>
+</allarticles>
+<dispatchQTY>
+<![CDATA[select VBELN, MATNR, LFIMG,VRKME,MEINS from saap.ZWOWO_ORDER_NOTIF_ITM where VBELN='orderno' and MATNR='art_no']]>
+</dispatchQTY>
+<dispatchQTY1>
+<![CDATA[select * from sp_wow_get_disp_info_by_article(' {"iv_article_no":"","iv_user_id":"xaai8","iv_pwd":"","iv_session_id":"111","iv_site_no":"1786","iv_sales_org":"1005",
+"iv_article_no":"","iv_start_date":"","iv_end_date":"","iv_order_no":"","iv_reason_code":"75"}') where order_no='orderno' and article_no='art_no';]]>
+</dispatchQTY1>
+<packsize>
+<![CDATA[SELECT MATNR,MEINH,PACK_SIZE FROM saap.ZWOWC_ARTICLE_UOM WHERE MATNR='art_no' and MEINH='uomname']]>
+</packsize>
+<baseUOM>
+<![CDATA[SELECT ARTICLE,BASE_UOM,STORE_SOH FROM saap.LOCAL_WOW_SOH WHERE ARTICLE='art_no']]>
+</baseUOM>
+<overdelivery>
+<![CDATA[SELECT ORDER_NO,MATNR,QTY,UOM,CREATED_DATE_TIME FROM saap.LOCAL_WOW_WAREHOUSE_OVER_DLVY WHERE MATNR = 'art_no' AND ORDER_NO ='orderno']]>
+</overdelivery>
+<underdelivery>
+<![CDATA[SELECT ORDER_NO,MATNR,QTY,UOM,CREATED_DATE_TIME FROM saap.LOCAL_WOW_WAREHOUSE_DLVY WHERE MATNR = 'art_no' AND ORDER_NO ='orderno']]>
+</underdelivery>
+<transctionID>
+<![CDATA[SELECT * FROM saap.T_MDOC_ITM WHERE MATNR = 'art_no' AND TRANSID > 't_id']]>
+</transctionID>
+<recenthistorys>
+<![CDATA[SELECT DISTINCT A.MATNR, C.AD_REASON, C.SOH_ORIGINAL, D.USR_NAME, D.CHANGE_TIME  FROM saap.T_MDOC_ITM A, saap.T_MDOCHD B, saap.ZWOWT_MDOC_ITM C, saap.ZWOWT_MDOCHD D, saap.LOCAL_WOW_SOH E 
+WHERE A.TRANSID=B.TRANSID AND B.TRANSID=C.TRANSID AND C.TRANSID=D.TRANSID AND A.TRANSID='tno_id']]>
+</recenthistorys>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<lastrcvdqty>
+<![CDATA[select matnr as ARTICLE, last_received_qty ||' '|| received_uom as "RECEIVED QTY" from saap.sp_wow_get_last_received_qty('article_num',null)]]>
+</lastrcvdqty>
+</TCName>
+
+<TCName name = "wareHouseemptyORDERlist">
+<allarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11) 
+AND d.perpetual_flag='Y' and a.ARTICLE_CAT_ID='00' and (a.MTART='HAWA' or a.MTART='VERP' or a.MTART='ZBAK' or a.MTART='ZMEA' 
+or a.MTART='ZDEL' or a.MTART='ZPRD')]]>
+</allarticles>
+</TCName>
+
+<TCName name = "checkNoNodeIDforIDTandRIDT">
+<getNODEid>
+<![CDATA[select * from saap.Zwowc_art_list_depARTMENT]]>
+</getNODEid>
+<getIDTarticle>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,  saap.zwowc_article_listing b,  saap.zwowc_article_ean c,  saap.zwowc_article_uom d,  
+saap.ZWOWC_ARTICLE_HIER_XREF e , SAAP.MAT_VIEW_ZWOW_ARTICLES_HIER f where a.matnr = b.matnr and b.matnr = c.matnr and c.matnr = d.matnr and  d.matnr = e.matnr and e.matnr=f.matnr
+and f.SUB_CAT NOT IN (SELECT IDT_FROM_SUB_CAT FROM ZWOWC_IDT_DEPT_CONFIG) and b.perpetual_flag='Y']]>
+</getIDTarticle>
+</TCName>
+
+<TCName name = "checkIDTandRIDT_weighted">
+<getart>
+<![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ARTICLE_UOM C, SAAP.ZWOWC_ARTICLE_EAN D, SAAP.ZWOWC_ARTICLE_HIER_XREF E, SAAP.LOCAL_WOW_SOH F, SAAP.ZWOWC_ART_LIST_DEPARTMENT G
+WHERE A.MATNR = B.MATNR AND  B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR AND E.MATNR = F.ARTICLE AND F.ARTICLE= G.MATNR and a.weighted_ind='Y' AND G.SUB_CAT IN (SELECT IDT_FROM_SUB_CAT FROM saap.ZWOWC_IDT_DEPT_CONFIG)]]>
+</getart>
+<getNODEid>
+<![CDATA[select * from saap.ZWOWC_IDT_DEPT_CONFIG]]>
+</getNODEid>
+<getDDvalues>
+<![CDATA[select * from saap.ZWOWC_IDT_DEPT_CONFIG where IDT_FROM_SUB_CAT='nodeid']]>
+</getDDvalues>
+<getIDTarticle>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,  saap.zwowc_article_listing b,  saap.zwowc_article_ean c,  saap.zwowc_article_uom d,  
+saap.ZWOWC_ARTICLE_HIER_XREF e where a.matnr = b.matnr and b.matnr = c.matnr and c.matnr = d.matnr and  d.matnr = e.matnr and e.node_id like ('nodeid') and b.perpetual_flag='Y']]>
+</getIDTarticle>
+<packsize>
+<![CDATA[SELECT MATNR,MEINH,PACK_SIZE FROM saap.ZWOWC_ARTICLE_UOM WHERE MATNR='art_no' and MEINH='uomname']]>
+</packsize>
+<baseUOMs>
+<![CDATA[SELECT ARTICLE,BASE_UOM,STORE_SOH FROM saap.LOCAL_WOW_SOH WHERE ARTICLE='art_no']]>
+</baseUOMs>
+<baseUOM>
+<![CDATA[select MATNR,MEINS from saap.ZWOWC_ARTICLE_UOM WHERE MATNR='art_no']]>
+</baseUOM>
+<IDTpurchaselimit>
+<![CDATA[SELECT * FROM saap.ZWOWC_STK_ADJ_CONFIG]]>
+</IDTpurchaselimit>
+<IDTcomment>
+<![CDATA[SELECT COMMENTS,TRANSID FROM saap.ZWOWT_MDOCHD where comments!='null' and transid>'transactionID']]>
+</IDTcomment>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<gettransactionID>
+<![CDATA[select * from saap.t_mdoc_itm where matnr='art_no' and transid > tID order by transid desc]]>
+</gettransactionID>
+<getreasoncode>
+<![CDATA[select * from saap.ZWOWC_STK_ADJ_REASON_CODES where short_desc='Rvse IDT']]> 
+</getreasoncode>
+<getfromdept>
+<![CDATA[select * from saap.ZWOWC_ART_LIST_DEPARTMENT where SUB_CAT='nodeid']]> 
+</getfromdept>
+<verifyarticle>
+<![CDATA[SELECT  MATNR,CONVERT(INT,MENGE),MEINS,BWART,MAINT_PLANT_RIG FROM saap.T_MDOC_ITM WHERE TRANSID='tranid']]>
+</verifyarticle>
+<verifycode>
+<![CDATA[SELECT CONVERT(INT,SOH_ORIGINAL),RE_CODE,CHARITY_PGM,CHARITY_PGM_DESC,RND_WGT_QTY,RND_WGT,TRD_DEPT FROM saap.ZWOWT_MDOC_ITM 
+WHERE TRANSID='tranid']]>
+</verifycode>
+<verifyusername>
+<![CDATA[SELECT MESFCT,UPDATED_USER,USR_NAME,COMMENTS,TO_DEPT FROM saap.ZWOWT_MDOCHD WHERE TRANSID='tranid']]>
+</verifyusername>
+</TCName>
+
+<TCName name = "checkIDTandRIDT_randomweighted">
+<getart>
+<![CDATA[SELECT * FROM SAAP.ZWOWC_ART_LIST_DEPARTMENT A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ARTICLE_MASTER C WHERE A.MATNR = B.MATNR 
+AND A.MATNR = C.MATNR AND B.ALC_STATUS ='RA' AND C.random_WEIGHT_FLG='Y'
+AND A.SUB_CAT IN (SELECT IDT_FROM_SUB_CAT FROM ZWOWC_IDT_DEPT_CONFIG )]]>
+</getart>
+<getNODEid>
+<![CDATA[select * from saap.ZWOWC_IDT_DEPT_CONFIG]]>
+</getNODEid>
+<getDDvalues>
+<![CDATA[select * from saap.ZWOWC_IDT_DEPT_CONFIG where IDT_FROM_SUB_CAT='nodeid']]>
+</getDDvalues>
+<getIDTarticle>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,  saap.zwowc_article_listing b,  saap.zwowc_article_ean c,  saap.zwowc_article_uom d,  
+saap.ZWOWC_ARTICLE_HIER_XREF e where a.matnr = b.matnr and b.matnr = c.matnr and c.matnr = d.matnr and  d.matnr = e.matnr and e.node_id like ('nodeid') and b.perpetual_flag='Y']]>
+</getIDTarticle>
+<packsize>
+<![CDATA[SELECT MATNR,MEINH,PACK_SIZE FROM saap.ZWOWC_ARTICLE_UOM WHERE MATNR='art_no' and MEINH='uomname']]>
+</packsize>
+<baseUOMs>
+<![CDATA[SELECT ARTICLE,CONVERT(INT,store_SOH_rand_wght),STORE_SOH,SOH_rand_wght_UOM,BASE_UOM FROM saap.LOCAL_WOW_SOH WHERE ARTICLE='art_no']]>
+</baseUOMs>
+<baseUOM>
+<![CDATA[select MATNR,MEINS from saap.ZWOWC_ARTICLE_UOM WHERE MATNR='art_no']]>
+</baseUOM>
+<IDTpurchaselimit>
+<![CDATA[SELECT * FROM saap.ZWOWC_STK_ADJ_CONFIG]]>
+</IDTpurchaselimit>
+<IDTcomment>
+<![CDATA[SELECT COMMENTS,TRANSID FROM saap.ZWOWT_MDOCHD where comments!='null' and transid>'transactionID']]>
+</IDTcomment>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<gettransactionID>
+<![CDATA[select * from saap.t_mdoc_itm where matnr='art_no' and transid > tID order by transid desc]]>
+</gettransactionID>
+<getreasoncode>
+<![CDATA[select * from saap.ZWOWC_STK_ADJ_REASON_CODES where short_desc='Rvse IDT']]> 
+</getreasoncode>
+<getfromdept>
+<![CDATA[select * from saap.ZWOWC_ART_LIST_DEPARTMENT where SUB_CAT='nodeid']]> 
+</getfromdept>
+<verifyarticle>
+<![CDATA[SELECT  MATNR,CONVERT(INT,MENGE),MEINS,BWART,MAINT_PLANT_RIG FROM saap.T_MDOC_ITM WHERE TRANSID='tranid']]>
+</verifyarticle>
+<verifycode>
+<![CDATA[SELECT CONVERT(INT,SOH_ORIGINAL),RE_CODE,CHARITY_PGM,CHARITY_PGM_DESC,RND_WGT_QTY,RND_WGT,TRD_DEPT FROM saap.ZWOWT_MDOC_ITM 
+WHERE TRANSID='tranid']]>
+</verifycode>
+<verifyusername>
+<![CDATA[SELECT MESFCT,UPDATED_USER,USR_NAME,COMMENTS,TO_DEPT FROM saap.ZWOWT_MDOCHD WHERE TRANSID='tranid']]>
+</verifyusername>
+</TCName>
+
+<TCName name = "verifyStockAdjLinkedArticles">
+<testcase>LinkedArticles</testcase>
+<linkedarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11)
+AND a.matnr in (select distinct child_article from saap.zwowc_article_child  where matnr in (select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.ZWOWC_ARTICLE_HIER_XREF e,saap.local_wow_soh f, saap.ZWOWC_ART_LIST_DEPARTMENT G
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr AND a.item_linkage_ind ='Y' and a.mtart='ZPRD' ) and child_article_uom = 'EA') and d.COMPLEX_PACK_BRK_ARTICLE='']]>
+</linkedarticles>
+<childarticle>
+<![CDATA[select * from saap.zwowc_article_child  where child_article='article_num']]>
+</childarticle>
+<currentSOH>
+<![CDATA[select store_soh from saap.local_wow_soh where article='article_num']]>
+</currentSOH>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+<sohvalidation>10</sohvalidation>
+<childsohvalidation>5</childsohvalidation>
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+<lastrcvdqty>
+<![CDATA[select matnr as ARTICLE, last_received_qty ||' '|| received_uom as "RECEIVED QTY" from saap.sp_wow_get_last_received_qty('article_num',null)]]>
+</lastrcvdqty>
+</TCName>
+
+<TCName name = "checkIDTandRIDT">
+<getNODEid>
+<![CDATA[select * from saap.ZWOWC_IDT_DEPT_CONFIG]]>
+</getNODEid>
+<getDDvalues>
+<![CDATA[select * from saap.ZWOWC_IDT_DEPT_CONFIG where IDT_FROM_SUB_CAT='nodeid']]>
+</getDDvalues>
+<getIDTarticle>
+<![CDATA[select distinct a.matnr from saap.zwowc_article_master a,  saap.zwowc_article_listing b,  saap.zwowc_article_ean c,  saap.zwowc_article_uom d,  
+saap.ZWOWC_ARTICLE_HIER_XREF e where a.matnr = b.matnr and b.matnr = c.matnr and c.matnr = d.matnr and  d.matnr = e.matnr and e.node_id like ('nodeid') and b.perpetual_flag='Y']]>
+</getIDTarticle>
+<packsize>
+<![CDATA[SELECT MATNR,MEINH,PACK_SIZE FROM saap.ZWOWC_ARTICLE_UOM WHERE MATNR='art_no' and MEINH='uomname']]>
+</packsize>
+<baseUOMs>
+<![CDATA[SELECT ARTICLE,BASE_UOM,STORE_SOH FROM saap.LOCAL_WOW_SOH WHERE ARTICLE='art_no']]>
+</baseUOMs>
+<baseUOM>
+<![CDATA[select MATNR,MEINS from saap.ZWOWC_ARTICLE_UOM WHERE MATNR='art_no']]>
+</baseUOM>
+<IDTpurchaselimit>
+<![CDATA[SELECT * FROM saap.ZWOWC_STK_ADJ_CONFIG]]>
+</IDTpurchaselimit>
+<IDTcomment>
+<![CDATA[SELECT COMMENTS,TRANSID FROM saap.ZWOWT_MDOCHD where comments!='null' and transid>'transactionID']]>
+</IDTcomment>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<gettransactionID>
+<![CDATA[select * from saap.t_mdoc_itm where matnr='art_no' and transid > tID order by transid desc]]>
+</gettransactionID>
+<getreasoncode>
+<![CDATA[select * from saap.ZWOWC_STK_ADJ_REASON_CODES where short_desc='Rvse IDT']]> 
+</getreasoncode>
+<getfromdept>
+<![CDATA[select * from saap.ZWOWC_ART_LIST_DEPARTMENT where SUB_CAT='nodeid']]> 
+</getfromdept>
+<verifyarticle>
+<![CDATA[SELECT  MATNR,CONVERT(INT,MENGE),MEINS,BWART,MAINT_PLANT_RIG FROM saap.T_MDOC_ITM WHERE TRANSID='tranid']]>
+</verifyarticle>
+<verifycode>
+<![CDATA[SELECT CONVERT(INT,SOH_ORIGINAL),RE_CODE,CHARITY_PGM,CHARITY_PGM_DESC,RND_WGT_QTY,RND_WGT,TRD_DEPT FROM saap.ZWOWT_MDOC_ITM 
+WHERE TRANSID='tranid']]>
+</verifycode>
+<verifyusername>
+<![CDATA[SELECT MESFCT,UPDATED_USER,USR_NAME,COMMENTS,TO_DEPT FROM saap.ZWOWT_MDOCHD WHERE TRANSID='tranid']]>
+</verifyusername>
+</TCName>
+
+<TCName name = "verifyStockAdjLinkedArticles">
+<testcase>LinkedArticles</testcase>
+<linkedarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11)
+AND a.matnr in (select distinct child_article from saap.zwowc_article_child  where matnr in (select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.ZWOWC_ARTICLE_HIER_XREF e,saap.local_wow_soh f, saap.ZWOWC_ART_LIST_DEPARTMENT G
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr AND a.item_linkage_ind ='Y' and a.mtart='ZPRD' ) and child_article_uom = 'EA') and d.COMPLEX_PACK_BRK_ARTICLE='']]>
+</linkedarticles>
+<childarticle>
+<![CDATA[select * from saap.zwowc_article_child  where child_article='article_num']]>
+</childarticle>
+<currentSOH>
+<![CDATA[select store_soh from saap.local_wow_soh where article='article_num']]>
+</currentSOH>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+<sohvalidation>10</sohvalidation>
+<childsohvalidation>5</childsohvalidation>
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+<lastrcvdqty>
+<![CDATA[select matnr as ARTICLE, last_received_qty ||' '|| received_uom as "RECEIVED QTY" from saap.sp_wow_get_last_received_qty('article_num',null)]]>
+</lastrcvdqty>
+</TCName>
+<TCName name = "verifyStockAdjLinkedArticlesDescription">
+<testcase>LinkedDescription</testcase>
+<linkedarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11)
+AND a.matnr in (select distinct child_article from saap.zwowc_article_child  where matnr in (select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.ZWOWC_ARTICLE_HIER_XREF e,saap.local_wow_soh f, saap.ZWOWC_ART_LIST_DEPARTMENT G
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr AND a.item_linkage_ind ='Y' and a.mtart='ZPRD' ) and child_article_uom = 'EA') 
+and d.COMPLEX_PACK_BRK_ARTICLE='']]>
+</linkedarticles>
+<childarticle>
+<![CDATA[select * from saap.zwowc_article_child  where child_article='article_num']]>
+</childarticle>
+<currentSOH>
+<![CDATA[select store_soh from saap.local_wow_soh where article='article_num']]>
+</currentSOH>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+<validation99>100</validation99>
+<validation99Child>400</validation99Child>
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+<lastrcvdqty>
+<![CDATA[select matnr as ARTICLE, last_received_qty ||' '|| received_uom as "RECEIVED QTY" from saap.sp_wow_get_last_received_qty('article_num',null)]]>
+</lastrcvdqty>
+</TCName>
+
+<TCName name = "verifyStockAdjLinkedArticlesPLU">
+<testcase>PLU</testcase>
+<linkedarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11)
+AND a.matnr in (select distinct child_article from saap.zwowc_article_child  where matnr in (select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.ZWOWC_ARTICLE_HIER_XREF e,saap.local_wow_soh f, saap.ZWOWC_ART_LIST_DEPARTMENT G
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr AND a.item_linkage_ind ='Y' and a.mtart='ZPRD' ) 
+and child_article_uom = 'EA') and d.COMPLEX_PACK_BRK_ARTICLE='']]>
+</linkedarticles>
+<linkedarticlesPLU>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11)
+AND a.matnr in (select distinct child_article from saap.zwowc_article_child  where matnr in (select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.ZWOWC_ARTICLE_HIER_XREF e,saap.local_wow_soh f, saap.ZWOWC_ART_LIST_DEPARTMENT G
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr AND a.item_linkage_ind ='Y' and a.mtart='ZPRD' ) and child_article_uom = 'EA') 
+and d.COMPLEX_PACK_BRK_ARTICLE='' and c.PLU_CODE='pluvalue']]>
+</linkedarticlesPLU>
+<childarticle>
+<![CDATA[select * from saap.zwowc_article_child  where child_article='article_num']]>
+</childarticle>
+<currentSOH>
+<![CDATA[select store_soh from saap.local_wow_soh where article='article_num']]>
+</currentSOH>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+<sohvalidation>20</sohvalidation>
+<childsohvalidation>5</childsohvalidation>
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+<lastrcvdqty>
+<![CDATA[select matnr as ARTICLE, last_received_qty ||' '|| received_uom as "RECEIVED QTY" from saap.sp_wow_get_last_received_qty('article_num',null)]]>
+</lastrcvdqty>
+</TCName>
+<TCName name = "verifyStockAdjLinkedArticlesEAN">
+<testcase>LinkedEAN</testcase>
+<linkedarticles>
+<![CDATA[select a.matnr,a.article_desc,a.MTART,a.ARTICLE_CAT_ID,b.ean11,b.meinh,c.PLU_CODE,d.article_om,e.store_soh,e.store_soh_rand_wght,f.pack_size from saap.zwowc_article_master a
+JOIN saap.zwowc_article_ean b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_master c ON (b.matnr=c.matnr)
+JOIN saap.zwowc_article_listing d ON (c.matnr=d.matnr)
+JOIN saap.local_wow_soh e ON (a.matnr=e.article)
+JOIN saap.zwowc_article_uom f ON (d.matnr=f.matnr and b.ean11=f.EAN11)
+AND a.matnr in (select distinct child_article from saap.zwowc_article_child  where matnr in (select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.ZWOWC_ARTICLE_HIER_XREF e,saap.local_wow_soh f, saap.ZWOWC_ART_LIST_DEPARTMENT G
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr AND a.item_linkage_ind ='Y' and a.mtart='ZPRD' ) and child_article_uom = 'EA') and d.COMPLEX_PACK_BRK_ARTICLE='']]>
+</linkedarticles>
+<childarticle>
+<![CDATA[select * from saap.zwowc_article_child  where child_article='article_num']]>
+</childarticle>
+<currentSOH>
+<![CDATA[select store_soh from saap.local_wow_soh where article='article_num']]>
+</currentSOH>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+<validation999>1000</validation999>
+<validation999child>4000</validation999child>
+<sohvalidation>50</sohvalidation>
+<childsohvalidation>70</childsohvalidation>
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+<lastrcvdqty>
+<![CDATA[select matnr as ARTICLE, last_received_qty ||' '|| received_uom as "RECEIVED QTY" from saap.sp_wow_get_last_received_qty('article_num',null)]]>
+</lastrcvdqty>
+</TCName>
+<TCName name = "verifylookupLinkedArticles">
+<testcase>LinkedArticles</testcase>
+<linkedarticles>
+<![CDATA[select * from saap.zwowc_article_child  where matnr in (select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.ZWOWC_ARTICLE_HIER_XREF e,saap.local_wow_soh f, saap.ZWOWC_ART_LIST_DEPARTMENT G
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr AND a.item_linkage_ind ='Y' and a.mtart='ZPRD' and d.ALC_STATUS<>'ES') 
+and child_article_uom = 'EA']]>
+</linkedarticles>
+</TCName>
+<TCName name = "verifyStockAdjDisplayArticles">
+<testcase>DisplayArticles</testcase>
+<displayarticles>
+<![CDATA[select distinct a.matnr,a.article_desc,a.PLU_CODE, c.EAN11 from saap.zwowc_article_master a
+JOIN saap.zwowc_article_listing b ON (a.matnr = b.matnr)
+JOIN saap.zwowc_article_ean c ON (b.matnr = c.matnr)
+JOIN saap.zwowc_article_uom d ON (c.matnr = d.matnr)
+JOIN saap.zwowc_article_hier_xref e ON (d.matnr = e.matnr)
+JOIN saap.local_wow_soh f ON (e.matnr = f.article)
+JOIN saap.ZWOWC_ART_LIST_DEPARTMENT g ON (g.matnr = f.article)
+JOIN Saap.zwowc_article_child h 
+    ON (g.matnr=h.matnr and h.child_article in (select a.child_article from saap.zwowc_article_child a
+    JOIN saap.local_wow_soh b ON (a.child_article = b.article)
+    JOIN saap.zwowc_article_listing c ON (b.article=c.matnr and c.alc_status not in ('ES'))
+    JOIN saap.zwowc_article_master d ON (c.matnr=d.matnr)
+    JOIN saap.zwowc_article_uom e ON (d.matnr=e.matnr)
+    JOIN MAT_VIEW_ZWOW_ARTICLES_HIER f ON (e.matnr=f.matnr)))
+where a.DISPLAY_ITEM_IND='Y' and  c.PRIME_EAN='Y' 
+and b.complex_pack_brk_base_qty='0' and b.PERPETUAL_FLAG='N']]>
+</displayarticles>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<sohvalue>5</sohvalue>
+<childsohvalue>5</childsohvalue>
+<childdetails>
+<![CDATA[select a.child_article, a.child_article_qty, b.store_soh from saap.zwowc_article_child a
+JOIN saap.local_wow_soh b ON (a.child_article = b.article)
+JOIN saap.zwowc_article_listing c ON (b.article=c.matnr and c.alc_status not in ('ES'))
+JOIN saap.zwowc_article_master d ON (c.matnr=d.matnr)
+JOIN saap.zwowc_article_uom e ON (d.matnr=e.matnr and e.BASE_UOM_IND='Y') and a.matnr='parentArticle']]>
+</childdetails>
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+</TCName>
+<TCName name = "verifyStockAdjDisplayArticlesDescription">
+<testcase>DisplayDescription</testcase>
+<displayarticles>
+<![CDATA[select distinct a.matnr,a.article_desc,a.PLU_CODE, c.EAN11 from saap.zwowc_article_master a
+JOIN saap.zwowc_article_listing b ON (a.matnr = b.matnr)
+JOIN saap.zwowc_article_ean c ON (b.matnr = c.matnr)
+JOIN saap.zwowc_article_uom d ON (c.matnr = d.matnr)
+JOIN saap.zwowc_article_hier_xref e ON (d.matnr = e.matnr)
+JOIN saap.local_wow_soh f ON (e.matnr = f.article)
+JOIN saap.ZWOWC_ART_LIST_DEPARTMENT g ON (g.matnr = f.article)
+JOIN Saap.zwowc_article_child h 
+    ON (g.matnr=h.matnr and h.child_article in (select a.child_article from saap.zwowc_article_child a
+    JOIN saap.local_wow_soh b ON (a.child_article = b.article)
+    JOIN saap.zwowc_article_listing c ON (b.article=c.matnr and c.alc_status not in ('ES'))
+    JOIN saap.zwowc_article_master d ON (c.matnr=d.matnr)
+    JOIN saap.zwowc_article_uom e ON (d.matnr=e.matnr)
+    JOIN MAT_VIEW_ZWOW_ARTICLES_HIER f ON (e.matnr=f.matnr)))
+where a.DISPLAY_ITEM_IND='Y' and  c.PRIME_EAN='Y' 
+and b.complex_pack_brk_base_qty='0' and b.PERPETUAL_FLAG='N']]>
+</displayarticles>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<validation99>100</validation99>
+<childsohvalue>5</childsohvalue>
+<childdetails>
+<![CDATA[select a.child_article, a.child_article_qty, b.store_soh from saap.zwowc_article_child a
+JOIN saap.local_wow_soh b ON (a.child_article = b.article)
+JOIN saap.zwowc_article_listing c ON (b.article=c.matnr and c.alc_status not in ('ES'))
+JOIN saap.zwowc_article_master d ON (c.matnr=d.matnr)
+JOIN saap.zwowc_article_uom e ON (d.matnr=e.matnr and e.BASE_UOM_IND='Y') and a.matnr='parentArticle']]>
+</childdetails>
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+</TCName>
+<TCName name = "verifyStockAdjDisplayArticlesPLU">
+<testcase>DisplayPLU</testcase>
+<displayarticles>
+<![CDATA[select distinct a.matnr,a.article_desc,a.PLU_CODE, c.EAN11 from saap.zwowc_article_master a
+JOIN saap.zwowc_article_listing b ON (a.matnr = b.matnr)
+JOIN saap.zwowc_article_ean c ON (b.matnr = c.matnr)
+JOIN saap.zwowc_article_uom d ON (c.matnr = d.matnr)
+JOIN saap.zwowc_article_hier_xref e ON (d.matnr = e.matnr)
+JOIN saap.local_wow_soh f ON (e.matnr = f.article)
+JOIN saap.ZWOWC_ART_LIST_DEPARTMENT g ON (g.matnr = f.article)
+JOIN Saap.zwowc_article_child h 
+    ON (g.matnr=h.matnr and h.child_article in (select a.child_article from saap.zwowc_article_child a
+    JOIN saap.local_wow_soh b ON (a.child_article = b.article)
+    JOIN saap.zwowc_article_listing c ON (b.article=c.matnr and c.alc_status not in ('ES'))
+    JOIN saap.zwowc_article_master d ON (c.matnr=d.matnr)
+    JOIN saap.zwowc_article_uom e ON (d.matnr=e.matnr)
+    JOIN MAT_VIEW_ZWOW_ARTICLES_HIER f ON (e.matnr=f.matnr)))
+where a.DISPLAY_ITEM_IND='Y' and  c.PRIME_EAN='Y' 
+and b.complex_pack_brk_base_qty='0' and b.PERPETUAL_FLAG='N']]>
+</displayarticles>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<sohvalue>20</sohvalue>
+<childsohvalue>5</childsohvalue>
+<childdetails>
+<![CDATA[select a.child_article, a.child_article_qty, b.store_soh from saap.zwowc_article_child a
+JOIN saap.local_wow_soh b ON (a.child_article = b.article)
+JOIN saap.zwowc_article_listing c ON (b.article=c.matnr and c.alc_status not in ('ES'))
+JOIN saap.zwowc_article_master d ON (c.matnr=d.matnr)
+JOIN saap.zwowc_article_uom e ON (d.matnr=e.matnr and e.BASE_UOM_IND='Y') and a.matnr='parentArticle']]>
+</childdetails>
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+</TCName>
+<TCName name = "verifyStockAdjDisplayArticlesEAN">
+<testcase>DisplayEAN</testcase>
+<displayarticles>
+<![CDATA[select distinct a.matnr,a.article_desc,a.PLU_CODE, c.EAN11 from saap.zwowc_article_master a
+JOIN saap.zwowc_article_listing b ON (a.matnr = b.matnr)
+JOIN saap.zwowc_article_ean c ON (b.matnr = c.matnr)
+JOIN saap.zwowc_article_uom d ON (c.matnr = d.matnr)
+JOIN saap.zwowc_article_hier_xref e ON (d.matnr = e.matnr)
+JOIN saap.local_wow_soh f ON (e.matnr = f.article)
+JOIN saap.ZWOWC_ART_LIST_DEPARTMENT g ON (g.matnr = f.article)
+JOIN Saap.zwowc_article_child h 
+    ON (g.matnr=h.matnr and h.child_article in (select a.child_article from saap.zwowc_article_child a
+    JOIN saap.local_wow_soh b ON (a.child_article = b.article)
+    JOIN saap.zwowc_article_listing c ON (b.article=c.matnr and c.alc_status not in ('ES'))
+    JOIN saap.zwowc_article_master d ON (c.matnr=d.matnr)
+    JOIN saap.zwowc_article_uom e ON (d.matnr=e.matnr)
+    JOIN MAT_VIEW_ZWOW_ARTICLES_HIER f ON (e.matnr=f.matnr)))
+where a.DISPLAY_ITEM_IND='Y' and  c.PRIME_EAN='Y' 
+and b.complex_pack_brk_base_qty='0' and b.PERPETUAL_FLAG='N']]>
+</displayarticles>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<validation999>1000</validation999>
+<sohvalue>25</sohvalue>
+<childsohvalue>5</childsohvalue>
+<childdetails>
+<![CDATA[select a.child_article, a.child_article_qty, b.store_soh from saap.zwowc_article_child a
+JOIN saap.local_wow_soh b ON (a.child_article = b.article)
+JOIN saap.zwowc_article_listing c ON (b.article=c.matnr and c.alc_status not in ('ES'))
+JOIN saap.zwowc_article_master d ON (c.matnr=d.matnr)
+JOIN saap.zwowc_article_uom e ON (d.matnr=e.matnr and e.BASE_UOM_IND='Y') and a.matnr='parentArticle']]>
+</childdetails>
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+</TCName>
+<TCName name = "verifylookupDisplayArticles">
+<testcase>DisplayLookup</testcase>
+<displayarticles>
+<![CDATA[select distinct a.matnr,a.article_desc,a.PLU_CODE, c.EAN11 from saap.zwowc_article_master a, saap.zwowc_article_listing b, saap.zwowc_article_ean c, saap.zwowc_article_uom d, saap.zwowc_article_hier_xref e, saap.local_wow_soh f, saap.ZWOWC_ART_LIST_DEPARTMENT g
+where a.matnr = b.matnr and b.matnr = c.matnr and c.matnr = d.matnr and d.matnr = e.matnr  and e.matnr = f.article and a.DISPLAY_ITEM_IND='Y' and  c.PRIME_EAN='Y' 
+and b.ALC_STATUS<>'ES']]>
+</displayarticles>
+</TCName>
+<TCName name = "checkBWSarticle">
+<BWSarticle>
+<![CDATA[select distinct a.matnr from saap.ZWOWC_ARTICLE_LISTING a , saap.MAT_VIEW_ZWOW_ARTICLES_HIER b , saap.zwowc_article_master c,saap.zwowc_article_uom d,saap.ZWOWC_ART_SALES_PRICE e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and b.cat in('2019','2050','2051','2075')]]>
+</BWSarticle>
+</TCName>
+<TCName name = "verifylookupWeightArticles">
+<testcase>WeightLookup</testcase>
+<WeightArticles>
+<![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ARTICLE_UOM C, SAAP.ZWOWC_ARTICLE_EAN D, SAAP.ZWOWC_ARTICLE_HIER_XREF E, SAAP.LOCAL_WOW_SOH F
+WHERE A.MATNR = B.MATNR AND  B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR AND E.MATNR = F.ARTICLE and a.weighted_ind='Y' and b.COMPLEX_PACK_BRK_ARTICLE='' 
+and b.ALC_STATUS<>'ES']]>
+</WeightArticles>
+</TCName>
+<TCName name = "verifylookupRandomWeightArticles">
+<testcase>RandomWeightLookup</testcase>
+<RandomWeightArticles>
+<![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ARTICLE_UOM C, SAAP.ZWOWC_ARTICLE_EAN D, SAAP.ZWOWC_ARTICLE_HIER_XREF E, SAAP.LOCAL_WOW_SOH F
+WHERE A.MATNR = B.MATNR AND  B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR AND E.MATNR = F.ARTICLE and b.random_WEIGHT_FLG='Y' AND B.PI_OM > 1 and b.COMPLEX_PACK_BRK_ARTICLE='' 
+and b.ALC_STATUS<>'ES' ]]>
+</RandomWeightArticles>
+</TCName>
+<TCName name = "verifyStockAdjWeighedArticles">
+<testcase>WeighedArticles</testcase>
+<weighedarticles>
+<![CDATA[SELECT DISTINCT A.MATNR, A.ARTICLE_DESC, D.EAN11, D.MEINH, A.PLU_CODE,B.article_om,F.store_soh,F.store_soh_rand_wght,C.pack_size
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ARTICLE_UOM C, SAAP.ZWOWC_ARTICLE_EAN D, SAAP.ZWOWC_ARTICLE_HIER_XREF E, 
+SAAP.LOCAL_WOW_SOH F
+WHERE A.MATNR = B.MATNR AND  B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR AND E.MATNR = F.ARTICLE and a.weighted_ind='Y']]>
+</weighedarticles>
+<currentSOH>
+<![CDATA[select store_soh from saap.local_wow_soh where article='article_num']]>
+</currentSOH>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+<EAValue>50000</EAValue>
+<CARValue>1</CARValue>
+<validation99>100.000</validation99>
+<validation999>1000000</validation999>
+<endSOH>500.000</endSOH>
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+<lastrcvdqty>
+<![CDATA[select matnr as ARTICLE, last_received_qty ||' '|| received_uom as "RECEIVED QTY" from saap.sp_wow_get_last_received_qty('article_num',null)]]>
+</lastrcvdqty>
+</TCName>
+<TCName name = "verifyStockAdjRandomWeighedArticles">
+<testcase>WeighedArticles</testcase>
+<randomweighedarticles>
+<![CDATA[SELECT DISTINCT A.MATNR , A.ARTICLE_DESC, D.EAN11,D.MEINH, A.PLU_CODE,B.article_om,B.PI_OM,F.store_soh,F.store_soh_rand_wght,C.pack_size
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ARTICLE_UOM C, SAAP.ZWOWC_ARTICLE_EAN D, 
+SAAP.ZWOWC_ARTICLE_HIER_XREF E, SAAP.LOCAL_WOW_SOH F
+WHERE A.MATNR = B.MATNR AND  B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR AND E.MATNR = F.ARTICLE and b.random_WEIGHT_FLG='Y' AND B.PI_OM > 1 and b.is_CPBD='0']]>
+</randomweighedarticles>
+<currentSOH>
+<![CDATA[select store_soh from saap.local_wow_soh where article='article_num']]>
+</currentSOH>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.short_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+<multiplefactor>
+<![CDATA[select MULTIPLICATION_FACTOR from saap.ZWOWC_STK_ADJ_REASON_CODES where LONG_DESC='reasoncodes']]>
+</multiplefactor>
+<KGValue>50.000</KGValue>
+<CARValue>1</CARValue>
+<validation99>100.000</validation99>
+<validation999>1000000</validation999>
+<endEASOH>0</endEASOH>
+<endKGSOH>0.000</endKGSOH>
+<charitycodes>
+<![CDATA[select * from saap.ZWOWC_RSC_CHARITY_PGM]]>
+</charitycodes>
+<lastrcvdqty>
+<![CDATA[select matnr as ARTICLE, last_received_qty ||' '|| received_uom as "RECEIVED QTY" from saap.sp_wow_get_last_received_qty('article_num',null)]]>
+</lastrcvdqty>
+</TCName>
+<TCName name = "checkWHDeliveryCPBD">
+<cpbdArticles>
+<![CDATA[select distinct a.matnr,AB.LFBNR,G.menge from saap.zwowc_article_master a
+JOIN saap.zwowc_article_listing b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_ean c ON (b.matnr = c.matnr)
+JOIN saap.zwowc_article_uom d ON (c.matnr = d.matnr)
+JOIN saap.ZWOWC_ARTICLE_HIER_XREF e ON (d.matnr = e.matnr)
+JOIN O_MDOC_ITM BA ON (BA.MATNR = B.MATNR)
+JOIN zwowo_mdochd AB ON (BA.MBLNR = AB.MBLNR)
+JOIN ZWOWO_ORDER_NOTIF_ITM F ON (BA.MATNR=F.MATNR)
+JOIN saap.LOCAL_RECEIVING_INFO G ON (F.MATNR=G.MATNR) AND (G.LFBNR=AB.LFBNR)
+where a.matnr in (select article_no from sp_wow_get_disp_info_by_article(' {"iv_article_no":"","iv_user_id":"xaai8","iv_pwd":"","iv_session_id":"111","iv_site_no":"1786","iv_sales_org":"1005","iv_article_no":"","iv_start_date":"","iv_end_date":"","iv_order_no":"","iv_reason_code":"75"}'))
+and a.article_cat_id ='00' and a.mtart='HAWA' and d.LWR_LVL_UOM='EA'
+and b.IS_CPBD='1']]>
+</cpbdArticles>
+<getCPBDArticle>
+<![CDATA[SELECT DISTINCT B.COMPLEX_PACK_BRK_ARTICLE,B.Article_om
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, saap.LOCAL_WOW_SOH E
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND A.MATNR=E.ARTICLE AND A.MATNR = 'art_no' ]]>
+</getCPBDArticle>
+<allCPBDArticle>
+<![CDATA[SELECT DISTINCT A.MATNR, B.ARTICLE_OM,B.COMPLEX_PACK_BRK_ARTICLE,E.STORE_SOH, A.MTART, C.DEPT_NAME, C.CAT_NAME, C.SUB_CAT_NAME, C.SEG_NAME, A.PBD_IND, A.DISPLAY_ITEM_IND, B.RANDOM_WEIGHT_FLG, A.WEIGHTED_IND
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, saap.LOCAL_WOW_SOH E
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND A.MATNR=E.ARTICLE AND B.COMPLEX_PACK_BRK_ARTICLE = 'carArt' ORDER BY B.ARTICLE_OM DESC]]>
+</allCPBDArticle>
+</TCName>
+<TCName name = 'cpbpArticles'>
+<cpbdArticles>
+<![CDATA[SELECT DISTINCT A.MATNR, B.ARTICLE_OM,B.COMPLEX_PACK_BRK_ARTICLE,E.STORE_SOH, A.MTART, C.DEPT_NAME, C.CAT_NAME, C.SUB_CAT_NAME, C.SEG_NAME, A.PBD_IND, A.DISPLAY_ITEM_IND, B.RANDOM_WEIGHT_FLG, A.WEIGHTED_IND
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, saap.LOCAL_WOW_SOH E
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND A.MATNR=E.ARTICLE AND E.STORE_SOH >0 AND B.COMPLEX_PACK_BRK_ARTICLE <>'' AND B.ARTICLE_OM>20 ORDER BY B.COMPLEX_PACK_BRK_ARTICLE ASC]]>
+</cpbdArticles>
+<allCPBDArticle>
+<![CDATA[SELECT DISTINCT A.MATNR, B.ARTICLE_OM,B.COMPLEX_PACK_BRK_ARTICLE,E.STORE_SOH, A.MTART, C.DEPT_NAME, C.CAT_NAME, C.SUB_CAT_NAME, C.SEG_NAME, A.PBD_IND, A.DISPLAY_ITEM_IND, B.RANDOM_WEIGHT_FLG, A.WEIGHTED_IND
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, saap.LOCAL_WOW_SOH E
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND A.MATNR=E.ARTICLE AND B.COMPLEX_PACK_BRK_ARTICLE = 'carArt' ORDER BY B.ARTICLE_OM DESC]]>
+</allCPBDArticle>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.long_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<history>
+<![CDATA[select stk.short_desc, dateformat(omh.bldat,'DD/MM/YYYY') as adj_date,saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+(stk.multiplication_factor * omi.menge) as adj_qty,zmi.soh_original, 
+      case when zam.item_linkage_ind = 'Y' 
+           then cast((zmi.soh_original + (omi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1))) as numeric(19,3))
+           else cast((zmi.soh_original + (omi.menge*stk.multiplication_factor)) as numeric(19,3))
+      end case as adjusted_to
+      from saap.o_mdochd omh
+      join saap.zwowo_mdochd zmh on (omh.mblnr = zmh.mblnr and omh.mjahr = zmh.mjahr)
+      join saap.o_mdoc_itm omi on (omh.mblnr = omi.mblnr and omh.mjahr = omi.mjahr)
+      join saap.zwowo_mdoc_itm zmi on (zmi.mblnr = omi.mblnr and zmi.mjahr = omi.mjahr and zmi.zeile = omi.zeile)
+      join saap.zwowc_stk_adj_reason_codes stk on (omi.bwart = stk.mov_type)
+      join saap.zwowc_article_master zam on (omi.matnr=zam.matnr)
+      left join (
+          select c.matnr, c.child_article_qty
+          from saap.zwowc_article_child c 
+          join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+          where l.perpetual_flag='Y'
+      ) zac on (zam.matnr=zac.matnr)
+      where omi.matnr = 'article_num'
+      and zmh.status = 'S'
+      and datediff(day, dateformat(omh.bldat,'YYYYMMDD'), dateformat(today(),'YYYYMMDD')) <= '28'
+      order by zmh.transid desc;]]>
+</history>
+</TCName>
+<TCName name = 'mpkAndCARArticles'>
+<cpbdArticles>
+<![CDATA[SELECT DISTINCT A.MATNR, B.ARTICLE_OM,B.COMPLEX_PACK_BRK_ARTICLE,E.STORE_SOH, A.MTART, C.DEPT_NAME, C.CAT_NAME, C.SUB_CAT_NAME, C.SEG_NAME, A.PBD_IND, A.DISPLAY_ITEM_IND, B.RANDOM_WEIGHT_FLG, A.WEIGHTED_IND
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, saap.LOCAL_WOW_SOH E
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND A.MATNR=E.ARTICLE AND E.STORE_SOH >0 
+AND B.COMPLEX_PACK_BRK_ARTICLE <>'' AND B.ARTICLE_OM>20 ORDER BY B.COMPLEX_PACK_BRK_ARTICLE ASC]]>
+</cpbdArticles>
+<allCPBDArticle>
+<![CDATA[SELECT DISTINCT A.MATNR, B.ARTICLE_OM,B.COMPLEX_PACK_BRK_ARTICLE,E.STORE_SOH, A.MTART, C.DEPT_NAME, C.CAT_NAME, C.SUB_CAT_NAME, C.SEG_NAME, A.PBD_IND, A.DISPLAY_ITEM_IND, B.RANDOM_WEIGHT_FLG, A.WEIGHTED_IND
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, saap.LOCAL_WOW_SOH E
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND A.MATNR=E.ARTICLE AND B.COMPLEX_PACK_BRK_ARTICLE = 'carArt' ORDER BY B.ARTICLE_OM DESC]]>
+</allCPBDArticle>
+<recenthistory>
+<![CDATA[select top 1 tmi.matnr, zmi.soh_original, 
+        case when zam.item_linkage_ind = 'Y' 
+             then (zmi.soh_original + (tmi.menge*stk.multiplication_factor*coalesce(zac.child_article_qty,1)))
+             else (zmi.soh_original + (tmi.menge*stk.multiplication_factor)) 
+        end case as adjusted_to,
+        zmi.sadj_reason_code, stk.long_desc, zmh.updated_user, saap.fn_wow_get_user_name(zmh.updated_user) as user_name,
+        dateformat(tmh.bldat,'DD/MM/YYYY') as adj_date, coalesce(zmh.recv_time,'000000') as adj_time, tmi.menge
+        from saap.t_mdochd tmh
+        join saap.zwowt_mdochd zmh on (tmh.transid=zmh.transid)
+        join saap.t_mdoc_itm tmi on (zmh.transid=tmi.transid)
+        join saap.zwowt_mdoc_itm zmi on (tmi.transid=zmi.transid)
+        join saap.zwowc_stk_adj_reason_codes stk on (tmi.bwart = stk.mov_type)
+        join saap.zwowc_article_master zam on (tmi.matnr=zam.matnr)
+        left join (
+            select c.matnr, c.child_article_qty
+            from saap.zwowc_article_child c 
+            join saap.zwowc_article_listing l on (c.matnr=l.matnr)
+            where l.perpetual_flag='Y'
+        ) zac on (zam.matnr=zac.matnr)
+        where tmi.matnr = 'article_num'
+        and zmh.mesfct in ('SDJ','OAD')
+        order by zmh.transid desc;]]>
+</recenthistory>
+<packsize>
+<![CDATA[select pack_size from SAAP.ZWOWC_ARTICLE_UOM where matnr = 'art' order by pack_size desc]]>
+</packsize>
+</TCName>
+<TCName name = 'cpbdArticleUnreceivedOrders'>
+<cpbdArticle>
+<![CDATA[select a.ebeln,b.delivery_no,a.matnr, a.RCVD_FLAG, case when B.msg_type in ('VASN','DISP') THEN 'DISPATCHED' ELSE 'AUTHORISED' END AS STATUS  from local_order_po_info a 
+left join LOCAL_NOTIF_INFO_HDR b on (a.ebeln=b.order_no), SAAP.ZWOWC_ARTICLE_LISTING C
+where a.matnr=C.MATNR AND C.COMPLEX_PACK_BRK_ARTICLE <> '' and a.RCVD_FLAG IS NULL AND a.STATUS='A' AND SUBSTR(a.order_type,1,2) IN ('PO','SO','IB') and a.matnr in (select matnr from zwowc_article_listing where complex_pack_brk_article > '0' 
+and SAAP.ZWOWC_ARTICLE_LISTING.COMPLEX_PACK_BRK_BASE_QTY='1')]]>
+</cpbdArticle>
+<orders>
+<![CDATA[select a.ebeln,b.delivery_no,a.matnr, a.RCVD_FLAG, case when B.msg_type in ('VASN','DISP') THEN 'DISPATCHED' ELSE 'AUTHORISED' END AS STATUS  from local_order_po_info a 
+left join LOCAL_NOTIF_INFO_HDR b on (a.ebeln=b.order_no), SAAP.ZWOWC_ARTICLE_LISTING C
+where a.matnr=C.MATNR AND C.COMPLEX_PACK_BRK_ARTICLE <> '' and a.RCVD_FLAG IS NULL AND a.STATUS='A' AND SUBSTR(a.order_type,1,2) IN ('PO','SO','IB') AND A.MATNR = 'art_no']]>
+</orders>
+</TCName>
+<TCName name = 'checkIDTPurchaseCPBDArt'>
+<getIDTarticle>
+<![CDATA[SELECT * FROM SAAP.ZWOWC_ART_LIST_DEPARTMENT A, SAAP.ZWOWC_ARTICLE_LISTING B WHERE A.MATNR = B.MATNR AND B.ALC_STATUS ='RA' 
+AND B.COMPLEX_PACK_BRK_ARTICLE <>''
+AND A.SUB_CAT IN (SELECT IDT_FROM_SUB_CAT FROM ZWOWC_IDT_DEPT_CONFIG )]]>
+</getIDTarticle>
+<IDTpurchaselimit>
+<![CDATA[SELECT * FROM saap.ZWOWC_STK_ADJ_CONFIG]]>
+</IDTpurchaselimit>
+</TCName>
+<TCName name = 'cpbdArticleWHDeli'>
+<cpbdArticles>
+<![CDATA[select DISTINCT D.COMPLEX_PACK_BRK_ARTICLE,A.LFBNR,F.Demand_qty from 
+zwowo_mdochd A
+JOIN O_MDOC_ITM B ON (A.MBLNR = B.MBLNR)
+JOIN SAAP.ZWOWC_ARTICLE_MASTER C ON (C.MATNR=B.MATNR)
+JOIN SAAP.ZWOWC_ARTICLE_LISTING D ON (D.MATNR=C.MATNR)
+JOIN LOCAL_WOW_SOH E ON (B.MATNR=E.ARTICLE)
+JOIN ZWOWO_ORDER_NOTIF_ITM F ON (B.MATNR=F.MATNR)
+JOIN saap.LOCAL_RECEIVING_INFO G ON (B.MATNR=G.MATNR) AND (G.LFBNR=A.LFBNR)
+JOIN ZWOWC_ARTICLE_UOM H ON (B.MATNR=H.MATNR)
+where A.MESFCT='WGR' 
+AND D.COMPLEX_PACK_BRK_ARTICLE <> '' AND F.DEMAND_QTY > 0 AND E.STORE_SOH > 0 
+AND G.MENGE > 0 
+AND H.PACK_SIZE < E.STORE_SOH]]>
+</cpbdArticles>
+<allCPBDArticle>
+<![CDATA[SELECT DISTINCT A.MATNR, B.ARTICLE_OM,B.COMPLEX_PACK_BRK_ARTICLE,E.STORE_SOH, A.MTART, C.DEPT_NAME, C.CAT_NAME, C.SUB_CAT_NAME, C.SEG_NAME, A.PBD_IND, A.DISPLAY_ITEM_IND, B.RANDOM_WEIGHT_FLG, A.WEIGHTED_IND
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, saap.LOCAL_WOW_SOH E
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND A.MATNR=E.ARTICLE AND B.COMPLEX_PACK_BRK_ARTICLE = 'carArt' ORDER BY B.ARTICLE_OM DESC]]>
+</allCPBDArticle>
+</TCName>
+<TCName name ="checkWHDelWeiRandomWeiArt">
+<weightedArt>
+<![CDATA[select distinct a.matnr,AB.LFBNR,F.Demand_qty,F.LFIMG from saap.zwowc_article_master a
+JOIN saap.zwowc_article_listing b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_ean c ON (b.matnr = c.matnr)
+JOIN saap.zwowc_article_uom d ON (c.matnr = d.matnr)
+JOIN saap.ZWOWC_ARTICLE_HIER_XREF e ON (d.matnr = e.matnr)
+JOIN O_MDOC_ITM BA ON (BA.MATNR = B.MATNR)
+JOIN zwowo_mdochd AB ON (BA.MBLNR = AB.MBLNR)
+JOIN ZWOWO_ORDER_NOTIF_ITM F ON (BA.MATNR=F.MATNR)
+where a.matnr in (select article_no from sp_wow_get_disp_info_by_article(' {"iv_article_no":"","iv_user_id":"xaai8","iv_pwd":"","iv_session_id":"111","iv_site_no":"1786","iv_sales_org":"1005","iv_article_no":"","iv_start_date":"","iv_end_date":"","iv_order_no":"","iv_reason_code":"75"}'))
+and a.WEIGHTED_IND='Y'
+and b.RANDOM_WEIGHT_FLG='N']]>
+</weightedArt>
+<ranWeiArt>
+<![CDATA[select distinct a.matnr,AB.LFBNR,F.Demand_qty,F.LFIMG from saap.zwowc_article_master a
+JOIN saap.zwowc_article_listing b ON (a.matnr=b.matnr)
+JOIN saap.zwowc_article_ean c ON (b.matnr = c.matnr)
+JOIN saap.zwowc_article_uom d ON (c.matnr = d.matnr)
+JOIN saap.ZWOWC_ARTICLE_HIER_XREF e ON (d.matnr = e.matnr)
+JOIN O_MDOC_ITM BA ON (BA.MATNR = B.MATNR)
+JOIN zwowo_mdochd AB ON (BA.MBLNR = AB.MBLNR)
+JOIN ZWOWO_ORDER_NOTIF_ITM F ON (BA.MATNR=F.MATNR)
+where a.matnr in (select article_no from sp_wow_get_disp_info_by_article(' {"iv_article_no":"","iv_user_id":"xaai8","iv_pwd":"","iv_session_id":"111","iv_site_no":"1786","iv_sales_org":"1005","iv_article_no":"","iv_start_date":"","iv_end_date":"","iv_order_no":"","iv_reason_code":"75"}'))
+and b.RANDOM_WEIGHT_FLG='Y']]>
+</ranWeiArt>
+<recvQty>
+<![CDATA[select MENGE from saap.LOCAL_RECEIVING_INFO where matnr = 'art_no']]>
+</recvQty>
+</TCName>
+<TCName name = 'checkIDTPurchaseRanWeiArt'>
+<getIDTarticleWeiArt>
+<![CDATA[SELECT * FROM SAAP.ZWOWC_ART_LIST_DEPARTMENT A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ARTICLE_MASTER C WHERE A.MATNR = B.MATNR 
+AND A.MATNR = C.MATNR AND B.ALC_STATUS ='RA' AND C.weighted_ind='Y'
+AND A.SUB_CAT IN (SELECT IDT_FROM_SUB_CAT FROM ZWOWC_IDT_DEPT_CONFIG )]]>
+</getIDTarticleWeiArt>
+<getIDTarticleRanWeiArt>
+<![CDATA[SELECT * FROM SAAP.ZWOWC_ART_LIST_DEPARTMENT A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ARTICLE_MASTER C WHERE A.MATNR = B.MATNR 
+AND A.MATNR = C.MATNR AND B.ALC_STATUS ='RA' AND C.random_WEIGHT_FLG='Y'
+AND A.SUB_CAT IN (SELECT IDT_FROM_SUB_CAT FROM ZWOWC_IDT_DEPT_CONFIG )]]>
+</getIDTarticleRanWeiArt>
+<IDTpurchaselimit>
+<![CDATA[SELECT * FROM saap.ZWOWC_STK_ADJ_CONFIG]]>
+</IDTpurchaselimit>
+</TCName>
+<TCName name = 'reasonCodeValidation'>
+<randomArticle>
+<![CDATA[select a.matnr from zwowc_article_listing a,zwowc_article_master b,saap.zwowc_ARTICLE_HIER_XREF c where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=a.matnr and a.perpetual_flag='Y' and a.alc_status<>'ES' and b.mtart='HAWA' and b.DANGEROUS_GOODS_IND<>'Y'and b.plu_code='' and b.pbd_ind<>'Y']]>
+</randomArticle>
+<reasonList>
+<![CDATA[select long_desc from ZWOWC_STK_ADJ_REASON_CODES where long_desc in ('IDT Purchase','Rvse IDT') and display_ind='Y']]>
+</reasonList>
+</TCName>
+</configuration>
+
+

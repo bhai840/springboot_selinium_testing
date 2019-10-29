@@ -1,0 +1,481 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.SkipException;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.yaml.snakeyaml.emitter.ScalarAnalysis;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
+
+import au.wow.ngbo.utils.Retry;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbomain.objects.EnhancedArticleLookUpObjects;
+import au.wow.ngbomain.objects.OrderEnquiryObjects;
+import au.wow.ngbomain.objects.ReceivingOrderObjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.EnhancedArticleLookUpPage;
+import au.wow.ngbomain.pages.OrderEnquiryPage;
+import au.wow.ngbomain.pages.ReceivingOrderPage;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+
+public class ORTests extends TestBase {
+	
+	
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+	public static WebDriver driver;
+	public static XMLDataReader data;
+	public static boolean isFirstTest=true;
+	public static String StoreNo;
+	
+	//Declare and initialize the logger, status, sql and page objects
+			private Logger log = LogManager.getLogger(ORTests.class);
+			List<List<Object>> results;
+			TestStatus status;
+			SQLWrapper sql = new SQLWrapper(log);
+			WoWLoginPage loginPage;
+			BasePage BaseObj;
+			CommonFunctions common;
+			StoreProperties storeprop;	
+			OrderEnquiryPage objOrderEnquiryPage;
+			OrderEnquiryObjects objOrderEnquiryObjects;
+			int OEcount=0;
+			int IBTcount=0;
+			public ORTests(){
+				super.log=log;
+			}
+				
+			@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify Order Advance search details")
+			public void orderAdvanceSearch() throws SQLException, IOException, AWTException, ParseException
+			{
+				if(ORArtpreCount2==-1){
+					OEcount=OEcount+34;}
+				TestStatus status = getTestStatus();
+				navToOrderEnquiry(status);
+				objOrderEnquiryPage.waitFn();
+				try{
+					if(objOrderEnquiryObjects.advanceSearch.isDisplayed())
+					{
+						objOrderEnquiryObjects.advanceSearch.click();
+						objOrderEnquiryObjects.Go.click();
+						objOrderEnquiryPage.deliverydatecombination(objOrderEnquiryObjects,driver);		
+						objOrderEnquiryPage.advSearchdetails(objOrderEnquiryObjects,StoreNo,driver);
+					}
+					log.info("-----------------Logout from Application------------------");
+					waitFor(1);
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderEnqArtScenarios, orderEnqArttestname,driver));
+				}catch(Exception e)
+				{
+					isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				}
+				status.assertAll();
+			}
+	
+	
+			@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Add Article for creating Orders", priority = 1)
+			public void AddArticlesForOrderCreation() throws SQLException, IOException, AWTException, ParseException
+			{
+				if(ORArtpreCount2==-1){
+					OEcount=OEcount+4;}
+				TestStatus status = getTestStatus();
+				
+				try{
+					int i=0;
+					navToOrderEnquiry(status);
+					objOrderEnquiryPage.waitFn();
+					objOrderEnquiryObjects.createOrder.click();
+					for(int j=1;j<=8;j++)
+					{
+						FileInputStream fis=new FileInputStream(System.getProperty("user.dir") + "\\TestData\\NGBO\\NGBO.xls");
+						HSSFWorkbook w=new HSSFWorkbook(fis);
+						HSSFSheet s=w.getSheet("CreateOrder");
+						HSSFRow r=s.getRow(j);
+						String a=r.getCell(0).toString();
+						w.close();
+						String arttype=r.getCell(3).toString();
+						objOrderEnquiryPage.orderDetails(objOrderEnquiryObjects,a,j,arttype);						
+						/*FileInputStream file = new FileInputStream(new File(System.getProperty("user.dir") + "\\TestData\\NGBO\\NGBOArt.xls"));
+						Workbook workbook = new HSSFWorkbook(file);
+						CellStyle style = workbook.createCellStyle();
+						Sheet sheet = workbook.getSheetAt(0);
+						String article = "";
+						if(!sheet.getRow(i+1).getCell(0).getStringCellValue().equals("") || !sheet.getRow(i+1).getCell(0).getStringCellValue().equals(null) || !sheet.getRow(i+1).getCell(0).getStringCellValue().isEmpty()){
+							article=sheet.getRow(i+1).getCell(0).getStringCellValue();
+							if(article.equals("")){break;}else{
+							i++;
+							objOrderEnquiryPage.orderDetails(objOrderEnquiryObjects,article,j);}}*/
+					}
+					
+					log.info("-----------------Logout from Application------------------");
+					waitFor(1);
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderEnqArtScenarios, orderEnqArttestname,driver));
+				}catch(Exception e)
+				{
+					isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				}
+				status.assertAll();
+			}
+			
+			@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Add Article for creating IBT Orders", priority = 2)
+			public void AddArticlesForIBTOrder() throws SQLException, IOException, AWTException, ParseException
+			{
+				if(ORArtpreCount2==-1){
+					OEcount=OEcount+7;}
+				TestStatus status = getTestStatus();
+				List<List<Object>> appl = new ArrayList<List<Object>>();
+				try{
+					int i=0;
+					navToOrderEnquiry(status);
+					objOrderEnquiryPage.waitFn();
+					objOrderEnquiryPage.clickOnstockTransfer(objOrderEnquiryObjects);
+					objOrderEnquiryPage.waitFn();
+					if(objOrderEnquiryObjects.check.size()>0){}else
+					{
+					objOrderEnquiryObjects.enterStore.click();
+					objOrderEnquiryObjects.enterStore.sendKeys("3200");
+					objOrderEnquiryObjects.searchAdd.click();
+					waitFor(1);
+					objOrderEnquiryObjects.searchAnddAdd.click();
+					objOrderEnquiryPage.waitFn();}
+					objOrderEnquiryObjects.expandStore.click();
+					objOrderEnquiryPage.waitFn();waitFor(1);objOrderEnquiryObjects.expandStore.click();
+					objOrderEnquiryPage.delIBTOrder(objOrderEnquiryObjects, 7);
+					String oi ="";String OrderNo3="";
+					for(int j=1;j<=7;j++)
+					{
+						FileInputStream fis=new FileInputStream(System.getProperty("user.dir") + "\\TestData\\NGBO\\NGBO.xls");
+						HSSFWorkbook w=new HSSFWorkbook(fis);
+						HSSFSheet s=w.getSheet("StockTransfer");
+						HSSFRow r=s.getRow(j);
+						String a=r.getCell(0).toString();
+						w.close();
+						String arttype=r.getCell(3).toString();
+						if(arttype.equals("CBPD"))
+						{
+							OrderNo3=r.getCell(1).toString();
+							String art_sql = data.getText("cpbd").replace("artno", OrderNo3); // article query
+							results = sql.executeQuery(getContext(), art_sql);
+							OrderNo3=results.get(0).get(0).toString();
+						}else{
+						OrderNo3=r.getCell(1).toString();}
+						if(j==7){
+							oi = oi + OrderNo3;
+						}else{
+							oi = oi + OrderNo3+"','";}
+					
+						IBTcount=objOrderEnquiryPage.IBTorderDetails(objOrderEnquiryObjects,a,j,arttype);
+						
+						/*FileInputStream file = new FileInputStream(new File(System.getProperty("user.dir") + "\\TestData\\NGBO\\NGBO.xls"));
+						Workbook workbook = new HSSFWorkbook(file);
+						Sheet sheet = workbook.getSheetAt(0);
+						String article = "";
+						if(!sheet.getRow(i+1).getCell(0).getStringCellValue().equals("") || !sheet.getRow(i+1).getCell(0).getStringCellValue().equals(null) || !sheet.getRow(i+1).getCell(0).getStringCellValue().isEmpty()){
+							article=sheet.getRow(i+1).getCell(0).getStringCellValue();
+							if(article.equals("")){break;}else{
+							i++;
+							IBTcount = objOrderEnquiryPage.IBTorderDetails(objOrderEnquiryObjects,article,j);}}*/
+					}
+					int size = objOrderEnquiryObjects.totalExpand.size();
+					for(int l=1;l<=size;l++)
+					{
+						List a = new ArrayList();						
+						WebElement y = objOrderEnquiryPage.prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.ArtDetails, l, 1, driver);
+						a.add(y.getText());
+						y = objOrderEnquiryPage.prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.ArtDetails, l, 4, driver);
+						if(y.getText().equals("")){
+							a.add("0.000");
+						}else{
+							a.add(y.getText());
+						}
+						y = objOrderEnquiryPage.prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.ArtDetails, l, 6, driver);
+						a.add(y.getText());
+						appl.add(a);
+					}
+					waitFor(1);
+					objOrderEnquiryObjects.expandStore.click();
+					objOrderEnquiryPage.delIBTOrder(objOrderEnquiryObjects, 7);
+					String art_sql = data.getText("IBTDetails").replace("artno", oi); // article query
+					results = sql.executeQuery(getContext(), art_sql);
+					htmlToExtent(cName,mName,extLogger,driver, "Comparing article,SOH,OM and its UOM with DB;;;Info");
+					removeLastZero(appl, 1);removeLastZero(results, 1);
+					
+					ElementContains1(cName, mName,extLogger,driver, appl, results);
+					log.info("-----------------Logout from Application------------------");
+					waitFor(1);
+					htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(orderEnqArtScenarios, orderEnqArttestname,driver));
+				}catch(Exception e)
+				{
+					isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				}
+				status.assertAll();
+			}
+	
+			//@Test(description = "Add Article for creating IBT Orders", priority = 2)
+			public void one() throws SQLException, IOException, AWTException, ParseException, EncryptedDocumentException, InvalidFormatException
+			{
+				for(int j=1;j<=2;j++)
+				{
+				FileInputStream fis=new FileInputStream(System.getProperty("user.dir") + "\\TestData\\NGBO\\one.xls");
+				HSSFWorkbook w=new HSSFWorkbook(fis);
+				HSSFSheet s=w.getSheet("Sheet1");
+				HSSFRow r=s.getRow(j);
+				w.close();
+				for(int k=1;k<=4;k++){
+					if(j==1){
+				objOrderEnquiryPage.setValueIntoCell1(j, "S.no",k);}else{
+					objOrderEnquiryPage.setValueIntoCell1(j, "12",k);
+				}
+				}
+				}
+			}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+			public void navToOrderEnquiry(TestStatus status) throws IOException, AWTException 
+			{
+				log.info("---------------Login into Application--------------------");
+				htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+				//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+				loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+				if(System.getProperty("store")==null){
+					StoreNo = getContext().getStringProperty("store");
+					htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+					//Report_AddStep("testcase", "Login with the Store : " + getContext().getStringProperty("store"),"","", "Pass");
+					//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+					objOrderEnquiryPage = loginPage.navToOrderCreation(getContext().getStringProperty("store"),driver);
+				}else{
+					storeprop.getStoreDetails(System.getProperty("store"));
+					System.out.println(store);
+					StoreNo = store;
+					htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+					//Report_AddStep("testcase", "Login with the Store : " + store,"","", "Pass");
+					//articleLookUpPage = loginPage.navToArticlLookUp(store);
+					objOrderEnquiryPage = loginPage.navToOrderCreation(store,driver);
+				}
+					
+				log.info("-------------Navigate to Order Enquiry Page------------");
+				htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to Order Enquiry Page--------------------;;;Pass");
+				//Report_AddStep("testcase", "----------------Navigate to Order Enquiry Page--------------------","","", "Pass");
+				objOrderEnquiryPage.clickOnOrderEnquiry(objOrderEnquiryObjects,driver);
+			}
+	
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		waitFor(2);
+		 mName=m9.getName().toString().trim();			
+			if(!methodList.contains(m9.getName().toString().trim())){
+			methodList.add(m9.getName().toString().trim());
+			extLogger = extReport.startTest(m9.getName().toString().trim());
+			}
+		initializeTestcontext();
+		System.out.println("test1 - beforemethod");
+		//isExceptionCaptured=false;
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		}else{
+			String title = driver.getCurrentUrl();
+			if(title.contains("logginOut"))
+			{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+			}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+						WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+						scrolltoElement(home,driver);
+						home.click();
+						TimeUnit.SECONDS.sleep(5);
+						loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+						driver.navigate().refresh();
+						TimeUnit.SECONDS.sleep(5);}
+				}
+			}
+		}
+			isFirstTest=false;
+		
+		//driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser"));
+		setDriver(driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		ORArttestname = m9.getName().toString().trim();
+		ORArttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		objOrderEnquiryObjects = PageFactory.initElements(this.driver, OrderEnquiryObjects.class);
+		objOrderEnquiryPage = PageFactory.initElements(this.driver, OrderEnquiryPage.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);				
+	}
+	
+	@BeforeClass
+	public void loadXMLFile(){	
+		System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\orderEnquiry.xml");
+		customreport.createExtentReport();
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+	}
+	
+	
+	
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitFor(1);
+		System.out.println("afterclass");
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(), OEcount);
+		//System.out.println(extentList);
+		//System.out.println(methodList);
+        extReport.endTest(extLogger);
+		extReport.flush();
+		removeDriver();
+		closeDriver(driver);
+		
+		waitFor(1);
+		moduleName.put("Modules", ORArtModules);
+		waitFor(1);
+		Date ppModEnd2 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		ORArtenddateex = dateFormat.format(ppModEnd2);
+
+		//System.out.println(ORArtenddateex);
+		waitFor(2);
+		
+		int OEArtM=OEcount;
+		ORArtMC=""+OEArtM;
+	}
+	
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+		System.out.println("AffterMethod");
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;FAIL");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				//System.out.println();
+			
+			}
+
+	/*	waitFor(1);
+		Date ppMEndDate1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		ORArtMEndDate = dateFormat.format(ppMEndDate1);
+		//System.out.println(ORArtMEndDate); // 12/01/2011 4:48:16 PM
+		String EnhancedArtTime = ORArttestdesc +";"+ ORArtStartdat +";" + ORArtMEndDate;
+
+		ORArtTime.put(ORArttestname, EnhancedArtTime);
+		//Report_AddStep("testcase", "Running Completed Status","","", getResultStatusName(result.getStatus()));
+		waitFor(4);
+		closeDriver(driver);*/
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")){
+			int cnt = ORArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			ORArtpreCount2++;
+		}
+		
+		/*if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")){
+			int cnt = ORArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"Completed Status : Iteration - "+ cnt +";;;Fail");
+			ORArtpreCount2++;
+		}
+		waitFor(1);
+		if((getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail") || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info"))&& ORArtpreCount2!=reCount){
+			waitFor(1);
+			ORArtTime.removeAll(ORArttestname);
+			waitFor(1);
+			ORArtScenarios.removeAll(ORArttestname);
+		}
+		waitFor(1);*/
+		if(ORArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+			ORArtpreCount2=-1;
+		}
+		waitFor(1);
+		
+	}
+
+}

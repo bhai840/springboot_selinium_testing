@@ -1,0 +1,2933 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+//import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.EnhancedArticleLookUpObjects;
+import au.wow.ngbomain.objects.ReceivingObjects;
+import au.wow.ngbomain.objects.ReceivingOrderObjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.tests.AdjustmentLogReportTests;
+import au.wow.ngbomain.tests.EnhancedArticleLookUpTests;
+import au.wow.ngbomain.tests.ReceivingOrderTests;
+import au.wow.ngbomain.tests.ReceivingTests;
+
+public class ReceivingOrderPage extends BasePage {
+
+	WebDriver driver = ReceivingOrderTests.driver;
+	CommonFunctions common = PageFactory.initElements(driver,
+			CommonFunctions.class);
+	private Logger log = LogManager.getLogger(ReceivingOrderTests.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	EnhancedArticleLookUpPage objEnhancedarticleLookUpPage;
+	String StoreNo =ReceivingOrderTests.StoreNo;
+	ExtentTest extLogger=ReceivingOrderTests.extLogger;
+	String cName=ReceivingOrderTests.cName;
+	String mName=ReceivingOrderTests.mName;
+	/*
+	 * public class StockTransferPage extends BasePage {
+	 * 
+	 * CommonFunctions common = PageFactory.initElements(this.getDriver(),
+	 * CommonFunctions.class); private Logger log =
+	 * LogManager.getLogger(StockTransferTests.class); SQLWrapper sql = new
+	 * SQLWrapper(log); public XMLDataReader data;
+	 */
+
+	public void clickOnArticleReportReport(
+			EnhancedArticleLookUpObjects objEnhancedArticleLookup, WebDriver driver)
+					throws AWTException {
+		//waitFor(1);
+		//driver.navigate().to("http://cljbot1:8180/StoreCentral/1005/articlelookup/onPageLoad.htm");
+		/*if(getContext().getStringProperty("Type").equals("UAT")){
+		driver.navigate().to("http://ngbo-acpt.gss.woolworths.com.au/StoreCentral/1005/articlelookup/onPageLoad.htm");}else{
+			driver.navigate().to("http://cljbot1:8180/StoreCentral/1005/articlelookup/onPageLoad.htm");
+		}*/
+		// waitForJSandJQueryToLoad(driver);
+		waitFor(1);
+		Point coordinates = objEnhancedArticleLookup.Lookup.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+
+		Actions action = new Actions(driver);
+		action.moveToElement(objEnhancedArticleLookup.Lookup).click().build()
+		.perform();
+		waitFor(1);
+
+		Point coordinates1 = objEnhancedArticleLookup.Article.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(), coordinates1.getY() + 100);
+
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objEnhancedArticleLookup.Article).click().build()
+		.perform();
+		waitFor(1);
+		robot.mouseMove(5, 5);
+		waitForJSandJQueryToLoad(driver);
+	}
+
+	public void clickOnstockTransfer(ReceivingOrderObjects objOrderEnquiryObjects)
+			throws AWTException {
+		waitFor(1);
+		Point coordinates = objOrderEnquiryObjects.StockMange.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+
+		Actions action = new Actions(driver);
+		action.moveToElement(objOrderEnquiryObjects.StockMange).click().build()
+		.perform();
+		waitFor(1);
+
+		Point coordinates1 = objOrderEnquiryObjects.StockTransfr.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(), coordinates1.getY() + 100);
+
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objOrderEnquiryObjects.StockTransfr).click()
+		.build().perform();
+		waitFor(1);
+		robot.mouseMove(5, 5);
+	}
+
+
+
+
+
+
+	/*
+	 * public String IBTCreationflow(ReceivingOrderObjects objOrderEnquiryObjects,
+	 * List<String> articlelist, String Frozentemp, String Chilledtemp,
+	 * List<List<Object>> DBList, String articleqty) throws IOException,
+	 * SQLException, AWTException{
+	 * 
+	 * //System.out.println("Details are loaded successfully");
+	 * enterText(objOrderEnquiryObjects.TargetSite,
+	 * getContext().getStringProperty("siteto")); waitForJSandJQueryToLoad(driver);
+	 * click(objOrderEnquiryObjects.SearchAndAdd); waitForJSandJQueryToLoad(driver);
+	 * click(objOrderEnquiryObjects.ClickCreate1); waitForJSandJQueryToLoad(driver);
+	 * 
+	 * if(objOrderEnquiryObjects.Titlesize.size() > 0){
+	 * click(objOrderEnquiryObjects.ClicksiteTitle);
+	 * htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " +
+	 * store+";;;Pass");
+	 * //Report_AddStep("testcase","Site "+getContext().getStringProperty
+	 * ("siteto")+" is already present in Stock Transfer Page" , "", "",
+	 * "Pass"); waitForJSandJQueryToLoad(driver); for (int i = 1; i <=
+	 * objOrderEnquiryObjects.checkstoresize.size(); i++){ WebElement getSite =
+	 * prepareWebElementWithDynamicXpathWithInt
+	 * (objOrderEnquiryObjects.checksite, i); WebElement clickSite =
+	 * prepareWebElementWithDynamicXpathWithInt
+	 * (objOrderEnquiryObjects.clicksite, i);
+	 * if(getSite.getText().contains(getContext().getStringProperty("siteto"))){
+	 * click(clickSite); break; } } waitForJSandJQueryToLoad(driver); for (int i =
+	 * objOrderEnquiryObjects.checkarticlessize.size(); i > 0;i--){
+	 * click(objOrderEnquiryObjects.deletearticle);
+	 * 
+	 * waitForJSandJQueryToLoad(driver); if(objOrderEnquiryObjects.checkAlert.size() >
+	 * 0){ click(objOrderEnquiryObjects.clckYES); waitForJSandJQueryToLoad(driver); }
+	 * } htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : "
+	 * + store+";;;Pass");
+	 * //Report_AddStep("testcase","Existing articles for the site "
+	 * +getContext().getStringProperty("siteto")+ "are deleted successfully",
+	 * "", "", "Pass"); scrollUp(); scrollUp(); scrollUp();
+	 * clickOnstockTransfer(objOrderEnquiryObjects);
+	 * enterText(objOrderEnquiryObjects.TargetSite,
+	 * getContext().getStringProperty("siteto")); waitForJSandJQueryToLoad(driver);
+	 * click(objOrderEnquiryObjects.SearchAndAdd); waitForJSandJQueryToLoad(driver);
+	 * click(objOrderEnquiryObjects.ClickCreate1); waitForJSandJQueryToLoad(driver); }
+	 * 
+	 * 
+	 * htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " +
+	 * store+";;;Pass");
+	 * //Report_AddStep("testcase","Site "+getContext().getStringProperty
+	 * ("siteto")+" is added successfully in Stock Transfer Page" , "", "",
+	 * "Pass"); //System.out.println("Site is added in draft");
+	 * click(objOrderEnquiryObjects.ClickExpand); waitFor(4);
+	 * 
+	 * 
+	 * articlesaddition(articlelist, objOrderEnquiryObjects, articleqty);
+	 * 
+	 * for(int i=0;i< articlelist.size();i++) { String Art1 = (String)
+	 * DBList.get(i).get(0); String SOH1 = (String) DBList.get(i).get(1); String
+	 * OM1 = (String) DBList.get(i).get(2); Integer DBRecvdunits =
+	 * Integer.parseInt(articleqty) * Integer.parseInt(OM1);
+	 * //System.out.println("Article is "
+	 * +Art1+" -- SOH is "+SOH1+"--- OM is "+OM1); int k = 4; for (int j = 0; j
+	 * < articlelist.size(); j++) { WebElement getArticl =
+	 * prepareWebElementWithDynamicXpathWithInt
+	 * (objOrderEnquiryObjects.checkArticle, k); WebElement getSOH =
+	 * prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.checkSOH,
+	 * k); WebElement getOM =
+	 * prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.checkOM,
+	 * k); WebElement getRecvd =
+	 * prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects
+	 * .checkRecvdUnits, k); String Art2 =getArticl.getText(); String SOH2 =
+	 * getSOH.getText(); SOH2 = decimalFormat(SOH2); String OMvthUOM =
+	 * getOM.getText(); String OM2 = OMvthUOM.replaceAll("[^0-9\\.]+", "");
+	 * String RcvdunitsvthUOM = getRecvd.getText(); String Rcvdunits =
+	 * RcvdunitsvthUOM.replaceAll("[^0-9\\.]+", ""); k = k+2;
+	 * //System.out.println(
+	 * "Article is "+Art2+" -- SOH is "+SOH2+"--- OM is "+OM2);
+	 * if(Art1.equals(Art2)){
+	 * 
+	 * if((SOH1.equals(SOH2)) && (OM1.equals(OM2)) &&
+	 * (Integer.toString(DBRecvdunits).equals(Rcvdunits))){
+	 * Report_AddStep("testcase","SOH, OM, Received Units of the article "+Art1+
+	 * " is displayed correctly in Browser" ,
+	 * "Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"]",
+	 * "DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits+"]", "Pass"); } else{
+	 * Report_AddStep("testcase","SOH of the article "+Art1+
+	 * " is not displayed correctly in Browser" ,
+	 * "Local Value is ["+SOH2+", "+OM2+", "+Rcvdunits+"]",
+	 * "DB Value is ["+SOH1+", "+OM1+", "+DBRecvdunits+"]", "Fail"); }
+	 * 
+	 * } } }
+	 * 
+	 * click(objOrderEnquiryObjects.clickSubmit); waitForJSandJQueryToLoad(driver);
+	 * 
+	 * int count = 0; for(int i=0;i< articlelist.size();i++) { String DB1 =
+	 * (String) DBList.get(i).get(1); DB1 = decimalFormat(DB1);
+	 * //System.out.println(DB1); String Recvdunits = articleqty; String SOH =
+	 * (String) DBList.get(i).get(1); Integer Db2 = (Integer.parseInt(SOH)) -
+	 * (Integer.parseInt(Recvdunits)); //System.out.println(Db2);
+	 * if((Integer.parseInt(DB1) < 0) || (Db2 < 0)){ ++ count; } } if(count >
+	 * 0){ click(objOrderEnquiryObjects.ClikAcceptQty);
+	 * waitForJSandJQueryToLoad(driver); //System.out.println("Pop up not appeared"); }
+	 * 
+	 * if(objOrderEnquiryObjects.clickHelpsize.size() > 0){
+	 * //System.out.println("Pop up appeared");
+	 * click(objOrderEnquiryObjects.clickNote); waitForJSandJQueryToLoad(driver); }
+	 * 
+	 * if(objOrderEnquiryObjects.CheckChilledTemp.getAttribute("class").equals(
+	 * "parameter")){ enterText(objOrderEnquiryObjects.EnterChilledTemp,
+	 * Chilledtemp); waitFor(2);
+	 * 
+	 * Report_AddStep("testcase","Chilled Temperature of "+Chilledtemp+" is entered"
+	 * , "", "", "Pass"); }
+	 * if(objOrderEnquiryObjects.CheckFrozenTemp.getAttribute
+	 * ("class").equals("parameter")){
+	 * enterText(objOrderEnquiryObjects.EnterFrozenTemp, Frozentemp);
+	 * waitFor(2);
+	 * 
+	 * Report_AddStep("testcase","Frozen Temperature of "+Frozentemp+" is entered"
+	 * , "", "", "Pass"); } scrolldown(driver);
+	 * 
+	 * if(objOrderEnquiryObjects.checkNextbutton.getAttribute("class").equals(
+	 * "actionBtn")){ click(objOrderEnquiryObjects.clickNext);
+	 * Report_AddStep("testcase","Delivery Details are entered successfully" ,
+	 * "", "", "Pass"); waitForJSandJQueryToLoad(driver); //scrollUp1();
+	 * Report_AddStep("testcase","ULD details are entered successfully" , "",
+	 * "", "Pass"); } click(objOrderEnquiryObjects.clickFinish);
+	 * waitForJSandJQueryToLoad(driver); String msg1 =
+	 * objOrderEnquiryObjects.CheckTitle.getText(); if(msg1.equals("STATUS")){
+	 * String S = objOrderEnquiryObjects.Ordernum.getText(); Long OrdNum =
+	 * Long.parseLong(S.replaceAll("[^0-9\\.]+", ""));
+	 * //System.out.println(OrdNum); String OrdNo = Long.toString(OrdNum);
+	 * //System.out.println("Order No is " +OrdNum); Report_AddStep("testcase",""
+	 * +S , "", "", "Pass");
+	 * Report_AddStep("testcase","IBT Order Number created is " +OrdNum , "",
+	 * "", "Pass"); waitFor(2); click(objOrderEnquiryObjects.clickMesg);
+	 * waitForJSandJQueryToLoad(driver); scrollUp();
+	 * clickOnOrderEnquiry(objOrderEnquiryObjects); waitFn(driver);
+	 * statusOfIBTOrder(objOrderEnquiryObjects, OrdNo);
+	 * waitForJSandJQueryToLoad(driver);
+	 * 
+	 * 
+	 * } else if(msg1.equals("Errors")){
+	 * Report_AddStep("testcase","IBT Creation failed for the added articles "
+	 * +objOrderEnquiryObjects.CaptureErrorMsg.getText() , "", "", "Fail");
+	 * click(objOrderEnquiryObjects.CaptureErrorMsg);
+	 * waitForJSandJQueryToLoad(driver);
+	 * 
+	 * } return msg1;
+	 * 
+	 * }
+	 */
+
+	public List<String> articleSplit(String articlesget) {
+		String[] arrSplit = articlesget.split(",");
+		List<String> articlelist = new ArrayList<String>(
+				Arrays.asList(arrSplit));
+		return articlelist;
+	}
+
+	/*
+	 * public void statusOfIBTOrder(ReceivingOrderObjects objOrderEnquiryObjects,
+	 * String OrdNum) throws AWTException, IOException{
+	 * 
+	 * objOrderEnquiryObjects.EnterOrderNo.sendKeys(OrdNum);
+	 * Report_AddStep("testcase"
+	 * ,"**** Checking the status of created IBT order "
+	 * +OrdNum+" in Order Enquiry ****" , "", "", "Pass");
+	 * click(objOrderEnquiryObjects.clckGo); waitForJSandJQueryToLoad(driver);
+	 * //System.out.println(objOrderEnquiryObjects.checkStatus.getText());
+	 * if(objOrderEnquiryObjects.checkStatus.getText().equals("SUBMITTED")){
+	 * Report_AddStep
+	 * ("testcase","IBT Order "+OrdNum+" created is in SUBMITTED Status" , "",
+	 * "", "Pass"); } else{
+	 * Report_AddStep("testcase","IBT Order "+OrdNum+" created is in "
+	 * +objOrderEnquiryObjects.checkStatus.getText()+ " Status" , "", "",
+	 * "Fail"); } }
+	 */
+
+	public void articlesaddition(List<String> articlelist,
+			ReceivingOrderObjects objOrderEnquiryObjects, String articleqty)
+					throws IOException {
+		for (int i = 0; i < articlelist.size(); i++) {
+
+			String art = articlelist.get(i);
+			//System.out.println(art);
+			enterText(objOrderEnquiryObjects.enterArticle, art,driver);
+			enterText(objOrderEnquiryObjects.enterQty, articleqty,driver);
+			click(objOrderEnquiryObjects.ClickSearch);
+			waitForJSandJQueryToLoad(driver);
+			click(objOrderEnquiryObjects.clickArticleSearch);
+			click(objOrderEnquiryObjects.clickAddtoList);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver, "*** Articles " + art
+					+ " is added successfully in Draft ***;;;Pass");
+			// Report_AddStep("testcase","*** Articles "+art+" is added successfully in Draft ***"
+			// , "", "", "Pass");
+		}
+	}
+
+	public void clickOnOrderEnquiry(ReceivingOrderObjects objOrderEnquiryObjects,WebDriver driver)
+			throws AWTException {
+		//driver.navigate().to("http://ngbo-acpt.gss.woolworths.com.au/StoreCentral/1005/orderInquiry/onPageLoad.htm");
+		//waitForJSandJQueryToLoad(driver);
+		// waitForJSandJQueryToLoad(driver);
+		waitFor(1);
+		Point coordinates = objOrderEnquiryObjects.Orders.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+
+		Actions action = new Actions(driver);
+		action.moveToElement(objOrderEnquiryObjects.Orders).click().build()
+		.perform();
+		waitFor(1);
+
+		Point coordinates1 = objOrderEnquiryObjects.orderEnquiry.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(), coordinates1.getY() + 100);
+
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objOrderEnquiryObjects.orderEnquiry).click()
+		.build().perform();
+		waitFor(1);
+		robot.mouseMove(5, 5);
+		waitForJSandJQueryToLoad(driver);
+	}
+
+	public void enterOrder(ReceivingOrderObjects objOrderEnquiryObjects,String OrderNo,WebDriver driver,String ono) throws AWTException
+	{
+		waitForClickOfElement(objOrderEnquiryObjects.enterArt, driver);
+		objOrderEnquiryObjects.enterArt.click();
+		objOrderEnquiryObjects.enterArt.clear();waitFor(1);
+		objOrderEnquiryObjects.enterArt.sendKeys(OrderNo);
+		objOrderEnquiryObjects.Go.click();
+		waitForJSandJQueryToLoad(driver);
+		htmlToExtent(cName,mName,extLogger,driver,"Below details is for PO -"+OrderNo+".;;;Info");		
+		int vendSize = objOrderEnquiryObjects.total_vendor.size();
+		int y=0;
+		if(vendSize>=1)
+		{
+			try{
+				for(int i=1;i<=vendSize;i++)
+				{
+					WebElement vend = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.total_vendorlist, i,driver);
+					if(vend.getText().contains(ono))
+					{
+						vend.click();
+						waitFn(driver);
+						y=1;break;
+					}
+				}
+			}catch(Exception e){}
+		}
+		String[] ven = null;
+		WebElement vend = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.vendorOrder, 1,driver);
+		if(vend.getAttribute("class").contains("hide")){}else
+		{
+			ven = splitString(vend.getText().trim(), " #");	
+		}		
+		if(ven[1].equals(ono))
+		{
+			htmlToExtent(cName,mName,extLogger,driver,"PO -"+OrderNo+" is matched with ASN name;;;Pass");
+		}else{
+			htmlToExtent(cName,mName,extLogger,driver,"PO -"+OrderNo+" is mismatched with ASN name;;;Fail");
+		}
+		clickOnOrderEnquiry(objOrderEnquiryObjects, driver);
+		waitFor(1);
+	}
+
+	public String OrderSearch(ReceivingOrderObjects objOrderEnquiryObjects,String article,WebDriver driver)
+	{
+		waitFor(0.5);
+		waitForClickOfElement(objOrderEnquiryObjects.enterArt, driver);
+		String order="tru";
+		objOrderEnquiryObjects.enterArt.click();
+		objOrderEnquiryObjects.enterArt.clear();
+		objOrderEnquiryObjects.enterArt.sendKeys(article);
+		objOrderEnquiryObjects.Go.click();
+		waitForJSandJQueryToLoad(driver);
+		if(objOrderEnquiryObjects.CheckOrderList.size()==1)
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Sorry, no result found for order - "+article+";;;Fail");
+			objOrderEnquiryObjects.CheckOrder.click();
+			waitFor(1);
+			order = "fal";
+		}
+		return order;
+	}
+
+	public List OrderListComparision(ReceivingOrderObjects objOrderEnquiryObjects,List<List<Object>> OrderListDB,WebDriver driver) throws IOException
+	{
+		List finalCompare = new ArrayList();
+		List<List<Object>> OrdListAppl = getValuesFromTable(objOrderEnquiryObjects.orderList);
+		if(OrdListAppl.size()==0)
+		{
+			OrdListAppl = getValuesFromTable(objOrderEnquiryObjects.orderList1);
+		}
+		finalCompare.add(OrdListAppl.get(0).get(5).toString());
+		finalCompare.add(OrdListAppl.get(0).get(7).toString());
+		removeIndex(OrdListAppl, "7"); removeIndex(OrdListAppl, "5");
+		htmlToExtent(cName,mName,extLogger,driver, "Comparing Order List with Backend;;;Info");
+		htmlToExtent(cName,mName,extLogger,driver, "Application and Database List;"+OrdListAppl+";"+OrderListDB+";Info");
+		removeLastZero(OrderListDB, 5);
+		ElementContains1(cName, mName,extLogger,driver, OrdListAppl, OrderListDB);
+		try{
+		objOrderEnquiryObjects.orderTableClick.click();}catch(Exception e){
+			objOrderEnquiryObjects.orderTableClick1.click();
+		}
+		waitFn(driver);
+		return finalCompare;		
+	}
+
+	public void VendorListComparision(ReceivingOrderObjects objOrderEnquiryObjects,List<List<Object>> vendorDetails,WebDriver driver) throws IOException
+	{
+		List vendorapp = new ArrayList();
+		List<List<Object>> vendorDetailsApp = new ArrayList<List<Object>>();
+		for(int j=1;j<=7;j++)
+		{
+			WebElement vendor = prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.vendorDetails, j,driver);
+			vendorapp.add(vendor.getText());j++;
+		}
+		vendorapp.add(objOrderEnquiryObjects.Status.getText());
+		vendorDetailsApp.add(vendorapp);
+		htmlToExtent(cName,mName,extLogger,driver, "Comparing supplier,Delivery date,source,onshow date,Status Details with Backend;;;Info");
+		changeAlphacase(vendorDetailsApp, 4);changeAlphacase(vendorDetails, 4);
+		htmlToExtent(cName,mName,extLogger,driver, "Application and Database List;"+vendorDetailsApp+";"+vendorDetails+";Info");
+		ElementContains1(cName, mName,extLogger,driver, vendorDetailsApp, vendorDetails);
+	}
+
+	public void vendorOrderComparision(ReceivingOrderObjects objOrderEnquiryObjects,List<List<Object>> OrderTable,WebDriver driver) throws IOException
+	{
+		List<List<Object>> vendorOrderApp = getValuesFromTable(objOrderEnquiryObjects.vendorOrderTable);
+		removeColumnForSpecificRow(vendorOrderApp, 3, "7");removeColumnForSpecificRow(vendorOrderApp, 3, "6");
+		removeIndex(vendorOrderApp, "5"); removeIndex(vendorOrderApp, "4");removeIndex(vendorOrderApp, "2"); removeIndex(vendorOrderApp, "0");		
+		htmlToExtent(cName,mName,extLogger,driver, "Comparing Total pallets,Artilces,Dispatched qty,cartons ordered,dispatched weight,seal numbers with Backend;;;Info");
+		htmlToExtent(cName,mName,extLogger,driver, "Application and Database List;"+vendorOrderApp+";"+OrderTable+";Info");
+		ElementContains1(cName, mName,extLogger,driver, vendorOrderApp, OrderTable);
+	}
+
+	public void articleListTableComparision(ReceivingOrderObjects objOrderEnquiryObjects,List<List<Object>> results,int articlcount,
+			List displayArt,List<List<Object>> res,String orderNo,WebDriver driver,String type) throws IOException
+	{
+		List res2 = new ArrayList();
+		List<List<Object>> artListApp = new ArrayList<List<Object>>();
+		List<List<Object>> res1 = new ArrayList<List<Object>>();
+		int size = objOrderEnquiryObjects.artListTable.size();
+		int u=0;
+		if(size==articlcount)
+		{
+			for(int i=1;i<=size;i++)
+			{
+				List artList = new ArrayList();
+				if(type.equals("asn"))
+				{u=8;}else{u=6;}
+				for(int j=1;j<=u;j++)
+				{
+					if((j==2)||(j==3))
+					{}
+					else
+					{					
+						WebElement vendor = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.artListTable1,i, j,driver);
+						if(j==6 || j==7 || j==8)
+						{
+							artList.add(vendor.getText().replace("\n", " "));
+						}
+						else if(j==4)
+						{						
+							String value = vendor.getText().replace("\n", " ");
+							if(vendor.getText().contains("(")){
+								String MyRegex1 = "[(]";
+								String MyRegex2="[)]";String valo= value.replaceAll(MyRegex1, "").replaceAll(MyRegex2, "");
+								String[] omvalue = splitString(valo, " ");
+								artList.add(omvalue[0]+" "+omvalue[1]+" ("+omvalue[2]+" "+omvalue[3]+")");}
+							else
+							{
+								artList.add(value);
+							}
+						}
+						else if(j==5)
+						{
+							List<WebElement> artListTabledisp = driver.findElements(By.xpath("//*[@id='yet_to_received_item_table_table']/tbody/tr["+i+"]/td["+j+"]/a"));
+							artList.add(vendor.getText());
+							if(artListTabledisp.size()!=0)
+							{
+								WebElement dispart = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.artListTabledisp,i, j,driver);
+								dispart.click();
+								waitForJSandJQueryToLoad(driver);
+								waitFor(1);
+								List<List<Object>> displayartApp = getValuesFromTable(objOrderEnquiryObjects.displayArtTable);removeIndex(displayartApp, "2");removeIndex(displayartApp, "1");
+								for (Iterator<List<Object>> it = displayartApp.iterator(); it.hasNext();) 
+								{												
+									List<Object> elem = it.next(); 
+									res2 = new ArrayList();
+									//	res1.add(elem);
+									for(int s =0;s<elem.size();s++) {
+										res2.add(elem.get(s).toString());
+									}
+									res1.add(res2);
+								}
+								objOrderEnquiryObjects.dispArtOK.click();
+							}						
+						}
+						else
+						{
+							artList.add(vendor.getText());
+						}
+					}
+				}
+				artListApp.add(artList);
+			}
+			if(type.equals("asn"))
+			{
+				removeIndex(results, "12");removeIndex(results, "11");removeIndex(results, "10");removeIndex(results, "9");
+				removeIndex(results, "8");removeIndex(results, "7");removeIndex(results, "4");
+			}else{
+				removeIndex(results, "12");removeIndex(results, "11");removeIndex(results, "10");removeIndex(results, "9");
+				removeIndex(results, "8");removeIndex(results, "7");removeIndex(results, "6");removeIndex(results, "5");removeIndex(results, "4");}
+			htmlToExtent(cName,mName,extLogger,driver, "Comparing Article list for order "+orderNo+" with Backend;;;Info");
+			htmlToExtent(cName,mName,extLogger,driver, "Application and Database List;"+artListApp+";"+results+";Info");
+			ElementContains1(cName, mName,extLogger,driver, artListApp, results);
+			if(displayArt.size()>0){
+				htmlToExtent(cName,mName,extLogger,driver, "Comparing display Article list for order "+orderNo+" with Backend;;;Info");
+				htmlToExtent(cName,mName,extLogger,driver, "Application and Database List;"+res1+";"+res+";Info");
+				ElementContains1(cName, mName,extLogger,driver, res1, res);}
+			scrollUp();scrollUp();
+		}
+	}
+
+	public void receiveOrderClick(ReceivingOrderObjects objOrderEnquiryObjects,WebDriver driver)
+	{
+		if(objOrderEnquiryObjects.receiveOrder.isDisplayed())
+		{
+			objOrderEnquiryObjects.receiveOrder.click();
+			htmlToExtent(cName,mName,extLogger,driver, "Receive order is enabled;;;Pass");
+			waitFn(driver);
+			if(objOrderEnquiryObjects.resumeSession.isDisplayed())
+			{
+				objOrderEnquiryObjects.newSession.click();
+				waitFn(driver);
+			}
+		}
+		waitFor(1);
+	}
+
+	public List<List<Object>> editArtListComparision(ReceivingOrderObjects objOrderEnquiryObjects,String newom,String receive,
+			List<List<Object>> results,List displayArt,String orderNo,int artcount,List tempArticles,WebDriver driver,String artic,List<List<Object>> results1,
+			String articles,String types,List<List<Object>> tempArticles1) throws IOException
+			{
+		int ps=0;
+		int ZQ=0;
+		Double rand = (double) 0;
+		Double TR = 0.0;
+		String article="";
+		//int rand=0;
+		//int TR=0;		
+		String rw="0";int dis=0;int sizee=0;
+		List<List<Object>> editArtListApp=new ArrayList<List<Object>>();
+		List<List<Object>> editArtListApp1=new ArrayList<List<Object>>();
+		int a = objOrderEnquiryObjects.receiceTable.size();
+		List rw1= new ArrayList();
+		int artClick = a - tempArticles.size();
+		int countIncr=0;
+		int check=0;
+		for(int i=1;i<=a;i++)	
+		{
+			int countInc=0;
+			int disps=0;
+			int count=0;
+			List app = new ArrayList();
+			List app1 = new ArrayList();
+			for(int j=1;j<=17;j++)
+			{
+				if((j==10)||(j==12))
+				{
+					WebElement table = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,j,driver);
+					String value = table.getText().replace("\n", " ");
+					if(count!=1){
+						app.add(value);
+						app1.add(value);}
+				}
+				else if(j==4)
+				{
+					WebElement table = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,j,driver);
+					String value = table.getText().replace("\n", " ");
+					if(table.getText().contains("(")){
+						String MyRegex1 = "[(]";
+						String MyRegex2="[)]";String valo= value.replaceAll(MyRegex1, "").replaceAll(MyRegex2, "");
+						String[] omvalue = splitString(valo, " ");
+						app.add(omvalue[0]+" "+omvalue[1]+" ("+omvalue[2]+" "+omvalue[3]+")");
+						app1.add(omvalue[0]+" "+omvalue[1]);}
+					else
+					{
+						app.add(value);
+						app1.add(value);
+					}
+				}
+				else if((j==2)||(j==3)||(j==15)||(j==13)){}
+				else if(j==14)
+				{	
+					String om="";
+					WebElement tablevalue1=null;
+					String recTU="";
+					try{
+						tablevalue1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,j,driver);
+						recTU = tablevalue1.getText().replace("\n", " ");}catch(Exception e){
+							tablevalue1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,j,driver);
+							//recTU = tablevalue1.getText().replace("\n", " ");
+							WebElement tablevalue101 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,10,driver);
+							String[] s = splitString(tablevalue101.getText(), " ");
+							recTU = tablevalue1.getText().replace("\n", " ")+" "+s[1];
+							om=s[1];
+						}
+					tablevalue1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,j-4,driver);
+					String ordTU = tablevalue1.getText().replace("\n", " ");
+					tablevalue1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,1,driver);
+					String art=tablevalue1.getText();waitFor(1);
+					article=art;
+					try{
+						if(recTU.contains(".")){
+							if(recTU.contains("(")){
+								String myReg = "[(]";
+								String[] r = splitString(recTU, myReg);
+								String[] s = splitString(r[0], " ");
+								if(s[0].contains(".")){s[0]=s[0].replaceAll("\\.?0+$","");}
+								recTU = s[0]+" "+s[1]+" (" +r[1];}
+							else
+							{
+								String[] s = splitString(recTU, " ");
+								if(s[0].contains(".")){s[0]=s[0].replaceAll("\\.?0+$","");}
+								recTU = s[0]+" "+s[1];
+							}}}catch(Exception e){
+								WebElement tablevalue101 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,10,driver);
+								String[] s = splitString(tablevalue101.getText(), " ");
+								recTU = recTU+" "+s[1];
+								om=s[1];
+							}
+					if(ordTU.equals(recTU))
+					{
+						htmlToExtent(cName,mName,extLogger,driver, "Ordered and received total units are same before editing quantity for article - "+art+";"+ordTU+";"+recTU+";Pass");
+					}
+					else
+					{
+						if(recTU.equals("NA"))
+						{
+							int o=j-1;
+							List<WebElement> table11 = driver.findElements(By.xpath("//*[@id='recvArticleTable']/tbody/tr["+i+"]/td["+o+"]/a"));
+							if(table11.size()==1)
+							{
+								htmlToExtent(cName,mName,extLogger,driver, "received total units are NA for article - "+art+",since it is a display article;"+ordTU+";"+recTU+";Pass");
+							}
+							else
+							{
+								htmlToExtent(cName,mName,extLogger,driver, "received total units are NA for article - "+art+",but it is not a display article;"+ordTU+";"+recTU+";Fail");
+							}
+						}
+						else
+						{
+							if(tempArticles.contains(art))
+							{
+								htmlToExtent(cName,mName,extLogger,driver, "Ordered and received total units are matched for article - "+art+" during temperature check;"+ordTU+";"+recTU+";Pass");
+							}
+							else if(articles.equals("newArt") && article.equals(artic)){}else
+							{
+								htmlToExtent(cName,mName,extLogger,driver, "Ordered and received total units are mismatched for article - "+art+";"+ordTU+";"+recTU+";Fail");
+							}
+						}
+					}
+
+					if(types.equals("NR") && tempArticles1.contains(article))
+					{
+						int y=0;
+						String updatedValue="";
+						String updatedValueedit="";
+						WebElement table = null;
+						WebElement table1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue20, i,j-1,driver);
+						if(table1.getText().equals("0")){
+							String disabled ="";
+							disabled = table1.getAttribute("value");
+							if(disabled==null){
+								disabled=table1.getText(); 
+							}
+							WebElement arti = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,1,driver);
+							if(disabled.equals("0"))
+							{
+								ZQ++;
+								htmlToExtent(cName,mName,extLogger,driver, "Quantity is zero for article - "+arti.getText()+";;;Pass");
+							}
+							y=Integer.parseInt(disabled);
+						}
+						else
+						{
+							String  n = table1.getText();
+							y=Integer.parseInt(n);
+							TR=TR+y;
+						}
+						if(article.equals(artic)){
+							app1.add("1 EA");app1.add("1 EA");app1.add("1");app1.add("Quantity Difference");
+						}else{							
+							try{
+								tablevalue1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,j,driver);
+								updatedValue = tablevalue1.getText();}catch(Exception e){
+									tablevalue1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,j,driver);
+									updatedValue = tablevalue1.getText().replace("\n", " ")+" "+om;
+								}
+
+							//tablevalue1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,j,driver);
+							//updatedValue = tablevalue1.getText();
+							table = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,10,driver);
+							String[] num = splitString(table.getText()," ");
+							int nu = doubleToInt(num[0]);
+							table = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,9,driver);
+							String[] den = splitString(table.getText()," ");
+							int de = doubleToInt(den[0]);
+							int x = (nu/de)*y;
+							String[] uv =splitString(updatedValue, " ");
+							updatedValueedit = ""+x +" " + uv[1];
+							if(count!=1){
+								app1.add(""+y+" "+den[1]);
+
+								switch (newom)
+								{
+								case "":
+									app1.add(updatedValueedit);
+									app1.add(""+(x-nu));break;}
+								switch (newom)
+								{
+								case "":
+									app1.add("Not Ranged");break;}}}					
+					}else{
+						WebElement table=null;
+						int o=j-1;
+						List<WebElement> table13 = driver.findElements(By.xpath("//*[@id='recvArticleTable']/tbody/tr["+i+"]/td["+o+"]/input[1]"));
+						List<WebElement> table31 = driver.findElements(By.xpath("//*[@id='recvArticleTable']/tbody/tr["+i+"]/td["+o+"]"));
+						if(table13.size()!=0){
+							table = prepareWebElementWithDynamicXpathWithIntIntInt(objOrderEnquiryObjects.tablevalue2, i,j-1,1,driver);		}			
+						List<WebElement> table11 = driver.findElements(By.xpath("//*[@id='recvArticleTable']/tbody/tr["+i+"]/td["+o+"]/input[2]"));
+						List<WebElement> table32 = driver.findElements(By.xpath("//*[@id='recvArticleTable']/tbody/tr["+i+"]/td["+o+"]"));
+						List<WebElement> table12 = driver.findElements(By.xpath("//*[@id='recvArticleTable']/tbody/tr["+i+"]/td["+o+"]/a"));
+						int y=random_no(7)+1;
+						//table.sendKeys(""+y);
+						String updatedValue="";
+						String updatedValueedit="";
+						if(table12.size()!=0)
+						{
+							WebElement table1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue3, i,j-1,driver);
+							table1.click();waitForJSandJQueryToLoad(driver);
+							waitFor(0.5);
+							int size = objOrderEnquiryObjects.dispArtReceiveTable.size();
+							for(int da=1;da<=size;da++)
+							{
+								dis=0;
+								disps=1;
+								app1 = new ArrayList();
+								WebElement DAtable = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.DAtable, da,5,driver);
+								String DAordTU = DAtable.getText();
+								String[] dd = splitString(DAordTU, " ");
+								DAtable = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.DAtable, da,9,driver);
+								String DArecTU = DAtable.getText();
+								String[] upd = splitString(DArecTU, " ");
+								DAtable = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.DAtable, da,1,driver);
+								art = DAtable.getText();
+								app1.add(art);
+								app1.add(art);
+								DAtable = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.DAtable, da,4,driver);
+								app1.add(DAtable.getText());
+								app1.add(DAordTU);
+								DAtable = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.DAtable, da,6,driver);
+								app1.add(DAtable.getText());
+								DAtable = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.DAtable, da,7,driver);
+								app1.add(DAtable.getText());
+								if(DAordTU.equals(DArecTU))
+								{
+									htmlToExtent(cName,mName,extLogger,driver, "Ordered and received total units are same before editing quantity for display article - "+art+";"+DAordTU+";"+DArecTU+";Pass");
+								}
+								else
+								{
+									if(tempArticles.contains(article))
+									{
+										htmlToExtent(cName,mName,extLogger,driver, "Ordered and received total units are same before editing quantity for display article - "+art+" during temperature chack;"+DAordTU+";"+DArecTU+";Pass");
+									}
+									else
+									{
+										htmlToExtent(cName,mName,extLogger,driver, "Ordered and received total units are not same before editing quantity for display article - "+art+";"+DAordTU+";"+DArecTU+";Fail");
+									}
+								}
+								DAtable = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.DAtable2, da,8,driver);
+								if(artcount>=i){
+									if(DAtable.getAttribute("disabled")==null)
+									{
+										DAtable.clear();
+										DAtable.sendKeys(""+y);dis=1;
+									}else{
+										String disabled = DAtable.getAttribute("value");
+										if(disabled.equals("0"))
+										{
+											htmlToExtent(cName,mName,extLogger,driver, "Quantity is zero for article - "+art+";;;Pass");
+										}
+										y=Integer.parseInt(disabled);
+									}}
+								else
+								{
+									String  n = DAtable.getAttribute("value");
+									y=Integer.parseInt(n);
+								}
+								String updateDA = ""+y +" "+ upd[1];
+								app1.add(updateDA);
+								DAtable = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.DAtable, da,9,driver);
+								DArecTU = DAtable.getText();
+								app1.add(DArecTU);
+								app1.add(""+(y-Integer.parseInt(dd[0])));
+								app1.add("Quantity Difference");
+								if(artcount>=i){
+									if(updateDA.equals(DArecTU))
+									{
+										htmlToExtent(cName,mName,extLogger,driver, "Received total units calculated succesfully when changing the received qty for display article - "+art+";"+updateDA+";"+DArecTU+";Pass");
+									}
+									else
+									{
+										if(tempArticles.contains(article))
+										{
+											htmlToExtent(cName,mName,extLogger,driver, "Received total units for display article - "+art+" during temerature check;"+updateDA+";"+DArecTU+";Pass");
+										}
+										else
+										{
+											htmlToExtent(cName,mName,extLogger,driver, "Received total units not calculated succesfully when changing the received qty for display article - "+art+";"+updateDA+";"+DArecTU+";Fail");
+										}
+									}}
+								DAtable = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.DAtable2, da,10,driver);
+								if(artcount>=i){
+									DAtable.click();
+									waitForJSandJQueryToLoad(driver);}
+								editArtListApp1.add(app1);
+							}	
+							//	if(dis==1){sizee++;}
+							waitFor(1);
+							objOrderEnquiryObjects.dispArtOK1.click();
+						}
+						else if(table11.size()!=0 || table32.size()!=0)
+						{
+							WebElement table1 = prepareWebElementWithDynamicXpathWithIntIntInt(objOrderEnquiryObjects.tablevalue2, i,j-1,2,driver);
+							if(table1.getAttribute("class").contains("hideBlock"))
+							{
+								table1 = prepareWebElementWithDynamicXpathWithIntIntInt(objOrderEnquiryObjects.tablevalue2, i,j-1,1,driver);
+								do{
+									y=random_no(7)+1;
+								}while(table1.getAttribute("value").equals(""+y));
+								if(artcount>=i){
+									//	if(countInc==1){
+									if(table1.getAttribute("disabled")==null)
+									{
+										table1.clear(); table1.sendKeys(""+y);									
+										TR=TR+y;
+										switch (newom)
+										{
+										case "OM":
+											WebElement newOMvalue = prepareWebElementWithDynamicXpathWithIntIntInt(objOrderEnquiryObjects.tablevalue2, i,15,1,driver);
+											if(newOMvalue.getAttribute("readonly") == null)
+											{
+												newOMvalue.sendKeys(""+y);ps++;
+												int oms = y*y;
+												WebElement receiveQty = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,j,driver);
+												if(receiveQty.getText().contains(""+oms))
+												{
+													htmlToExtent(cName,mName,extLogger,driver, "Received total units reflected when new OM is added for article - "+art+";;;Pass");
+												}
+												else
+												{
+													htmlToExtent(cName,mName,extLogger,driver, "Received total units not reflected when new OM is added for article - "+art+";;;Fail");
+												}
+											}else{}										
+											break;
+										}									
+										sizee++;
+									}else{
+										String disabled = table1.getAttribute("value");
+										WebElement arti = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,1,driver);
+										if(disabled.equals("0"))
+										{
+											ZQ++;
+											htmlToExtent(cName,mName,extLogger,driver, "Quantity is zero for article - "+arti.getText()+";;;Pass");
+										}
+										y=Integer.parseInt(disabled);
+									}}
+								else if(table1.getAttribute("value").equals("0")){
+									String disabled = table1.getAttribute("value");
+									WebElement arti = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,1,driver);
+									if(disabled.equals("0"))
+									{
+										ZQ++;
+										htmlToExtent(cName,mName,extLogger,driver, "Quantity is zero for article - "+arti.getText()+";;;Pass");
+									}
+									y=Integer.parseInt(disabled);
+								}
+								else
+								{
+									String  n = table1.getAttribute("value");
+									y=Integer.parseInt(n);
+									TR=TR+y;
+								}
+								if(article.equals(artic)){
+									app1.add("1 EA");app1.add("1 EA");app1.add("1");app1.add("Quantity Difference");
+								}else{
+									tablevalue1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,j,driver);
+									updatedValue = tablevalue1.getText();
+									table = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,10,driver);
+									String[] num = splitString(table.getText()," ");
+									int nu = doubleToInt(num[0]);
+									table = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,9,driver);
+									String[] den = splitString(table.getText()," ");
+									int de = doubleToInt(den[0]);
+									int x = (nu/de)*y;
+									String[] uv =splitString(updatedValue, " ");
+									updatedValueedit = ""+x +" " + uv[1];
+									if(count!=1){
+										app1.add(""+y+" "+den[1]);
+
+										switch (newom)
+										{
+										case "OM":
+											app1.add(updatedValue);
+											WebElement rec=prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,j,driver);
+											String[] p =splitString(rec.getText(), " ");
+											int as =Integer.parseInt(p[0]);
+											rec=prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,10,driver);
+											p =splitString(rec.getText(), " ");
+											int bs =Integer.parseInt(p[0]);
+											app1.add(""+(as-bs));
+											break;
+										case "":
+											//tablevalue1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,4);
+											//h = splitString(tablevalue1.getText(), " ");
+											app1.add(updatedValueedit);
+											app1.add(""+(x-nu));break;}
+										switch (newom)
+										{
+										case "OM":
+											WebElement newOMvalue = prepareWebElementWithDynamicXpathWithIntIntInt(objOrderEnquiryObjects.tablevalue2, i,15,1,driver);
+											if(newOMvalue.getAttribute("readonly") == null)
+											{
+												app1.add("Pack Size Difference");}
+											else{
+												app1.add("Quantity Difference");
+											}
+											break;
+										case "":
+											app1.add("Quantity Difference");break;}}}
+							}
+							else
+							{
+								int pack=0;
+								WebElement table9 = prepareWebElementWithDynamicXpathWithIntIntInt(objOrderEnquiryObjects.tablevalue2, i,j-1,1,driver);
+
+								List add = new ArrayList();
+								Double wt = round(Double.parseDouble(table1.getAttribute("value")), 0);
+								add.add(wt.intValue());
+								wt = round(Double.parseDouble(table9.getAttribute("value")), 0);
+								add.add(wt.intValue());
+								//add.add(Integer.parseInt(table1.getAttribute("value")));
+								//add.add(Integer.parseInt(table9.getAttribute("value")));
+								java.util.HashSet<String> hs = new java.util.HashSet<>();
+								hs.addAll(add);
+								add.clear();
+								add.addAll(hs);  
+								int minIndex = add.indexOf(Collections.min(add));
+								int maxIndex = add.indexOf(Collections.max(add));
+								int min = (int) add.get(minIndex) +1;
+								int max = (int) add.get(maxIndex) - 1;
+								int diff = max-min;
+								if(diff>=2){
+									y=ThreadLocalRandom.current().nextInt(min, max);}else{
+										y=min+4;
+									}
+
+								/*int max = Integer.parseInt(table1.getAttribute("value"))-1;
+							int min = Integer.parseInt(table9.getAttribute("value"))+1;
+							y=ThreadLocalRandom.current().nextInt(min, max);*/
+								/*do{
+								y=random_no(7)+1;
+							}while((table1.getAttribute("value").equals(""+y))&&(table9.getAttribute("value").equals(""+y)));*/
+								if(artcount>=i){
+									//if(countInc==1){
+									if(table1.getAttribute("disabled")==null)
+									{
+										if((artcount-tempArticles.size())>=i){
+											table1.clear(); table1.sendKeys(""+y);
+											rand=rand+y;}
+										switch (newom)
+										{
+										case "OM":										
+											WebElement newOMvalue = prepareWebElementWithDynamicXpathWithIntIntInt(objOrderEnquiryObjects.tablevalue2, i,15,1,driver);
+											if(newOMvalue.getAttribute("readonly") == null)
+											{
+												newOMvalue.sendKeys(""+y);ps++;pack=1;
+												int oms = y*y;
+												WebElement receiveQty = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,j,driver);
+												if(receiveQty.getText().contains(""+oms))
+												{
+													htmlToExtent(cName,mName,extLogger,driver, "Received total units reflected when new OM is added for article - "+art+";;;Pass");
+												}
+												else
+												{
+													htmlToExtent(cName,mName,extLogger,driver, "Received total units not reflected when new OM is added for article - "+art+";;;Fail");
+												}
+											}else{}										
+											break;
+										}
+										sizee++;
+									}else{
+
+										String disabled = table1.getAttribute("value");
+										WebElement arti = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,1,driver);
+										if(disabled.equals("0"))
+										{
+											ZQ++;
+											htmlToExtent(cName,mName,extLogger,driver, "Quantity is zero for article - "+arti.getText()+";;;Pass");
+										}
+										y=Integer.parseInt(disabled);
+									}}
+								else if(table1.getAttribute("value").equals("0"))
+								{
+									String disabled = table1.getAttribute("value");
+									WebElement arti = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,1,driver);
+									if(disabled.equals("0"))
+									{
+										ZQ++;
+										htmlToExtent(cName,mName,extLogger,driver, "Quantity is zero for article - "+arti.getText()+";;;Pass");
+									}
+									y=Integer.parseInt(disabled);
+								}
+								else
+								{
+									String  n = table1.getAttribute("value");
+									Double u = Double.parseDouble(n);
+									rand=rand+u;// pls check
+									//TR=TR+u;
+									//y=Integer.parseInt(n);
+									//rand=rand+y;
+								}
+								table1 = prepareWebElementWithDynamicXpathWithIntIntInt(objOrderEnquiryObjects.tablevalue2, i,j-1,1,driver);
+								if(artcount>=i){
+									if(table1.getAttribute("disabled")==null)
+									{
+										table1.clear(); table1.sendKeys(""+y);
+										/////TR=TR+y;
+									}else{
+
+										String disabled = table1.getAttribute("value");
+										WebElement arti = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,1,driver);
+										if(disabled.equals("0"))
+										{
+											htmlToExtent(cName,mName,extLogger,driver, "Quantity is zero for article - "+arti.getText()+";;;Pass");
+										}
+										y=Integer.parseInt(disabled);
+									}}
+								else
+								{
+									String  n = table1.getAttribute("value");
+									Double u = Double.parseDouble(n);
+									/////TR=TR+u;
+									//rand=rand+u;
+									//y=Integer.parseInt(n);
+									//TR=TR+y;
+								}
+								waitFor(1);
+								table = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,10,driver);
+								String l = table.getText().replace("\n", " ");
+								String myRegex = "[(]";
+								String[] num = splitString(l,myRegex);
+								String[] num1 = splitString(num[1], " ");
+								double nu = Double.parseDouble(num1[0]);
+								table = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,9,driver);
+								String[] den = splitString(table.getText()," ");
+								double de = Double.parseDouble(den[0]);
+								double x = (nu/de)*y;
+								DecimalFormat format = new DecimalFormat("0.#");
+								tablevalue1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue1, i,j,driver);
+								updatedValue = tablevalue1.getText().replace("\n", " ");
+								if(updatedValue.contains("("))
+								{
+									String[] uv =splitString(updatedValue, myRegex);
+									String[] uv1=splitString(uv[0], " ");
+									String[] uv2=splitString(uv[1], " ");
+									if((""+uv1[0]).contains("."))
+									{
+										String jy = ""+uv1[0].replaceAll("\\.?0+$","");
+										uv1[0]=jy;
+									}
+									if(tempArticles.contains(art)){
+										updatedValueedit = ""+uv1[0] +" " + uv1[1]+" (0 EA)";
+									}else if(receive.equals("line")){
+										updatedValueedit = ""+y +" " + uv1[1] +" (" + ""+format.format(x)+" " + uv2[1]+")";
+									}
+									else if(receive.equals("Exception"))
+									{
+										if(artcount>=i)
+										{
+											updatedValueedit = ""+y +" " + uv1[1] +" (" + ""+format.format(x)+" " + uv2[1];
+										}else{
+											updatedValueedit = uv1[0] +" " + uv1[1] +" (" + uv2[0] +" " + uv2[1];
+										}
+									}
+
+
+
+									/*//now added
+							if(receive.equals("line"))
+							{
+								updatedValueedit = ""+y +" " + uv1[1] +" (" +""+format.format(x) +" " + uv2[1];
+							}
+							else if(countInc==1 && receive.equals("Exception")){
+								updatedValueedit = ""+y +" " + uv1[1] +" (" + ""+format.format(x) +" " + uv2[1];
+							}else{
+								if(uv1[0].contains("."))
+								{
+									uv1[0] = uv1[0].replaceAll("\\.?0+$","");
+								}
+								updatedValueedit = uv1[0] +" " + uv1[1] +" (" + uv2[0] +" " + uv2[1];}*/
+								}//now added
+								else
+								{
+									String[] uv =splitString(updatedValue, " ");
+									if(uv[0].contains(".")){uv[0]=uv[0].replaceAll("\\.?0+$","");}
+									updatedValueedit = ""+y +" " + uv[1];
+								}
+								if(count!=1)
+								{
+									if(receive.equals("line")){
+										app1.add(""+y +" "+den[1]);
+										TR=TR+y;
+									}
+									else if(receive.equals("Exception"))
+									{
+										if(artcount>=i)
+										{
+											app1.add(""+y +" "+den[1]);
+											TR=TR+y;
+										}else{
+											WebElement u = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,9,driver);
+											String[] k = splitString(u.getText(), " ");
+											if(k[1].trim().equals("KG")){
+												u = prepareWebElementWithDynamicXpathWithIntIntInt(objOrderEnquiryObjects.tablevalue2, i,13,2,driver);}else{
+													u = prepareWebElementWithDynamicXpathWithIntIntInt(objOrderEnquiryObjects.tablevalue2, i,13,1,driver);	
+												}
+											app1.add(u.getAttribute("value") +" "+den[1]);
+											TR=TR+Double.parseDouble(u.getAttribute("value"));
+										}
+									}
+									else{
+										app1.add(""+y +" "+den[1]);}
+									//app1.add(""+y +" "+den[1]);
+									if(updatedValueedit.contains(".")){
+										updatedValueedit.replaceAll("\\.?0+$","");}
+									if(updatedValue.contains(".")){
+										updatedValue.replaceAll("\\.?0+$","");}
+
+									String[] h = null ;
+									switch (newom)
+									{
+									case "OM":
+										app1.add(updatedValue);
+										if(pack==1){
+											h[0]=""+y;}else
+											{
+												tablevalue1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,4,driver);
+												h = splitString(tablevalue1.getText(), " ");
+											}
+										break;
+									case "":
+										app1.add(updatedValueedit);
+										tablevalue1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,4,driver);
+										h = splitString(tablevalue1.getText(), " ");break;}
+									double ab = y*(Double.parseDouble(h[0]));
+									double ab1 = de*(Double.parseDouble(h[0]));
+									DecimalFormat format1 = new DecimalFormat("0.###");
+									String last = ""+format1.format(ab-ab1);
+									if((last).contains("."))
+									{
+										last = last.replaceAll("\\.?0+$","");
+									}
+									app1.add(last);
+									switch (newom)
+									{
+									case "OM":if(pack==1){
+										app1.add("Pack Size Difference");}
+									else{app1.add("Quantity Difference");}break;
+									case "":
+										app1.add("Quantity Difference");break;}}
+							}
+						}				
+						if((disps!=1)&&(artcount>=i)){
+							switch (newom)
+							{
+							case "OM":
+								break;
+							case "":
+								if(updatedValueedit.equals(updatedValue))
+								{
+									htmlToExtent(cName,mName,extLogger,driver, "Received total units calculated succesfully when changing the received qty for article - "+art+";"+updatedValueedit+";"+updatedValue+";Pass");
+								}
+								else
+								{
+									if(tempArticles.contains(art))
+									{
+										htmlToExtent(cName,mName,extLogger,driver, "Received total units for article - "+art+" during temerature check;"+updatedValueedit+";"+updatedValue+";Pass");
+									}
+									else if(articles.equals("newArt")){}else
+									{
+										htmlToExtent(cName,mName,extLogger,driver, "Received total units not calculated succesfully when changing the received qty for article - "+art+";"+updatedValueedit+";"+updatedValue+";Fail");
+									}
+								}
+								break;
+							}}}
+				}
+				else if(j==16){}
+				else if(j==17)
+				{
+					WebElement table = prepareWebElementWithDynamicXpathWithIntIntInt(objOrderEnquiryObjects.tablevalue2, i,j,1,driver);
+					WebElement tablevalue1 = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,1,driver);
+					String art=tablevalue1.getText();waitFor(1);
+					if(tempArticles.contains(art)){
+						table.click();
+						waitForJSandJQueryToLoad(driver);
+					}
+					else
+					{
+						switch(receive)
+						{
+						case "line":
+							table.click();
+							waitForJSandJQueryToLoad(driver);
+							break;
+						case "Exception":
+							//if((artcount-tempArticles.size())>=i){
+							if(artcount>=i){
+								//if(countInc==1){
+								table.click();
+								waitForJSandJQueryToLoad(driver);}
+							else if (articles.equals("newArt") && artic.equals(article))
+							{
+								table.click();
+								waitForJSandJQueryToLoad(driver);
+							}
+							break;
+						}
+					}
+				}
+				else
+				{
+					WebElement table = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.tablevalue, i,j,driver);
+					String f = table.getAttribute("class");
+					if(f.contains("hideBlock"))
+					{}
+					else
+					{
+						if(j==1){
+							if(displayArt.contains(table.getText())){count=1;}
+							else if(receive.equals("line")){countInc=1;}
+							else if(!tempArticles.contains(table.getText()) && countIncr==0 && artClick>1){
+								switch(receive)
+								{
+								case "Exception":
+									countInc++;
+									countIncr++;
+									break;
+								}
+							}
+						}
+						if(count!=1){
+							app.add(table.getText());
+							app1.add(table.getText());}
+					}
+				}
+			}
+			if(count!=1){
+				editArtListApp.add(app);
+				editArtListApp1.add(app1);}
+		}
+
+
+		String d="";
+		if((rand==0)||rand==0.0)
+		{
+			rw="0";
+		}else{
+			d = Double.toString(rand).replaceAll("\\.?0+$","");
+			if(d.contains(".")){rw=d;}
+			else{rw=d+".000";}}
+		String total_cart = "";
+		if((""+TR).contains("."))
+		{
+			total_cart=(""+TR).replaceAll("\\.?0+$","");
+		}else{total_cart=""+TR;}
+
+
+		/*if(rand==0)
+		{
+			rw="0";
+		}else{
+		rw=""+rand+".000";}*/
+		rw1.add(rw);rw1.add(""+ZQ);rw1.add(total_cart);rw1.add(""+sizee);rw1.add(""+ps);
+		editArtListApp1.add(rw1);
+		removeIndex(results, "12");removeIndex(results, "11");removeIndex(results, "10");removeIndex(results, "9");
+		removeIndex(results, "8");removeIndex(results, "7");removeIndex(results, "4");
+		htmlToExtent(cName,mName,extLogger,driver, "Comparing edited Article list for order "+orderNo+" with Backend;;;Info");
+		//System.out.println("editArtListApp " +editArtListApp);//System.out.println("results "+results);
+		htmlToExtent(cName,mName,extLogger,driver, "Application and Database List;"+editArtListApp+";"+results+";Info");
+		ElementContains1(cName, mName,extLogger,driver, results, editArtListApp);
+		if(articles.equals("newArt")){
+
+			htmlToExtent(cName,mName,extLogger,driver, "Comparing edited Article list for order "+orderNo+" with Backend for added article - "+artic+";;;Info");
+			ElementContains1(cName, mName,extLogger,driver, results1, editArtListApp);
+		}
+		return editArtListApp1;
+			}
+
+	public String[] finalartListComparision(ReceivingOrderObjects objOrderEnquiryObjects,List<List<Object>> editArtListApp1,String orderNo,
+			List dispArticles,WebDriver driver) throws IOException
+	{
+		removeIndex(editArtListApp1, "1");
+		int TR=0;
+		int count=0;
+		int size = objOrderEnquiryObjects.finalArtList.size();
+		String art="";
+		List<List<Object>> finalart=new ArrayList<List<Object>>();
+		for(int i=1;i<=size;i++)	
+		{
+			int dp=0;
+			List app = new ArrayList();
+			for(int j=1;j<=12;j++)
+			{
+				if((j==2)||(j==3)){}
+				else if(j==10)
+				{
+					WebElement table = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.finalArt1, i,j,driver);
+					if(table.getAttribute("class").equals("valueUp"))
+					{
+						app.add(table.getText());
+					}
+					else
+					{
+						app.add("-"+table.getText());
+					}
+				}
+				else if(j==12)
+				{
+					WebElement table = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.finalArt2, i,j,driver);
+					table.click();
+					waitForJSandJQueryToLoad(driver);
+				}
+				else
+				{
+					WebElement table = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.finalArt, i,j,driver);
+					if(j==1)
+					{
+						if(dispArticles.contains(table.getText())){dp=1;}
+						else{count++;
+						art = table.getText();}
+					}
+					if(j==8)
+					{
+						if(dp!=1){
+							if(table.getText().contains(" "))
+							{
+								String[] totalrec = splitString(table.getText(), " ");
+								TR = TR+Integer.parseInt(totalrec[0]);
+							}
+							else
+							{
+								for(int u=0;u<editArtListApp1.size();u++)
+								{
+									if(art.equals(editArtListApp1.get(u).get(0).toString()))
+									{
+										String[] totalrec = splitString(editArtListApp1.get(u).get(5).toString(), " ");
+										TR = TR+Integer.parseInt(totalrec[0]);break;
+									}
+								}
+							}
+						}
+					}
+					app.add(table.getText().replace("\n", " "));
+				}
+			}
+			waitFor(1);
+			//	//System.out.println("check" +app);
+			finalart.add(app);
+		}
+		//removeIndex(editArtListApp1, "1");
+		htmlToExtent(cName,mName,extLogger,driver, "Comparing edited final Article list for order "+orderNo+" with Backend;;;Info");
+		htmlToExtent(cName,mName,extLogger,driver, "Application and Database List;"+finalart+";"+editArtListApp1+";Info");
+		//System.out.println("1" +finalart);//System.out.println("2" +editArtListApp1);
+		ElementContains1(cName, mName,extLogger,driver, finalart, editArtListApp1);
+		////System.out.println("size,count,TR " +size  +count  +TR);
+		return new String[] { ""+size,""+count,""+TR };
+	}
+
+	public List<List<Object>> receivesummaryDB(String ps,String temp,String FT,int count,String TR,
+			ReceivingOrderObjects objOrderEnquiryObjects,String totalCartons,int articlcount,int sizee,String ZQ,WebDriver driver)
+			{
+		List app = new ArrayList();
+		List<List<Object>> finalart=new ArrayList<List<Object>>();
+		app.add(getContext().getStringProperty("username"));
+		if(temp.equals("")){app.add("0");}else{
+			app.add(temp);}
+		if(FT.equals("")){app.add("0");}else{
+			app.add(FT);}
+		finalart.add(app);
+		app = new ArrayList();									
+		app.add(""+articlcount);
+		app.add(totalCartons);
+		app.add("0");
+		finalart.add(app);
+		app = new ArrayList();
+		app.add(count);		//app.add(a[1]);
+		app.add(TR);//app.add(a[2]);
+		app.add("0");
+		finalart.add(app);
+		app = new ArrayList();
+		app.add(ps);
+		app.add(ZQ);//changed
+		app.add(sizee);
+		finalart.add(app);
+		return finalart;
+			}
+
+	public List<List<Object>> receivefinalsummaryDB(String username,String temp,String FT,String docket,String TR,
+			ReceivingOrderObjects objOrderEnquiryObjects,String totalCartons,int articlcount,int sizee,String name,String rw,WebDriver driver,String disp)
+			{
+		List app = new ArrayList();
+		List<List<Object>> finalart1=new ArrayList<List<Object>>();
+		app.add("NA");
+		app.add("0");
+		app.add(""+articlcount);
+		finalart1.add(app);
+		app = new ArrayList();
+		app.add(TR);
+		if(disp.equals("")){
+			app.add("NA");}else{
+				app.add(disp);
+			}
+		app.add(totalCartons);
+		finalart1.add(app);
+		app = new ArrayList();									
+		app.add(rw);//total weight received
+		app.add("NA");
+		finalart1.add(app);
+		app = new ArrayList();
+		app.add("NA");
+		finalart1.add(app);
+		app = new ArrayList();
+		app.add(username);
+		app.add(name);
+		finalart1.add(app);
+		app = new ArrayList();
+		app.add(temp);
+		app.add(FT); 
+		finalart1.add(app);
+		app = new ArrayList();
+		app.add(docket);
+		app.add("NA"); 
+		finalart1.add(app);
+		return finalart1;
+			}
+
+	public String username(WebDriver driver)
+	{
+		String script = "return document.getElementById('fullName').getAttribute('value');";
+		String value = ((JavascriptExecutor) driver).executeScript(script).toString();
+		return value;
+	}
+
+	public void receiveFinalSummaryComparision(ReceivingOrderObjects objOrderEnquiryObjects,List<List<Object>> finalart1,String orderNo,WebDriver driver) throws IOException
+	{
+		List<List<Object>> recSumapp = getValuesFromTable(objOrderEnquiryObjects.final_sum1);
+		recSumapp.remove(4);
+		removeIndex(recSumapp, "4");removeIndex(recSumapp, "2");removeIndex(recSumapp, "0");
+		removeColumnForSpecificRow(recSumapp, 3, "4");removeColumnForSpecificRow(recSumapp, 3, "3");removeColumnForSpecificRow(recSumapp, 3, "2"); removeColumnForSpecificRow(recSumapp, 4, "2"); removeColumnForSpecificRow(recSumapp, 4, "1");
+		replacenullToZero(recSumapp);
+		htmlToExtent(cName,mName,extLogger,driver, "Comparing final summary table1 for order "+orderNo+" with Backend;;;Pass");
+		ElementContains1(cName, mName,extLogger,driver, recSumapp, finalart1);
+		recSumapp = getValuesFromTable(objOrderEnquiryObjects.final_sum2);
+		replacenullToZero(recSumapp);
+		removeIndex(recSumapp, "4");removeIndex(recSumapp, "2"); removeIndex(recSumapp, "1"); removeIndex(recSumapp, "0");
+		htmlToExtent(cName,mName,extLogger,driver, "Comparing final summary table 2 for order "+orderNo+" with Backend;;;Pass");
+		ElementContains1(cName, mName,extLogger,driver, recSumapp, finalart1);
+		recSumapp = getValuesFromTable(objOrderEnquiryObjects.final_sum3);
+		replacenullToZero(recSumapp);
+		removeIndex(recSumapp, "5");removeIndex(recSumapp, "4");removeIndex(recSumapp, "2");  removeIndex(recSumapp, "0");
+		htmlToExtent(cName,mName,extLogger,driver, "Comparing final summary table 3 for order "+orderNo+" with Backend;;;Pass");
+		ElementContains1(cName, mName,extLogger,driver, recSumapp, finalart1);
+		recSumapp = getValuesFromTable(objOrderEnquiryObjects.final_sum4);
+		replacenullToZero(recSumapp);
+		removeIndex(recSumapp, "2"); removeIndex(recSumapp, "0");
+		htmlToExtent(cName,mName,extLogger,driver, "Comparing final summary table 4 for order "+orderNo+" with Backend;;;Pass");
+		//System.out.println("check1" +recSumapp);//System.out.println("check2" +finalart1);
+		ElementContains1(cName, mName,extLogger,driver, recSumapp, finalart1);
+	}
+
+	public void receiveSummaryComparision(ReceivingOrderObjects objOrderEnquiryObjects,List<List<Object>> finalart,String orderNo,WebDriver driver) throws IOException
+	{
+		List<List<Object>> recSumapp = getValuesFromTable(objOrderEnquiryObjects.receiveSumList);
+		removeIndex(recSumapp, "4");removeIndex(recSumapp, "2");removeIndex(recSumapp, "0");
+		replacenullToZero(recSumapp);
+		htmlToExtent(cName,mName,extLogger,driver, "Comparing receive summary for order "+orderNo+" with Backend;;;Pass");
+		ElementContains1(cName, mName,extLogger,driver, recSumapp, finalart);
+		recSumapp = getValuesFromTable(objOrderEnquiryObjects.discSumList);
+		replacenullToZero(recSumapp);
+		recSumapp.remove(0);
+		removeIndex(recSumapp, "4");removeIndex(recSumapp, "2");removeIndex(recSumapp, "0");
+		htmlToExtent(cName,mName,extLogger,driver, "Comparing discrepancies for order "+orderNo+" with Backend;;;Pass");
+		//System.out.println("check1" +recSumapp);//System.out.println("check2" +finalart);
+		ElementContains1(cName, mName,extLogger,driver, recSumapp, finalart);
+	}
+
+	public void verticalinternal(WebDriver driver){ 
+		((JavascriptExecutor)driver).executeScript("arguments[0].scrollBy(0,75)");
+	}
+
+	public void finalarticleListTableComparision(ReceivingOrderObjects objOrderEnquiryObjects,List<List<Object>> results,
+			String orderNo,List displayArt,WebDriver driver,String article,List<List<Object>> results1,String artic,String value) throws IOException
+	{		
+		verticalScroll(driver);
+		objOrderEnquiryObjects.clearGroupBy.click();waitFor(1);
+		List res2 = new ArrayList();
+		List<List<Object>> res1 = new ArrayList<List<Object>>();
+		List<List<Object>> artListApp = new ArrayList<List<Object>>();
+		int size = objOrderEnquiryObjects.finalartListTable.size();
+		for(int i=1;i<=size;i++)
+		{
+			int dp=0;
+			List artList = new ArrayList();
+			for(int j=1;j<=10;j++)
+			{
+				if((j==2)||(j==3))
+				{}
+				else
+				{					
+					WebElement vendor = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.finalartListTable1,i, j,driver);
+					if((j==6)||(j==10))
+					{
+						if(dp!=1){
+							String val = vendor.getText().replace("\n", " ");
+							if(val.contains("("))
+							{
+								String myRegex = "[(]";
+								String[] num = splitString(val,myRegex);
+								String[] num1 = splitString(num[0], " ");
+								if(num1[0].contains(".")){
+									num1[0]=num1[0].replaceAll("\\.?0+$","");}
+								artList.add(num1[0]+" "+num1[1]+" ("+num[1]);
+							}
+							else
+							{
+								artList.add(val);
+							}
+						}
+					}
+					else if(j==9)
+					{
+						List<WebElement> artListTabledisp = driver.findElements(By.xpath("//*[@id='received_item_table_table']/tbody/tr["+i+"]/td["+j+"]/a"));
+						//artList.add(vendor.getText());
+						if(artListTabledisp.size()!=0)
+						{
+							WebElement dispart = prepareWebElementWithDynamicXpathWithIntInt(objOrderEnquiryObjects.finalartListTabledisp,i, j,driver);
+							dispart.click();
+							waitForJSandJQueryToLoad(driver);
+							List<List<Object>> displayartApp = getValuesFromTable(objOrderEnquiryObjects.displayArtTable);removeIndex(displayartApp, "2");removeIndex(displayartApp, "1");
+							for (Iterator<List<Object>> it = displayartApp.iterator(); it.hasNext();) 
+							{												
+								List<Object> elem = it.next(); 
+								res2 = new ArrayList();
+								//res1.add(elem);
+								for(int s =0;s<elem.size();s++) {
+									res2.add(elem.get(s).toString());
+								}
+								res1.add(res2);
+							}
+							waitFor(1);
+							objOrderEnquiryObjects.dispArtOK.click();
+							waitForJSandJQueryToLoad(driver);
+						}	
+						else
+						{
+							if(dp!=1){
+								artList.add(vendor.getText());
+							}
+						}
+					}
+					else
+					{
+						if(j==1)
+						{
+							if(displayArt.contains(vendor.getText())){dp=1;}
+						}
+						if(dp!=1){
+							artList.add(vendor.getText());}
+					}
+				}
+			}if(dp!=1){
+				artListApp.add(artList);}
+		}
+		if(value.equals("full1")){
+			removeIndex(results, "7");	removeIndex(results, "2");	removeIndex(results, "1");}else if(value.equals("full")){
+			removeIndex(results, "5");	removeIndex(results, "2");	removeIndex(results, "1");}else{
+				removeIndex(results, "8");removeIndex(results, "7");}
+		removeIndex(artListApp, "1");
+		htmlToExtent(cName,mName,extLogger,driver, "Comparing Article list for order "+orderNo+" with application;;;Info");
+		htmlToExtent(cName,mName,extLogger,driver, "Application and Database List;"+results+";"+artListApp+";Info");
+		ElementContains1(cName, mName,extLogger,driver,results, artListApp);
+		if(displayArt.size()>0){
+			htmlToExtent(cName,mName,extLogger,driver, "Comparing display Article list for order "+orderNo+" with application;;;Info");
+			htmlToExtent(cName,mName,extLogger,driver, "Application and Database List;"+res1+";"+results+";Info");
+			ElementContains1(cName, mName,extLogger,driver, res1, results);}
+		if(article.equals("newArt"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Comparing Article list for order "+orderNo+" with application for added article - "+artic+";;;Info");
+			htmlToExtent(cName,mName,extLogger,driver, "Application and Database List;"+results+";"+artListApp+";Info");
+			ElementContains1(cName, mName,extLogger,driver,results1, artListApp);
+		}
+		scrollUp();scrollUp();
+	}
+
+	public int random_no(int max) {
+		Random rand = new Random();
+		int n = rand.nextInt(max);
+		return n;
+	}
+
+	public void waitFn(WebDriver driver) {
+		waitForJSandJQueryToLoad(driver);
+		// waitForPageToLoad();
+	}
+
+	public List orderOnCreationDetail(
+			ReceivingOrderObjects objOrderEnquiryObjects, int i, String art1,
+			List app,WebDriver driver) throws ParseException, IOException {
+		if (i == 0) {
+			objOrderEnquiryObjects.orderonreceiptart.click();
+			objOrderEnquiryObjects.orderonreceiptart.sendKeys(art1);
+			objOrderEnquiryObjects.orderonreceiptart.sendKeys(Keys.ENTER);
+		}
+		if (i == 1) {
+			waitFor(1);
+			objOrderEnquiryObjects.orderonreceiptart2.click();
+			objOrderEnquiryObjects.orderonreceiptart2.sendKeys(art1);
+			objOrderEnquiryObjects.orderonreceiptart2.sendKeys(Keys.ENTER);
+		}
+		// objOrderEnquiryObjects.orderonreceiptart.sendKeys(art1);
+		htmlToExtent(cName,mName,extLogger,driver, "Article - " + art1
+				+ " added to check;;;Pass");
+		// Report_AddStep("testcase"," Article - "+art1+" added to check" , "",
+		// "", "Pass");
+		// objOrderEnquiryObjects.orderonreceiptart.sendKeys(Keys.ENTER);
+		// objOrderEnquiryObjects.orderonreceiptartAdd.click();
+		scrolldown(driver);
+		int j = 0;
+		if (i == 0) {
+			j = 1;
+		}
+		if (i == 1) {
+			j = 3;
+		}
+		WebElement rcvdQty = prepareWebElementWithDynamicXpathWithInt(
+				objOrderEnquiryObjects.orderonreceiptrcvdQty, j,driver);
+		Random rand = new Random();
+		int n = rand.nextInt(9) + 1;
+		String ordrQty = "" + n;
+		waitFor(1);
+		rcvdQty.clear();
+		rcvdQty.sendKeys(ordrQty);
+		htmlToExtent(cName,mName,extLogger,driver,
+				"Received quantity entered for Article - " + art1 + " is "
+						+ ordrQty + ";;;Pass");
+		// Report_AddStep("testcase","Received quantity entered for Article - "+art1+" is "+ordrQty+""
+		// , "", "", "Pass");
+		List<WebElement> KGlist = driver.findElements(By
+				.xpath("//*[@id='oor_articleListTable']/tbody/tr[" + j
+						+ "]/td[6]/input[2]"));
+		if (KGlist.size() != 0) {
+			WebElement kgQty = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.orderonreceiptkgQty, j,driver);
+			int n1 = rand.nextInt(9) + 1;
+			String kgQtyy = "" + n1;
+			kgQtyy = kgQtyy + ".00";
+			kgQty.sendKeys(kgQtyy);
+			htmlToExtent(cName,mName,extLogger,driver,
+					"Total weight entered for Article - " + art1 + " is "
+							+ kgQtyy + ";;;Pass");
+			// Report_AddStep("testcase","Total weight entered for Article - "+art1+" is "+kgQtyy+""
+			// , "", "", "Pass");
+		}
+		WebElement Date = prepareWebElementWithDynamicXpathWithInt(
+				objOrderEnquiryObjects.orderonreceiptDate, j,driver);
+		WebElement Datemore = prepareWebElementWithDynamicXpathWithInt(
+				objOrderEnquiryObjects.orderonreceiptDatemore, j,driver);
+		Date.sendKeys(common.getCurrentDate());
+		rcvdQty.click();
+		waitFor(1);
+		Datemore.click();
+		WebElement Datemoredate = prepareWebElementWithDynamicXpathWithInt(
+				objOrderEnquiryObjects.orderonreceiptDatemoredate, j,driver);
+		Datemoredate.sendKeys(common.addDaystoCurrentDate(1));
+		rcvdQty.click();
+		htmlToExtent(cName,mName,extLogger,driver,
+				"Expiry date added for Article - " + art1
+				+ " successfully;;;Pass");
+		// Report_AddStep("testcase","Expiry date added for Article - "+art1+" successfully"
+		// , "", "", "Pass");
+		WebElement SOH = prepareWebElementWithDynamicXpathWithInt(
+				objOrderEnquiryObjects.orderonreceiptSOH, j,driver);
+		String SOH_appl = SOH.getText();
+		WebElement OrderOM = prepareWebElementWithDynamicXpathWithInt(
+				objOrderEnquiryObjects.orderonreceiptOM, j,driver);
+		String OM_appl = OrderOM.getText(); // 8 EA
+		String[] OM = OM_appl.split(" ");
+		OM_appl = OM[0];
+		int SOHvalue = Integer.parseInt(SOH_appl)
+				+ ((Integer.parseInt(OM_appl)) * n);
+		app.add(SOHvalue);
+
+		WebElement totalOrder = prepareWebElementWithDynamicXpathWithInt(
+				objOrderEnquiryObjects.orderonreceiptTotalUnit, j,driver);
+		String totalOrderno = totalOrder.getText();
+		int order = n * Integer.parseInt(OM_appl);
+		if (order == (Integer.parseInt(totalOrderno))) {
+			htmlToExtent(cName,mName,extLogger,driver,
+					"Total order qty matched for the article " + art1
+					+ ";;;Pass");
+			// Report_AddStep("testcase","Total order qty matched for the article "+art1+""
+			// , "", "", "Pass");
+		} else {
+			htmlToExtent(cName,mName,extLogger,driver,
+					"Total order qty mismatched for the article " + art1
+					+ ";;;Fail");
+			// Report_AddStep("testcase","Total order qty mismatched for the article "+art1+""
+			// , "", "", "Fail");
+		}
+		// scrollUp();
+		return app;
+	}
+
+	public List<List<Object>> orderOnCreationCompare(
+			ReceivingOrderObjects objOrderEnquiryObjects,WebDriver driver) throws IOException {
+		List<List<Object>> appmatchListList = new ArrayList<List<Object>>();
+		int OC_status = objOrderEnquiryObjects.orderonreceiptartList.size();
+		for (int stat = 1; stat < OC_status; stat++) {
+			List appmatchList = new ArrayList();
+			WebElement art_no = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.orderonreceiptartNo, stat,driver);
+			String arti_no = art_no.getText();
+			WebElement SOH = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.orderonreceiptSOH, stat,driver);
+			String SOH_appl = SOH.getText();
+			SOH_appl = decimalFormat(SOH_appl);
+			WebElement OrderOM = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.orderonreceiptOM, stat,driver);
+			String OM_appl = OrderOM.getText();
+			String[] OM = OM_appl.split(" ");
+			OM_appl = OM[0];
+			/*
+			 * WebElement rcvdQty =
+			 * prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects
+			 * .orderonreceiptrcvdQty, stat); String Qty = rcvdQty.getText();
+			 * WebElement totalOrder =
+			 * prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects
+			 * .orderonreceiptTotalUnit, stat); String totalOrderno =
+			 * totalOrder.getText(); stat++; int
+			 * order=Integer.parseInt(Qty)*Integer.parseInt(OM_appl);
+			 * if(order==(Integer.parseInt(totalOrderno))) {
+			 * Report_AddStep("testcase"
+			 * ,"Total order qty matched for the article "+arti_no+"" , "", "",
+			 * "Pass"); } else { Report_AddStep("testcase",
+			 * "Total order qty mismatched for the article "+arti_no+"" , "",
+			 * "", "Fail"); }
+			 */
+			stat++;
+			appmatchList.add(arti_no);
+			appmatchList.add(SOH_appl);
+			appmatchList.add(OM_appl);
+			appmatchListList.add(appmatchList);
+		}
+		return appmatchListList;
+	}
+
+	public void orderOnCreationOrderNo(
+			ReceivingOrderObjects objOrderEnquiryObjects, String StoreNo,WebDriver driver)
+					throws IOException {
+		waitFor(3);
+		for (int l = 2; l <= 6; l++) {
+			if (l == 6) {
+				if (StoreNo.equals("1108")) {
+					{
+						l = 7;
+					}
+				} else {
+					orderEnqArtScenarios
+					.put(orderEnqArttestname,
+							"Invoiced,Consignment,DGMS department,Carrier added successfully;;;Pass");
+					// Report_AddStep("testcase","Invoiced,Consignment,DGMS department,Carrier added successfully"
+					// , "", "", "Pass");
+					objOrderEnquiryObjects.finish.click();
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,
+							"***Clicking on finish button***;;;Pass");
+					// Report_AddStep("testcase","***Clicking on finish button***"
+					// , "", "", "Pass");
+					break;
+				}
+			}
+			WebElement details = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.orderonreceiptDetails, l,driver);
+			if (l == 2) {
+				details.sendKeys("abc123");
+			}
+			if (l == 3) {
+				details.sendKeys("12345");
+			}
+			if (l == 4) {
+				details.sendKeys("order");
+			}
+			if (l == 5) {
+				details.sendKeys("creation");
+			}
+			if (l == 7) {
+				details.sendKeys("2");
+				waitFor(1);
+				orderEnqArtScenarios
+				.put(orderEnqArttestname,
+						"Invoiced,Consignment,DGMS department,Carrier,chilled temperature added successfully;;;Pass");
+				// Report_AddStep("testcase","Invoiced,Consignment,DGMS department,Carrier,chilled temperature added successfully"
+				// , "", "", "Pass");
+				objOrderEnquiryObjects.finish.click();
+				waitForJSandJQueryToLoad(driver);
+				htmlToExtent(cName,mName,extLogger,driver,
+						"***Clicking on finish button***;;;Pass");
+				// Report_AddStep("testcase","***Clicking on finish button***" ,
+				// "", "", "Pass");
+			}
+		}
+
+		String OrderNo = null;
+		if (objOrderEnquiryObjects.orderno.isDisplayed()) {
+			int ordernosize = objOrderEnquiryObjects.errorOC.size();
+			int errorclse = objOrderEnquiryObjects.ordercloseList.size();
+			int check = 0;
+			for (int p = ordernosize; p > 1; p--) {
+				List<WebElement> errlist = driver.findElements(By
+						.xpath("(//*[@class='content'])[" + p
+								+ "]/ol[@class='err_msg']/li"));
+				int list = errlist.size();
+				for (int y = 1; y <= list; y++) {
+					WebElement ordermsg = prepareWebElementWithDynamicXpathWithIntInt(
+							objOrderEnquiryObjects.errordesc, p, y,driver);
+					String errmsg = ordermsg.getText();
+					if (errmsg.contains("has been received")) {
+						htmlToExtent(cName,mName,extLogger,driver, ""
+								+ errmsg + ";;;Pass");
+						// Report_AddStep("testcase",""+errmsg+"", "", "", "");
+						String[] split = errmsg.split("Ref No:");
+						OrderNo = split[1];
+						int s = OrderNo.length();
+						OrderNo = OrderNo.substring(0, s - 1);
+						htmlToExtent(cName,mName,extLogger,driver,
+								"Order Number generated - " + OrderNo
+								+ ";;;Pass");
+						// Report_AddStep("testcase","Order Number generated - "+OrderNo+""
+						// , "", "", "Pass");
+					}
+				}
+				if (errorclse != 1) {
+					WebElement orderclse = prepareWebElementWithDynamicXpathWithInt(
+							objOrderEnquiryObjects.orderclse, errorclse,driver);
+					errorclse--;
+					orderclse.click();
+				}
+			}
+		}
+		objOrderEnquiryObjects.enterArt.click();
+		objOrderEnquiryObjects.enterArt.sendKeys(OrderNo);
+		objOrderEnquiryObjects.Go.click();
+		htmlToExtent(cName,mName,extLogger,driver, "Entered Order no - "
+				+ OrderNo + " to check status;;;Pass");
+		// Report_AddStep("testcase","Entered Order no - "+OrderNo+" to check status"
+		// , "", "", "Pass");
+		waitForJSandJQueryToLoad(driver);
+		if (!(objOrderEnquiryObjects.ordercloseList.size() == 0)) {
+			String orderstatus = objOrderEnquiryObjects.orderStatus.getText();
+			if (orderstatus.equals("RECEIVED")) {
+				htmlToExtent(cName,mName,extLogger,driver, "Order no - "
+						+ OrderNo + " is in received status;;;Pass");
+				// Report_AddStep("testcase","Order no - "+OrderNo+" is in received status"
+				// , "", "", "Pass");
+			} else {
+				htmlToExtent(cName,mName,extLogger,driver, "Order no - "
+						+ OrderNo + " is in " + orderstatus + " status;;;Fail");
+				// Report_AddStep("testcase","Order no - "+OrderNo+" is in "+orderstatus+" status"
+				// , "", "", "Fail");
+			}
+		} else {
+			WebElement orderclse = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.orderclse, 2,driver);
+			orderclse.click();
+			htmlToExtent(cName,mName,extLogger,driver,
+					"Sorry!! No result found for Order no - " + OrderNo
+					+ ";;;Fail");
+			// Report_AddStep("testcase","Sorry!! No result found for Order no - "+OrderNo+""
+			// , "", "", "Fail");
+		}
+	}
+
+	public void orderEnquiryDetail(ReceivingOrderObjects objOrderEnquiryObjects,
+			String a, String b, String c, String d,WebDriver driver) throws IOException {
+		htmlToExtent(cName,mName,extLogger,driver,
+				"******Order Enquiry Tab verification with DB******;;;Pass");
+		// Report_AddStep("testcase","******Order Enquiry Tab verification with DB******"
+		// , "", "", "");
+		countmatch(objOrderEnquiryObjects,driver);
+		if (objOrderEnquiryObjects.overDuetab.isDisplayed()) {
+			String overdue_no = objOrderEnquiryObjects.overDuetab.getText();
+			if (overdue_no.contains("(")) {
+				String[] split = overdue_no.split(" ");
+				int length = split[1].length();
+				overdue_no = split[1].substring(1, length - 1);
+				if (a.equals(overdue_no)) {
+					htmlToExtent(cName,mName,extLogger,driver,
+							"Overdue value matched with DB;" + overdue_no + ";"
+									+ a + ";Pass");
+					// Report_AddStep("testcase","Overdue value matched with DB"
+					// , overdue_no, a, "Pass");
+				} else {
+					htmlToExtent(cName,mName,extLogger,driver,
+							"Overdue value mismatched with DB;" + overdue_no
+							+ ";" + a + ";Fail");
+					// Report_AddStep("testcase","Overdue value mismatched with DB"
+					// , overdue_no, a, "Fail");
+				}
+			}
+		}
+		if (objOrderEnquiryObjects.fullyReceivedtab.isDisplayed()) {
+			String fullyReceivedtab_no = objOrderEnquiryObjects.fullyReceivedtab
+					.getText();
+			if (fullyReceivedtab_no.contains("(")) {
+				String[] split = fullyReceivedtab_no.split(" ");
+				int length = split[2].length();
+				fullyReceivedtab_no = split[2].substring(1, length - 1);
+				if (b.equals(fullyReceivedtab_no)) {
+					htmlToExtent(cName,mName,extLogger,driver,
+							"fullyReceived value matched with DB;"
+									+ fullyReceivedtab_no + ";" + b + ";Pass");
+					// Report_AddStep("testcase","fullyReceived value matched with DB"
+					// , fullyReceivedtab_no, b, "Pass");
+				} else {
+					htmlToExtent(cName,mName,extLogger,driver,
+							"fullyReceived value mismatched with DB;"
+									+ fullyReceivedtab_no + ";" + b + ";Fail");
+					// Report_AddStep("testcase","fullyReceived value mismatched with DB"
+					// , fullyReceivedtab_no, b, "Fail");
+				}
+			}
+		}
+		if (objOrderEnquiryObjects.readyToReceivetab.isDisplayed()) {
+			String readyToReceivetab_no = objOrderEnquiryObjects.readyToReceivetab
+					.getText();
+			if (readyToReceivetab_no.contains("(")) {
+				String[] split = readyToReceivetab_no.split(" ");
+				int length = split[3].length();
+				readyToReceivetab_no = split[3].substring(1, length - 1);
+				if (c.equals(readyToReceivetab_no)) {
+					htmlToExtent(cName,mName,extLogger,driver,
+							"readyToReceive value matched with DB;"
+									+ readyToReceivetab_no + ";" + c + ";Pass");
+					// Report_AddStep("testcase","readyToReceive value matched with DB"
+					// , readyToReceivetab_no, c, "Pass");
+				} else {
+					htmlToExtent(cName,mName,extLogger,driver,
+							"readyToReceive value mismatched with DB;"
+									+ readyToReceivetab_no + ";" + c + ";Fail");
+					// Report_AddStep("testcase","readyToReceive value mismatched with DB"
+					// , readyToReceivetab_no, c, "Fail");
+				}
+			}
+		}
+		if (objOrderEnquiryObjects.openOrderstab.isDisplayed()) {
+			String openOrderstab_no = objOrderEnquiryObjects.openOrderstab
+					.getText();
+			if (openOrderstab_no.contains("(")) {
+				String[] split = openOrderstab_no.split(" ");
+				int length = split[2].length();
+				openOrderstab_no = split[2].substring(1, length - 1);
+				if (d.equals(openOrderstab_no)) {
+					htmlToExtent(cName,mName,extLogger,driver,
+							"openOrders value matched with DB;"
+									+ openOrderstab_no + ";" + d + ";Pass");
+					// Report_AddStep("testcase","openOrders value matched with DB"
+					// , openOrderstab_no, d, "Pass");
+				} else {
+					htmlToExtent(cName,mName,extLogger,driver,
+							"openOrders value mismatched with DB;"
+									+ openOrderstab_no + ";" + d + ";Fail");
+					// Report_AddStep("testcase","openOrders value mismatched with DB"
+					// , openOrderstab_no, d, "Fail");
+				}
+			}
+		}
+	}
+
+	public void deliverydatecombination(
+			ReceivingOrderObjects objOrderEnquiryObjects,WebDriver driver) throws IOException,
+			ParseException, AWTException {
+		if (objOrderEnquiryObjects.advSrherrormsg.isDisplayed()) {
+			htmlToExtent(cName,mName,extLogger,driver,
+					"*******Advanced Search*******;;;Pass");
+			// Report_AddStep("testcase","*******Advanced Search*******" , "",
+			// "", "Pass");
+			orderEnqArtScenarios
+			.put(orderEnqArttestname,
+					"Please enter either order number/Article details/delivery date, which is mandatory to proceed!!;;;Pass");
+			// Report_AddStep("testcase","Please enter either order number/Article details/delivery date, which is mandatory to proceed!!"
+			// , "", "", "Pass");
+			objOrderEnquiryObjects.advSrherrormsgclse.click();
+			waitFor(1);
+			String currentdate = common.getCurrentDate();
+			String firstedate = common.addDaystoCurrentDate(-30);
+			String seconddate = common.addDaystoCurrentDate(-24);
+			objOrderEnquiryObjects.advFromDate.sendKeys(firstedate);
+			objOrderEnquiryObjects.advToDate.sendKeys(seconddate);
+			objOrderEnquiryObjects.Go.click(); // from and To dates are previous
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,
+					"*****From and To dates are previous dates*****;;;Pass");
+			// Report_AddStep("testcase","*****From and To dates are previous dates*****"
+			// , "", "", "");
+			if (objOrderEnquiryObjects.advDeldatealert.isDisplayed()) {
+				orderEnqArtScenarios
+				.put(orderEnqArttestname,
+						"More than 28 days of orders have been requested. This may take additional time to search.;From date - "
+								+ firstedate
+								+ ";To Date - "
+								+ seconddate + ";Pass");
+				// Report_AddStep("testcase","More than 28 days of orders have been requested. This may take additional time to search."
+				// , "From date - "+firstedate+"", "To Date - "+seconddate+"",
+				// "Pass");
+				waitFor(1);
+				objOrderEnquiryObjects.advDeldatealertOK.click();
+				htmlToExtent(cName,mName,extLogger,driver,
+						"Clicking OK to proceed;;;Pass");
+				// Report_AddStep("testcase","Clicking OK to proceed" , "", "",
+				// "Pass");
+				htmlToExtent(cName,mName,extLogger,driver,
+						"Please enter valid date range for delivery. To date can not be before "
+								+ firstedate + ";;;Pass");
+				// Report_AddStep("testcase","Please enter valid date range for delivery. To date can not be before "+firstedate+""
+				// , "", "", "Pass");
+				waitFor(1);
+				objOrderEnquiryObjects.advDeldatealertOKK.click();
+				clickOnOrderEnquiry(objOrderEnquiryObjects,driver);
+				waitFn(driver);
+			} else {
+				orderEnqArtScenarios
+				.put(orderEnqArttestname,
+						"Validation message has not occured when proceeding with previous delivery dates;From date - "
+								+ firstedate
+								+ ";To Date - "
+								+ seconddate + ";Pass");
+				// Report_AddStep("testcase","Validation message has not occured when proceeding with previous delivery dates"
+				// ,"From date - "+firstedate+"", "To Date - "+seconddate+"",
+				// "Pass");
+			}
+			objOrderEnquiryObjects.advanceSearch.click();
+			firstedate = common.addDaystoCurrentDate(15);
+			seconddate = common.addDaystoCurrentDate(25);
+			objOrderEnquiryObjects.advFromDate.sendKeys(firstedate);
+			objOrderEnquiryObjects.advToDate.sendKeys(seconddate);
+			objOrderEnquiryObjects.Go.click(); // from and To dates are future
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,
+					"*****From and To dates are future dates*****;;;Pass");
+			// Report_AddStep("testcase","*****From and To dates are future dates*****"
+			// , "", "", "");
+			if (objOrderEnquiryObjects.advSrherrormsglist.size() != 0)
+				// if(!objOrderEnquiryObjects.ListofOrders.isDisplayed())
+			{
+				htmlToExtent(cName,mName,extLogger,driver,
+						"Details are not available for future delivery dates;From date - "
+								+ firstedate + ";To Date - " + seconddate
+								+ ";Pass");
+				// Report_AddStep("testcase","Details are not available for future delivery dates"
+				// , "From date - "+firstedate+"", "To Date - "+seconddate+"",
+				// "Pass");
+				objOrderEnquiryObjects.advSrherrormsgclse.click();
+				waitFor(1);
+			} else {
+				String Listoforders = objOrderEnquiryObjects.ListofOrders
+						.getText();
+				if (Listoforders.equals("List of Orders")) {
+					htmlToExtent(cName,mName,extLogger,driver,
+							"Details are available for future delivery dates;From date - "
+									+ firstedate + ";To Date - " + seconddate
+									+ ";Pass");
+					// Report_AddStep("testcase","Details are available for future delivery dates"
+					// , "From date - "+firstedate+"",
+					// "To Date - "+seconddate+"", "Pass");
+				}
+			}
+			waitFor(2);
+			objOrderEnquiryObjects.advanceSearch.click();
+			firstedate = common.addDaystoCurrentDate(-30);
+			seconddate = common.addDaystoCurrentDate(32);
+			objOrderEnquiryObjects.advFromDate.clear();
+			objOrderEnquiryObjects.advToDate.clear();
+			objOrderEnquiryObjects.advFromDate.sendKeys(firstedate);
+			objOrderEnquiryObjects.advToDate.sendKeys(seconddate);
+			objOrderEnquiryObjects.Go.click(); // from and To dates are past and
+			// future -- more than 28 days
+			waitForJSandJQueryToLoad(driver);
+			orderEnqArtScenarios
+			.put(orderEnqArttestname,
+					"*****From and To dates are past and future dates(more than 28 days)*****;;;Pass");
+			// Report_AddStep("testcase","*****From and To dates are past and future dates(more than 28 days)*****"
+			// , "", "", "");
+			if (objOrderEnquiryObjects.advDeldatealert.isDisplayed()) {
+				orderEnqArtScenarios
+				.put(orderEnqArttestname,
+						"More than 28 days of orders have been requested. This may take additional time to search.;From date - "
+								+ firstedate
+								+ ";To Date - "
+								+ seconddate + ";Pass");
+				// Report_AddStep("testcase","More than 28 days of orders have been requested. This may take additional time to search."
+				// , "From date - "+firstedate+"", "To Date - "+seconddate+"",
+				// "Pass");
+				htmlToExtent(cName,mName,extLogger,driver,
+						"Clicking OK to proceed;;;Pass");
+				// Report_AddStep("testcase","Clicking OK to proceed" , "", "",
+				// "Pass");
+				objOrderEnquiryObjects.advDeldatealertOK.click();
+				waitFor(7);
+				String Listoforders = objOrderEnquiryObjects.ListofOrdersfuture
+						.getText();
+				// if(Listoforders.equals("List of orders for "))
+				if (objOrderEnquiryObjects.deldatestable.isDisplayed()) {
+					htmlToExtent(cName,mName,extLogger,driver,
+							"Details are available for delivery dates more than 28 days;From date - "
+									+ firstedate + ";To Date - " + seconddate
+									+ ";Pass");
+					// Report_AddStep("testcase","Details are available for delivery dates more than 28 days"
+					// , "From date - "+firstedate+"",
+					// "To Date - "+seconddate+"", "Pass");
+					waitFor(1);
+					clickOnOrderEnquiry(objOrderEnquiryObjects,driver);
+					waitFn(driver);
+				} else {
+					htmlToExtent(cName,mName,extLogger,driver,
+							"Details are not available for delivery dates more than 28 days;From date - "
+									+ firstedate + ";To Date - " + seconddate
+									+ ";Pass");
+					// Report_AddStep("testcase","Details are not available for delivery dates more than 28 days"
+					// ,"From date - "+firstedate+"",
+					// "To Date - "+seconddate+"", "Pass");
+					clickOnOrderEnquiry(objOrderEnquiryObjects,driver);
+					waitFn(driver);
+				}
+			} else {
+				orderEnqArtScenarios
+				.put(orderEnqArttestname,
+						"Validation message has not occured when proceeding with past and future delivery dates for more than 28 days;From date - "
+								+ firstedate
+								+ ";To Date - "
+								+ seconddate + ";Pass");
+				// Report_AddStep("testcase","Validation message has not occured when proceeding with past and future delivery dates for more than 28 days"
+				// , "From date - "+firstedate+"", "To Date - "+seconddate+"",
+				// "Pass");
+			}
+			objOrderEnquiryObjects.advanceSearch.click();
+			firstedate = common.addDaystoCurrentDate(-10);
+			seconddate = common.addDaystoCurrentDate(11);
+			objOrderEnquiryObjects.advFromDate.clear();
+			objOrderEnquiryObjects.advToDate.clear();
+			objOrderEnquiryObjects.advFromDate.sendKeys(firstedate);
+			objOrderEnquiryObjects.advToDate.sendKeys(seconddate);
+			objOrderEnquiryObjects.Go.click(); // from and To dates are past and
+			// future -- less than 28 days
+			waitFn(driver);
+			orderEnqArtScenarios
+			.put(orderEnqArttestname,
+					"*****From and To dates are past and future dates(less than 28 days)*****;;;Pass");
+			// Report_AddStep("testcase","*****From and To dates are past and future dates(less than 28 days)*****"
+			// , "", "", "");
+			orderEnqArtScenarios
+			.put(orderEnqArttestname,
+					"Delivery dates for less than 28 days added;From date - "
+							+ firstedate + ";To Date - " + seconddate
+							+ ";Pass");
+			// Report_AddStep("testcase","Delivery dates for less than 28 days added"
+			// , "From date - "+firstedate+"", "To Date - "+seconddate+"",
+			// "Pass");
+		} else {
+			// mandatory fields reqd
+		}
+	}
+
+	public void orderDetails(ReceivingOrderObjects objOrderEnquiryObjects,
+			String Art,WebDriver driver) throws IOException {
+		// objOrderEnquiryObjects.createOrder.click();
+		// Report_AddStep("testcase","Create ORDER page loaded successfully" ,
+		// "", "", "");
+		objOrderEnquiryObjects.addArticle.click();
+		objOrderEnquiryObjects.articleSearch.click();
+		objOrderEnquiryObjects.articleSearch.sendKeys(Art);
+		Random rand = new Random();
+		int n = rand.nextInt(9) + 1;
+		String ordrQty = "" + n;
+		objOrderEnquiryObjects.orderQty.sendKeys(ordrQty);
+		verticalScroll(driver);
+		objOrderEnquiryObjects.searchAnddAdd.click();
+		htmlToExtent(cName,mName,extLogger,driver, "Article - " + Art
+				+ ", Order Qty - " + ordrQty + " are added succesfully;;;Pass");
+		// Report_AddStep("testcase","Article - "+Art+", Order Qty - "+ordrQty+" are added succesfully"
+		// , "", "", "Pass");
+		waitForJSandJQueryToLoad(driver);
+	}
+
+	public List<List<Object>> orderCreation(
+			ReceivingOrderObjects objOrderEnquiryObjects,WebDriver driver) throws IOException {
+		int countt = 1;
+		List appList = new ArrayList();
+		verticalScroll(driver);
+		int totalArt = objOrderEnquiryObjects.totalArt.size(); // total art = no
+		// of
+		// deliverydate*2
+		// rows
+		int tbody = 1;
+		for (int i = 1; i < totalArt; i++) {
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.Articleexpand, i,driver);
+			i++;
+			element.click();
+			verticalScroll(driver);
+			String Ddate = common.getCurrentDate();
+			WebElement ddate = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.ArtdeliveryDateList, tbody,driver);
+			ddate.clear();
+			ddate.sendKeys(Ddate);
+			List<WebElement> artlist = driver.findElements(By
+					.xpath("(//*[@class='tbody'])[" + tbody + "]/tr"));
+			WebElement ele = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.artNumberList, tbody,driver);
+			int y = objOrderEnquiryObjects.ArtdeliveryDate.size();
+			List ddatelist = new ArrayList();
+			for (int p = 1; p <= y; p++) {
+				WebElement dd = prepareWebElementWithDynamicXpathWithInt(
+						objOrderEnquiryObjects.deliveryDateList, p,driver);
+				ddatelist.add(dd.getAttribute("value"));
+			}
+			java.util.HashSet<String> hs = new java.util.HashSet<>();
+			hs.addAll(ddatelist);
+			ddatelist.clear();
+			ddatelist.addAll(hs);
+			if ((artlist.size() > countt)
+					|| (objOrderEnquiryObjects.totalArt.size() > countt))
+				// if(objOrderEnquiryObjects.allDDate.size()!=countt)
+			{
+				countt++;
+				ele.click();
+				if (objOrderEnquiryObjects.warning.isDisplayed()) {
+					objOrderEnquiryObjects.allDDatecancel.click();
+				}
+				/*
+				 * if(ddatelist.size()==1) { //ddate.sendKeys(Keys.ENTER);
+				 * ele.click(); } else { //ddate.sendKeys(Keys.ENTER);
+				 * ele.click(); objOrderEnquiryObjects.allDDatecancel.click();
+				 * //ele.click(); }
+				 */
+			} else {
+				// ddate.sendKeys(Keys.ENTER);
+				ele.click();
+			}
+			// objOrderEnquiryObjects.artNo.click();
+			int validatesize = objOrderEnquiryObjects.validate.size();
+			WebElement validate = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.validateList, 1,driver);
+			waitFor(2);
+			validate.click();
+			// objOrderEnquiryObjects.validateAll.click();
+			htmlToExtent(cName,mName,extLogger,driver,
+					"*****Validation performed***** for the " + tbody
+					+ " set of articles;;;Pass");
+			// Report_AddStep("testcase","*****Validation performed***** for the "+tbody+" set of articles"
+			// , "", "", "Pass");
+			tbody++;
+			waitFor(2);
+			// scrollUp();
+			if ((objOrderEnquiryObjects.emergencycheck.size() != 0)
+					|| (objOrderEnquiryObjects.availablecheck.size() != 0)) {
+				// verticalScroll(driver);
+				if (objOrderEnquiryObjects.emergencycheck.size() != 0) {
+					String ec = objOrderEnquiryObjects.emergencyclick
+							.getAttribute("class");
+					if (ec.contains("checked")) {
+
+					} else {
+						waitFor(2);
+						objOrderEnquiryObjects.emergencyclick.click();
+						objOrderEnquiryObjects.procToCreate.click();
+					}
+				}
+				// if(objOrderEnquiryObjects.availablecheck.isDisplayed())
+				if (objOrderEnquiryObjects.availablecheck.size() != 0) {
+					String ac = objOrderEnquiryObjects.availableclick
+							.getAttribute("class");
+					if (ac.equals("checked")) {
+
+					} else {
+						waitFor(2);
+						objOrderEnquiryObjects.availableclick.click();
+						objOrderEnquiryObjects.procToCreate.click();
+					}
+					if (objOrderEnquiryObjects.emergencycheck.size() != 0) {
+						String ec = objOrderEnquiryObjects.emergencyclick
+								.getAttribute("class");
+						if (ec.contains("checked")) {
+
+						} else {
+							waitFor(2);
+							objOrderEnquiryObjects.emergencyclick.click();
+							objOrderEnquiryObjects.procToCreate.click();
+						}
+					}
+				}
+				verticalScroll(driver);
+			}
+			// element.click();
+			verticalScroll(driver);
+			verticalScroll(driver);
+		}
+
+		waitFor(2);
+		verticalScroll(driver);
+		verticalScroll(driver);
+		verticalScroll(driver);
+		verticalScroll(driver);
+		verticalScroll(driver);
+		List<List<Object>> appmatchListList = new ArrayList<List<Object>>();
+		int OC_status = objOrderEnquiryObjects.status.size();
+		for (int stat = 1; stat <= OC_status; stat++) {
+			List appmatchList = new ArrayList();
+			WebElement validatestatus = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.statusList, stat,driver);
+			String art_status = validatestatus.getText();
+			WebElement art_no = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.artNoListList, stat,driver);
+			String arti_no = art_no.getText();
+			WebElement SOH = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.SOHList, stat,driver);
+			String SOH_appl = SOH.getText();
+			SOH_appl = decimalFormat(SOH_appl);
+			WebElement Orderqty = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.orderQtynoList, stat,driver);
+			String Orderqtyno = Orderqty.getAttribute("value");
+			String Orderqtyom = Orderqty.getAttribute("data-om");
+			WebElement totalOrder = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.totalOrderunitList, stat,driver);
+			String totalOrderno = totalOrder.getText();
+			if (art_status.equals("Draft")) {
+				htmlToExtent(cName,mName,extLogger,driver, "" + arti_no
+						+ " is in Draft status;;;Pass");
+				// Report_AddStep("testcase",""+arti_no+" is in Draft status" ,
+				// "", "", "Pass");
+			} else {
+				htmlToExtent(cName,mName,extLogger,driver, "" + arti_no
+						+ " is in verified status;;;Pass");
+				// Report_AddStep("testcase",""+arti_no+" is in verified status"
+				// , "", "", "Pass");
+			}
+			int order = Integer.parseInt(Orderqtyno)
+					* Integer.parseInt(Orderqtyom);
+			if (order == (Integer.parseInt(totalOrderno))) {
+				htmlToExtent(cName,mName,extLogger,driver,
+						"Total order qty matched for the article " + arti_no
+						+ ";;;Pass");
+				// Report_AddStep("testcase","Total order qty matched for the article "+arti_no+""
+				// , "", "", "Pass");
+			} else {
+				htmlToExtent(cName,mName,extLogger,driver,
+						"Total order qty mismatched for the article " + arti_no
+						+ ";;;Fail");
+				// Report_AddStep("testcase","Total order qty mismatched for the article "+arti_no+""
+				// , "", "", "Fail");
+			}
+			appmatchList.add(arti_no);
+			appmatchList.add(SOH_appl);
+			appmatchList.add(Orderqtyom);
+			appmatchListList.add(appmatchList);
+		}
+		objOrderEnquiryObjects.createAll.click();
+		orderEnqArtScenarios
+		.put(orderEnqArttestname,
+				"Create button is enabled after validating,Clicking on create button to generate ORDER number;;;Pass");
+		// Report_AddStep("testcase","Create button is enabled after validating,Clicking on create button to generate ORDER number"
+		// , "", "", "Pass");
+		waitForJSandJQueryToLoad(driver);
+		if (objOrderEnquiryObjects.orderno.isDisplayed()) {
+			// int ordernosize=objOrderEnquiryObjects.ordernolist.size();
+			int ordernosize = objOrderEnquiryObjects.errorOC.size();
+			int errorclse = objOrderEnquiryObjects.ordercloseList.size();
+			int check = 0;
+			for (int k = ordernosize; k > 1; k--) {
+				List<WebElement> errlist = driver.findElements(By
+						.xpath("(//*[@class='content'])[" + k
+								+ "]/ol[@class='err_msg']/li"));
+				int list = errlist.size();
+				for (int y = 1; y <= list; y++) {
+					WebElement ordermsg = prepareWebElementWithDynamicXpathWithIntInt(
+							objOrderEnquiryObjects.errordesc, k, y,driver);
+					String errmsg = ordermsg.getText();
+					if (errmsg.contains("created for the submitted")) {
+						htmlToExtent(cName,mName,extLogger,driver, ""
+								+ errmsg + ";;;Pass");
+						// Report_AddStep("testcase",""+errmsg+"", "", "", "");
+						String[] split = errmsg.split(" ");
+						if (split[1].contains(",")) {
+							String[] spl = split[1].split(",");
+							int sz = spl.length;
+							for (int z = 0; z < sz; z++) {
+								appList.add(spl[z]);
+							}
+						} else {
+							appList.add(split[1]);
+						}
+					} else {
+						htmlToExtent(cName,mName,extLogger,driver,
+								"Order creation failed for the resaon - '"
+										+ errmsg + ";;;Pass");
+						// Report_AddStep("testcase","Order creation failed for the resaon - '"+errmsg+"' ",
+						// "", "", "");
+					}
+				}
+				// WebElement ordermsg =
+				// prepareWebElementWithDynamicXpathWithInt(objOrderEnquiryObjects.ordernodesc,
+				// k);
+				if (errorclse != 1) {
+					WebElement orderclse = prepareWebElementWithDynamicXpathWithInt(
+							objOrderEnquiryObjects.orderclse, errorclse,driver);
+					errorclse--;
+					orderclse.click();
+				}
+			}
+		}
+		int size = appList.size();
+		if (size > 0) {
+			for (int j = 0; j <= size - 1; j++) {
+				scrollUp();
+				objOrderEnquiryObjects.enterArt.click();
+				String article = (String) appList.get(j);
+				objOrderEnquiryObjects.enterArt.clear();
+				objOrderEnquiryObjects.enterArt.sendKeys(article);
+				objOrderEnquiryObjects.Go.click();
+				waitForJSandJQueryToLoad(driver);
+				if (!(objOrderEnquiryObjects.ordercloseList.size() == 0)) {
+					String status = objOrderEnquiryObjects.orderStatus
+							.getText();
+					if (status.equals("SUBMITTED")) {
+						htmlToExtent(cName,mName,extLogger,driver,
+								"Order no - " + article
+								+ " is in submitted status;;;Pass");
+						// Report_AddStep("testcase","Order no - "+article+" is in submitted status"
+						// , "", "", "Pass");
+					} else {
+						htmlToExtent(cName,mName,extLogger,driver,
+								"Order no - " + article + " is in " + status
+								+ " status;;;Fail");
+						// Report_AddStep("testcase","Order no - "+article+" is in "+status+" status"
+						// , "", "", "Fail");
+					}
+				} else {
+					WebElement orderclse = prepareWebElementWithDynamicXpathWithInt(
+							objOrderEnquiryObjects.orderclse, 2,driver);
+					orderclse.click();
+					htmlToExtent(cName,mName,extLogger,driver,
+							"Sorry!! No result found for Order no - " + article
+							+ ";;;Fail");
+					// Report_AddStep("testcase","Sorry!! No result found for Order no - "+article+""
+					// , "", "", "Fail");
+				}
+			}
+		}
+		// } emergency check
+		// }
+		return appmatchListList;
+	}
+
+	public void advSearchdetails(ReceivingOrderObjects objOrderEnquiryObjects,
+			String StoreNo,WebDriver driver) throws IOException {
+		objOrderEnquiryObjects.advanceSearch.click();
+		int dd = 0;
+		String SOS = null;
+		List<List<Object>> list_reasonCodes = StringToListCreation("All:Direct Vendor:Stock Transfer IN:Stock Transfer OUT:Stock Transfer IN / Stock Transfer OUT:Warehouse");
+		int listCnt = list_reasonCodes.get(0).size();
+		int index = (int) (Math.random() * listCnt);
+		String reasonCode = list_reasonCodes.get(0).get(index).toString();
+		if ((reasonCode.equals("All"))
+				|| (reasonCode.equals("Stock Transfer IN"))
+				|| (reasonCode.equals("Stock Transfer OUT"))
+				|| (reasonCode.equals("Stock Transfer IN / Stock Transfer OUT"))) {
+			dd = 1;
+		}
+		if (reasonCode.equals("Direct Vendor")) {
+			dd = 2;
+		}
+		if (reasonCode.equals("Warehouse")) {
+			dd = 3;
+		}
+		selectByVisibleText(objOrderEnquiryObjects.advOrderType, reasonCode);
+		htmlToExtent(cName,mName,extLogger,driver,
+				"Type field can be selected from dropdown,selected type field is "
+						+ reasonCode + ";;;Pass");
+		// Report_AddStep("testcase","Type field can be selected from dropdown,selected type field is "+reasonCode+""
+		// , "", "", "Pass");
+		waitFor(1);
+		list_reasonCodes = StringToListCreation("All:Open:Ready to Receive:Received:Overdue:Cancelled");
+		listCnt = list_reasonCodes.get(0).size();
+		index = (int) (Math.random() * listCnt);
+		String status = list_reasonCodes.get(0).get(index).toString();
+		selectByVisibleText(objOrderEnquiryObjects.advOrderStatus, status);
+		htmlToExtent(cName,mName,extLogger,driver,
+				"Status field can be selected from dropdown,selected Status is "
+						+ status + ";;;Pass");
+		// Report_AddStep("testcase","Status field can be selected from dropdown,selected Status is "+status+""
+		// , "", "", "Pass");
+		waitFor(1);
+		if (StoreNo.equals("1108")) {
+			list_reasonCodes = StringToListCreation("BAKEHOUSE:CIGARETTES:FRONT OF STORE:GENERAL MERCHANDISE:GROCERIES:LIQUOR:MEAT:NON TRADING:PERISHABLES:PRODUCE:PROPRIETARY BAKERY:SEAFOOD:SERVICED DELICATESSEN");
+			listCnt = list_reasonCodes.get(0).size();
+			index = (int) (Math.random() * listCnt);
+			String dept = list_reasonCodes.get(0).get(index).toString();
+			selectByVisibleText(objOrderEnquiryObjects.advDept, dept);
+			htmlToExtent(cName,mName,extLogger,driver,
+					"Department field can be selected from dropdown,selected dept is "
+							+ dept + ";;;Pass");
+			// Report_AddStep("testcase","Department field can be selected from dropdown,selected dept is "+dept+""
+			// , "", "", "Pass");
+		} else {
+			selectByVisibleText(objOrderEnquiryObjects.advDept, "LIQUOR");
+			orderEnqArtScenarios
+			.put(orderEnqArttestname,
+					"Department field can be selected from dropdown,selected dept is Liquor;;;Pass");
+			// Report_AddStep("testcase","Department field can be selected from dropdown,selected dept is Liquor"
+			// , "", "", "Pass");
+		}
+		waitFor(1);
+		String ddvalue = null;
+		if (dd == 1) {
+			objOrderEnquiryObjects.advAll.click();
+			waitFor(1);
+			SOS = "All";
+		}
+		if (dd == 2) {
+			objOrderEnquiryObjects.advvendor.click();
+			waitFor(1);
+			SOS = "Direct Vendor";
+			String vendor_val = "0046521001";
+			objOrderEnquiryObjects.advvendor_TB.sendKeys(vendor_val);
+			objOrderEnquiryObjects.advvendorVerify.click();
+			waitForJSandJQueryToLoad(driver);
+			// String ddvalue=
+			// objOrderEnquiryObjects.advvendor_TB.getAttribute("value");
+			ddvalue = "0046521001";
+		}
+		if (dd == 3) {
+			objOrderEnquiryObjects.advwarehouse.click();
+			waitFor(1);
+			SOS = "Warehouse";
+			Random rand = new Random();
+			int n = rand.nextInt(16) + 1;
+			String ddval = "" + n;
+			// selectByValue(objOrderEnquiryObjects.advWarehouseDD, ddval);
+			selectByIndex(objOrderEnquiryObjects.advWarehouseDD, n);
+			waitFor(1);
+			ddvalue = objOrderEnquiryObjects.advWarehouseDD
+					.getAttribute("value");
+		}
+		orderEnqArtScenarios
+		.put(orderEnqArttestname,
+				"Source of supply field can be selected from dropdown,selected Source of supply is "
+						+ SOS
+						+ ", selected "
+						+ SOS
+						+ " is "
+						+ ddvalue
+						+ ";;;Pass");
+		// Report_AddStep("testcase","Source of supply field can be selected from dropdown,selected Source of supply is "+SOS+", selected "+SOS+" is "+ddvalue+""
+		// , "", "", "Pass");
+		objOrderEnquiryObjects.advGo.click();
+		waitForJSandJQueryToLoad(driver);
+		waitFor(1);
+		htmlToExtent(cName,mName,extLogger,driver,
+				"Clicking on GO to proceed;;;Pass");
+		// Report_AddStep("testcase","Clicking on GO to proceed" , "", "",
+		// "Pass");
+		if (objOrderEnquiryObjects.advSrherrormsglist.size() != 0) {
+			htmlToExtent(cName,mName,extLogger,driver,
+					"Details are not available for selected fields;;;Pass");
+			// Report_AddStep("testcase","Details are not available for selected fields"
+			// , "", "", "Pass");
+			objOrderEnquiryObjects.advSrherrormsgclse.click();
+			waitFor(1);
+		} else {
+			String Listoforders = objOrderEnquiryObjects.ListofOrders.getText();
+			if (Listoforders.equals("List of Orders")) {
+				htmlToExtent(cName,mName,extLogger,driver,
+						"Details are available for selected fields;;;Pass");
+				// Report_AddStep("testcase","Details are available for selected fields"
+				// , "", "", "Pass");
+			}
+			orderEnqArtScenarios
+			.put(orderEnqArttestname,
+					"******Order Advanced search verification with application details******;;;Pass");
+			// Report_AddStep("testcase","******Order Advanced search verification with application details******"
+			// , "", "", "");
+			countmatch(objOrderEnquiryObjects,driver);
+		}
+	}
+
+	public void countmatch(ReceivingOrderObjects objOrderEnquiryObjects,WebDriver driver)
+			throws IOException {
+		int o = 0;
+		int count = 0;
+		List appList = new ArrayList();
+		List appmatchList = new ArrayList();
+		List<List<Object>> appmatchListList = new ArrayList<List<Object>>();
+		List<List<Object>> appListList = new ArrayList<List<Object>>();
+		String frsttabname = objOrderEnquiryObjects.firsttab.getText();
+		String[] split = frsttabname.split(Pattern.quote("("));
+		int length = split[1].length();
+		String frsttabcount = split[1].substring(0, length - 1);
+		split[1] = frsttabcount;
+		appList.add(split[0] + "- " + split[1]);
+		WebElement elements = null;
+		if (Integer.parseInt(split[1]) > 10) {
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.paginationList, 1,driver);
+			if (element.isDisplayed()) {
+				List<WebElement> pagelist = driver
+						.findElements(By
+								.xpath("(//*[@class='paginationWrapper compact-theme simple-pagination'])[1]/ul/li"));
+				int numb = pagelist.size();
+				if (numb == 4) {
+					count = 10;
+				} else {
+					elements = prepareWebElementWithDynamicXpathWithIntInt(
+							objOrderEnquiryObjects.paginationnumberList, 1,
+							numb - 2,driver);
+					String pagenumb = elements.getText();
+					count = Integer.parseInt(pagenumb) * 10;
+				}
+				elements = prepareWebElementWithDynamicXpathWithIntInt(
+						objOrderEnquiryObjects.paginationnumberList, 1,
+						numb - 1,driver);
+				elements.click();
+				waitFor(2);
+				List<WebElement> lastpagerowlist = driver
+						.findElements(By
+								.xpath("(//*[@class='ContentTable actionRows'])[1]/tbody/tr"));
+				count = count + lastpagerowlist.size();
+				appmatchList.add(split[0] + "- " + count);
+			}
+		} else {
+			List<WebElement> lastpagerowlist = driver
+					.findElements(By
+							.xpath("(//*[@class='ContentTable actionRows'])[1]/tbody/tr"));
+			count = lastpagerowlist.size();
+			appmatchList.add(split[0] + "- " + count);
+		}
+		int desc = 2;
+		int size = objOrderEnquiryObjects.totaltabs.size();
+		if (size > 1) {
+			WebElement tabclick = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.totaltabsList, 1,driver);
+			tabclick.click();
+			waitForJSandJQueryToLoad(driver);
+			if (objOrderEnquiryObjects.orderenqerror1.size() != 0) {
+				int list = objOrderEnquiryObjects.orderenqerror1.size();
+				for (int e = 1; e <= list; e++) {
+					String mess = objOrderEnquiryObjects.orderenqerror
+							.getText();
+					if (mess.contains("Technical issue occured in SQLA")) {
+						WebElement clse = prepareWebElementWithDynamicXpathWithInt(
+								objOrderEnquiryObjects.orderclse, 1,driver);
+						clse.click();
+						o++;
+						break;
+					}
+				}
+			} else {
+				for (int i = 2; i <= size + 1; i++) {
+					if (i != 2) {
+						tabclick = prepareWebElementWithDynamicXpathWithInt(
+								objOrderEnquiryObjects.totaltabsList, 1,driver);
+						tabclick.click();
+						waitForJSandJQueryToLoad(driver);
+					}
+					String tabname = tabclick.getText();
+					split = tabname.split(Pattern.quote("("));
+					length = split[1].length();
+					String tabcount = split[1].substring(0, length - 1);
+					split[1] = tabcount;
+					appList.add(split[0] + "- " + split[1]);
+					if (Integer.parseInt(split[1]) > 10) {
+						WebElement element = prepareWebElementWithDynamicXpathWithInt(
+								objOrderEnquiryObjects.paginationList, desc,driver);
+						if (element.isDisplayed()) {
+							List<WebElement> pagelist = driver
+									.findElements(By
+											.xpath("(//*[@class='paginationWrapper compact-theme simple-pagination'])["
+													+ desc + "]/ul/li"));
+							int numb = pagelist.size();
+							if (numb == 4) {
+								count = 10;
+							} else {
+								elements = prepareWebElementWithDynamicXpathWithIntInt(
+										objOrderEnquiryObjects.paginationnumberList,
+										desc, numb - 2,driver);
+								String pagenumb = elements.getText();
+								count = Integer.parseInt(pagenumb) * 10;
+							}
+							elements = prepareWebElementWithDynamicXpathWithIntInt(
+									objOrderEnquiryObjects.paginationnumberList,
+									desc, numb - 1,driver);
+							elements.click();
+							waitFor(2);
+							List<WebElement> lastpagerowlist = driver
+									.findElements(By
+											.xpath("(//*[@class='ContentTable actionRows'])["
+													+ i + "]/tbody/tr"));
+							count = count + lastpagerowlist.size();
+							appmatchList.add(split[0] + "- " + count);
+							desc++;
+						}
+					} else {
+						List<WebElement> lastpagerowlist = driver
+								.findElements(By
+										.xpath("(//*[@class='ContentTable actionRows'])["
+												+ i + "]/tbody/tr"));
+						count = lastpagerowlist.size();
+						appmatchList.add(split[0] + "- " + count);
+					}
+
+				}
+			}
+		}
+		appmatchListList.add(appmatchList);
+		appListList.add(appList);
+		ElementContains1(cName, mName,extLogger,driver,
+				appmatchListList, appListList);
+		// Report_AddStep("testcase","******Application details verification with backend details******"
+		// , "", "", "");
+		if (o == 1) {
+			orderEnqArtScenarios
+			.put(orderEnqArttestname,
+					"******Technical issue occured in SQLA, while calling the service****** when clicking on second tab;;;Fail");
+			// Report_AddStep("testcase","******Technical issue occured in SQLA, while calling the service****** when clicking on second tab"
+			// , "", "", "");
+		}
+	}
+
+	public void scrolldown(WebDriver driver) {
+		verticalScroll(driver);
+	}
+
+	public void scrollUp() {
+		((JavascriptExecutor) driver).executeScript("scrollBy(0, -1000);");
+	}
+
+	public void delOrder(ReceivingOrderObjects objOrderEnquiryObjects,WebDriver driver)
+			throws IOException {
+		waitFor(1);
+		int totalArt = objOrderEnquiryObjects.totalArt.size(); // total art = no
+		// of
+		// deliverydate*2
+		// rows
+		for (int i = 1; i < totalArt; i++) {
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(
+					objOrderEnquiryObjects.Articleexpand, 1,driver);
+			i++;
+			element.click();
+			verticalScroll(driver);
+			List<WebElement> artlist = driver.findElements(By
+					.xpath("//*[@class='grpTbody']/tr[2]/td/table/tbody/tr"));
+			for (int j = 1; j <= artlist.size() / 2; j++) {
+				WebElement deleteRec = prepareWebElementWithDynamicXpathWithInt(
+						objOrderEnquiryObjects.delRecordList, 1,driver);
+				deleteRec.click();
+				waitFor(1);
+				objOrderEnquiryObjects.accept.click();
+				waitFor(1);
+			}
+			verticalScroll(driver);
+		}
+		htmlToExtent(cName,mName,extLogger,driver,
+				"previously added articles are deleted;;;Pass");
+		// Report_AddStep("testcase","previously added articles are deleted" ,
+		// "", "", "Pass");
+	}
+
+
+
+
+
+
+	public void enterArticle(EnhancedArticleLookUpObjects objEnhancedArticleLookup,String ranArticle,WebDriver driver) throws IOException 
+	{
+		click(objEnhancedArticleLookup.searchText);
+		objEnhancedArticleLookup.searchText.clear();
+		objEnhancedArticleLookup.searchText.sendKeys(ranArticle);
+		click(objEnhancedArticleLookup.clickGO);
+		waitFn(driver);
+		selectionOfArticles(objEnhancedArticleLookup, ranArticle,driver);
+		if(objEnhancedArticleLookup.articleNtFound.isDisplayed())
+		{
+			click(objEnhancedArticleLookup.articleNtFoundclose);
+			waitFor(1);
+			enterNRArt(objEnhancedArticleLookup, ranArticle,driver);
+		}
+	}
+
+	public void enterNRArt(EnhancedArticleLookUpObjects objEnhancedArticleLookup,String ranArticle,WebDriver driver) throws IOException 
+	{
+		objEnhancedArticleLookup.advSearch.click();
+		objEnhancedArticleLookup.rangedCheck.click();
+		click(objEnhancedArticleLookup.searchText);
+		objEnhancedArticleLookup.searchText.clear();
+		objEnhancedArticleLookup.searchText.sendKeys(ranArticle);
+		click(objEnhancedArticleLookup.clickGO);
+		waitFn(driver);
+		selectionOfArticles(objEnhancedArticleLookup, ranArticle,driver);
+	}
+
+	public void selectionOfArticles(
+			EnhancedArticleLookUpObjects objEnhancedArticleLookup,
+			String ranArticle,WebDriver driver) throws IOException {
+		if (objEnhancedArticleLookup.containsTotal.isDisplayed()) {
+			String title = getText(objEnhancedArticleLookup.containsTotal);
+			waitFor(1);
+			if (title.contains("Total")) {
+				String parts[] = title.split("Total ");
+				String p[] = parts[1].split(" records");
+				String trecord = p[0];
+				int val = Integer.parseInt(trecord);int size =val; 
+				selectNotRanged(objEnhancedArticleLookup, size, ranArticle);
+			}
+		}
+	}
+
+	public void selectNotRanged(
+			EnhancedArticleLookUpObjects objEnhancedArticleLookup, int size,
+			String ranArticle) {
+		for (int i = 1; i <= size; i++) {
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(
+					objEnhancedArticleLookup.ntranged, i,driver);
+			String val = element.getText();
+			if (val.equals(ranArticle)) {
+				element.click();
+				waitFn(driver);
+				waitFor(1);
+			}
+		}
+	}
+
+	public List enterDetails(ReceivingOrderObjects objOrderEnquiryObjects,EnhancedArticleLookUpObjects objEnhancedArticleLookup,
+			String ranArticle,List sohh,WebDriver driver)
+	{
+		try {
+			enterArticle(objEnhancedArticleLookup, ranArticle,driver);		
+			String SOH = objOrderEnquiryObjects.SOH1.getText();
+			if(SOH.equals("")){}else{
+				if(SOH.contains(" ("))
+				{
+					waitFor(0.5);
+					String myRegex="[(]";
+					String[] l = splitString(SOH, myRegex);
+					SOH=l[0].trim();
+					String[] k = splitString(l[0], " ");
+					if(k[0].contains(".")){
+						k[0] = k[0].replaceAll("\\.?0+$","");}
+					SOH=k[0]+" "+k[1];
+				}
+				else if(SOH.contains(" & "))
+				{
+					waitFor(0.5);
+					String[] l = splitString(SOH, " & ");
+					String[] p = splitString(l[1], " ");
+					if(p[0].contains(".")){
+						p[0] = p[0].replaceAll("\\.?0+$","");}
+					String[] k = splitString(l[0], " ");
+					if(k[0].contains(".")){
+						k[0] = k[0].replaceAll("\\.?0+$","");}
+					SOH=p[0]+" "+p[1]+" ("+k[0]+" "+k[1]+")";
+				}
+				sohh.add(SOH);
+			}
+		} catch (IOException e) {
+			htmlToExtent(cName,mName,extLogger,driver, "Exception Occured: "+e.getClass().getSimpleName()+";;;Fail");
+			e.printStackTrace();
+		}
+		return sohh;
+	}
+}

@@ -1,0 +1,2637 @@
+package au.wow.ngbomain.pages;
+
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+import bsh.ParseException;
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbomain.objects.ReceivingObjects ;
+import au.wow.ngbomain.tests.AdjustmentLogReportTests;
+import au.wow.ngbomain.tests.ReceivingTests ;
+import au.wow.ngbomain.pages.WoWLoginPage;
+import au.wow.ngbomain.pages.CommonFunctions;
+
+public class ReceivingPages extends BasePage{
+	WebDriver driver ;
+    public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+	CommonFunctions common = PageFactory.initElements(driver,
+			CommonFunctions.class);
+	private Logger log = LogManager.getLogger(ReceivingTests.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	ExtentTest extLogger=ReceivingTests.extLogger;
+	String cName= ReceivingTests.cName;
+	String mName=ReceivingTests.mName;
+
+	
+	
+	public void clickOnOrderEnquiry(ReceivingObjects objReceivingObjects,WebDriver driver) throws  AWTException{
+/*driver.navigate().to("http://clgjba100:8080/StoreCentral/1005/orderInquiry/onPageLoad.htm");
+		waitForJSandJQueryToLoad(driver);*/
+		waitFor(1);
+		Point coordinates = objReceivingObjects.Orders.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(objReceivingObjects.Orders).click().build().perform();	
+		waitFor(1);
+		
+		Point coordinates1 = objReceivingObjects.orderEnquiry.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates1.getX(),coordinates1.getY()+100);
+		
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objReceivingObjects.orderEnquiry).click().build().perform();
+		waitFor(1);
+		robot.mouseMove(5,5);	
+	}
+	public void waitFn(WebDriver driver)
+	{
+		waitForJSandJQueryToLoad(driver);
+	}
+	
+	public void scrolldown(WebDriver driver)
+	{
+	verticalScroll(driver);
+	}
+
+	public void scrollUp(WebDriver driver)
+	{
+	scrollUp(driver);
+	}
+	
+	
+
+
+//** Receiving IBT order in Full**Abhi
+	public void IBTOrdRecInFull(ReceivingObjects RecOrdObj,String Ordnumber, String invoice, List<List<Object>> DBList,
+			List<List<Object>> DBList1,String ChilledTemp, String FrozenTemp,WebDriver driver) throws SQLException, IOException, AWTException, ParseException
+	
+	{
+		List<List<Object>> DBList2 = new ArrayList<List<Object>>();
+			System.out.println(Ordnumber);
+			Report_AddStep("testcase","Order Number-"+Ordnumber+"" , "", "", "Pass");
+			waitFor(0.5);
+			waitForClickOfElement(RecOrdObj.OrderLookup, driver);
+			enterText(RecOrdObj.OrderLookup, Ordnumber,driver);	/*8160351	5001389250090836*/
+			waitForJSandJQueryToLoad(driver);
+			click(RecOrdObj.ClickGo);
+			waitForJSandJQueryToLoad(driver);
+			System.out.println("Order details are loaded");
+			String OrdNo = RecOrdObj.ChckOrd.getText();
+			String Deldate = RecOrdObj.ChckDeldate.getText();
+			String Stat = RecOrdObj.Chckstatus.getText();
+			String Suppliername = RecOrdObj.Chcksupplier.getText();
+			String Ordertype = RecOrdObj.Chckordtype.getText();
+			String TotCartons = RecOrdObj.ChckTotCartons.getText();
+			String TotPallet = RecOrdObj.ChckTotPallet.getText();
+			
+			if(DBList.get(0).get(0).toString().equals(OrdNo)  && Stat.equals("AUTHORISED") && DBList.get(0).get(1).toString().equals(Deldate)){
+				htmlToExtent(cName,mName,extLogger,driver, "Order Number, Delivery Date, Status details are displayed correctly;Local Value is ["+OrdNo+", "+Deldate+", "+Stat+"];DB Value is ["+DBList.get(0).get(0).toString()+", "+DBList.get(0).get(1).toString()+", AUTHORISED];Pass");
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver, "Order Number, Delivery Date, Status details are displayed correctly;Local Value is ["+OrdNo+", "+Deldate+", "+Stat+"];DB Value is ["+DBList.get(0).get(0).toString()+", "+DBList.get(0).get(1).toString()+", AUTHORISED];Fail");
+				}
+			if ( DBList.get(0).get(4).toString().equals(Suppliername) && Ordertype.equals("STOCK TRANSFER") && DBList.get(0).get(5).toString().equals(TotCartons)
+					&& TotPallet.equals("0")){
+				htmlToExtent(cName,mName,extLogger,driver,"Supplier, Order Type, Total Cartons, Total Pallets details are displayed correctly;Local Value is ["+Suppliername+", "+Ordertype+", "+TotCartons+", "+TotPallet+"];DB Value is ["+DBList.get(0).get(4).toString()+", STOCK TRANSFER, "+DBList.get(0).get(5).toString()+", 0];Pass");
+				}else{
+				htmlToExtent(cName,mName,extLogger,driver,"Supplier, Order Type, Total Cartons, Total Pallets details are displayed correctly;Local Value is ["+Suppliername+", "+Ordertype+", "+TotCartons+", "+TotPallet+"];DB Value is ["+DBList.get(0).get(4).toString()+", STOCK TRANSFER, "+DBList.get(0).get(5).toString()+", 0];Fail");}
+			click(RecOrdObj.ClickOnOrder);
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"*** Checking the order header details displayed after opening the order;;;Pass");
+			String OrdNo1 = RecOrdObj.ChckOrdNo.getText();
+			Long OrdNum =  Long.parseLong(OrdNo1.replaceAll("[^0-9\\.]+", ""));
+			String Stat1 = RecOrdObj.Chcksta.getText();
+			String Createdby1 = RecOrdObj.ChckCreatedByhdr.getText();
+			String Sendingingstore= RecOrdObj.SendStore.getText();
+			String Dlvdate= RecOrdObj.Deliverydate.getText();
+			String Src= RecOrdObj.Source.getText();
+			
+			if(OrdNum.toString().equals(DBList.get(0).get(0).toString())  && Stat1.equals("Authorised") && DBList.get(0).get(4).toString().equals(Sendingingstore)
+					&& DBList.get(0).get(1).toString().equals(Dlvdate)  ){
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"Order Number, Status, Sending Store Name, Delivery Date & Source are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Sendingingstore+", "+Dlvdate+", "+Src+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(1).toString()+","+Src+"];Fail");
+				}
+			String GetListart = RecOrdObj.GetListofArt.getText();
+			Long GetListart1 =  Long.parseLong(GetListart.replaceAll("[^0-9\\.]+", ""));
+			String Palletcount = RecOrdObj.getPaltcnt.getText();
+			String Artcount = RecOrdObj.getArtcount.getText();
+			String Dispqty = RecOrdObj.Dispqty.getText();
+			String Totalqty = RecOrdObj.Gettotalqty.getText();
+			String Dispwgt = RecOrdObj.Dispwgt.getText();
+			String sealnum = RecOrdObj.ChckSealnumb.getText();
+			
+			if(Palletcount.equals("0") && Artcount.equals(DBList.get(0).get(6).toString()) && Dispqty.equals("NA") && Totalqty.equals(DBList.get(0).get(5).toString())
+					&& Dispwgt.equals("NA") && sealnum.equals("NA")){
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"Pallet Count, Total Articles count, Dispatched Qty, Total Cartons Ordered, Dispatched Weight, Seal Number are displayed correctly in header details;Local Value is ["+Palletcount+", "+Artcount+", "+Dispqty+", "+Totalqty+", "+Dispwgt+", "+sealnum+"];DB Value is [0, "+DBList.get(0).get(6).toString()+", NA, " +DBList.get(0).get(5).toString()+", NA, NA];Fail");
+				}
+			
+			if (GetListart1.toString().equals(DBList.get(0).get(6).toString())){
+				htmlToExtent(cName,mName,extLogger,driver,"List of Articles displayed is;"+GetListart1+";"+DBList.get(0).get(6).toString()+";Pass");
+				}else{
+				htmlToExtent(cName,mName,extLogger,driver,"List of Articles displayed is;"+GetListart1+";"+DBList.get(0).get(6).toString()+";Fail");	
+			}	
+			click(RecOrdObj.Clrgrpby);
+			String art = null;
+			String Om= null;
+			String OdrQy= null;
+			String TotQy= null;
+
+			for(int i=1;i<= DBList1.size();i++)
+			{
+			WebElement sizeart = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getArtNum, i,driver);
+			WebElement sizeOm = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getOmNum, i,driver);
+			WebElement sizeOdrqy = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getOrdQty, i,driver);
+			WebElement sizeTotqy = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getTotUnt, i,driver);
+			 art = sizeart.getText();
+			 Om = sizeOm.getText();
+			 OdrQy = sizeOdrqy.getText();
+			 TotQy = sizeTotqy.getText();
+			String StrRec = ""+art+":"+Om+":"+OdrQy+":"+TotQy;
+			DBList2.addAll(StringToListCreation(StrRec));
+			}
+			System.out.println("dblist 2 value="+DBList2);
+					
+	
+			for (int i=0;i<DBList1.size();i++)
+			{
+				if (DBList2.get(i).get(0).toString().equals(DBList1.get(i).get(0).toString())){
+					
+				
+				if(DBList2.get(i).get(0).toString().equals(DBList1.get(i).get(0).toString()) && DBList2.get(i).get(1).toString().equals(DBList1.get(i).get(3).toString()+" "+DBList1.get(i).get(4).toString()) && DBList2.get(i).get(2).toString().equals(DBList1.get(i).get(1).toString()+" "+DBList1.get(i).get(2).toString()))
+				{
+				
+					htmlToExtent(cName,mName,extLogger,driver,"Artcle Number, OM unit, Ordered Qty are displayed correctly ;Local Value is ["+DBList2.get(i).get(0).toString()+", "+DBList2.get(i).get(1).toString()+", "+DBList2.get(i).get(2).toString()+"];DB Value is ["+DBList1.get(i).get(0).toString()+", "+DBList1.get(i).get(3).toString()+" "+DBList1.get(i).get(4).toString()+", "+DBList1.get(i).get(1).toString()+" "+DBList1.get(i).get(2).toString()+"];Pass");
+					
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Artcle Number, OM unit, Ordered Qty are displayed correctly ;Local Value is ["+DBList2.get(i).get(0).toString()+", "+DBList2.get(i).get(1).toString()+", "+DBList2.get(i).get(2).toString()+"];DB Value is ["+DBList1.get(i).get(0).toString()+", "+DBList1.get(i).get(3).toString()+" "+DBList1.get(i).get(4).toString()+", "+DBList1.get(i).get(1).toString()+" "+DBList1.get(i).get(2).toString()+"];Fail");
+				}
+				}
+				else{
+					for (int j=0;j<DBList1.size();j++){
+						if (DBList2.get(i).get(0).toString().equals(DBList1.get(j).get(0).toString())){
+							
+							
+							if(DBList2.get(i).get(0).toString().equals(DBList1.get(j).get(0).toString()) && DBList2.get(i).get(1).toString().equals(DBList1.get(j).get(3).toString()+" "+DBList1.get(j).get(4).toString()) && DBList2.get(i).get(2).toString().equals(DBList1.get(j).get(1).toString()+" "+DBList1.get(j).get(2).toString()))
+							{
+							
+								htmlToExtent(cName,mName,extLogger,driver,"Artcle Number, OM unit, Ordered Qty are displayed correctly ;Local Value is ["+DBList2.get(i).get(0).toString()+", "+DBList2.get(i).get(1).toString()+", "+DBList2.get(i).get(2).toString()+"];DB Value is ["+DBList1.get(j).get(0).toString()+", "+DBList1.get(j).get(3).toString()+" "+DBList1.get(j).get(4).toString()+", "+DBList1.get(j).get(1).toString()+" "+DBList1.get(j).get(2).toString()+"];Pass");
+							break;	
+							}
+							else
+							{
+								htmlToExtent(cName,mName,extLogger,driver,"Artcle Number, OM unit, Ordered Qty are displayed correctly ;Local Value is ["+DBList2.get(i).get(0).toString()+", "+DBList2.get(i).get(1).toString()+", "+DBList2.get(i).get(2).toString()+"];DB Value is ["+DBList1.get(j).get(0).toString()+", "+DBList1.get(j).get(3).toString()+" "+DBList1.get(j).get(4).toString()+", "+DBList1.get(j).get(1).toString()+" "+DBList1.get(j).get(2).toString()+"];Fail");
+							}
+							}else{}
+					}
+				}
+				
+			}
+			System.out.println("Click Receive Order");
+			waitForJSandJQueryToLoad(driver);
+			//htmlToExtent(cName,mName,extLogger,driver,"3200 Site is added successfully in Draft;;;Pass");
+			System.out.println("Site is added in draft");
+			click(RecOrdObj.ClickReceiveOrder);
+			waitFor(4);
+			String ChilledTemp1,FrozenTemp1;
+			
+			if(RecOrdObj.SessionPopup.getText().equals("Receiving"))
+			{
+				click(RecOrdObj.NwSession);
+				//click(RecOrdObj.ResumeSession);
+				waitForJSandJQueryToLoad(driver);
+				
+				if(RecOrdObj.TempChillcheck.getAttribute("class").equals("parameter clearfix chilled")){
+					enterText(RecOrdObj.EnterChlTemp, ChilledTemp,driver);
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+ChilledTemp+" is entered;;;Pass");
+					ChilledTemp1 = ChilledTemp;
+					}else{
+					ChilledTemp1 = "NA";
+					}
+
+					scrolldown(driver);
+					
+					if(RecOrdObj.TempFrzncheck.getAttribute("class").equals("parameter clearfix hardFrozen")){
+					enterText(RecOrdObj.EnterFrzTemp, FrozenTemp,driver);
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+FrozenTemp+" is entered;;;Pass");
+					FrozenTemp1 = FrozenTemp;
+					}else{
+					FrozenTemp1 = "NA";
+					}
+				
+				click(RecOrdObj.ReceiveInFull);
+				
+				click(RecOrdObj.ClickNextStep);
+				 
+				waitForJSandJQueryToLoad(driver);
+				verticalScroll(driver);
+				click(RecOrdObj.ClickNextStep);
+				System.out.println("Confirm the articles to proceed");
+				}
+			else{
+				if(RecOrdObj.TempChillcheck.getAttribute("class").equals("parameter clearfix chilled")){
+					enterText(RecOrdObj.EnterChlTemp, ChilledTemp,driver);
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+ChilledTemp+" is entered;;;Pass");
+					ChilledTemp1 = ChilledTemp;
+					}else{
+					ChilledTemp1 = "NA";
+					}
+
+					scrolldown(driver);
+					
+					if(RecOrdObj.TempFrzncheck.getAttribute("class").equals("parameter clearfix hardFrozen")){
+					enterText(RecOrdObj.EnterFrzTemp, FrozenTemp,driver);
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+FrozenTemp+" is entered;;;Pass");
+					FrozenTemp1 = FrozenTemp;
+					}else{
+					FrozenTemp1 = "NA";
+					}
+			click(RecOrdObj.ReceiveInFull);
+			click(RecOrdObj.ClickNextStep);
+			System.out.println("Confirm the articles to proceed");			
+			waitForJSandJQueryToLoad(driver);
+			verticalScroll(driver);
+			click(RecOrdObj.ClickNextStep);
+			System.out.println("Confirm the articles to proceed");
+			}
+			
+			String RecevdBy = RecOrdObj.RecvBy1.getText();
+			System.out.println("Received By =" + RecevdBy);
+			String TotalOdr = RecOrdObj.TotAtOdr.getText();
+			System.out.println("Article ordered ="+TotalOdr);
+			String TotalOdrRec = RecOrdObj.TotAtRcv.getText();
+			System.out.println("Article received="+TotalOdrRec);
+			String TotalCrt = RecOrdObj.TotCrtOdr.getText();
+			System.out.println("Crton Ordered ="+TotalCrt);
+			String TotalCrtRec = RecOrdObj.TotCrtRec.getText();
+			System.out.println("Carton Ordered="+TotalCrtRec);
+			
+			if(TotalOdr.equals(DBList.get(0).get(6)) && TotalOdrRec.equals(DBList.get(0).get(6)) && TotalCrt.equals(DBList.get(0).get(5)) && TotalCrtRec.equals(DBList.get(0).get(5))){
+				htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered, Received, Total Cartons Ordered, Received;Local Value is ["+TotalOdr+", "+TotalOdrRec+", "+TotalCrt+", "+TotalCrtRec+"]; DB Value is ["+DBList.get(0).get(6)+", "+DBList.get(0).get(6)+", "+DBList.get(0).get(5)+", "+DBList.get(0).get(5)+",];Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered, Received, Total Cartons Ordered, Received;Local Value is ["+TotalOdr+", "+TotalOdrRec+", "+TotalCrt+", "+TotalCrtRec+"]; DB Value is ["+DBList.get(0).get(6)+", "+DBList.get(0).get(6)+", "+DBList.get(0).get(5)+", "+DBList.get(0).get(5)+",];Fail");
+			}
+			click(RecOrdObj.SubmitReceiving);
+			waitForJSandJQueryToLoad(driver);
+			click(RecOrdObj.ConfPopUp);	
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"--------------Received Details-----------------;;;Pass");
+			if(RecOrdObj.SuccessMsg.getText().equals("Receiving Details Posted Successfully")){
+				RecOrdObj.CloseMsg.click();	
+				htmlToExtent(cName,mName,extLogger,driver,"Receiving Details Posted Successfully;;;Pass");
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"Receiving Details Posted Successfully;;;Fail");
+			}
+			RecOrdObj.clearbyRcvdArt.click();
+			List<List<Object>> app2 = new ArrayList<List<Object>>();
+			List<List<Object>> app4 = new ArrayList<List<Object>>();
+			List<List<Object>> app3= receivedArticleDetailsTable(app2,driver);     
+			System.out.println("app3 details are "+app3);
+			List<List<Object>> app5=ReceivedItemTableDetails( RecOrdObj);
+			removeIndex(app5, "11");
+			removeIndex(app5, "10");
+			removeIndex(app5, "2");
+			removeIndex(app5, "1");
+			
+			if (app3.get(0).get(1).toString().equals(TotPallet)&& app3.get(0).get(2).toString().equals(DBList.get(0).get(6).toString())&& app3.get(0).get(3).toString().equals(TotalCrtRec)&&app3.get(0).get(5).toString().equals(TotalCrt))
+			{
+			htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets,Total Articles,Total Carton Received, Total Dispatched Qty,Total Cartons Orderd,Total Weight Received,Total Dispatched Weight and Total Pallets returned are;Local Valuse is ["+app3.get(0).get(0).toString()+", "+app3.get(0).get(1).toString()+","+app3.get(0).get(2).toString()+","+app3.get(0).get(3).toString()+", "+app3.get(0).get(4).toString()+", "+app3.get(0).get(5).toString()+","+decimalFormat1(app3.get(0).get(6).toString())+", "+app3.get(0).get(7).toString()+","+app3.get(0).get(8).toString()+","+app3.get(0).get(9).toString()+", "+app3.get(0).get(10).toString()+","+app3.get(0).get(11).toString()+"]; DB Value is [NA ,"+TotPallet+","+DBList.get(0).get(6).toString()+","+TotalCrtRec+", NA ,"+TotalCrt+","+app3.get(0).get(6).toString()+" , NA ,0 ,0 ,0 , NA];Pass");
+			}else{
+			    htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets,Total Articles,Total Carton Received, Total Dispatched Qty,Total Cartons Orderd,Total Weight Received,Total Dispatched Weight and Total Pallets returned are;Local Valuse is ["+app3.get(0).get(0).toString()+", "+app3.get(0).get(1).toString()+","+app3.get(0).get(2).toString()+","+app3.get(0).get(3).toString()+", "+app3.get(0).get(4).toString()+", "+app3.get(0).get(5).toString()+","+decimalFormat1(app3.get(0).get(6).toString())+", "+app3.get(0).get(7).toString()+","+app3.get(0).get(8).toString()+","+app3.get(0).get(9).toString()+", "+app3.get(0).get(10).toString()+","+app3.get(0).get(11).toString()+"]; DB Value is [NA ,"+TotPallet+","+DBList.get(0).get(6).toString()+","+TotalCrtRec+", NA ,"+TotalCrt+","+app3.get(0).get(6).toString()+" , NA ,0 ,0 ,0 , NA];Fail");
+			}			
+			htmlToExtent(cName,mName,extLogger,driver,"Received date, Received By, Receiving Method are;Local Valuse is ["+app3.get(1).get(0).toString()+":"+app3.get(1).get(1).toString()+":"+app3.get(1).get(2).toString()+","+app3.get(1).get(3).toString()+", "+app3.get(1).get(4).toString()+"]; DB Value is ["+app3.get(1).get(0).toString()+":"+app3.get(1).get(1).toString()+":"+app3.get(1).get(2).toString()+","+app3.get(1).get(3).toString()+", RECEIVE IN FULL];Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"Chilled Temprature, Frozen Temprature are;Local Valuse is ["+app3.get(2).get(0).toString()+" ,"+app3.get(2).get(1).toString()+"]; DB Value is ["+app3.get(2).get(0).toString()+" ,"+app3.get(2).get(1).toString()+"];Pass");
+			htmlToExtent(cName,mName,extLogger,driver," Invoice, Seal Number are;Local Valuse is ["+app3.get(3).get(0).toString()+" ,"+app3.get(3).get(1).toString()+"]; DB Value is [NA, NA];Pass");
+			
+			for (int i=0;i<DBList1.size();i++){
+			String StrRec = ""+DBList2.get(i).get(0).toString()+":"+DBList2.get(i).get(1).toString()+":"+DBList2.get(i).get(2).toString()+":"+DBList2.get(i).get(3).toString()+":NA:NA:"+DBList2.get(i).get(2).toString()+":"+DBList2.get(i).get(3).toString();
+			app4.addAll(StringToListCreation(StrRec));
+				
+				}
+			ElementContains1(cName, mName,extLogger,driver,  app5, app4);
+			}
+
+//** Receiving vendor order by changing OM**Abhi
+	public List<List<Object>> VendorOrdRecByChangingOM(ReceivingObjects RecOrdObj,String Ordnumber,
+			String invoice,List<List<Object>> DispList ,List<List<Object>>DBVal, List<List<Object>> DBList, 
+			List<List<Object>> DBList1,String NwOM2,String NwOM1,String ChilledTemp, String FrozenTemp,WebDriver driver) throws SQLException, IOException, AWTException, ParseException
+	
+	{
+		List<List<Object>> app5 = new ArrayList<List<Object>>();
+		List<List<Object>> DispList1 = new ArrayList<List<Object>>();
+		List<List<Object>> DispList2 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList2 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList3 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+		List<List<Object>> DBList5 = new ArrayList<List<Object>>();
+			System.out.println(Ordnumber);
+			Report_AddStep("testcase","Order Number-"+Ordnumber+"" , "", "", "Pass");
+			enterText(RecOrdObj.OrderLookup, Ordnumber,driver);	/*8160351	5001389250090836*/
+			waitForJSandJQueryToLoad(driver);
+			click(RecOrdObj.ClickGo);
+			waitForJSandJQueryToLoad(driver);
+			String Stat = RecOrdObj.Chckstatus.getText();
+			String TotPallet = RecOrdObj.ChckTotPallet.getText();
+			String Ordertype = RecOrdObj.Chckordtype.getText();
+			List<List<Object>> DBList6=searchedArticleDetailsTable(RecOrdObj,driver);
+			System.out.println("Order details are loaded");
+			if(DBList.get(0).get(0).toString().equals(DBList6.get(0).get(0).toString()) && DBList.get(0).get(1).toString().equals(DBList6.get(0).get(1).toString())&& Stat.equals("AUTHORISED")&& DBList6.get(0).get(3).toString().equals(DBList.get(0).get(4).toString())&&Ordertype.equals("VENDOR")&& DBList6.get(0).get(6).toString().equals(DBList.get(0).get(5).toString())&&TotPallet.equals("0"))
+			{
+				
+				htmlToExtent(cName,mName,extLogger,driver,"Order number, Delivery Date, Status, Supplier, OrderType, Total Cartons & Total Pallets details are displayed correctly;Local Value is ["+DBList6.get(0).get(0).toString()+","+DBList6.get(0).get(1).toString()+","+DBList6.get(0).get(2).toString()+","+DBList6.get(0).get(3).toString()+","+DBList6.get(0).get(4).toString()+","+DBList6.get(0).get(6).toString()+","+DBList6.get(0).get(7).toString()+"];DB Value is ["+DBList.get(0).get(0).toString()+","+DBList.get(0).get(1).toString()+", Authorised, "+DBList.get(0).get(4).toString()+", VENDOR,"+DBList.get(0).get(5).toString()+",0];Pass");
+			}else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Order number, Delivery Date, Status, Supplier, OrderType, Total Cartons & Total Pallets details are displayed correctly;Local Value is ["+DBList6.get(0).get(0).toString()+","+DBList6.get(0).get(1).toString()+","+DBList6.get(0).get(2).toString()+","+DBList6.get(0).get(3).toString()+","+DBList6.get(0).get(4).toString()+","+DBList6.get(0).get(6).toString()+","+DBList6.get(0).get(7).toString()+"];DB Value is ["+DBList.get(0).get(0).toString()+","+DBList.get(0).get(1).toString()+", Authorised, "+DBList.get(0).get(4).toString()+", VENDOR,"+DBList.get(0).get(5).toString()+",0];Fail");
+			}			
+			
+			click(RecOrdObj.ClickOnOrder);
+			waitForJSandJQueryToLoad(driver);
+			//receivedArticleDetailsTable1(DBList1,RecOrdObj);
+			htmlToExtent(cName,mName,extLogger,driver,"*** Checking the order header details displayed after opening the order;;;Pass");
+			//Report_AddStep("testcase","*** Checking the order header details displayed after opening the order" , "", "", "Pass");
+			String ChckSrc = RecOrdObj.ChckSource.getText();
+			String OrdNo1 = RecOrdObj.ChckOrdNo.getText();
+			Long OrdNum =  Long.parseLong(OrdNo1.replaceAll("[^0-9\\.]+", ""));
+			String Deldate1 = RecOrdObj.Chckdelhdr.getText();
+			String Stat1 = RecOrdObj.Chcksta.getText();
+			String Suppliername1 = RecOrdObj.Chcksuphdr.getText();
+			String Createdby1 = RecOrdObj.ChckCreatedByhdr.getText();
+			if(ChckSrc.equals("SUGO")){
+			String onshowdate = RecOrdObj.ChckOnshwdate.getText();
+			
+			if(OrdNum.toString().equals(DBList.get(0).get(0).toString())  && Stat1.equals("Authorised") && DBList.get(0).get(1).toString().equals(Deldate1)
+					&& DBList.get(0).get(4).toString().equals(Suppliername1) && DBList.get(0).get(3).toString().equals(Createdby1) && DBList.get(0).get(2).toString().equals(onshowdate)){
+				htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, Created By & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+", "+onshowdate+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", " +DBList.get(0).get(3).toString()+", "+DBList.get(0).get(2).toString()+"];Pass");
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, Created By & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+", "+onshowdate+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", " +DBList.get(0).get(3).toString()+", "+DBList.get(0).get(2).toString()+"];Fail");
+				}
+			}
+			else{
+				if(OrdNum.toString().equals(DBList.get(0).get(0).toString())  && Stat1.equals("Authorised") && DBList.get(0).get(1).toString().equals(Deldate1)
+						&& DBList.get(0).get(4).toString().equals(Suppliername1) && DBList.get(0).get(2).toString().equals(Createdby1)){
+					htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(2).toString()+"];Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(2).toString()+"];Fail");
+					}
+			}
+			
+			
+			String GetListart = RecOrdObj.GetListofArt.getText();
+			Long GetListart1 =  Long.parseLong(GetListart.replaceAll("[^0-9\\.]+", ""));
+			String Palletcount = RecOrdObj.getPaltcnt.getText();
+			String Artcount = RecOrdObj.getArtcount.getText();
+			String Dispqty = RecOrdObj.Dispqty.getText();
+			String Totalqty = RecOrdObj.Gettotalqty.getText();
+			String Dispwgt = RecOrdObj.Dispwgt.getText();
+			String sealnum = RecOrdObj.ChckSealnumb.getText();
+			
+			if(Palletcount.equals("0") && Artcount.equals(DBList.get(0).get(6).toString()) && Dispqty.equals("NA") && Totalqty.equals(DBList.get(0).get(5).toString())
+					&& Dispwgt.equals("NA") && sealnum.equals("NA")){
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"Pallet Count, Total Articles count, Dispatched Qty, Total Cartons Ordered, Dispatched Weight, Seal Number are displayed correctly in header details;Local Value is ["+Palletcount+", "+Artcount+", "+Dispqty+", "+Totalqty+", "+Dispwgt+", "+sealnum+"];DB Value is [0, "+DBList.get(0).get(6).toString()+", NA, " +DBList.get(0).get(5).toString()+", NA, NA];Fail");
+				}
+			
+			if (GetListart1.toString().equals(DBList.get(0).get(6).toString())){
+				htmlToExtent(cName,mName,extLogger,driver,"List of Articles displayed is;"+GetListart1+";"+DBList.get(0).get(6).toString()+";Pass");
+				}else{
+				htmlToExtent(cName,mName,extLogger,driver,"List of Articles displayed is;"+GetListart1+";"+DBList.get(0).get(6).toString()+";Fail");	
+			}
+			
+			RecOrdObj.Clrgrpby.click();
+			
+			for(int i=1;i<= DBList1.size();i++)	
+			{if ((i==3)||(i==6)||(i==9)||(i==12)){
+				scrolldown(driver);
+			}else{}
+				List app = new ArrayList();
+				for(int j=1;j<=6;j++)
+				{
+					if(j==5)
+					{
+						if (DBVal.get(i-1).get(7).toString().equals("0")&&DBVal.get(i-1).get(9).toString().equals("Y"))
+						{	
+			WebElement Table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.srctablevalue, i,j,driver);
+			WebElement Table1 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.srctablevaluedispart, i,j,driver);
+			Table1.click();
+			DispList1  =getValuesFromTable(RecOrdObj.dispart);
+			removeIndex(DispList1, "2");
+			removeIndex(DispList1, "1");
+			app.add(Table.getText());
+			for(int k=1;k<= DispList.size();k++)	{
+				String StrRec = ""+DispList.get(k-1).get(0).toString()+":"+decimalFormat1(DispList.get(k-1).get(1).toString())+" "+DispList.get(k-1).get(2).toString()+":"+decimalFormat1(DispList.get(k-1).get(1).toString())+" "+DispList.get(k-1).get(2).toString();
+				DispList2.addAll(StringToListCreation(StrRec));
+				}
+			RecOrdObj.dispartpopup.click();
+			
+				ElementContains1(cName, mName,extLogger,driver,  DispList1, DispList2);
+			
+		}
+			else{
+		WebElement Table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.srctablevalue, i,j,driver);
+		app.add(Table.getText());
+		}
+			} else{
+				WebElement Table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.srctablevalue, i,j,driver);
+				app.add(Table.getText());
+				
+			}
+			}DBList5.add(app);
+				}
+			String art = null;
+			String Om= null;
+			String OdrQy= null;
+			String TotQy= null;
+			String TotRcvQy= null;			
+			String ChilledTemp1;
+			String FrozenTemp1;
+			String DcpQty1= null;
+			String DcpTotQty1= null;
+			System.out.println("Click Receive Order");
+			waitForJSandJQueryToLoad(driver);
+			////htmlToExtent(cName,mName,extLogger,driver,"3200 Site is added successfully in Draft;;;Pass");
+			System.out.println("Site is added in draft");
+			click(RecOrdObj.ClickReceiveOrder);
+			waitFor(1);
+			
+			if(RecOrdObj.SessionPopup.getText().equals("Receiving"))
+			{
+				click(RecOrdObj.NwSession);
+				//click(RecOrdObj.ResumeSession);
+				waitForJSandJQueryToLoad(driver);
+				click(RecOrdObj.Receivelinebyline);
+				waitForJSandJQueryToLoad(driver);
+				enterText(RecOrdObj.EnterInvoice, invoice,driver);
+				System.out.println("Invoice Entered, Click Next");
+				
+				if(RecOrdObj.TempChillcheck.getAttribute("class").equals("parameter clearfix chilled")){
+					enterText(RecOrdObj.EnterChlTemp, ChilledTemp,driver);
+					waitFor(1);
+					htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+ChilledTemp+" is entered;;;Pass");
+					ChilledTemp1 = ChilledTemp;
+					}else{
+					ChilledTemp1 = "NA";
+					}
+
+					scrolldown(driver);
+					
+					if(RecOrdObj.TempFrzncheck.getAttribute("class").equals("parameter clearfix hardFrozen")){
+					enterText(RecOrdObj.EnterFrzTemp, FrozenTemp,driver);
+					waitFor(1);
+					htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+FrozenTemp+" is entered;;;Pass");
+					FrozenTemp1 = FrozenTemp;
+					}else{
+					FrozenTemp1 = "NA";
+					}
+				RecOrdObj.ClickNextStep.click();
+				htmlToExtent(cName,mName,extLogger,driver,"--------------Receive Article details-----------------;;;Pass");
+				System.out.println("Confirm the articles to proceed"); 
+				waitForJSandJQueryToLoad(driver);		    	
+	            
+			}
+			else{
+			
+			RecOrdObj.Receivelinebyline.click();
+			waitForJSandJQueryToLoad(driver);
+			enterText(RecOrdObj.EnterInvoice, invoice,driver);
+			System.out.println("Invoice Entered, Click Next");
+			
+			if(RecOrdObj.TempChillcheck.getAttribute("class").equals("parameter clearfix chilled")){
+				enterText(RecOrdObj.EnterChlTemp, ChilledTemp,driver);
+				waitFor(1);
+				htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+ChilledTemp+" is entered;;;Pass");
+				ChilledTemp1 = ChilledTemp;
+				}else{
+				ChilledTemp1 = "NA";
+				}
+
+				scrolldown(driver);
+				
+				if(RecOrdObj.TempFrzncheck.getAttribute("class").equals("parameter clearfix hardFrozen")){
+				enterText(RecOrdObj.EnterFrzTemp, FrozenTemp,driver);
+				waitFor(1);
+				htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+FrozenTemp+" is entered;;;Pass");
+				FrozenTemp1 = FrozenTemp;
+				}else{
+				FrozenTemp1 = "NA";
+				}
+			RecOrdObj.ClickNextStep.click();
+			htmlToExtent(cName,mName,extLogger,driver,"--------------Receive Article details-----------------;;;Pass");
+			System.out.println("Confirm the articles to proceed");
+			waitForJSandJQueryToLoad(driver);
+			}
+			 String RecOdry=null;
+			 int p=0;
+			 
+			 for(int i=1;i<= DBList1.size();i++){
+				 WebElement EnterOM = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.entrNwOM, i,driver);
+				 WebElement sizenwOmqy = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getNwOM1, i,driver);
+				 List app21 = new ArrayList();
+				if ((i==3)||(i==6)||(i==9)||(i==12)){
+					scrolldown(driver);
+				}else{}
+				
+				
+				if(p>1){break;}		 
+				else if (EnterOM.getAttribute("readonly")==null)
+										 {
+					if(DBVal.get(i-1).get(4).toString().equals("Y"))
+					{
+					  enterText(EnterOM,NwOM1,driver);	
+					  
+					  WebElement sizercvqy = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getRecQty1, i,driver);
+					  WebElement sizeRndmrcvqy = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.RandomWeightVal, i,driver);
+					  
+					  String NwQy=sizercvqy.getAttribute("value");
+						float NwQy1 =Float.parseFloat(NwQy.replaceAll("[^0-9\\.]+", ""));
+					     String NwQy2=RecOrdObj.rcvQy2.getAttribute("value");
+					  float RcvdQty2 =NwQy1 * Float.parseFloat(NwOM1);
+								String RcvdQty3=Double.toString(round(RcvdQty2, 3));
+								String RcvdQtyrndm=decimalFormat1(Double.toString(( Float.valueOf(DBVal.get(i-1).get(5).toString())* Float.valueOf(DBVal.get(i-1).get(2).toString()))));
+								String RcvdQty1=""+RcvdQty3+" "+DBList1.get(1).get(4).toString()+" ("+RcvdQtyrndm+""+"EA"+")";
+							System.out.println("Received value1=="+RcvdQty1);
+							app21.add(DBVal.get(i-1).get(1).toString());
+						app21.add(RcvdQty1);
+						
+							htmlToExtent(cName,mName,extLogger,driver,"New OM value is ;"+NwOM1+";"+NwOM1+";Pass");
+					  
+					  p++;} else{
+						  enterText(EnterOM,NwOM1,driver);	
+						  WebElement sizercvqy = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getRecQty1, i,driver);
+						  WebElement sizeRndmrcvqy = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.RandomWeightVal, i,driver);
+						  
+						  String NwQy=sizercvqy.getAttribute("value");
+						  float NwQy1 =Float.parseFloat(NwQy.replaceAll("[^0-9\\.]+", " "));
+						    					    
+							float RcvdQty2 =NwQy1 * Float.parseFloat(NwOM1);
+							double val=round(RcvdQty2, 3);
+							String RcvdQty1=""+Double.valueOf(val)+" "+"EA";
+							
+								 System.out.println("Received value1=="+RcvdQty1);
+								 app21.add(DBVal.get(i-1).get(1).toString());
+								 app21.add(RcvdQty1);
+								
+								htmlToExtent(cName,mName,extLogger,driver,"New OM value is ;"+NwOM1+";"+NwOM1+";Pass");
+									
+								 }
+					DBList2.add(app21);}
+						  else{  }
+	} ;
+			 System.out.println("DBList2=="+DBList2);
+			
+				int a = RecOrdObj.receiveArticleTable.size();
+			for(int i=1;i<= a;i++)	
+			{
+				List app = new ArrayList();
+				if ((i==3)||(i==6)||(i==9)||(i==12)){
+					scrolldown(driver);
+				}else{}
+				for(int j=1;j<=17;j++)
+				{
+					if((j==10)||(j==12))
+					{
+						
+						WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue1, i,j,driver);
+						app.add(table.getText());
+					}
+					else if(j==14){
+						
+
+						WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue1, i,j,driver);
+						app.add(table.getText().replace("\n"," "));
+						
+					}
+					else if(j==13)
+					{
+						if(DBVal.get(i-1).get(7).toString().equals("0")&&DBVal.get(i-1).get(9).toString().equals("Y"))
+						 {
+							 WebElement table4= prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue5, i,j,driver);
+							 table4.click();
+							 int b = RecOrdObj.dispArticleTable.size();
+							 for(int x=1;x<=b;x++){
+								 List app1 = new ArrayList();
+								if ((i==3)||(i==6)||(i==9)||(i==12)){
+									scrolldown(driver);
+								}else{}
+								for(int y=1;y<=11;y++)
+								{
+									
+									 
+									if (y==8){
+										WebElement table2 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevaluedispaart1, x,y,driver);
+										String Dispqy=table2.getAttribute("value");
+										app1.add(Dispqy);	
+									}else if (y==3){}
+									else if (y==9){app1.add("0");}
+									else if (y==10){
+										WebElement table1 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevaluedispaart, x,(y-1),driver);
+										app1.add(table1.getText());
+									}
+									else if (y==11){
+										int val1=y-1;
+										WebElement table2 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevaluedispaart1, x,val1,driver);
+										table2.click();
+										 waitForJSandJQueryToLoad(driver);
+									}
+									else{ WebElement table1 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevaluedispaart, x,y,driver);
+										app1.add(table1.getText());
+									}
+								}
+								DBList3.add(app1);
+								
+								//*[@id="dialog-com-CmpntArticles"]/div/div[2]/span/label
+						 }
+							 
+							 app.add("NA");
+							app.add("NA");
+							 RecOrdObj.dispartpopup1.click();
+								 
+						 }
+						else{
+						WebElement table2 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue2, i,j,driver);
+						WebElement table1 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue3, i,j,driver);
+						WebElement table= prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue4, i,j,driver);
+						
+						 if (table1.getAttribute("class").equals("moreInput wtLabel ")){
+								String Rndmwt=table.getAttribute("value");
+								String Rcvwt=table2.getAttribute("value");
+								System.out.printf("Received weight and Random weight are: " +Rcvwt, Rndmwt);
+								app.add(Rcvwt);		
+								app.add(Rndmwt);	
+								
+							 }
+						 else{
+								  table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue2, i,j,driver);	
+								  String Rcvwt=table2.getAttribute("value");
+								  System.out.println("Received weight is: " +Rcvwt);
+								  app.add(Rcvwt);
+									app.add("0");
+							 }
+						
+					}}
+					else if(j==15){
+						WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue2, i,j,driver);
+					}
+					else if(j==2||j==3||j==16){}
+					else if(j==17)
+					{
+						if(DBVal.get(i-1).get(7).toString().equals("0")&&DBVal.get(i-1).get(9).toString().equals("Y")){}
+						else
+							{
+							WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue2, i,j,driver);
+							
+						table.click();	
+						waitForJSandJQueryToLoad(driver);
+					}}
+					else
+					{
+						WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue, i,j,driver);
+						String f = table.getAttribute("class");
+						if(f.contains("hideBlock"))
+						{}
+						else
+						{
+							app.add(table.getText().replace("\n"," "));
+						}
+					}
+				}
+				DBList3.add(app);
+				
+			}
+			System.out.println("DBList3 are"+DBList3);
+							
+			
+				//verticalScroll(driver);
+				click(RecOrdObj.ClickNextStep);
+				waitFor(1);
+				htmlToExtent(cName,mName,extLogger,driver,"--------------Review Discrepancy-----------------;;;Pass");
+				int Indx=RecOrdObj.discrpArticleTable.size();
+				Integer m=0;
+				Integer k=0;Integer l=0;
+
+				for(int i=1;i<= Indx;i++)
+				{
+					List app = new ArrayList();
+					if ((i==2)||(i==6)||(i==9)||(i==12)){
+						scrolldown(driver);
+					}else{}
+					for(int j=1;j<=12;j++)
+					{
+						if(j==10){
+							WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevaluediscp2, i,j,driver);
+							app.add(table.getText());
+							for(int u=0; u<DBList3.size();u++){
+								
+							if(DBList3.get(u).get(0).toString().equals(app.get(0).toString()))
+							{
+								if(DBList3.get(u).get(7).toString().equals("0"))
+								{
+							
+							String[] OrQt=splitString(DBList3.get(u).get(3).toString()," ");
+							//String[] OMQt=splitString(DBList3.get(u).get(1).toString()," ");
+							String[] RcvQt=splitString(DBList3.get(u).get(8).toString()," ");
+							float TotDiff = (Float.parseFloat(RcvQt[0].replaceAll("[^0-9\\.]+", "")))-(Float.parseFloat(OrQt[0]));
+							if(TotDiff<0 && table.getAttribute("class").equals("valueDown"))
+							{
+								
+								System.out.println("Received Quantity is less than Ordered Quantity");
+								htmlToExtent(cName,mName,extLogger,driver,"Received Quantity is less than Ordered Quantity by;"+TotDiff+";"+table.getText()+";Pass");
+								
+							}
+							else if( TotDiff>0 && table.getAttribute("class").equals("valueUp"))
+							{
+								System.out.println("Received Quantity is more than Ordered Quantity");
+							htmlToExtent(cName,mName,extLogger,driver,"Received Quantity is more than Ordered Quantity by;"+TotDiff+";"+table.getText()+";Pass");
+							}else{
+								htmlToExtent(cName,mName,extLogger,driver,"Received Quantity is more than Ordered Quantity by;"+TotDiff+";"+table.getText()+";Fail");
+							}break;
+							} 
+								else{
+								String[] OrQt=splitString(DBList3.get(u).get(3).toString()," ");
+								//String[] OMQt=splitString(DBList3.get(i-1).get(1).toString()," ");
+								String[] RcvQt=splitString(DBList3.get(u).get(8).toString()," ");
+								float TotDiff = (Float.parseFloat(RcvQt[2].replaceAll("[^0-9\\.]+", "")))-(Float.parseFloat(OrQt[0]));
+								
+								if( TotDiff<0 && table.getAttribute("class").equals("valueDown"))
+								{
+									
+									System.out.println("Received Quantity is less than Ordered Quantity");
+									htmlToExtent(cName,mName,extLogger,driver,"Received Quantity is less than Ordered Quantity by;"+TotDiff+";"+table.getText()+";Pass");
+								}
+								else if(TotDiff>0 && table.getAttribute("class").equals("valueUp"))
+								{
+									System.out.println("Received Quantity is more than Ordered Quantity");
+								htmlToExtent(cName,mName,extLogger,driver,"Received Quantity is more than Ordered Quantity by;"+TotDiff+";"+table.getText()+";Pass");
+								}else{
+									htmlToExtent(cName,mName,extLogger,driver,"Received Quantity is more than Ordered Quantity by;"+TotDiff+";"+table.getText()+";Fail");
+								}break;
+							}
+							}
+							else{}
+							}
+						}
+						else if(j==11){
+							WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevaluediscp, i,j,driver);
+							app.add(table.getText());
+							String[] Resn=splitString(app.get(8).toString()," ");
+							
+							if(table.getText().contains("Pack")){
+								m++;
+							}else if(Integer.parseInt(Resn[0])==0 && table.getText().contains("Quantity") ){
+								k++;
+								
+							}else{l++;}
+													
+						
+						} 
+						else if(j==12){
+							WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevaluediscp1, i,j,driver);
+							table.click();	
+							waitForJSandJQueryToLoad(driver);
+						}
+						else{
+							WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevaluediscp, i,j,driver);
+						app.add(table.getText().replace("\n"," "));
+							
+						}
+						
+				}
+					DBList4.add(app);
+					} 
+				removeIndex(DBList4,"2");
+				removeIndex(DBList4,"1");
+				System.out.println("DBList4"+DBList4);
+				
+				List<List<Object>> applist=new ArrayList<List<Object>>();
+				
+				   for(int i=0; i<DBList4.size();i++)
+				   {
+					   List app = new ArrayList();
+					   for(int j=0; j<DBList3.size();j++)
+					   {
+					  
+					   if(DBList4.get(i).get(0).toString().equals(DBList3.get(j).get(0).toString()))
+					   {
+						   for(int h=0; h<=10;h++)
+						   {
+							   if(h==6){
+								   String[] Unit=splitString(DBList3.get(j).get(2).toString()," ");
+								   
+								  
+									String Str=""+DBList3.get(j).get(6).toString()+" "+Unit[1];
+									 app.add(Str);							   
+								   
+							   } else if(h==7){}
+							   
+							   else if(h==9)
+						   {
+							   app.add(DBList4.get(i).get(7).toString());
+						   }  
+							   else if(h==10)
+						   {
+							   app.add(DBList4.get(i).get(8).toString());
+							   break;
+						   }
+							   else{
+							   app.add(DBList3.get(j).get(h).toString().replace("\n"," "));
+						   }
+						   }
+					   }
+					   
+						   else{}
+					   }
+					   applist.add(app);
+					
+				   }removeIndex(applist,"1");
+				   System.out.println("Applist"+applist);
+				   ElementContains1(cName, mName,extLogger,driver,  applist, DBList4);
+				verticalScroll(driver);
+				click(RecOrdObj.ClickNextStep);
+				htmlToExtent(cName,mName,extLogger,driver,"--------------Receive Summary-----------------;;;Pass");
+				List<List<Object>> app = new ArrayList<List<Object>>(); 
+				List<List<Object>> app1 = new ArrayList<List<Object>>();
+				app=receiveSummaryDetailsTable(app1,RecOrdObj); 
+				Integer Sum=0;
+				for(int i=0;i<DBList3.size();i++)
+				{
+					for(int j=0; j<DBList1.size();j++)
+				
+				   {
+					  
+				   if(DBList3.get(i).get(0).toString().equals(DBList1.get(j).get(0).toString()))
+				   {
+					if (DBList3.get(i).get(6).toString().equals("NA")){}
+					else{
+					 Sum+=Integer.parseInt(DBList3.get(i).get(6).toString());				
+					 break;}
+				   }else{}
+				   }}
+				System.out.println("SUM is "+Sum);
+					
+			if(app.get(1).get(0).toString().equals(DBList.get(0).get(6).toString()) && app.get(1).get(1).toString().equals(DBList.get(0).get(5).toString())  && app.get(2).get(1).toString().equals(Sum.toString()))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered, Received, Total Cartons Ordered, Received;Local Value is ["+app.get(1).get(0).toString()+", "+app.get(1).get(1).toString()+", "+app.get(2).get(0).toString()+", "+app.get(2).get(1).toString()+"]; DB Value is ["+DBList.get(0).get(6).toString()+", "+DBList.get(0).get(5).toString()+", "+DBList.get(0).get(6).toString()+", "+Sum+"];Pass");
+			}
+			else{
+	
+				htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered, Received, Total Cartons Ordered, Received;Local Value is ["+app.get(1).get(0).toString()+", "+app.get(1).get(1).toString()+", "+app.get(2).get(0).toString()+", "+app.get(2).get(1).toString()+"]; DB Value is ["+DBList.get(0).get(6).toString()+", "+DBList.get(0).get(5).toString()+", "+DBList.get(0).get(6).toString()+", "+Sum+"];Fail");
+	}
+			if(app.get(3).get(0).toString().equals(m.toString())&& app.get(3).get(1).toString().equals(k.toString())&&app.get(3).get(2).toString().equals(l.toString()))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Pack size, Zero Qty,Other Qty are;Local Valuse is ["+app.get(3).get(0).toString()+","+app.get(3).get(1).toString()+","+app.get(3).get(2).toString()+"];DB Value is["+m+","+k+","+l+"];Pass");
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"Pack size, Zero Qty,Other Qty are;Local Valuse is ["+app.get(3).get(0).toString()+","+app.get(3).get(1).toString()+","+app.get(3).get(2).toString()+"];DB Value is["+m+","+k+","+l+"];Fail");
+			}
+			
+			click(RecOrdObj.SubmitReceiving);
+			waitForJSandJQueryToLoad(driver);
+			click(RecOrdObj.ConfPopUp);;	
+			waitForJSandJQueryToLoad(driver);
+			htmlToExtent(cName,mName,extLogger,driver,"--------------Received Details-----------------;;;Pass");
+			if(RecOrdObj.SuccessMsg.getText().equals("Receiving Details Posted Successfully")){
+				RecOrdObj.CloseMsg.click();	
+				htmlToExtent(cName,mName,extLogger,driver,"Receiving Details Posted Successfully;;;Pass");
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"Receiving Details Posted Successfully;;;Fail");
+			}
+			RecOrdObj.clearbyRcvdArt.click();
+			List<List<Object>> app2 = new ArrayList<List<Object>>();
+			List<List<Object>> Comp = new ArrayList<List<Object>>();
+			List<List<Object>> app3= receivedArticleDetailsTable(app2,driver);
+			System.out.println("app3 details are "+app3);
+			
+			app5=ReceivedItemTableDetails(  RecOrdObj);
+			System.out.println("app5 value="+app5);
+		
+			if (app3.get(0).get(1).toString().equals(DBList6.get(0).get(7).toString())&& app3.get(0).get(2).toString().equals(DBList.get(0).get(6).toString())&& app3.get(0).get(3).toString().equals(app.get(1).get(1).toString())&&app3.get(0).get(5).toString().equals(app.get(2).get(1).toString()))
+			{
+				
+				
+				
+				htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets,Total Articles,Total Carton Received, Total Dispatched Qty,Total Cartons Orderd,Total Weight Received,Total Dispatched Weight and Total Pallets returned are;Local Valuse is ["+app3.get(0).get(0).toString()+", "+app3.get(0).get(1).toString()+","+app3.get(0).get(2).toString()+","+app3.get(0).get(3).toString()+", "+app3.get(0).get(4).toString()+", "+app3.get(0).get(5).toString()+","+app3.get(0).get(6).toString()+", "+app3.get(0).get(7).toString()+","+app3.get(0).get(8).toString()+","+app3.get(0).get(9).toString()+", "+app3.get(0).get(10).toString()+","+app3.get(0).get(11).toString()+"]; DB Value is [NA ,"+DBList6.get(0).get(7).toString()+","+DBList.get(0).get(6).toString()+","+app.get(1).get(1).toString()+", NA ,"+app.get(2).get(1).toString()+","+app3.get(0).get(6).toString()+", NA ,0 ,0 ,0 , NA];Pass");
+			}else{
+				htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets,Total Articles,Total Carton Received, Total Dispatched Qty,Total Cartons Orderd,Total Weight Received,Total Dispatched Weight and Total Pallets returned are;Local Valuse is ["+app3.get(0).get(0).toString()+", "+app3.get(0).get(1).toString()+","+app3.get(0).get(2).toString()+","+app3.get(0).get(3).toString()+", "+app3.get(0).get(4).toString()+", "+app3.get(0).get(5).toString()+","+app3.get(0).get(6).toString()+", "+app3.get(0).get(7).toString()+","+app3.get(0).get(8).toString()+","+app3.get(0).get(9).toString()+", "+app3.get(0).get(10).toString()+","+app3.get(0).get(11).toString()+"]; DB Value is [NA ,"+DBList6.get(0).get(7).toString()+","+DBList.get(0).get(6).toString()+","+app.get(1).get(1).toString()+", NA ,"+app.get(2).get(1).toString()+", 0 , NA ,0 ,0 ,0 , NA];Fail");
+			}			
+			htmlToExtent(cName,mName,extLogger,driver,"Received date, Received By, Receiving Method are;Local Valuse is ["+app3.get(1).get(0).toString()+":"+app3.get(1).get(1).toString()+":"+app3.get(1).get(2).toString()+","+app3.get(1).get(3).toString()+", "+app3.get(1).get(4).toString()+"]; DB Value is ["+app3.get(1).get(0).toString()+":"+app3.get(1).get(1).toString()+":"+app3.get(1).get(2).toString()+","+app.get(0).get(0).toString()+", RECEIVE BY LINE];Pass");
+			htmlToExtent(cName,mName,extLogger,driver,"Chilled Temprature, Frozen Temprature are;Local Valuse is ["+app3.get(2).get(0).toString()+" ,"+app3.get(2).get(1).toString()+"]; DB Value is ["+app3.get(2).get(0).toString()+" ,"+app3.get(2).get(1).toString()+"];Pass");
+			htmlToExtent(cName,mName,extLogger,driver," Invoice, Seal Number are;Local Valuse is ["+app3.get(3).get(0).toString()+" ,"+app3.get(3).get(1).toString()+"]; DB Value is ["+invoice+", NA];Pass");
+			
+			for (int i=1;i<=RecOrdObj.receiveTable.size();i++)
+			{
+
+				List app4 = new ArrayList();
+				if ((i==3)||(i==6)||(i==9)||(i==12)){
+					scrolldown(driver);
+				}else{}
+				for(int j=1;j<=10;j++)
+				{
+					if(j==9){
+						
+						if(DBVal.get(i-1).get(7).toString().equals("0")&&DBVal.get(i-1).get(9).toString().equals("Y"))
+						 {
+							WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalueReceived1, i,j,driver);
+                            table.click();
+							 int b = RecOrdObj.receiveDispartTable.size();
+							 for(int x=1;x<=b;x++){
+								 List app6 = new ArrayList();
+								if ((x==3)||(x==6)||(x==9)||(x==12)){
+									scrolldown(driver);
+								}else{}
+								for(int y=1;y<=10;y++)
+								{
+									if(y==4){
+									app6.add("0");
+									}
+									else if(y==5||y==6||y==7||y==8||y==9||y==10)
+									{
+										WebElement table1 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalueReceivedDispart, x,(y-1),driver);
+										app6.add(table1.getText());	
+								}else{
+									WebElement table1 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalueReceivedDispart, x,y,driver);
+									app6.add(table1.getText());
+								}
+							 }
+								Comp.add(app6);
+								waitFor(1);
+								if(x==b){
+									
+									RecOrdObj.dispartpopup3.click();
+									waitForJSandJQueryToLoad(driver);
+								}else{}
+							 } 
+							 
+							 
+							 app4.add("NA");
+							 
+							
+								}else{
+									WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalueReceived, i,j,driver);
+								app4.add(table.getText());
+								}
+						}
+					else{
+							WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalueReceived, i,j,driver);
+							app4.add(table.getText());
+						}
+					}
+				Comp.add(app4);
+			}
+			
+			return app5;
+	}
+			
+	
+	public List<List<Object>> receivedArticleDetailsTable(List<List<Object>> tablevalue,WebDriver driver) throws IOException{
+		List<List<Object>> listValue=new ArrayList<List<Object>>();
+	for(int i=1;i<=4;i++)
+	{
+		List<WebElement> table = driver.findElements(By.xpath("(//*[@class='articleDetails'])["+i+"]/table/tbody/tr"));
+		tablevalue = getValuesFromTable(table);	
+		if((i==1)||(i==2))
+		{
+			removeIndex(tablevalue, "4");	
+		}		
+		removeIndex(tablevalue, "2");
+		removeIndex(tablevalue, "0");	
+		if(i==1)
+		{
+			tablevalue.remove(4);
+			String Str= ""+tablevalue.get(0).get(0).toString()+":"+tablevalue.get(0).get(1).toString()+":"+tablevalue.get(0).get(2).toString()+":"+tablevalue.get(1).get(0).toString()+":"+tablevalue.get(1).get(1).toString()+":"+tablevalue.get(1).get(2).toString()+":"+tablevalue.get(2).get(0).toString()+":"+tablevalue.get(2).get(1).toString()+":"+tablevalue.get(2).get(2).toString()+":"+tablevalue.get(2).get(3).toString()+":"+tablevalue.get(2).get(4).toString()+":"+tablevalue.get(3).get(0).toString()+":"+tablevalue.get(3).get(1).toString()+":"+tablevalue.get(3).get(2).toString();
+			listValue.addAll(StringToListCreation(Str));
+			System.out.println("Str details"+Str);
+		}
+		//replacenullToZero(tablevalue);	
+		System.out.println("Article details are "+tablevalue);
+		/*htmlToExtent(cName,mName,extLogger,driver,"table values - "+i+";;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver,""+tablevalue+";;;Pass");*/
+		if(i==2)
+		{
+			String Str= ""+tablevalue.get(0).get(0).toString()+":"+tablevalue.get(0).get(1).toString()+":"+tablevalue.get(0).get(2).toString();
+			listValue.addAll(StringToListCreation(Str));
+		}
+		if(i==3)
+		{
+			String Str= ""+tablevalue.get(0).get(0).toString()+":"+tablevalue.get(0).get(1).toString()+":"+tablevalue.get(0).get(2).toString()+":"+tablevalue.get(0).get(3).toString();
+			listValue.addAll(StringToListCreation(Str));
+		}
+		if(i==4)
+		{
+			String Str= ""+tablevalue.get(0).get(0).toString()+":"+tablevalue.get(0).get(1).toString();
+			listValue.addAll(StringToListCreation(Str));
+		}replacenullToZero(listValue);
+		
+			}System.out.println("Article details are1 "+listValue);
+	return listValue;
+	}
+	/*public List<List<Object>> searchedArticleDetailsTableFullyReceived(List<List<Object>> Table2,ReceiveOrderObjects RecOrdObj) throws IOException
+	{
+		
+	 Table2  =getValuesFromTable(RecOrdObj.searchedArtDetFullyReceived);
+	 System.out.println("Searched details are "+Table2);
+	 return Table2;
+	}
+	*/
+	
+	public List<List<Object>> searchArticleDetailsTable(ReceivingObjects RecOrdObj,int tablesize,List<List<Object>> articleDetailTable,WebDriver driver) throws IOException
+	{
+		List<List<Object>> Table2=new ArrayList<List<Object>>();
+		List<List<Object>> Table3=new ArrayList<List<Object>>();
+		
+		for(int i=1;i<= tablesize;i++)	
+		{
+			List app = new ArrayList();
+			if ((i==3)||(i==6)||(i==9)||(i==12)){
+				scrolldown(driver);
+			}
+			else{}
+			for(int j=1;j<=6;j++)
+			{
+				if(j==5)
+				{
+					if (articleDetailTable.get(i).get(7).toString().equals("0")&&articleDetailTable.get(i).get(9).toString().equals("Y"))
+					{	
+		WebElement Table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.srctablevalue, i,j,driver);
+		WebElement Table1 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.srctablevaluedispart, i,j,driver);
+		Table1.click();
+		Table3  =getValuesFromTable(RecOrdObj.dispart);
+		removeIndex(Table3, "2");
+		removeIndex(Table3, "1");
+		app.add(Table.getText());
+		
+	}else{WebElement Table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.srctablevalue, i,j,driver);
+	app.add(Table.getText());
+	}
+		} else{
+			WebElement Table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.srctablevalue, i,j,driver);
+			app.add(Table.getText());
+			
+		}
+		}}
+
+		return Table2;
+		}
+	
+	public List<List<Object>> searchedArticleDetailsTable(ReceivingObjects RecOrdObj,WebDriver driver) throws IOException
+	{
+		List<List<Object>> Table2=new ArrayList<List<Object>>();
+		Table2  =getValuesFromTable(RecOrdObj.searchedArtDet);
+	// Table2  =getValuesFromTable(RecOrdObj.searchedArtDetOverDue);
+	 System.out.println("Searched details are "+Table2);
+	 return Table2;
+	}
+	public List<List<Object>> orderDetailsTable1(ReceivingObjects RecOrdObj,WebDriver driver) throws IOException
+	{
+		List<List<Object>> Table2=new ArrayList<List<Object>>();
+		Table2  =getValuesFromTable(RecOrdObj.orderTable1);
+		removeIndex(Table2, "5");
+		removeIndex(Table2, "4");
+		removeIndex(Table2, "2");
+		removeIndex(Table2, "0");
+		replacenullToZero(Table2);
+	 System.out.println("Searched details are "+Table2);
+	 return Table2;
+	}
+	
+	public List<List<Object>> orderDetailsTable2(ReceivingObjects RecOrdObj,WebDriver driver) throws IOException
+	{
+		List<List<Object>> Table2=new ArrayList<List<Object>>();
+		Table2  =getValuesFromTable(RecOrdObj.orderTable2);
+		removeIndex(Table2, "2");
+		removeIndex(Table2, "1");
+		replacenullToZero(Table2);
+	 System.out.println("Searched details are "+Table2);
+	 return Table2;
+	}
+	
+	public List<List<Object>> receiveArticleTable(ReceivingObjects RecOrdObj) throws IOException
+	{
+		List<List<Object>> Table2=new ArrayList<List<Object>>();
+		Table2  =getValuesFromTable(RecOrdObj.receiveArticleTable);
+		removeIndex(Table2, "16");
+		removeIndex(Table2, "15");
+		removeIndex(Table2, "7");
+		removeIndex(Table2, "6");
+		removeIndex(Table2, "5");
+		removeIndex(Table2, "4");
+		removeIndex(Table2, "2");
+		removeIndex(Table2, "1");
+		replacenullToZero(Table2);
+	 System.out.println("Searched details are "+Table2);
+	 return Table2;
+	}
+		
+	public List<List<Object>> discrepancyArticleTable(ReceivingObjects RecOrdObj) throws IOException
+	{
+		List<List<Object>> Table2=new ArrayList<List<Object>>();
+		Table2  =getValuesFromTable(RecOrdObj.discrepancyArticleTable);
+		removeIndex(Table2, "11");
+		removeIndex(Table2, "2");
+		removeIndex(Table2, "1");
+		replacenullToZero(Table2);
+	 System.out.println("Discrepancy details are "+Table2);
+	 return Table2;
+	}
+	
+public List<List<Object>> receiveSummaryDetailsTable(List<List<Object>> app,ReceivingObjects RecOrdObj) throws IOException{
+
+	
+	
+			app = getValuesFromTable(RecOrdObj.receiceSummaryTable);
+			app.remove(3);
+			removeIndex(app, "4");
+			removeIndex(app, "2");
+			removeIndex(app, "0");
+			replacenullToZero(app);	
+			
+			System.out.println("Received values are "+app);
+			return app;
+
+}	
+public List<List<Object>> receivedArticleDetailsTable1(List<List<Object>> Table ,ReceivingObjects RecOrdObj) throws IOException{
+	 Table  = getValuesFromTable(RecOrdObj.articleDetailTable12);
+	System.out.println("Article values are "+Table);
+	removeIndex(Table, "4");
+	removeIndex(Table, "2");
+	removeIndex(Table, "0");	
+	replacenullToZero(Table);	
+	return Table;
+	
+	
+}
+
+public List<List<Object>> ReceivedItemTableDetails(ReceivingObjects RecOrdObj) throws IOException
+{
+	List<List<Object>> Table2 = new ArrayList<List<Object>>();
+ Table2  =getValuesFromTable(RecOrdObj.receivedItemTable);
+ replacenullToZero(Table2);
+ System.out.println("Received order detail summary "+Table2);
+ return Table2;
+}
+
+	
+	//** Receiving virtual DCorder by exception**Abhi
+		public void VirtualDCOrderRecByException(ReceivingObjects RecOrdObj,String Ordnumber,List<List<Object>>DBList3, List<List<Object>> DBList, 
+				List<List<Object>> DBList1,List<List<Object>> DBVal, String NwOM2,String NwOM1,String ChilledTemp, String FrozenTemp,WebDriver driver) throws SQLException, IOException, AWTException, ParseException
+		
+		{
+			List<List<Object>> DBList2 = new ArrayList<List<Object>>();
+			//List<List<Object>> DBList3 = new ArrayList<List<Object>>();
+			List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+			List<List<Object>> DBList5 = new ArrayList<List<Object>>();
+				System.out.println(Ordnumber);
+				htmlToExtent(cName,mName,extLogger,driver,"Order Number-"+Ordnumber+";;;Info");
+				waitFor(0.5);
+				waitForClickOfElement(RecOrdObj.OrderLookup, driver);
+				enterText(RecOrdObj.OrderLookup, Ordnumber,driver);	
+				waitForJSandJQueryToLoad(driver);
+				click(RecOrdObj.ClickGo);
+				waitForJSandJQueryToLoad(driver);
+				String Stat = RecOrdObj.Chckstatus.getText();
+				String TotPallet = RecOrdObj.ChckTotPallet.getText();
+				String Ordertype = RecOrdObj.Chckordtype.getText();
+				List<List<Object>> DBList6=searchedArticleDetailsTable(RecOrdObj,driver);
+				System.out.println("Order details are loaded");
+				if(DBList.get(0).get(0).toString().equals(DBList6.get(0).get(0).toString()) && DBList.get(0).get(1).toString().equals(DBList6.get(0).get(1).toString())&& Stat.equals("AUTHORISED")&& DBList6.get(0).get(3).toString().equals(DBList.get(0).get(4).toString())&&Ordertype.equals("WAREHOUSE")&& DBList6.get(0).get(6).toString().equals(DBList.get(0).get(5).toString())&&TotPallet.equals("0"))
+				{
+					
+					htmlToExtent(cName,mName,extLogger,driver,"Order number, Delivery Date, Status, Supplier, OrderType, Total Cartons & Total Pallets details are displayed correctly;Local Value is ["+DBList6.get(0).get(0).toString()+","+DBList6.get(0).get(1).toString()+","+DBList6.get(0).get(2).toString()+","+DBList6.get(0).get(3).toString()+","+DBList6.get(0).get(4).toString()+","+DBList6.get(0).get(6).toString()+","+DBList6.get(0).get(7).toString()+"];DB Value is ["+DBList.get(0).get(0).toString()+","+DBList.get(0).get(1).toString()+", Authorised, "+DBList.get(0).get(4).toString()+", WAREHOUSE,"+DBList.get(0).get(5).toString()+",0];Pass");
+				}else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Order number, Delivery Date, Status, Supplier, OrderType, Total Cartons & Total Pallets details are displayed correctly;Local Value is ["+DBList6.get(0).get(0).toString()+","+DBList6.get(0).get(1).toString()+","+DBList6.get(0).get(2).toString()+","+DBList6.get(0).get(3).toString()+","+DBList6.get(0).get(4).toString()+","+DBList6.get(0).get(6).toString()+","+DBList6.get(0).get(7).toString()+"];DB Value is ["+DBList.get(0).get(0).toString()+","+DBList.get(0).get(1).toString()+", Authorised, "+DBList.get(0).get(4).toString()+", WAREHOUSE,"+DBList.get(0).get(5).toString()+",0];Fail");
+				}		
+				
+
+				click(RecOrdObj.ClickOnOrder);
+				waitForJSandJQueryToLoad(driver);
+				htmlToExtent(cName,mName,extLogger,driver,"*** Checking the order header details displayed after opening the order;;;Pass");
+				
+				String ChckSrc = RecOrdObj.ChckSource.getText();
+				String OrdNo1 = RecOrdObj.ChckOrdNo.getText();
+				Long OrdNum =  Long.parseLong(OrdNo1.replaceAll("[^0-9\\.]+", ""));
+				String Deldate1 = RecOrdObj.Chckdelhdr.getText();
+				String Stat1 = RecOrdObj.Chcksta.getText();
+				String Suppliername1 = RecOrdObj.Chcksuphdr.getText();
+				String Createdby1 = RecOrdObj.ChckCreatedByhdr.getText();
+				if(ChckSrc.equals("SUGO")){
+				String onshowdate = RecOrdObj.ChckOnshwdate.getText();
+				
+				if(OrdNum.toString().equals(DBList.get(0).get(0).toString())  && Stat1.equals("Authorised") && DBList.get(0).get(1).toString().equals(Deldate1)
+						&& DBList.get(0).get(4).toString().equals(Suppliername1) && DBList.get(0).get(3).toString().equals(Createdby1) && DBList.get(0).get(2).toString().equals(onshowdate)){
+					htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, Created By & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+", "+onshowdate+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", " +DBList.get(0).get(3).toString()+", "+DBList.get(0).get(2).toString()+"];Pass");
+					Report_AddStep("testcase","Order Number, Delivery Date, Status, Supplier Name, Created By & On Show Date are displayed correctly in header details" ,  "Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+", "+onshowdate+"]", 
+							"DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", " +DBList.get(0).get(3).toString()+", "+DBList.get(0).get(2).toString()+"]", "Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, Created By & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+", "+onshowdate+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", " +DBList.get(0).get(3).toString()+", "+DBList.get(0).get(2).toString()+"];Fail");
+					}
+				}
+				else{
+					if(OrdNum.toString().equals(DBList.get(0).get(0).toString())  && Stat1.equals("Authorised") && DBList.get(0).get(1).toString().equals(Deldate1)
+							&& DBList.get(0).get(4).toString().equals(Suppliername1) && DBList.get(0).get(2).toString().equals(Createdby1)){
+						htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(2).toString()+"];Pass");
+						Report_AddStep("testcase","Order Number, Delivery Date, Status, Supplier Name, & On Show Date are displayed correctly in header details" ,  "Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+"]", 
+								"DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(2).toString()+"]", "Pass");
+					}else{
+						htmlToExtent(cName,mName,extLogger,driver,"Order Number, Delivery Date, Status, Supplier Name, & On Show Date are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Deldate1+", "+Suppliername1+", "+Createdby1+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(1).toString()+", "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(2).toString()+"];Fail");
+						}
+
+				}
+						
+				
+				
+				String GetListart = RecOrdObj.GetListofArt.getText();
+				Long GetListart1 =  Long.parseLong(GetListart.replaceAll("[^0-9\\.]+", ""));
+				String Palletcount = RecOrdObj.getPaltcnt.getText();
+				String Artcount = RecOrdObj.getArtcount.getText();
+				String Dispqty = RecOrdObj.Dispqty.getText();
+				String Totalqty = RecOrdObj.Gettotalqty.getText();
+				String Dispwgt = RecOrdObj.Dispwgt.getText();
+				String sealnum = RecOrdObj.ChckSealnumb.getText();
+				//String Yrtrcv = RecOrdObj.yetTorcv.getText();
+				//Long Yrtrcv1 =  Long.parseLong(Yrtrcv.replaceAll("[^0-9\\.]+", ""));
+				
+				if(Palletcount.equals("0") && Artcount.equals(DBList.get(0).get(6).toString()) && Dispqty.equals("NA") && Totalqty.equals(DBList.get(0).get(5).toString())
+						&& Dispwgt.equals("NA") && sealnum.equals("NA")){
+					htmlToExtent(cName,mName,extLogger,driver,"Pallet Count, Total Articles count, Dispatched Qty, Total Cartons Ordered, Dispatched Weight, Seal Number are displayed correctly in header details;Local Value is ["+Palletcount+", "+Artcount+", "+Dispqty+", "+Totalqty+", "+Dispwgt+", "+sealnum+"];DB Value is [0, "+DBList.get(0).get(6).toString()+", NA, " +DBList.get(0).get(5).toString()+", NA, NA];Pass");
+					//Report_AddStep("testcase","Pallet Count, Total Articles count, Dispatched Qty, Total Cartons Ordered, Dispatched Weight, Seal Number are displayed correctly in header details" ,  "Local Value is ["+Palletcount+", "+Artcount+", "+Dispqty+", "+Totalqty+", "+Dispwgt+", "+sealnum+"]", 
+						//	"DB Value is [0, "+DBList.get(0).get(6).toString()+", NA, " +DBList.get(0).get(5).toString()+", NA, NA]", "Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Pallet Count, Total Articles count, Dispatched Qty, Total Cartons Ordered, Dispatched Weight, Seal Number are displayed correctly in header details;Local Value is ["+Palletcount+", "+Artcount+", "+Dispqty+", "+Totalqty+", "+Dispwgt+", "+sealnum+"];DB Value is [0, "+DBList.get(0).get(6).toString()+", NA, " +DBList.get(0).get(5).toString()+", NA, NA];Fail");
+					}
+				
+				if (GetListart1.toString().equals(DBList.get(0).get(6).toString())){
+					htmlToExtent(cName,mName,extLogger,driver,"List of Articles displayed is;"+GetListart1+";"+DBList.get(0).get(6).toString()+";Pass");
+					//Report_AddStep("testcase","List of Articles displayed is " , ""+GetListart1, ""+DBList.get(0).get(6).toString(), "Pass");	
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"List of Articles displayed is;"+GetListart1+";"+DBList.get(0).get(6).toString()+";Fail");	
+				}
+				
+			
+							
+				click(RecOrdObj.Clrgrpby);
+				String art = null;
+				String Om= null;
+				String OdrQy= null;
+				String TotQy= null;
+				String TotRcvQy= null;
+				String RcvQy1;
+				String NwOm1;
+				String ChilledTemp1;
+				String FrozenTemp1;
+				String DcpQty1= null;
+				String DcpTotQty1= null;
+				
+				/*String art = null;
+				String Om= null;
+				String OdrQy= null;
+				String TotQy= null;*/
+
+				for(int i=1;i<=DBList1.size();i++)
+				{
+				WebElement sizeart = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getArtNum, i,driver);
+				WebElement sizeOm = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getOmNum, i,driver);
+				WebElement sizeOdrqy = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getOrdQty, i,driver);
+				WebElement sizeTotqy = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getTotUnt, i,driver);
+				 art = sizeart.getText();
+				 Om = sizeOm.getText();
+				 //String[] om=splitString(Om," ");			 
+				 //double Om1 =  Double.parseDouble(om[0]);
+				 OdrQy = sizeOdrqy.getText();
+				
+				 TotQy = sizeTotqy.getText().replace("\n", " ");
+				 //Long TotQy1 =  Long.parseLong(TotQy.replaceAll("[^0-9\\.]+", ""));			 
+				String StrRec = ""+art+":"+Om+":"+OdrQy+":"+TotQy;
+				DBList2.addAll(StringToListCreation(StrRec));
+				}
+				
+				System.out.println("dblist 2 value="+DBList2);
+					int size=DBList1.size();	
+		
+				for (int i=0;i<DBList1.size();i++)
+				{
+					if(DBList1.get(size-1-i).get(6).toString().equals("Y")){
+						if(DBList2.get(i).get(0).toString().equals(DBList1.get(size-1-i).get(2).toString()) && DBList2.get(i).get(1).toString().replace("\n", " ").equals(DBVal.get(size-1-i).get(1).toString()+" "+DBVal.get(size-1-i).get(3).toString()+" "+DBVal.get(size-1-i).get(2).toString()+" "+"(EA)") && DBList2.get(i).get(2).toString().equals(DBVal.get(size-1-i).get(0).toString())&& DBList2.get(i).get(3).toString().equals(DBVal.get(size-1-i).get(6).toString()))
+						{
+						
+							htmlToExtent(cName,mName,extLogger,driver,"Artcle Number, OM unit, Ordered Qty, Total Quantity are displayed correctly ;Local Value is ["+DBList2.get(i).get(0).toString()+", "+DBList2.get(i).get(1).toString()+", "+DBList2.get(i).get(2).toString()+","+DBList2.get(i).get(3)+"];DB Value is ["+DBList1.get(size-1-i).get(2).toString()+", "+DBVal.get(size-1-i).get(1).toString()+" "+DBVal.get(size-1-i).get(3).toString()+" "+DBVal.get(size-1-i).get(2).toString()+" "+"(EA)"+", "+DBVal.get(size-1-i).get(0).toString()+","+DBVal.get(size-1-i).get(6).toString()+"];Pass");
+							
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver,"Artcle Number, OM unit, Ordered Qty, Total Quantity are displayed correctly ;Local Value is ["+DBList2.get(i).get(0).toString()+", "+DBList2.get(i).get(1).toString()+", "+DBList2.get(i).get(2).toString()+","+DBList2.get(i).get(3)+"];DB Value is ["+DBList1.get(size-1-i).get(2).toString()+", "+DBVal.get(size-1-i).get(1).toString()+" "+DBVal.get(size-1-i).get(3).toString()+" "+DBVal.get(size-1-i).get(2).toString()+" "+"(EA)"+", "+DBVal.get(size-1-i).get(0).toString()+","+DBVal.get(size-1-i).get(6).toString()+"];Fail");
+							}}
+						
+					
+					else{
+					if(DBList2.get(i).get(0).toString().equals(DBList1.get(size-1-i).get(2).toString()) && DBList2.get(i).get(1).toString().equals(DBVal.get(size-1-i).get(1).toString()+" "+DBVal.get(size-1-i).get(3).toString()) && DBList2.get(i).get(2).toString().equals(DBVal.get(size-1-i).get(0).toString())&& DBList2.get(i).get(3).toString().equals(DBVal.get(size-1-i).get(6).toString()))
+					{
+					
+						htmlToExtent(cName,mName,extLogger,driver,"Artcle Number, OM unit, Ordered Qty, Total Quantity are displayed correctly ;Local Value is ["+DBList2.get(i).get(0).toString()+", "+DBList2.get(i).get(1).toString()+", "+DBList2.get(i).get(2).toString()+","+DBList2.get(i).get(3)+"];DB Value is ["+DBList1.get(size-1-i).get(2).toString()+", "+DBVal.get(size-1-i).get(1).toString()+" "+DBVal.get(size-1-i).get(3).toString()+", "+DBVal.get(size-1-i).get(0).toString()+","+DBVal.get(size-1-i).get(6).toString()+"];Pass");
+						
+					}
+					else
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Artcle Number, OM unit, Ordered Qty, Total Quantity are displayed correctly ;Local Value is ["+DBList2.get(i).get(0).toString()+", "+DBList2.get(i).get(1).toString()+", "+DBList2.get(i).get(2).toString()+","+DBList2.get(i).get(3)+"];DB Value is ["+DBList1.get(size-1-i).get(2).toString()+", "+DBVal.get(size-1-i).get(1).toString()+" "+DBVal.get(size-1-i).get(3).toString()+", "+DBVal.get(size-1-i).get(0).toString()+","+DBVal.get(size-1-i).get(6).toString()+"];Fail");
+						}}}
+		
+				System.out.println("Click Receive Order");
+				waitForJSandJQueryToLoad(driver);
+				//htmlToExtent(cName,mName,extLogger,driver,"3200 Site is added successfully in Draft;;;Pass");
+				//Report_AddStep("testcase","3200 Site is added successfully in Draft" , "", "", "Pass");
+				System.out.println("Site is added in draft");
+				click(RecOrdObj.ClickReceiveOrder);
+				waitFor(1);
+				
+				if(RecOrdObj.SessionPopup.getText().equals("Receiving"))
+				{
+					click(RecOrdObj.NwSession);
+					//click(RecOrdObj.ResumeSession);
+					waitForJSandJQueryToLoad(driver);
+					click(RecOrdObj.Receivebyexception);
+					waitForJSandJQueryToLoad(driver);
+					if(RecOrdObj.RecConfirmation1.size()==1)
+					{
+						RecOrdObj.RecConfirmation.click();
+					}
+					if(RecOrdObj.TempChillcheck.getAttribute("class").equals("parameter clearfix chilled")){
+						enterText(RecOrdObj.EnterChlTemp, ChilledTemp,driver);
+						waitFor(1);
+						htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+ChilledTemp+" is entered;;;Pass");
+						ChilledTemp1 = ChilledTemp;
+						}else{
+						ChilledTemp1 = "NA";
+						}
+
+						scrolldown(driver);
+						
+						if(RecOrdObj.TempFrzncheck.getAttribute("class").equals("parameter clearfix hardFrozen")){
+						enterText(RecOrdObj.EnterFrzTemp, FrozenTemp,driver);
+						waitFor(1);
+						htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+FrozenTemp+" is entered;;;Pass");
+						FrozenTemp1 = FrozenTemp;
+						}else{
+						FrozenTemp1 = "NA";
+						}
+					click(RecOrdObj.ClickNextStep);
+					htmlToExtent(cName,mName,extLogger,driver,"--------------Receive Article details-----------------;;;Pass");
+					System.out.println("Confirm the articles to proceed"); 
+					waitForJSandJQueryToLoad(driver);		    	
+		            
+				}
+				else{
+				
+				click(RecOrdObj.Receivebyexception);
+				waitForJSandJQueryToLoad(driver);
+				if(RecOrdObj.RecConfirmation1.size()==1)
+				{
+					RecOrdObj.RecConfirmation.click();
+				}
+				if(RecOrdObj.TempChillcheck.getAttribute("class").equals("parameter clearfix chilled")){
+					enterText(RecOrdObj.EnterChlTemp, ChilledTemp,driver);
+					waitFor(1);
+					htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+ChilledTemp+" is entered;;;Pass");
+					ChilledTemp1 = ChilledTemp;
+					}else{
+					ChilledTemp1 = "NA";
+					}
+
+					scrolldown(driver);
+					
+					if(RecOrdObj.TempFrzncheck.getAttribute("class").equals("parameter clearfix hardFrozen")){
+					enterText(RecOrdObj.EnterFrzTemp, FrozenTemp,driver);
+					waitFor(1);
+					htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+FrozenTemp+" is entered;;;Pass");
+					FrozenTemp1 = FrozenTemp;
+					}else{
+					FrozenTemp1 = "NA";
+					}
+				click(RecOrdObj.ClickNextStep);
+				htmlToExtent(cName,mName,extLogger,driver,"--------------Receive Article details-----------------;;;Pass");
+				System.out.println("Confirm the articles to proceed");
+				waitForJSandJQueryToLoad(driver);
+				}
+				
+				 String RecOdry=null;
+				
+				for(int i=1;i<= DBList1.size();i++)
+								
+				{
+				WebElement sizeart = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getArtNmb, i,driver);
+				WebElement sizeOm = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getOmNmb, i,driver);
+				WebElement sizeOdrqy = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getOdrQty, i,driver);
+				WebElement sizeTotqy = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getTolQty, i,driver);
+				WebElement sizeTotRcvqy = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getRecTotQty, i,driver);
+				WebElement sizercvqy = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getRecQty1, i,driver);
+				WebElement ChkBox = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.CheckboxClick, i,driver);
+				WebElement DcpQty= prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getDcpQty, i,driver);
+				WebElement DcpTotQty= prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getDcpTolQty, i,driver);
+				WebElement RndmWt= prepareWebElementWithDynamicXpathWithInt(RecOrdObj.RandomWeight, i,driver);
+				WebElement RndmWtinp= prepareWebElementWithDynamicXpathWithInt(RecOrdObj.RandomWeightVal, i,driver);
+				DcpQty1=DcpQty.getText();
+				DcpTotQty1=DcpTotQty.getText();
+				 art = sizeart.getText();
+				 Om = sizeOm.getText();
+				 //Long Om1 =  Long.parseLong(Om.replaceAll("[^0-9\\.]+", ""));
+				 OdrQy = sizeOdrqy.getText();
+				 
+				 //Long OdrQy1 =  Long.parseLong(OdrQy.replaceAll("[^0-9\\.]+", ""));
+				 TotQy = sizeTotqy.getText().replace("\n", " ");
+				 RecOdry=sizercvqy.getAttribute("value");
+				 TotRcvQy = sizeTotRcvqy.getText();
+				 String Rndmwt=null;
+				 int RcQy;
+				 if (RndmWt.getAttribute("class").equals("moreInput wtLabel ")){
+						Rndmwt=RndmWtinp.getAttribute("value");
+						RcQy=generateRandomNumber(1,30);
+						enterText(sizercvqy,String.valueOf(RcQy),driver);
+						enterText(RndmWtinp,NwOM1,driver);
+						
+					 }else{
+						RcQy=generateRandomNumber(1,30);
+							enterText(sizercvqy,String.valueOf(RcQy),driver);
+					 }
+				 String TotRcvQy1 = sizeTotRcvqy.getText().replace("\n", " ");
+				 String StrRec = ""+art+":"+Om+":"+OdrQy+":"+TotQy+":"+DcpQty1+":"+DcpTotQty1+":"+RcQy+":"+NwOM1+":"+TotRcvQy1;
+					DBList3.addAll(StringToListCreation(StrRec));
+					ChkBox.click();
+					
+					}
+					
+					System.out.println("dblist 3 value="+DBList3);
+					
+					List<List<Object>> appLlist = new ArrayList<List<Object>>();
+					List<List<Object>> DBlist = new ArrayList<List<Object>>();
+					
+					for (int i=0;i<DBList1.size();i++)
+					{
+						List app=new ArrayList();List DB =new ArrayList();
+						float TotRcvQty =Float.parseFloat(DBList3.get(i).get(7).toString());
+						String OmCount = decimalFormat1(DBList1.get(size-1-i).get(7).toString());
+						String OmCount1 = decimalFormat1(DBList3.get(i).get(6).toString());
+						Integer TotRcvQtyRndm =Integer.parseInt(OmCount)* Integer.parseInt(OmCount1);
+						 String CalOdrQty=""+Float.toString(TotRcvQty)+" "+DBVal.get(size-1-i).get(3).toString()+" "+"("+Integer.toString(TotRcvQtyRndm)+" "+"EA"+")";				
+
+							app.add(DBList3.get(i).get(0).toString());
+							app.add(DBList3.get(i).get(1).toString().replace("\n", " "));
+							app.add(DBList3.get(i).get(2).toString());
+							app.add(DBList3.get(i).get(3).toString());
+							app.add(DBList3.get(i).get(8).toString());
+							
+							DB.add(DBList1.get(size-1-i).get(2).toString());
+							DB.add(decimalFormat1(DBList1.get(size-1-i).get(8).toString())+" "+DBVal.get(size-1-i).get(3).toString()+" "+decimalFormat1(DBList1.get(size-1-i).get(7).toString())+" (EA)");
+							DB.add(DBVal.get(size-1-i).get(0).toString());
+							DB.add(DBVal.get(size-1-i).get(6).toString().replace("\n", " "));
+							DB.add(CalOdrQty);
+							appLlist.add(app);
+							DBlist.add(DB);
+						 /*if(DBList3.get(i).get(0).toString().equals(DBList1.get(size-1-i).get(2).toString()) && 
+								DBList3.get(i).get(1).toString().replace("\n", " ").equals(decimalFormat1(DBList1.get(size-1-i).get(8).toString())+" "+DBVal.get(size-1-i).get(3).toString()+" "+decimalFormat1(DBList1.get(size-1-i).get(7).toString())+" (EA)") &&
+								DBList3.get(i).get(2).toString().equals(DBVal.get(size-1-i).get(0).toString())&&
+								DBList3.get(i).get(3).toString().equals(DBVal.get(size-1-i).get(6).toString().replace("\n", " "))&&
+								DBList3.get(i).get(8).toString().equals(CalOdrQty))
+						
+						{
+							htmlToExtent(cName,mName,extLogger,driver,"Artcle Number, OM unit, Ordered Qty, Total Odered Quantity, Dispatched Quantity,Total Dispached Quantity,  Received Quantity, Total received Quantity are displayed correctly ;Local Value is "+ "["+DBList3.get(i).get(0).toString()+", "+DBList3.get(i).get(1).toString()+", "+DBList3.get(i).get(2).toString()+", "+DBList3.get(i).get(3).toString()+","+DcpQty1+","+DcpTotQty1+","+DBList3.get(i).get(6).toString()+","+DBList3.get(i).get(7).toString()+","+DBList3.get(i).get(8).toString()+"]; DB Value is ["+DBList1.get(size-1-i).get(2).toString()+", "+DBVal.get(size-1-i).get(1).toString()+" "+DBVal.get(size-1-i).get(3).toString()+", "+DBVal.get(size-1-i).get(0).toString()+" "+DBVal.get(size-1-i).get(6).toString()+","+DcpQty1+","+DcpTotQty1+","+DBList3.get(i).get(6).toString()+","+CalOdrQty+"];Pass");
+							
+							
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver,"Artcle Number, OM unit, Ordered Qty, Total Odered Quantity, Dispatched Quantity,Total Dispached Quantity,  Received Quantity, Total received Quantity are displayed correctly ;Local Value is "+ "["+DBList3.get(i).get(0).toString()+", "+DBList3.get(i).get(1).toString()+", "+DBList3.get(i).get(2).toString()+", "+DBList3.get(i).get(3).toString()+","+DcpQty1+","+DcpTotQty1+","+DBList3.get(i).get(6).toString()+","+DBList3.get(i).get(7).toString()+","+DBList3.get(i).get(8).toString()+"]; DB Value is ["+DBList1.get(size-1-i).get(2).toString()+", "+DBVal.get(size-1-i).get(1).toString()+" "+DBVal.get(size-1-i).get(3).toString()+", "+DBVal.get(size-1-i).get(0).toString()+" "+DBVal.get(size-1-i).get(6).toString()+","+DcpQty1+","+DcpTotQty1+","+DBList3.get(i).get(6).toString()+","+CalOdrQty+"];Fail");
+							
+							//htmlToExtent(cName,mName,extLogger,driver,"Artcle Number, OM unit, Ordered Qty, Total Odered Quantity, Dispatched Quantity,Total Dispached Quantity,  Received Quantity, Total received Quantity are displayed correctly ;Local Value is ["+DBList3.get(i).get(0).toString()+", "+DBList3.get(i).get(1).toString()+", "+DBList3.get(i).get(2).toString()+", "+DBList3.get(i).get(3).toString()+","+DcpQty1+","+DcpTotQty1+","+DBList3.get(i).get(6).toString()+","+DBList3.get(i).get(7).toString()+"];DB Value is ["+DBList1.get(i).get(0).toString()+", "+DBList1.get(i).get(3).toString()+" "+DBList1.get(i).get(4).toString()+", "+DBList1.get(0).get(1).toString()+" "+DBList1.get(i).get(2).toString()+","+DBList1.get(i).get(5).toString()+" "+DBList1.get(i).get(6).toString()+","+DcpQty1+","+DcpTotQty1+","+RecOdry+","+TotRcvQy+"];Fail");
+							}*/
+					}
+					ElementContains1(cName, mName,extLogger,driver, appLlist, DBlist);
+					waitFor(2);
+					verticalScroll(driver);
+					click(RecOrdObj.ClickNextStep);
+					waitForJSandJQueryToLoad(driver);
+					
+					htmlToExtent(cName,mName,extLogger,driver,"--------------Review Discrepancy-----------------;;;Pass");
+					String Indx=RecOrdObj.Discpncy.getText();
+					Long Indx1 =Long.parseLong(Indx.replaceAll("[^0-9\\.]+", ""));
+					
+					
+					Integer m=0;
+					Integer k=0;Integer l=0;
+
+					for(int i=1;i<= Indx1;i++)
+									
+					{
+					WebElement sizeart1 = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.getArtNmb1, i,driver);
+					WebElement sizeOdrqy1 = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.OdrQnty1, i,driver);
+					WebElement sizeOdrToqy1 = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.OdrToQnty1, i,driver);
+					WebElement sizeRcvqy1 = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.RcvdQty1, i,driver);
+					WebElement sizeTotRcvqy1 = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.RcvdToQty1, i,driver);
+					WebElement sizeDcpqy1 = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.DcpQnty1, i,driver);
+					WebElement sizeTotDcpqy1 = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.DcpToQnty1, i,driver);
+					WebElement sizediffrence = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.Diffrence, i,driver);
+					WebElement sizereason = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.Reason, i,driver);
+					WebElement ChkBox1 = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.Chkbx, i,driver);
+					String OMVal2=null;
+					String Artno1=sizeart1.getText();
+					String OrderQty1=sizeOdrqy1.getText();
+					String[] OrQt=splitString(OrderQty1," ");
+					String OrQt1=OrQt[0];
+					String TotOrderQty1=sizeOdrToqy1.getText();
+					String Rcvdqty3=sizeRcvqy1.getText();
+					String[] RcQt=splitString(Rcvdqty3," ");
+					String RcQt1=RcQt[0];
+					//Long Rcvdqty4 =Long.parseLong(Rcvdqty3.replaceAll("[^0-9\\.]+", ""));
+					String TotRcvdqty3=sizeTotRcvqy1.getText();
+					String DcpQty=sizeDcpqy1.getText();
+					String TotDcpQty=sizeTotDcpqy1.getText();
+					String Diffrence1=sizediffrence.getText();
+					String Reason1=sizereason.getText();
+					if(Reason1.contains("Pack")){
+						m++;
+					}else if(Float.parseFloat(RcQt1)==0 && Reason1.contains("Quantity") ){
+						k++;
+						
+					}else{l++;}
+					
+					 for(int j=0; j<DBList3.size();j++)
+					 {
+						 if(Artno1.equals(DBList3.get(j).get(0).toString()))
+						 {
+							 String OMVal=DBList3.get(j).get(1).toString();
+							 String[] OMVal1=splitString(OMVal," ");
+								 OMVal2=OMVal1[0];
+						 }
+						 else{ }
+						 
+					 }
+					
+					float TotDiff = (Float.parseFloat(RcQt1)-Float.parseFloat(OrQt1))*Float.parseFloat(OMVal2);
+					String StrRec = ""+Artno1+":"+OrderQty1+":"+TotOrderQty1+":"+DcpQty+":"+TotDcpQty+":"+Rcvdqty3+":"+TotRcvdqty3+":"+Diffrence1+":"+Reason1;
+						DBList4.addAll(StringToListCreation(StrRec));
+						
+					if(TotDiff<0)
+					{
+						sizediffrence.getAttribute("class").equals("valueDown");
+						System.out.println("Received Quantity is less than Ordered Quantity");
+						htmlToExtent(cName,mName,extLogger,driver,"Received Quantity is less than Ordered Quantity by;"+TotDiff+";"+TotDiff+";Pass");
+					}
+					else
+					{
+						
+					sizediffrence.getAttribute("class").equals("valueUp");
+					System.out.println("Received Quantity is more than Ordered Quantity");
+					htmlToExtent(cName,mName,extLogger,driver,"Received Quantity is more than Ordered Quantity by;"+TotDiff+";"+TotDiff+";Pass");
+					
+					}
+					click(ChkBox1);
+									}
+					
+					List<List<Object>> applist=new ArrayList<List<Object>>();
+					
+					   for(int i=0; i<DBList4.size();i++)
+					   {
+						   List app = new ArrayList();
+						   if(DBList4.get(i).get(0).toString().equals(DBList3.get(i).get(0).toString()))
+						   {
+							   for(int j=0; j<=7;j++)
+								   app.add(DBList3.get(i).get(j).toString());
+						   }
+						   
+						   else{}
+						   applist.add(app);
+						
+					   }
+					   System.out.println("Applist"+applist);
+					   for (int i=0;i<DBList4.size();i++)
+						{			   
+							if(DBList4.get(i).get(0).toString().equals(applist.get(i).get(0).toString()) && DBList4.get(i).get(1).toString().equals(applist.get(i).get(2).toString())&& DBList4.get(i).get(2).toString().replace("\n", " ").equals(applist.get(i).get(3).toString().replace("\n", " ")) && DBList4.get(i).get(3).toString().equals(applist.get(i).get(4).toString())&& DBList4.get(i).get(4).toString().equals(applist.get(i).get(5).toString())&& DBList4.get(i).get(5).toString().equals(applist.get(i).get(6).toString()+" "+DBList1.get(size-1-i).get(4))&& DBList4.get(i).get(6).toString().replace("\n", " ").equals(DBList3.get(i).get(8).toString().replace("\n", " ")))
+								
+							{
+								htmlToExtent(cName,mName,extLogger,driver,"Discrepancy values are displayed correctly ;Local Value is ["+DBList4.get(i).get(0).toString()+", "+DBList4.get(i).get(1).toString()+", "+DBList4.get(i).get(2).toString()+", "+DBList4.get(i).get(3).toString()+","+DBList4.get(i).get(4).toString()+","+DBList4.get(i).get(5).toString()+","+DBList4.get(i).get(6).toString()+"];DB Value is ["+applist.get(i).get(0).toString()+", "+applist.get(i).get(2).toString()+", "+applist.get(i).get(3).toString()+", "+applist.get(0).get(4).toString()+", "+applist.get(i).get(5).toString()+","+applist.get(i).get(6).toString()+" "+DBList1.get(size-1-i).get(4)+","+DBList3.get(i).get(8).toString()+"];Pass");
+								
+								
+							}
+							else
+							{
+								htmlToExtent(cName,mName,extLogger,driver,"Discrepancy values are displayed correctly ;Local Value is ["+DBList4.get(i).get(0).toString()+", "+DBList4.get(i).get(1).toString()+", "+DBList4.get(i).get(2).toString()+", "+DBList4.get(i).get(3).toString()+","+DBList4.get(i).get(4).toString()+","+DBList4.get(i).get(5).toString()+","+DBList4.get(i).get(6).toString()+"];DB Value is ["+applist.get(i).get(0).toString()+", "+applist.get(i).get(2).toString()+", "+applist.get(i).get(3).toString()+", "+applist.get(0).get(4).toString()+", "+applist.get(i).get(5).toString()+","+applist.get(i).get(6).toString()+" "+DBList1.get(size-1-i).get(4)+","+DBList3.get(i).get(8).toString()+"];Fail");
+								
+								}
+						}
+					   for (int i=0;i<DBList4.size();i++)
+					{
+						if(DBList4.get(i).get(0).toString().equals(DBList3.get(i).get(0).toString()) && DBList4.get(i).get(1).toString().equals(DBList3.get(i).get(2).toString())&& DBList4.get(i).get(2).toString().replace("\n", " ").equals(DBList3.get(i).get(3).toString().replace("\n", " ")) && DBList4.get(i).get(3).toString().equals(DBList3.get(i).get(4).toString())&& DBList4.get(i).get(4).toString().equals(DBList3.get(i).get(5).toString())&& DBList4.get(i).get(5).toString().equals(applist.get(i).get(6).toString()+" "+DBList1.get(size-1-i).get(4))&& DBList4.get(i).get(6).toString().replace("\n", " ").equals(DBList3.get(i).get(8).toString().replace("\n", " ")))
+							
+						{
+							htmlToExtent(cName,mName,extLogger,driver,"Artcle Number, OM unit, Ordered Qty, Total Odered Quantity, Dispatched Quantity,Total Dispached Quantity, Total received Quantity are displayed correctly ;Local Value is ["+DBList4.get(i).get(0).toString()+", "+DBList4.get(i).get(1).toString()+", "+DBList4.get(i).get(2).toString()+","+DcpQty1+","+DcpTotQty1+", "+DBList4.get(i).get(5).toString()+","+DBList4.get(i).get(6).toString()+"];DB Value is ["+DBList3.get(i).get(0).toString()+", "+DBList3.get(i).get(2).toString()+", "+DBList3.get(i).get(3).toString()+", "+DBList3.get(0).get(4).toString()+", "+DBList3.get(i).get(5).toString()+","+applist.get(i).get(6).toString()+" "+DBList1.get(size-1-i).get(4)+","+DBList3.get(i).get(8).toString()+"];Pass");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver,"Artcle Number, OM unit, Ordered Qty, Total Odered Quantity, Dispatched Quantity,Total Dispached Quantity, Total received Quantity are displayed correctly ;Local Value is ["+DBList4.get(i).get(0).toString()+", "+DBList4.get(i).get(1).toString()+", "+DBList4.get(i).get(2).toString()+","+DcpQty1+","+DcpTotQty1+", "+DBList4.get(i).get(5).toString()+","+DBList4.get(i).get(6).toString()+"];DB Value is ["+DBList3.get(i).get(0).toString()+", "+DBList3.get(i).get(2).toString()+", "+DBList3.get(i).get(3).toString()+", "+DBList3.get(0).get(4).toString()+", "+DBList3.get(i).get(5).toString()+","+DBList3.get(i).get(6).toString()+","+DBList3.get(i).get(8).toString()+"];Fail");
+							}
+					}System.out.println("dblist 4 value="+DBList4);
+					verticalScroll(driver);
+					click(RecOrdObj.ClickNextStep);
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"--------------Provide ULD Details-----------------;;;Pass");
+					verticalScroll(driver);
+					click(RecOrdObj.ClickNextStep);
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"--------------Receive Summary-----------------;;;Pass");
+					List<List<Object>> app = new ArrayList<List<Object>>();
+					List<List<Object>> app1 = new ArrayList<List<Object>>();
+					app=receiveSummaryDetailsTable(app1,RecOrdObj); 
+					Integer Sum=0;
+					for(int i=0;i<DBList3.size();i++)
+					{
+						 Sum+=Integer.parseInt(DBList3.get(i).get(6).toString());				
+						 }
+					System.out.println("SUM is "+Sum);
+						
+				if(app.get(1).get(0).toString().equals(DBList.get(0).get(6).toString()) && app.get(1).get(1).toString().equals(DBList.get(0).get(5).toString()) && app.get(2).get(0).toString().equals(DBList.get(0).get(6).toString()))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered, Received, Total Cartons Ordered, Received;Local Value is ["+app.get(1).get(0).toString()+", "+app.get(1).get(1).toString()+", "+app.get(2).get(0).toString()+", "+app.get(2).get(1).toString()+"]; DB Value is ["+DBList.get(0).get(6).toString()+", "+DBList.get(0).get(5).toString()+", "+DBList.get(0).get(6).toString()+", "+app.get(2).get(1).toString()+"];Pass");
+				}
+				else{
+		
+					htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered, Received, Total Cartons Ordered, Received;Local Value is ["+app.get(1).get(0).toString()+", "+app.get(1).get(1).toString()+", "+app.get(2).get(0).toString()+", "+app.get(2).get(1).toString()+"]; DB Value is ["+DBList.get(0).get(6).toString()+", "+DBList.get(0).get(5).toString()+", "+DBList.get(0).get(6).toString()+", "+app.get(2).get(1).toString()+"];Fail");
+		}
+				if(app.get(3).get(0).toString().equals((m.toString()))&& app.get(3).get(1).toString().equals(k.toString())&&app.get(3).get(2).toString().equals(l.toString()))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Pack size, Zero Qty,Other Qty are;Local Valuse is ["+app.get(3).get(0).toString()+","+app.get(3).get(1).toString()+","+app.get(3).get(2).toString()+"];DB Value is["+m+","+k+","+l+"];Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Pack size, Zero Qty,Other Qty are;Local Valuse is ["+app.get(3).get(0).toString()+","+app.get(3).get(1).toString()+","+app.get(3).get(2).toString()+"];DB Value is["+m+","+k+","+l+"];Fail");
+				}
+				click(RecOrdObj.SubmitReceiving);
+				waitForJSandJQueryToLoad(driver);
+				click(RecOrdObj.ConfPopUp);	
+				waitForJSandJQueryToLoad(driver);
+				htmlToExtent(cName,mName,extLogger,driver,"--------------Received Details-----------------;;;Pass");
+				if(RecOrdObj.SuccessMsg.getText().equals("Receiving Details Posted Successfully")){
+					RecOrdObj.CloseMsg.click();	
+					htmlToExtent(cName,mName,extLogger,driver,"Receiving Details Posted Successfully;;;Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Receiving Details Posted Successfully;;;Fail");
+				}
+				RecOrdObj.clearbyRcvdArt.click();
+				waitForJSandJQueryToLoad(driver);
+				List<List<Object>> app2 = new ArrayList<List<Object>>();
+				//List<List<Object>> app4 = new ArrayList<List<Object>>();
+				List<List<Object>> app3= receivedArticleDetailsTable(app2,driver);
+				System.out.println("app3 details are "+app3);
+				List<List<Object>> app5=ReceivedItemTableDetails( RecOrdObj);
+				float TotWt=Float.parseFloat(NwOM1)*DBList.size();
+				
+				if (app3.get(0).get(1).toString().equals(DBList6.get(0).get(7).toString())&& app3.get(0).get(2).toString().equals(DBList.get(0).get(6).toString())&& app3.get(0).get(3).toString().equals(app.get(2).get(1).toString())&&app3.get(0).get(5).toString().equals(app.get(1).get(1).toString()))
+				{
+					
+					
+					
+					htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets,Total Articles,Total Carton Received, Total Dispatched Qty,Total Cartons Orderd,Total Weight Received,Total Dispatched Weight and Total Pallets returned are;Local Valuse is ["+app3.get(0).get(0).toString()+", "+app3.get(0).get(1).toString()+","+app3.get(0).get(2).toString()+","+app3.get(0).get(3).toString()+", "+app3.get(0).get(4).toString()+", "+app3.get(0).get(5).toString()+","+decimalFormat1(app3.get(0).get(6).toString())+", "+app3.get(0).get(7).toString()+","+app3.get(0).get(8).toString()+","+app3.get(0).get(9).toString()+", "+app3.get(0).get(10).toString()+","+app3.get(0).get(11).toString()+"]; DB Value is [NA ,"+DBList6.get(0).get(7).toString()+","+DBList.get(0).get(6).toString()+","+app.get(2).get(1).toString()+", NA ,"+app.get(1).get(1).toString()+","+TotWt+" , NA ,0 ,0 ,0 , NA];Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets,Total Articles,Total Carton Received, Total Dispatched Qty,Total Cartons Orderd,Total Weight Received,Total Dispatched Weight and Total Pallets returned are;Local Valuse is ["+app3.get(0).get(0).toString()+", "+app3.get(0).get(1).toString()+","+app3.get(0).get(2).toString()+","+app3.get(0).get(3).toString()+", "+app3.get(0).get(4).toString()+", "+app3.get(0).get(5).toString()+","+decimalFormat1(app3.get(0).get(6).toString())+", "+app3.get(0).get(7).toString()+","+app3.get(0).get(8).toString()+","+app3.get(0).get(9).toString()+", "+app3.get(0).get(10).toString()+","+app3.get(0).get(11).toString()+"]; DB Value is [NA ,"+DBList6.get(0).get(7).toString()+","+DBList.get(0).get(6).toString()+","+app.get(2).get(1).toString()+", NA ,"+app.get(1).get(1).toString()+", "+TotWt+" , NA ,0 ,0 ,0 , NA];Fail");
+				}			
+				htmlToExtent(cName,mName,extLogger,driver,"Received date, Received By, Receiving Method are;Local Valuse is ["+app3.get(1).get(0).toString()+":"+app3.get(1).get(1).toString()+":"+app3.get(1).get(2).toString()+","+app3.get(1).get(3).toString()+", "+app3.get(1).get(4).toString()+"]; DB Value is ["+app3.get(1).get(0).toString()+":"+app3.get(1).get(1).toString()+":"+app3.get(1).get(2).toString()+","+app.get(0).get(0).toString()+", RECEIVE BY LINE];Pass");
+				htmlToExtent(cName,mName,extLogger,driver,"Chilled Temprature, Frozen Temprature are;Local Valuse is ["+app3.get(2).get(0).toString()+" ,"+app3.get(2).get(1).toString()+"]; DB Value is ["+app3.get(2).get(0).toString()+" ,"+app3.get(2).get(1).toString()+"];Pass");
+				htmlToExtent(cName,mName,extLogger,driver," Invoice, Seal Number are;Local Valuse is ["+app3.get(3).get(0).toString()+" ,"+app3.get(3).get(1).toString()+"]; DB Value is [NA, NA];Pass");
+				
+				for (int i=0;i<DBList1.size();i++){
+					String[] Rcvdqnty=splitString(app5.get(i).get(9).toString().replace("\n", " ")," ");
+					
+					String Rcvdqnty1=decimalFormat1(Rcvdqnty[0]);
+					String Rcvdqnty2=decimalFormat1(Rcvdqnty[2].replaceAll("[^0-9\\.]+", ""));
+					String FinalRcvdqy=""+Rcvdqnty1+" "+Rcvdqnty[1]+" ("+Rcvdqnty2+" "+Rcvdqnty[3];
+					
+					if(app5.get(i).get(0).toString().equals(DBList3.get(i).get(0).toString())&&
+							app5.get(i).get(4).toString().equals(DBList3.get(i).get(2).toString())&&
+							app5.get(i).get(5).toString().replace("\n", " ").equals(DBList3.get(i).get(3).toString().replace("\n", " "))&&
+							app5.get(i).get(6).toString().equals(DBList3.get(i).get(4).toString())&&
+							app5.get(i).get(7).toString().equals(DBList3.get(i).get(5).toString())&&
+									app5.get(i).get(8).toString().equals(DBList3.get(i).get(6).toString()+" "+DBList1.get(size-1-i).get(4).toString())&&
+									FinalRcvdqy.equals(DBList3.get(i).get(8).toString().replace("\n", " "))){
+						htmlToExtent(cName,mName,extLogger,driver,"Article number,OM, Odered Qty, Total Order Qty,Dispatched Qty, Total Dispatched Qty,Received Qty, Total Received Qty are;Local Valuse is ["+app5.get(i).get(0).toString()+","+app5.get(i).get(3).toString()+","+app5.get(i).get(4).toString()+","+app5.get(i).get(5).toString()+", "+app5.get(i).get(6).toString()+","+app5.get(i).get(7).toString()+" ,"+app5.get(i).get(8).toString()+" ,"+app5.get(i).get(9).toString()+"]; DB Value is ["+DBList3.get(i).get(0).toString()+","+DBList2.get(i).get(1).toString()+", "+DBList3.get(i).get(2).toString()+", "+DBList3.get(i).get(3).toString()+","+DBList3.get(i).get(4).toString()+","+DBList3.get(i).get(5).toString()+", "+DBList3.get(i).get(6).toString()+" "+DBList1.get(size-1-i).get(4).toString()+", "+DBList3.get(i).get(8).toString()+")];Pass");
+						
+					}else{
+						htmlToExtent(cName,mName,extLogger,driver,"Article number,OM, Odered Qty, Total Order Qty,Dispatched Qty, Total Dispatched Qty,Received Qty, Total Received Qty are;Local Valuse is ["+app5.get(i).get(0).toString()+","+app5.get(i).get(3).toString()+","+app5.get(i).get(4).toString()+","+app5.get(i).get(5).toString()+", "+app5.get(i).get(6).toString()+","+app5.get(i).get(7).toString()+" ,"+app5.get(i).get(8).toString()+" ,"+app5.get(i).get(9).toString()+"]; DB Value is ["+DBList3.get(i).get(0).toString()+","+DBList2.get(i).get(1).toString()+", "+DBList3.get(i).get(2).toString()+", "+DBList3.get(i).get(3).toString()+","+DBList3.get(i).get(4).toString()+","+DBList3.get(i).get(5).toString()+", "+DBList3.get(i).get(6).toString()+" "+DBList1.get(size-1-i).get(4).toString()+", "+DBList3.get(i).get(8).toString()+")];Fail");
+						
+					}
+				}
+				
+	}
+		//** Receiving IBT order by exception**Abhi
+		public void IBTOrderRecByException(ReceivingObjects RecOrdObj,String Ordnumber,List<List<Object>>applist1,
+				List<List<Object>> DBList, List<List<Object>> DBList1, String NwOM2,String NwOM1,String ChilledTemp, String FrozenTemp,WebDriver driver) throws SQLException, IOException, AWTException, ParseException
+		
+		{
+			List<List<Object>> Comp = new ArrayList<List<Object>>();
+			List<List<Object>> Comp1 = new ArrayList<List<Object>>();
+			List<List<Object>> DBList2 = new ArrayList<List<Object>>();
+			List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+			List<List<Object>> DBList5 = new ArrayList<List<Object>>();
+			List<List<Object>> DBList7 = new ArrayList<List<Object>>();
+				System.out.println(Ordnumber);
+				htmlToExtent(cName,mName,extLogger,driver,"Order number-"+Ordnumber+";;;Pass");
+				enterText(RecOrdObj.OrderLookup, Ordnumber,driver);	
+				waitForJSandJQueryToLoad(driver);
+				click(RecOrdObj.ClickGo);
+				waitForJSandJQueryToLoad(driver);
+				String Stat = RecOrdObj.Chckstatus.getText();
+				String TotPallet = RecOrdObj.ChckTotPallet.getText();
+				String Ordertype = RecOrdObj.Chckordtype.getText();
+				List<List<Object>> DBList6=searchedArticleDetailsTable(RecOrdObj,driver);
+				System.out.println("Order details are loaded");
+				if(DBList.get(0).get(0).toString().equals(DBList6.get(0).get(0).toString()) && DBList.get(0).get(1).toString().equals(DBList6.get(0).get(1).toString())&& Stat.equals("AUTHORISED")&& DBList6.get(0).get(3).toString().equals(DBList.get(0).get(4).toString())&&Ordertype.equals("STOCK TRANSFER")&& DBList6.get(0).get(6).toString().equals(DBList.get(0).get(5).toString())&&TotPallet.equals("0"))
+				{
+					
+					htmlToExtent(cName,mName,extLogger,driver,"Order number, Delivery Date, Status, Supplier, OrderType, Total Cartons & Total Pallets details are displayed correctly;Local Value is ["+DBList6.get(0).get(0).toString()+","+DBList6.get(0).get(1).toString()+","+DBList6.get(0).get(2).toString()+","+DBList6.get(0).get(3).toString()+","+DBList6.get(0).get(4).toString()+","+DBList6.get(0).get(6).toString()+","+DBList6.get(0).get(7).toString()+"];DB Value is ["+DBList.get(0).get(0).toString()+","+DBList.get(0).get(1).toString()+", Authorised, "+DBList.get(0).get(4).toString()+", STOCK TRANSFER,"+DBList.get(0).get(5).toString()+",0];Pass");
+				}else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Order number, Delivery Date, Status, Supplier, OrderType, Total Cartons & Total Pallets details are displayed correctly;Local Value is ["+DBList6.get(0).get(0).toString()+","+DBList6.get(0).get(1).toString()+","+DBList6.get(0).get(2).toString()+","+DBList6.get(0).get(3).toString()+","+DBList6.get(0).get(4).toString()+","+DBList6.get(0).get(6).toString()+","+DBList6.get(0).get(7).toString()+"];DB Value is ["+DBList.get(0).get(0).toString()+","+DBList.get(0).get(1).toString()+", Authorised, "+DBList.get(0).get(4).toString()+", STOCK TRANSFER,"+DBList.get(0).get(5).toString()+",0];Fail");
+				}		
+				
+
+				click(RecOrdObj.ClickOnOrder);
+				waitForJSandJQueryToLoad(driver);
+				htmlToExtent(cName,mName,extLogger,driver,"*** Checking the order header details displayed after opening the order;;;Pass");
+				
+				String OrdNo1 = RecOrdObj.ChckOrdNo.getText();
+				Long OrdNum =  Long.parseLong(OrdNo1.replaceAll("[^0-9\\.]+", ""));
+				String Stat1 = RecOrdObj.Chcksta.getText();
+				String Createdby1 = RecOrdObj.ChckCreatedByhdr.getText();				
+				String Sendingingstore= RecOrdObj.SendStore.getText();
+				String Dlvdate= RecOrdObj.Deliverydate.getText();
+				String Src= RecOrdObj.Source.getText();
+				
+				
+				if(OrdNum.toString().equals(DBList.get(0).get(0).toString())  && Stat1.equals("Authorised") && DBList.get(0).get(4).toString().equals(Sendingingstore)
+						&& DBList.get(0).get(1).toString().equals(Dlvdate)  ){
+					htmlToExtent(cName,mName,extLogger,driver,"Order Number, Status, Sending Store Name, Delivery Date & Source are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Sendingingstore+", "+Dlvdate+", "+Src+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(1).toString()+","+Src+"];Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Order Number, Status, Sending Store Name, Delivery Date & Source are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Sendingingstore+", "+Dlvdate+", "+Src+"];DB Value is ["+DBList.get(0).get(0).toString()+", Authorised, "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(1).toString()+","+Src+"];Fail");
+					}
+				DBList7= orderDetailsTable1(RecOrdObj,driver);
+				String GetListart = RecOrdObj.GetListofArt.getText();
+				Long GetListart1 =  Long.parseLong(GetListart.replaceAll("[^0-9\\.]+", ""));
+				if(DBList7.get(0).get(0).toString().equals("0") && DBList7.get(0).get(1).toString().equals(DBList.get(0).get(6).toString()) && DBList7.get(1).get(0).toString().equals("NA") && DBList7.get(1).get(1).toString().equals(DBList.get(0).get(5).toString())
+						&& DBList7.get(2).get(0).toString().equals("NA") && DBList7.get(2).get(1).toString().equals("NA")){
+					htmlToExtent(cName,mName,extLogger,driver,"Pallet Count, Total Articles count, Dispatched Qty, Total Cartons Ordered, Dispatched Weight, Seal Number are displayed correctly in header details;Local Value is ["+DBList7.get(0).get(0).toString()+", "+DBList7.get(0).get(1).toString()+", "+DBList7.get(1).get(0).toString()+", "+DBList7.get(1).get(1).toString()+", "+DBList7.get(2).get(0).toString()+", "+DBList7.get(1).get(0).toString()+"];DB Value is [0, "+DBList.get(0).get(6).toString()+", NA, " +DBList.get(0).get(5).toString()+", NA, NA];Pass");
+					}else{
+						htmlToExtent(cName,mName,extLogger,driver,"Pallet Count, Total Articles count, Dispatched Qty, Total Cartons Ordered, Dispatched Weight, Seal Number are displayed correctly in header details;Local Value is ["+DBList7.get(0).get(0).toString()+", "+DBList7.get(0).get(1).toString()+", "+DBList7.get(1).get(0).toString()+", "+DBList7.get(1).get(1).toString()+", "+DBList7.get(2).get(0).toString()+", "+DBList7.get(1).get(0).toString()+"];DB Value is [0, "+DBList.get(0).get(6).toString()+", NA, " +DBList.get(0).get(5).toString()+", NA, NA];Fail");
+						}
+				
+
+				if (GetListart1.toString().equals(DBList.get(0).get(6).toString())){
+					htmlToExtent(cName,mName,extLogger,driver,"List of Articles displayed is;"+GetListart1+";"+DBList.get(0).get(6).toString()+";Pass");
+					}else{
+					htmlToExtent(cName,mName,extLogger,driver,"List of Articles displayed is;"+GetListart1+";"+DBList.get(0).get(6).toString()+";Fail");	
+				}						
+				click(RecOrdObj.Clrgrpby);
+				DBList2= orderDetailsTable2(RecOrdObj,driver);
+				for (int i=0;i<DBList1.size();i++)
+				{
+				
+				int TotOrderedQty= Integer.parseInt(DBList1.get(i).get(1).toString())*Integer.parseInt(DBList1.get(i).get(3).toString());
+				String TotOrderedQty1=Integer.toString(TotOrderedQty);
+				String Unit="EA";
+				String Str1 = ""+DBList1.get(i).get(0).toString()+":"+DBList1.get(i).get(3).toString()+" "+DBList1.get(i).get(4).toString()+":"+DBList1.get(i).get(1).toString()+" "+DBList1.get(i).get(2).toString()+":"+TotOrderedQty1+" "+Unit;
+				Comp.addAll(StringToListCreation(Str1));
+						
+				}
+				ElementContains1(cName, mName,extLogger,driver,  Comp, DBList2);
+				
+				//String NwOm1;
+				String ChilledTemp1;
+				String FrozenTemp1;
+				String DcpQty1= null;
+				String DcpTotQty1= null;
+				System.out.println("dblist 2 value="+DBList2);
+					int size=DBList1.size();	
+				System.out.println("Click Receive Order");
+				waitForJSandJQueryToLoad(driver);
+				//htmlToExtent(cName,mName,extLogger,driver,"3200 Site is added successfully in Draft;;;Pass");
+				System.out.println("Site is added in draft");
+				click(RecOrdObj.ClickReceiveOrder);
+				waitFor(1);
+				
+				if(RecOrdObj.SessionPopup.getText().equals("Receiving"))
+				{
+					click(RecOrdObj.NwSession);
+					//click(RecOrdObj.ResumeSession);
+					waitForJSandJQueryToLoad(driver);
+					click(RecOrdObj.Receivebyexception);
+					waitFor(1);
+					if (RecOrdObj.RecMetPopup1.getText().equals("Receive Method")||RecOrdObj.RecMetPopup.getText().equals("Receive Method")){
+						click(RecOrdObj.clickYes);
+					}
+					else{
+						System.out.println("Receive method fails");
+					}
+					
+					if(RecOrdObj.TempChillcheck.getAttribute("class").equals("parameter clearfix chilled")){
+						enterText(RecOrdObj.EnterChlTemp, ChilledTemp,driver);
+						waitForJSandJQueryToLoad(driver);
+						htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+ChilledTemp+" is entered;;;Pass");
+						ChilledTemp1 = ChilledTemp;
+						}else{
+						ChilledTemp1 = "NA";
+						}
+
+						scrolldown(driver);
+						
+						if(RecOrdObj.TempFrzncheck.getAttribute("class").equals("parameter clearfix hardFrozen")){
+						enterText(RecOrdObj.EnterFrzTemp, FrozenTemp,driver);
+						waitForJSandJQueryToLoad(driver);
+						htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+FrozenTemp+" is entered;;;Pass");
+						FrozenTemp1 = FrozenTemp;
+						}else{
+						FrozenTemp1 = "NA";
+						}
+					click(RecOrdObj.ClickNextStep);
+					htmlToExtent(cName,mName,extLogger,driver,"--------------Receive Article details-----------------;;;Pass");
+					System.out.println("Confirm the articles to proceed"); 
+					waitForJSandJQueryToLoad(driver);		    	
+		            
+				}
+				else{
+				
+				click(RecOrdObj.Receivebyexception);
+				waitForJSandJQueryToLoad(driver);
+				if (RecOrdObj.RecMetPopup1.getText().equals("Receive Method")||RecOrdObj.RecMetPopup.getText().equals("Receive Method")){
+					click(RecOrdObj.clickYes);
+				}
+				else{
+					System.out.println("Receive method fails");
+				}
+				if(RecOrdObj.TempChillcheck.getAttribute("class").equals("parameter clearfix chilled")){
+					enterText(RecOrdObj.EnterChlTemp, ChilledTemp,driver);
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+ChilledTemp+" is entered;;;Pass");
+					ChilledTemp1 = ChilledTemp;
+					}else{
+					ChilledTemp1 = "NA";
+					}
+
+					scrolldown(driver);
+					
+					if(RecOrdObj.TempFrzncheck.getAttribute("class").equals("parameter clearfix hardFrozen")){
+					enterText(RecOrdObj.EnterFrzTemp, FrozenTemp,driver);
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+FrozenTemp+" is entered;;;Pass");
+					FrozenTemp1 = FrozenTemp;
+					}else{
+					FrozenTemp1 = "NA";
+					}
+				click(RecOrdObj.ClickNextStep);
+				htmlToExtent(cName,mName,extLogger,driver,"--------------Receive Article details-----------------;;;Pass");
+				System.out.println("Confirm the articles to proceed");
+				waitForJSandJQueryToLoad(driver);
+				}
+					
+					int a = RecOrdObj.receiveArticleTable.size();
+					for(int i=1;i<= a;i++)	
+					{
+						List app = new ArrayList();
+						if ((i==3)||(i==6)||(i==9)||(i==12)){
+							scrolldown(driver);
+						}else{}
+						for(int j=1;j<=17;j++)
+						{
+							if((j==10)||(j==12))
+							{
+								
+								WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue1, i,j,driver);
+								app.add(table.getText());
+							}
+							else if(j==14){
+								
+
+								WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue1, i,j,driver);
+								app.add(table.getText());
+								String FinalRcvdQty=""+app.get(7).toString();
+								if(table.getText().equals(FinalRcvdQty)){
+									htmlToExtent(cName,mName,extLogger,driver,"Article received is;Local Value is "+ "["+FinalRcvdQty+"];DB Value is "+ "["+table.getText()+"];Pass");
+									
+								}else{
+									htmlToExtent(cName,mName,extLogger,driver,"Article received is;Local Value is "+ "["+FinalRcvdQty+"];DB Value is "+ "["+table.getText()+"];Fail");
+									
+								}
+							}
+							else if(j==13)
+							{
+								WebElement table2 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue2, i,j,driver);
+								WebElement table1 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue3, i,j,driver);
+								WebElement table= prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue4, i,j,driver);
+								 if (table1.getAttribute("class").equals("moreInput wtLabel ")){
+										String Rndmwtold=table.getAttribute("value");
+										String Rcvwtold=table2.getAttribute("value");
+										System.out.printf("Received weight and Random weight are: " +Rcvwtold, Rndmwtold);
+										int RcQynew=generateRandomNumber(1,30);
+										enterText(table2,String.valueOf(RcQynew),driver);
+										enterText(table,NwOM1,driver);
+										app.add(RcQynew);	
+										app.add(NwOM1);
+										
+									 }else{
+										  table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue2, i,j,driver);	
+										  String Rcvwtold=table2.getAttribute("value");
+										  System.out.println("Received weight is: " +Rcvwtold);
+										  int RcQynew=generateRandomNumber(1,30);
+											enterText(table2,String.valueOf(RcQynew),driver);
+											app.add(RcQynew);
+									 }
+								
+							}
+							else if(j==15){
+								WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue2, i,j,driver);
+							}
+							else if(j==2||j==3||j==16){}
+							else if(j==17)
+							{
+								WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue2, i,j,driver);
+								table.click();						
+							}
+							else
+							{
+								WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue, i,j,driver);
+								String f = table.getAttribute("class");
+								if(f.contains("hideBlock"))
+								{}
+								else
+								{
+									app.add(table.getText());
+								}
+							}
+						}
+						applist1.add(app);
+						
+					}System.out.println("applist1 are"+applist1);
+					
+					 for(int i=0; i<size;i++)
+					   {
+						   List app = new ArrayList();
+						   for(int j=0; j<size;j++){
+						   if(Comp.get(i).get(0).toString().equals(applist1.get(j).get(0).toString()))
+						   {
+							   String Str1 = ""+Comp.get(i).get(0).toString()+":"+Comp.get(i).get(1).toString()+":"+Comp.get(i).get(2).toString()+":"+Comp.get(i).get(3).toString()+":"+applist1.get(j).get(4).toString()+":"+applist1.get(j).get(5).toString()+":"+applist1.get(j).get(6).toString()+":"+applist1.get(j).get(7).toString();
+							   Comp1.addAll(StringToListCreation(Str1));
+						   }
+						   
+						   else{}}}
+					 
+					 ElementContains1(cName, mName,extLogger,driver,  Comp1, applist1);
+					 verticalScroll(driver);
+						waitFor(1);
+					 
+					click(RecOrdObj.ClickNextStep);
+					waitForJSandJQueryToLoad(driver);
+				
+					htmlToExtent(cName,mName,extLogger,driver,"--------------Review Discrepancy-----------------;;;Pass");
+					Integer m=0;
+					Integer k=0;Integer l=0;
+					DBList4= discrepancyArticleTable(RecOrdObj);
+					System.out.println("dblist 4 value="+DBList4);
+
+					for(int i=1;i<= DBList4.size();i++)
+									
+					{
+						if ((i==3)||(i==6)||(i==9)||(i==12)){
+							scrolldown(driver);
+						}else{}
+						
+						WebElement sizediffrence = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.Diffrence, i,driver);
+						WebElement sizereason = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.Reason, i,driver);
+						WebElement ChkBox1 = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.Chkbx, i,driver);
+						String Reason1=sizereason.getText();
+						if(Reason1.contains("Pack")){
+							m++;
+						}else if(Integer.parseInt(DBList4.get(i-1).get(5).toString().replaceAll("[^0-9\\.]+", ""))==0 && Reason1.contains("Quantity") ){
+							k++;
+							
+						}else{l++;}
+						
+						System.out.println("Re"+DBList4.get(i-1).get(6).toString().replaceAll("[^0-9\\.]+", ""));
+						System.out.println("Rece"+DBList4.get(i-1).get(1).toString().replaceAll("[^0-9\\.]+", ""));
+						System.out.println("Received "+applist1.get(i-1).get(1).toString().replaceAll("[^0-9\\.]+", ""));
+						
+						String[] OrQt=splitString(DBList4.get(i-1).get(1).toString()," ");
+						float TotDiff = (Float.parseFloat(DBList4.get(i-1).get(6).toString().replaceAll("[^0-9\\.]+", "")))-(Float.parseFloat(OrQt[0])*Float.parseFloat(applist1.get(i-1).get(1).toString().replaceAll("[^0-9\\.]+", "")));
+												
+					if(TotDiff<0)
+					{
+						sizediffrence.getAttribute("class").equals("valueDown");
+						System.out.println("Received Quantity is less than Ordered Quantity");
+						htmlToExtent(cName,mName,extLogger,driver,"Received Quantity is less than Ordered Quantity by;"+TotDiff+";"+TotDiff+";Pass");
+					}
+					else
+					{
+						
+					sizediffrence.getAttribute("class").equals("valueUp");
+					System.out.println("Received Quantity is more than Ordered Quantity");
+					htmlToExtent(cName,mName,extLogger,driver,"Received Quantity is more than Ordered Quantity by;"+TotDiff+";"+TotDiff+";Pass");
+					
+					}
+					click(ChkBox1);
+					}
+					
+					List<List<Object>> applist=new ArrayList<List<Object>>();
+					
+					   for(int i=0; i<DBList4.size();i++)
+					   {
+						   List app = new ArrayList();
+						   for(int p=0; p<DBList1.size();p++){
+						   if(DBList4.get(i).get(0).toString().equals(applist1.get(p).get(0).toString()))
+						   {String[] Unit=splitString(DBList4.get(i).get(5).toString()," ");
+							   for(int j=0; j<=9;j++){
+								   if(j==6){
+									String Str=""+applist1.get(p).get(j).toString()+" "+Unit[1];
+									 app.add(Str);
+								   }else if(j==8){
+									   app.add(DBList4.get(i).get(7).toString());
+								   }
+								   else if(j==9){
+									   app.add(DBList4.get(i).get(8).toString());
+								   }
+								   else{
+								   app.add(applist1.get(p).get(j).toString());
+						   }}}
+						   
+						   else{}
+						   
+						   
+						   }applist.add(app);
+					   }
+					   removeIndex(applist, "1");
+					   System.out.println("Applist"+applist);
+					   
+					   ElementContains1(cName, mName,extLogger,driver,  applist,DBList4);
+						verticalScroll(driver);
+					click(RecOrdObj.ClickNextStep);
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"--------------Provide ULD Details-----------------;;;Pass");
+					verticalScroll(driver);
+					click(RecOrdObj.ClickNextStep);
+					waitForJSandJQueryToLoad(driver);
+					htmlToExtent(cName,mName,extLogger,driver,"--------------Receive Summary-----------------;;;Pass");
+					List<List<Object>> app = new ArrayList<List<Object>>();
+					List<List<Object>> app1 = new ArrayList<List<Object>>();
+					app=receiveSummaryDetailsTable(app1,RecOrdObj); 
+					Integer Sum=0;
+					
+					for(int i=0;i<DBList1.size();i++)
+					{
+						 Sum+=Integer.parseInt(applist1.get(i).get(6).toString());				
+						 }
+					System.out.println("SUM is "+Sum);
+						
+				if(app.get(1).get(0).toString().equals(DBList.get(0).get(6).toString()) && app.get(1).get(1).toString().equals(DBList.get(0).get(5).toString()) && app.get(2).get(0).toString().equals(DBList.get(0).get(6).toString()))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered, Received, Total Cartons Ordered, Received;Local Value is ["+app.get(1).get(0).toString()+", "+app.get(1).get(1).toString()+", "+app.get(2).get(0).toString()+", "+app.get(2).get(1).toString()+"]; DB Value is ["+DBList.get(0).get(6).toString()+", "+DBList.get(0).get(5).toString()+", "+DBList.get(0).get(6).toString()+", "+app.get(2).get(1).toString()+"];Pass");
+				}
+				else{
+		
+					htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered, Received, Total Cartons Ordered, Received;Local Value is ["+app.get(1).get(0).toString()+", "+app.get(1).get(1).toString()+", "+app.get(2).get(0).toString()+", "+app.get(2).get(1).toString()+"]; DB Value is ["+DBList.get(0).get(6).toString()+", "+DBList.get(0).get(5).toString()+", "+DBList.get(0).get(6).toString()+", "+app.get(2).get(1).toString()+"];Fail");
+		}
+				if(app.get(3).get(0).toString().equals((m.toString()))&& app.get(3).get(1).toString().equals(k.toString())&&app.get(3).get(2).toString().equals(l.toString()))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Pack size, Zero Qty,Other Qty are;Local Valuse is ["+app.get(3).get(0).toString()+","+app.get(3).get(1).toString()+","+app.get(3).get(2).toString()+"];DB Value is["+m+","+k+","+l+"];Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Pack size, Zero Qty,Other Qty are;Local Valuse is ["+app.get(3).get(0).toString()+","+app.get(3).get(1).toString()+","+app.get(3).get(2).toString()+"];DB Value is["+m+","+k+","+l+"];Fail");
+				}
+				click(RecOrdObj.SubmitReceiving);
+				waitForJSandJQueryToLoad(driver);
+				click(RecOrdObj.ConfPopUp);	
+				waitForJSandJQueryToLoad(driver);
+				htmlToExtent(cName,mName,extLogger,driver,"--------------Received Details-----------------;;;Pass");
+				if(RecOrdObj.SuccessMsg.getText().equals("Receiving Details Posted Successfully")){
+					RecOrdObj.CloseMsg.click();	
+					htmlToExtent(cName,mName,extLogger,driver,"Receiving Details Posted Successfully;;;Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Receiving Details Posted Successfully;;;Fail");
+				}
+				RecOrdObj.clearbyRcvdArt.click();
+				List<List<Object>> app2 = new ArrayList<List<Object>>();
+				//List<List<Object>> app4 = new ArrayList<List<Object>>();
+				List<List<Object>> app3= receivedArticleDetailsTable(app2,driver);
+				System.out.println("app3 details are "+app3);
+				List<List<Object>> app5=ReceivedItemTableDetails( RecOrdObj);
+				//float TotWt=Float.parseFloat(NwOM1)*DBList.size();
+				
+				if (app3.get(0).get(1).toString().equals(DBList6.get(0).get(7).toString())&& app3.get(0).get(2).toString().equals(DBList.get(0).get(6).toString())&& app3.get(0).get(3).toString().equals(app.get(2).get(1).toString())&&app3.get(0).get(5).toString().equals(app.get(1).get(1).toString()))
+				{
+					
+					
+					
+					htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets,Total Articles,Total Carton Received, Total Dispatched Qty,Total Cartons Orderd,Total Weight Received,Total Dispatched Weight and Total Pallets returned are;Local Valuse is ["+app3.get(0).get(0).toString()+", "+app3.get(0).get(1).toString()+","+app3.get(0).get(2).toString()+","+app3.get(0).get(3).toString()+", "+app3.get(0).get(4).toString()+", "+app3.get(0).get(5).toString()+","+decimalFormat1(app3.get(0).get(6).toString())+", "+app3.get(0).get(7).toString()+","+app3.get(0).get(8).toString()+","+app3.get(0).get(9).toString()+", "+app3.get(0).get(10).toString()+","+app3.get(0).get(11).toString()+"]; DB Value is [NA ,"+DBList6.get(0).get(7).toString()+","+DBList.get(0).get(6).toString()+","+app.get(2).get(1).toString()+", NA ,"+app.get(1).get(1).toString()+",0 , NA ,0 ,0 ,0 , NA];Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets,Total Articles,Total Carton Received, Total Dispatched Qty,Total Cartons Orderd,Total Weight Received,Total Dispatched Weight and Total Pallets returned are;Local Valuse is ["+app3.get(0).get(0).toString()+", "+app3.get(0).get(1).toString()+","+app3.get(0).get(2).toString()+","+app3.get(0).get(3).toString()+", "+app3.get(0).get(4).toString()+", "+app3.get(0).get(5).toString()+","+decimalFormat1(app3.get(0).get(6).toString())+", "+app3.get(0).get(7).toString()+","+app3.get(0).get(8).toString()+","+app3.get(0).get(9).toString()+", "+app3.get(0).get(10).toString()+","+app3.get(0).get(11).toString()+"]; DB Value is [NA ,"+DBList6.get(0).get(7).toString()+","+DBList.get(0).get(6).toString()+","+app.get(2).get(1).toString()+", NA ,"+app.get(1).get(1).toString()+",0 , NA ,0 ,0 ,0 , NA];Fail");
+				}			
+				htmlToExtent(cName,mName,extLogger,driver,"Received date, Received By, Receiving Method are;Local Valuse is ["+app3.get(1).get(0).toString()+":"+app3.get(1).get(1).toString()+":"+app3.get(1).get(2).toString()+","+app3.get(1).get(3).toString()+", "+app3.get(1).get(4).toString()+"]; DB Value is ["+app3.get(1).get(0).toString()+":"+app3.get(1).get(1).toString()+":"+app3.get(1).get(2).toString()+","+app.get(0).get(0).toString()+", RECEIVE BY EXCEPTION];Pass");
+				htmlToExtent(cName,mName,extLogger,driver,"Chilled Temprature, Frozen Temprature are;Local Valuse is ["+app3.get(2).get(0).toString()+" ,"+app3.get(2).get(1).toString()+"]; DB Value is ["+app3.get(2).get(0).toString()+" ,"+app3.get(2).get(1).toString()+"];Pass");
+				htmlToExtent(cName,mName,extLogger,driver," Invoice, Seal Number are;Local Valuse is ["+app3.get(3).get(0).toString()+" ,"+app3.get(3).get(1).toString()+"]; DB Value is [NA, NA];Pass");
+				
+				for (int i=0;i<DBList1.size();i++){
+					
+					if(app5.get(i).get(0).toString().equals(applist1.get(i).get(0).toString())&&
+							app5.get(i).get(4).toString().equals(applist1.get(i).get(2).toString())&&
+							app5.get(i).get(5).toString().equals(applist1.get(i).get(3).toString())&&
+							app5.get(i).get(6).toString().equals(applist1.get(i).get(4).toString())&&
+							app5.get(i).get(7).toString().equals(applist1.get(i).get(5).toString())&&
+									app5.get(i).get(8).toString().equals(applist1.get(i).get(6).toString()+" "+DBList1.get(i).get(2).toString())&&
+									app5.get(i).get(9).toString().equals(applist1.get(i).get(7).toString())){
+						htmlToExtent(cName,mName,extLogger,driver,"Article number,OM, Odered Qty, Total Order Qty,Dispatched Qty, Total Dispatched Qty,Received Qty, Total Received Qty are;Local Valuse is ["+app5.get(i).get(0).toString()+","+app5.get(i).get(3).toString()+","+app5.get(i).get(4).toString()+","+app5.get(i).get(5).toString()+", "+app5.get(i).get(6).toString()+","+app5.get(i).get(7).toString()+" ,"+app5.get(i).get(8).toString()+" ,"+app5.get(i).get(9).toString()+"]; DB Value is ["+applist1.get(i).get(0).toString()+", "+applist1.get(i).get(1).toString()+", "+applist1.get(i).get(2).toString()+", "+applist1.get(i).get(3).toString()+","+applist1.get(i).get(4).toString()+","+applist1.get(i).get(5).toString()+", "+applist1.get(i).get(6).toString()+" "+DBList1.get(i).get(2).toString()+", "+applist1.get(i).get(7).toString()+")];Pass");
+						
+					}else{
+						htmlToExtent(cName,mName,extLogger,driver,"Article number,OM, Odered Qty, Total Order Qty,Dispatched Qty, Total Dispatched Qty,Received Qty, Total Received Qty are;Local Valuse is ["+app5.get(i).get(0).toString()+","+app5.get(i).get(3).toString()+","+app5.get(i).get(4).toString()+","+app5.get(i).get(5).toString()+", "+app5.get(i).get(6).toString()+","+app5.get(i).get(7).toString()+" ,"+app5.get(i).get(8).toString()+" ,"+app5.get(i).get(9).toString()+"]; DB Value is ["+applist1.get(i).get(0).toString()+", "+applist1.get(i).get(1).toString()+", "+applist1.get(i).get(2).toString()+", "+applist1.get(i).get(3).toString()+","+applist1.get(i).get(4).toString()+","+applist1.get(i).get(5).toString()+", "+applist1.get(i).get(6).toString()+" "+DBList1.get(i).get(2).toString()+" "+applist1.get(i).get(7).toString()+")];Fail");
+						
+					}
+				}
+				
+	}
+		//** Receiving Vendor ASN order by exception**Abhi
+				public void VendorASNOrderRecByException(ReceivingObjects RecOrdObj,String Ordnumber,String invoice,List<List<Object>>applist1, List<List<Object>> DBList, 
+						List<List<Object>> DBList1,List<List<Object>>DBVal, String NwOM2,String NwOM1,String ChilledTemp, String FrozenTemp,WebDriver driver) throws SQLException, IOException, AWTException, ParseException
+				
+				{
+					List<List<Object>> Comp = new ArrayList<List<Object>>();
+					List<List<Object>> Comp1 = new ArrayList<List<Object>>();
+					List<List<Object>> Comp2 = new ArrayList<List<Object>>();
+					List<List<Object>> DBList2 = new ArrayList<List<Object>>();
+					List<List<Object>> DBList4 = new ArrayList<List<Object>>();
+					List<List<Object>> DBList5 = new ArrayList<List<Object>>();
+					List<List<Object>> DBList7 = new ArrayList<List<Object>>();
+						System.out.println(Ordnumber);
+						htmlToExtent(cName,mName,extLogger,driver,"Order number-"+Ordnumber+";;;Info");
+						waitFor(0.5);
+						waitForClickOfElement(RecOrdObj.OrderLookup, driver);
+						enterText(RecOrdObj.OrderLookup, Ordnumber,driver);	
+						waitForJSandJQueryToLoad(driver);
+						click(RecOrdObj.ClickGo);
+						waitForJSandJQueryToLoad(driver);
+						String Stat = RecOrdObj.Chckstatus.getText();
+						String TotPallet = RecOrdObj.ChckTotPallet.getText();
+						String Ordertype = RecOrdObj.Chckordtype.getText();
+						List<List<Object>> DBList6=searchedArticleDetailsTable(RecOrdObj,driver);
+						System.out.println("Order details are loaded");
+						if(DBList.get(0).get(0).toString().equals(DBList6.get(0).get(0).toString()) && DBList.get(0).get(1).toString().equals(DBList6.get(0).get(1).toString())&& Stat.equals("DISPATCHED")&& DBList6.get(0).get(3).toString().equals(DBList.get(0).get(4).toString())&& DBList6.get(0).get(6).toString().equals(DBList.get(0).get(5).toString())&&TotPallet.equals("0"))
+						{
+							
+							htmlToExtent(cName,mName,extLogger,driver,"Order number, Delivery Date, Status, Supplier, OrderType, Total Cartons & Total Pallets details are displayed correctly;Local Value is ["+DBList6.get(0).get(0).toString()+","+DBList6.get(0).get(1).toString()+","+DBList6.get(0).get(2).toString()+","+DBList6.get(0).get(3).toString()+","+DBList6.get(0).get(4).toString()+","+DBList6.get(0).get(6).toString()+","+DBList6.get(0).get(7).toString()+"];DB Value is ["+DBList.get(0).get(0).toString()+","+DBList.get(0).get(1).toString()+", DISPATCHED, "+DBList.get(0).get(4).toString()+","+DBList6.get(0).get(4).toString()+","+DBList.get(0).get(5).toString()+",0];Pass");
+						}else
+						{
+							htmlToExtent(cName,mName,extLogger,driver,"Order number, Delivery Date, Status, Supplier, OrderType, Total Cartons & Total Pallets details are displayed correctly;Local Value is ["+DBList6.get(0).get(0).toString()+","+DBList6.get(0).get(1).toString()+","+DBList6.get(0).get(2).toString()+","+DBList6.get(0).get(3).toString()+","+DBList6.get(0).get(4).toString()+","+DBList6.get(0).get(6).toString()+","+DBList6.get(0).get(7).toString()+"];DB Value is ["+DBList.get(0).get(0).toString()+","+DBList.get(0).get(1).toString()+", DISPATCHED, "+DBList.get(0).get(4).toString()+", "+DBList6.get(0).get(4).toString()+","+DBList.get(0).get(5).toString()+",0];Fail");
+						}		
+						
+
+						click(RecOrdObj.ClickOnOrder);
+						waitForJSandJQueryToLoad(driver);
+						htmlToExtent(cName,mName,extLogger,driver,"*** Checking the order header details displayed after opening the order;;;Pass");
+						
+						String OrdNo1 = RecOrdObj.ChckOrdNo.getText();
+						Long OrdNum =  Long.parseLong(OrdNo1.replaceAll("[^0-9\\.]+", ""));
+						String Stat1 = RecOrdObj.Chcksta.getText();
+						String Onshwdt = RecOrdObj.Source.getText();				
+						String Sendingingstore= RecOrdObj.RecStore.getText();
+						String Dlvdate= RecOrdObj.SendStore.getText();
+						String Src= RecOrdObj.Deliverydate.getText();
+						
+						
+						if(OrdNum.toString().equals(DBList.get(0).get(0).toString())  && Stat1.equals("Dispatched") && DBList.get(0).get(4).toString().equals(Sendingingstore)
+								&& DBList.get(0).get(1).toString().equals(Dlvdate)){
+							htmlToExtent(cName,mName,extLogger,driver,"Order Number, Status, Sending Store Name, Delivery Date & Source are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Sendingingstore+", "+Dlvdate+","+Src+","+Onshwdt+"];DB Value is ["+DBList.get(0).get(0).toString()+", Dispatched, "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(1).toString()+","+Src+","+Onshwdt+"];Pass");
+						}else{
+							htmlToExtent(cName,mName,extLogger,driver,"Order Number, Status, Sending Store Name, Delivery Date & Source are displayed correctly in header details;Local Value is ["+OrdNum+", "+Stat1+", "+Sendingingstore+", "+Dlvdate+","+Src+","+Onshwdt+"];DB Value is ["+DBList.get(0).get(0).toString()+", Dispatched, "+DBList.get(0).get(4).toString()+", "+DBList.get(0).get(1).toString()+","+Src+","+Onshwdt+"];Fail");
+							}
+						DBList7= orderDetailsTable1(RecOrdObj,driver);
+						String GetListart = RecOrdObj.GetListofArt.getText();
+						Long GetListart1 =  Long.parseLong(GetListart.replaceAll("[^0-9\\.]+", ""));
+						if(DBList7.get(0).get(0).toString().equals(DBList6.get(0).get(7).toString()) && DBList7.get(0).get(1).toString().equals(DBList.get(0).get(6).toString()) && DBList7.get(1).get(0).toString().equals(DBList.get(0).get(5).toString()) && DBList7.get(1).get(1).toString().equals(DBList.get(0).get(5).toString())
+								&& DBList7.get(2).get(0).toString().equals("NA") && DBList7.get(2).get(1).toString().equals("NA")){
+							htmlToExtent(cName,mName,extLogger,driver,"Pallet Count, Total Articles count, Dispatched Qty, Total Cartons Ordered, Dispatched Weight, Seal Number are displayed correctly in header details;Local Value is ["+DBList7.get(0).get(0).toString()+", "+DBList7.get(0).get(1).toString()+", "+DBList7.get(1).get(0).toString()+", "+DBList7.get(1).get(1).toString()+", "+DBList7.get(2).get(0).toString()+", "+DBList7.get(2).get(1).toString()+"];DB Value is ["+DBList6.get(0).get(7).toString()+", "+DBList.get(0).get(6).toString()+", "+DBList.get(0).get(5).toString()+", "+DBList.get(0).get(5).toString()+", NA, NA];Pass");
+							}else{
+								htmlToExtent(cName,mName,extLogger,driver,"Pallet Count, Total Articles count, Dispatched Qty, Total Cartons Ordered, Dispatched Weight, Seal Number are displayed correctly in header details;Local Value is ["+DBList7.get(0).get(0).toString()+", "+DBList7.get(0).get(1).toString()+", "+DBList7.get(1).get(0).toString()+", "+DBList7.get(1).get(1).toString()+", "+DBList7.get(2).get(0).toString()+", "+DBList7.get(2).get(1).toString()+"];DB Value is ["+DBList6.get(0).get(7).toString()+", "+DBList.get(0).get(6).toString()+", "+DBList.get(0).get(5).toString()+", "+DBList.get(0).get(5).toString()+", NA, NA];Fail");
+								}
+						
+
+						if (GetListart1.toString().equals(DBList.get(0).get(6).toString())){
+							htmlToExtent(cName,mName,extLogger,driver,"List of Articles displayed is;"+GetListart1+";"+DBList.get(0).get(6).toString()+";Pass");
+							}else{
+							htmlToExtent(cName,mName,extLogger,driver,"List of Articles displayed is;"+GetListart1+";"+DBList.get(0).get(6).toString()+";Fail");	
+						}						
+						click(RecOrdObj.Clrgrpby);
+						DBList2= orderDetailsTable2(RecOrdObj,driver);
+						int size=DBList1.size();
+						System.out.println("dblist 2 value="+DBList2);
+						for (int i=0;i<DBList1.size();i++)
+						{
+						/*
+						int TotOrderedQty= Integer.parseInt(DBList1.get(i).get(1).toString())*Integer.parseInt(DBList1.get(i).get(3).toString());
+						String TotOrderedQty1=Integer.toString(TotOrderedQty);
+						String Unit="EA";*/
+						String Str1 = ""+DBList1.get(size-1-i).get(2).toString()+":"+DBVal.get(size-1-i).get(1).toString()+" "+DBVal.get(size-1-i).get(3).toString()+":"+DBVal.get(size-1-i).get(0).toString()+":"+DBVal.get(size-1-i).get(6).toString()+":"+DBVal.get(size-1-i).get(0).toString()+":"+DBVal.get(size-1-i).get(6).toString();
+						Comp.addAll(StringToListCreation(Str1));
+								
+						}
+						ElementContains1(cName, mName,extLogger,driver,  Comp, DBList2);
+						
+						//String NwOm1;
+						String ChilledTemp1;
+						String FrozenTemp1;
+						String DcpQty1= null;
+						String DcpTotQty1= null;
+						
+							
+						System.out.println("Click Receive Order");
+						waitForJSandJQueryToLoad(driver);
+						//htmlToExtent(cName,mName,extLogger,driver,"3200 Site is added successfully in Draft;;;Pass");
+						System.out.println("Site is added in draft");
+						click(RecOrdObj.ClickReceiveOrder);
+						waitForJSandJQueryToLoad(driver);
+						
+						if(RecOrdObj.SessionPopup.getText().equals("Receiving"))
+						{
+							click(RecOrdObj.NwSession);
+							//click(RecOrdObj.ResumeSession);
+							waitForJSandJQueryToLoad(driver);
+							click(RecOrdObj.Receivebyexception);
+							waitForJSandJQueryToLoad(driver);
+							if(RecOrdObj.RecConfirmation1.size()==1)
+							{
+								RecOrdObj.RecConfirmation.click();
+							}
+							
+							waitForJSandJQueryToLoad(driver);
+							if(RecOrdObj.EnterInvoice.isDisplayed()){
+							enterText(RecOrdObj.EnterInvoice, invoice,driver);	}			
+							if(RecOrdObj.TempChillcheck.getAttribute("class").equals("parameter clearfix chilled")){
+								enterText(RecOrdObj.EnterChlTemp, ChilledTemp,driver);
+								waitForJSandJQueryToLoad(driver);
+								htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+ChilledTemp+" is entered;;;Pass");
+								ChilledTemp1 = ChilledTemp;
+								}else{
+								ChilledTemp1 = "NA";
+								}
+
+								scrolldown(driver);
+								
+								if(RecOrdObj.TempFrzncheck.getAttribute("class").equals("parameter clearfix hardFrozen")){
+								enterText(RecOrdObj.EnterFrzTemp, FrozenTemp,driver);
+								waitForJSandJQueryToLoad(driver);
+								htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+FrozenTemp+" is entered;;;Pass");
+								FrozenTemp1 = FrozenTemp;
+								}else{
+								FrozenTemp1 = "NA";
+								}
+							click(RecOrdObj.ClickNextStep);
+							htmlToExtent(cName,mName,extLogger,driver,"--------------Receive Article details-----------------;;;Pass");
+							System.out.println("Confirm the articles to proceed"); 
+							waitForJSandJQueryToLoad(driver);		    	
+				            
+						}
+						else{
+							click(RecOrdObj.Receivebyexception);
+							waitForJSandJQueryToLoad(driver);
+							if(RecOrdObj.RecConfirmation1.size()==1)
+							{
+								RecOrdObj.RecConfirmation.click();
+							}
+							waitForJSandJQueryToLoad(driver);
+							if(RecOrdObj.EnterInvoice.isDisplayed()){
+								enterText(RecOrdObj.EnterInvoice, invoice,driver);	}				
+							if(RecOrdObj.TempChillcheck.getAttribute("class").equals("parameter clearfix chilled")){
+								enterText(RecOrdObj.EnterChlTemp, ChilledTemp,driver);
+								waitForJSandJQueryToLoad(driver);
+								htmlToExtent(cName,mName,extLogger,driver,"Chilled Temperature of "+ChilledTemp+" is entered;;;Pass");
+								ChilledTemp1 = ChilledTemp;
+								}else{
+								ChilledTemp1 = "NA";
+								}
+
+								scrolldown(driver);
+								
+								if(RecOrdObj.TempFrzncheck.getAttribute("class").equals("parameter clearfix hardFrozen")){
+								enterText(RecOrdObj.EnterFrzTemp, FrozenTemp,driver);
+								waitForJSandJQueryToLoad(driver);
+								htmlToExtent(cName,mName,extLogger,driver,"Frozen Temperature of "+FrozenTemp+" is entered;;;Pass");
+								FrozenTemp1 = FrozenTemp;
+								}else{
+								FrozenTemp1 = "NA";
+								}
+						
+						click(RecOrdObj.ClickNextStep);
+						System.out.println("Confirm the articles to proceed");
+						waitForJSandJQueryToLoad(driver);
+						}
+							
+							int a = RecOrdObj.receiveArticleTable.size();
+							for(int i=1;i<= a;i++)	
+							{
+								List app = new ArrayList();
+								if ((i==3)||(i==6)||(i==9)||(i==12)){
+									scrolldown(driver);
+								}else{}
+								for(int j=1;j<=17;j++)
+								{
+									if((j==10)||(j==12))
+									{
+										
+										WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue1, i,j,driver);
+										app.add(table.getText());
+									}
+									else if(j==14){
+										
+
+										WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue1, i,j,driver);
+										app.add(table.getText());
+										String FinalRcvdQty=""+app.get(8).toString();
+										if(table.getText().equals(FinalRcvdQty)){
+											htmlToExtent(cName,mName,extLogger,driver,"Article received is;Local Value is "+ "["+FinalRcvdQty+"];DB Value is "+ "["+table.getText()+"];Pass");
+											
+										}else{
+											htmlToExtent(cName,mName,extLogger,driver,"Article received is;Local Value is "+ "["+FinalRcvdQty+"];DB Value is "+ "["+table.getText()+"];Fail");
+											
+										}
+									}
+									else if(j==13)
+									{
+										WebElement table2 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue2, i,j,driver);
+										WebElement table1 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue3, i,j,driver);
+										WebElement table= prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue4, i,j,driver);
+										 if (table1.getAttribute("class").equals("moreInput wtLabel ")){
+												String Rndmwtold=table.getAttribute("value");
+												String Rcvwtold=table2.getAttribute("value");
+												System.out.printf("Received weight and Random weight are: " +Rcvwtold, Rndmwtold);
+												int RcQynew=generateRandomNumber(1,30);
+												enterText(table2,String.valueOf(RcQynew),driver);
+												enterText(table,NwOM1,driver);
+												app.add(RcQynew);		
+												app.add(NwOM1);	
+												
+											 }else{
+												  table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue2, i,j,driver);	
+												  String Rcvwtold=table2.getAttribute("value");
+												  System.out.println("Received weight is: " +Rcvwtold);
+												  int RcQynew=generateRandomNumber(1,30);
+													enterText(table2,String.valueOf(RcQynew),driver);
+													app.add(RcQynew);
+													app.add("0");
+											 }
+										
+									}
+									else if(j==15){
+										WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue2, i,j,driver);
+									}
+									else if(j==2||j==3||j==16){}
+									else if(j==17)
+									{
+										WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue2, i,j,driver);
+										table.click();						
+									}
+									else
+									{
+										WebElement table = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue, i,j,driver);
+										String f = table.getAttribute("class");
+										if(f.contains("hideBlock"))
+										{}
+										else
+										{
+											app.add(table.getText());
+										}
+									}
+								}
+								applist1.add(app);
+								
+							}
+							System.out.println("applist1 are"+applist1);
+							
+							 for(int i=0; i<size;i++)
+							   {
+								   
+ 								   for(int j=0; j<size;j++){
+								   if(Comp.get(i).get(0).toString().equals(applist1.get(j).get(0).toString()))
+								   {
+									   WebElement table1 = prepareWebElementWithDynamicXpathWithIntInt(RecOrdObj.tablevalue3,(i+1),13,driver);
+									   if (table1.getAttribute("class").equals("moreInput wtLabel ")) {
+									   String Str1 = (""+Comp.get(i).get(0).toString()+":"+Comp.get(i).get(1).toString()+"z"+DBVal.get(i).get(2).toString()+" (EA):"+Comp.get(i).get(2).toString()+":"+Comp.get(i).get(3).toString()+":"+applist1.get(j).get(4).toString()+":"+applist1.get(j).get(5).toString()+":"+applist1.get(j).get(6).toString()+":"+applist1.get(j).get(7).toString()+":"+applist1.get(j).get(8).toString()).replace("z","\n");
+									   Comp1.addAll(StringToListCreation(Str1));
+								   }else{
+
+									   String Str1 = ""+Comp.get(i).get(0).toString()+":"+Comp.get(i).get(1).toString()+":"+Comp.get(i).get(2).toString()+":"+Comp.get(i).get(3).toString()+":"+applist1.get(j).get(4).toString()+":"+applist1.get(j).get(5).toString()+":"+applist1.get(j).get(6).toString()+":"+applist1.get(j).get(7).toString()+":"+applist1.get(j).get(8).toString();
+									   Comp1.addAll(StringToListCreation(Str1));
+								   
+								   }
+									   }
+								   
+								   else{}}}
+							 
+							 ElementContains1(cName, mName,extLogger,driver,  Comp1, applist1);
+							 verticalScroll(driver);
+							click(RecOrdObj.ClickNextStep);
+							waitFor(1);
+							htmlToExtent(cName,mName,extLogger,driver,"--------------Review Discrepancy-----------------;;;Pass");
+							Integer m=0;
+							Integer k=0;Integer l=0;
+							DBList4= discrepancyArticleTable(RecOrdObj);
+							System.out.println("dblist 4 value="+DBList4);
+
+							for(int i=1;i<= DBList4.size();i++)
+											
+							{
+								if ((i==3)||(i==6)||(i==9)||(i==12)){
+									scrolldown(driver);
+								}else{}
+								
+								WebElement sizediffrence = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.Diffrence, i,driver);
+								WebElement sizereason = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.Reason, i,driver);
+								WebElement ChkBox1 = prepareWebElementWithDynamicXpathWithInt(RecOrdObj.Chkbx, i,driver);
+								String Reason1=sizereason.getText();
+								if(Reason1.contains("Pack")){
+									m++;
+								}else if(Integer.parseInt(DBList4.get(i-1).get(5).toString().replaceAll("[^0-9\\.]+", ""))==0 && Reason1.contains("Quantity") ){
+									k++;
+									
+								}else{l++;}
+								
+								String[] OrQt=splitString(DBList4.get(i-1).get(1).toString()," ");
+								float TotDiff = (Float.parseFloat(DBList4.get(i-1).get(6).toString().replaceAll("[^0-9\\.]+", "")))-(Float.parseFloat(OrQt[0])*Float.parseFloat(applist1.get(i-1).get(1).toString().replaceAll("[^0-9\\.]+", "")));
+														
+							if(TotDiff<0)
+							{
+								sizediffrence.getAttribute("class").equals("valueDown");
+								System.out.println("Received Quantity is less than Ordered Quantity");
+								htmlToExtent(cName,mName,extLogger,driver,"Received Quantity is less than Ordered Quantity by;"+TotDiff+";"+TotDiff+";Pass");
+							}
+							else
+							{
+								
+							sizediffrence.getAttribute("class").equals("valueUp");
+							System.out.println("Received Quantity is more than Ordered Quantity");
+							htmlToExtent(cName,mName,extLogger,driver,"Received Quantity is more than Ordered Quantity by;"+TotDiff+";"+TotDiff+";Pass");
+							
+							}
+							click(ChkBox1);
+							}
+							
+							List<List<Object>> applist=new ArrayList<List<Object>>();
+							
+							   for(int i=0; i<DBList4.size();i++)
+							   {
+								   List app = new ArrayList();
+								   for(int p=0; p<DBList1.size();p++){
+								   if(DBList4.get(i).get(0).toString().equals(applist1.get(p).get(0).toString()))
+								   {String[] Unit=splitString(DBList4.get(i).get(5).toString()," ");
+									   for(int j=0; j<=9;j++){
+										   if(j==6){
+											   
+											String Str=""+applist1.get(p).get(j).toString()+" "+Unit[1];
+											 app.add(Str);
+										   }
+										   else if(j==7){
+											   app.add(applist1.get(p).get(8).toString());
+										   }
+											   else if(j==8){										   
+											   app.add(DBList4.get(i).get(7).toString());
+										   }
+										   else if(j==9){
+											   app.add(DBList4.get(i).get(8).toString());
+										   }
+										   else{
+										   app.add(applist1.get(p).get(j).toString());
+								   }}}
+								   
+								   else{}
+								   
+								   
+								   }applist.add(app);
+							   }
+							   removeIndex(applist, "1");
+							   System.out.println("Applist"+applist);
+							   
+							   ElementContains1(cName, mName,extLogger,driver,  applist,DBList4);
+								verticalScroll(driver);
+							click(RecOrdObj.ClickNextStep);
+							/*htmlToExtent(cName,mName,extLogger,driver,"--------------Provide ULD Details-----------------;;;Pass");
+							verticalScroll(driver);
+							click(RecOrdObj.ClickNextStep);*/
+							htmlToExtent(cName,mName,extLogger,driver,"--------------Receive Summary-----------------;;;Pass");
+							List<List<Object>> app = new ArrayList<List<Object>>();
+							List<List<Object>> app1 = new ArrayList<List<Object>>();
+							app=receiveSummaryDetailsTable(app1,RecOrdObj); 
+							Integer Sum=0;
+							
+							for(int i=0;i<DBList1.size();i++)
+							{
+								 Sum+=Integer.parseInt(applist1.get(i).get(6).toString());				
+								 }
+							System.out.println("SUM is "+Sum);
+								
+						if(app.get(1).get(0).toString().equals(DBList.get(0).get(6).toString()) && app.get(1).get(1).toString().equals(DBList.get(0).get(5).toString()) && app.get(2).get(0).toString().equals(DBList.get(0).get(6).toString()))
+						{
+							htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered, Received, Total Cartons Ordered, Received;Local Value is ["+app.get(1).get(0).toString()+", "+app.get(1).get(1).toString()+", "+app.get(2).get(0).toString()+", "+app.get(2).get(1).toString()+"]; DB Value is ["+DBList.get(0).get(6).toString()+", "+DBList.get(0).get(5).toString()+", "+DBList.get(0).get(6).toString()+", "+app.get(2).get(1).toString()+"];Pass");
+						}
+						else{
+				
+							htmlToExtent(cName,mName,extLogger,driver,"Total Articles Ordered, Received, Total Cartons Ordered, Received;Local Value is ["+app.get(1).get(0).toString()+", "+app.get(1).get(1).toString()+", "+app.get(2).get(0).toString()+", "+app.get(2).get(1).toString()+"]; DB Value is ["+DBList.get(0).get(6).toString()+", "+DBList.get(0).get(5).toString()+", "+DBList.get(0).get(6).toString()+", "+app.get(2).get(1).toString()+"];Fail");
+				}
+						if(app.get(3).get(0).toString().equals((m.toString()))&& app.get(3).get(1).toString().equals(k.toString())&&app.get(3).get(2).toString().equals(l.toString()))
+						{
+							htmlToExtent(cName,mName,extLogger,driver,"Pack size, Zero Qty,Other Qty are;Local Valuse is ["+app.get(3).get(0).toString()+","+app.get(3).get(1).toString()+","+app.get(3).get(2).toString()+"];DB Value is["+m+","+k+","+l+"];Pass");
+						}else{
+							htmlToExtent(cName,mName,extLogger,driver,"Pack size, Zero Qty,Other Qty are;Local Valuse is ["+app.get(3).get(0).toString()+","+app.get(3).get(1).toString()+","+app.get(3).get(2).toString()+"];DB Value is["+m+","+k+","+l+"];Fail");
+						}
+						click(RecOrdObj.SubmitReceiving);
+						waitForJSandJQueryToLoad(driver);
+						click(RecOrdObj.ConfPopUp);	
+						waitForJSandJQueryToLoad(driver);
+						htmlToExtent(cName,mName,extLogger,driver,"--------------Received Details-----------------;;;Pass");
+						if(RecOrdObj.SuccessMsg.getText().equals("Receiving Details Posted Successfully")){
+							RecOrdObj.CloseMsg.click();	
+							htmlToExtent(cName,mName,extLogger,driver,"Receiving Details Posted Successfully;;;Pass");
+						}else{
+							htmlToExtent(cName,mName,extLogger,driver,"Receiving Details Posted Successfully;;;Fail");
+						}
+						RecOrdObj.clearbyRcvdArt.click();
+						List<List<Object>> app2 = new ArrayList<List<Object>>();
+						//List<List<Object>> app4 = new ArrayList<List<Object>>();
+						List<List<Object>> app3= receivedArticleDetailsTable(app2,driver);
+						System.out.println("app3 details are "+app3);
+						List<List<Object>> app5=ReceivedItemTableDetails( RecOrdObj);
+						removeIndex(app5, "11");
+						removeIndex(app5, "10");
+						removeIndex(app5, "2");
+						removeIndex(app5, "1");
+						//float TotWt=Float.parseFloat(NwOM1)*DBList.size();
+						
+						if (app3.get(0).get(1).toString().equals(DBList6.get(0).get(7).toString())&& app3.get(0).get(2).toString().equals(DBList.get(0).get(6).toString())&& app3.get(0).get(3).toString().equals(app.get(2).get(1).toString())&&app3.get(0).get(5).toString().equals(app.get(1).get(1).toString()))
+						{
+							
+							
+							
+							htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets,Total Articles,Total Carton Received, Total Dispatched Qty,Total Cartons Orderd,Total Weight Received,Total Dispatched Weight and Total Pallets returned are;Local Valuse is ["+app3.get(0).get(0).toString()+", "+app3.get(0).get(1).toString()+","+app3.get(0).get(2).toString()+","+app3.get(0).get(3).toString()+", "+app3.get(0).get(4).toString()+", "+app3.get(0).get(5).toString()+","+decimalFormat1(app3.get(0).get(6).toString())+", "+app3.get(0).get(7).toString()+","+app3.get(0).get(8).toString()+","+app3.get(0).get(9).toString()+", "+app3.get(0).get(10).toString()+","+app3.get(0).get(11).toString()+"]; DB Value is [NA ,"+DBList6.get(0).get(7).toString()+","+DBList.get(0).get(6).toString()+","+app.get(2).get(1).toString()+", NA ,"+app.get(1).get(1).toString()+",0 , NA ,0 ,0 ,0 , NA];Pass");
+						}else{
+							htmlToExtent(cName,mName,extLogger,driver,"Total Pallets Received, Total Pallets,Total Articles,Total Carton Received, Total Dispatched Qty,Total Cartons Orderd,Total Weight Received,Total Dispatched Weight and Total Pallets returned are;Local Valuse is ["+app3.get(0).get(0).toString()+", "+app3.get(0).get(1).toString()+","+app3.get(0).get(2).toString()+","+app3.get(0).get(3).toString()+", "+app3.get(0).get(4).toString()+", "+app3.get(0).get(5).toString()+","+decimalFormat1(app3.get(0).get(6).toString())+", "+app3.get(0).get(7).toString()+","+app3.get(0).get(8).toString()+","+app3.get(0).get(9).toString()+", "+app3.get(0).get(10).toString()+","+app3.get(0).get(11).toString()+"]; DB Value is [NA ,"+DBList6.get(0).get(7).toString()+","+DBList.get(0).get(6).toString()+","+app.get(2).get(1).toString()+", NA ,"+app.get(1).get(1).toString()+",0 , NA ,0 ,0 ,0 , NA];Fail");
+						}			
+						htmlToExtent(cName,mName,extLogger,driver,"Received date, Received By, Receiving Method are;Local Valuse is ["+app3.get(1).get(0).toString()+":"+app3.get(1).get(1).toString()+":"+app3.get(1).get(2).toString()+","+app3.get(1).get(3).toString()+", "+app3.get(1).get(4).toString()+"]; DB Value is ["+app3.get(1).get(0).toString()+":"+app3.get(1).get(1).toString()+":"+app3.get(1).get(2).toString()+","+app.get(0).get(0).toString()+", RECEIVE BY EXCEPTION];Pass");
+						htmlToExtent(cName,mName,extLogger,driver,"Chilled Temprature, Frozen Temprature are;Local Valuse is ["+app3.get(2).get(0).toString()+" ,"+app3.get(2).get(1).toString()+"]; DB Value is ["+app3.get(2).get(0).toString()+" ,"+app3.get(2).get(1).toString()+"];Pass");
+						htmlToExtent(cName,mName,extLogger,driver," Invoice, Seal Number are;Local Valuse is ["+app3.get(3).get(0).toString()+" ,"+app3.get(3).get(1).toString()+"]; DB Value is [NA, NA];Pass");
+						
+						for (int i=0;i<DBList1.size();i++){
+							//Comp2;
+							 List app6 = new ArrayList();							 
+							 for(int p=0; p<DBList1.size();p++)
+							 {
+							   if(app5.get(i).get(0).toString().equals(applist1.get(p).get(0).toString()))
+							   {
+								   for(int j=0; j<=8;j++)
+								   {
+									   if(j==6)
+									   {
+										   if(DBList1.get(i).get(6).toString().equals("Y"))
+										   {
+										String Str=""+applist1.get(p).get(j).toString()+" "+DBList1.get(size-1-i).get(4).toString()+" ("+applist1.get(p).get(j+1).toString()+" EA)";
+										app6.add(Str);
+									   }else{
+										   String Str=""+applist1.get(p).get(j).toString()+" "+DBList1.get(size-1-i).get(4).toString();
+												   app6.add(Str);
+									   }
+									   }
+									   else if(j==7){}
+										   
+									   else{
+										   app6.add(applist1.get(p).get(j).toString());
+							   }
+							}
+						}
+							   
+							   else{}
+							   
+							 }Comp2.add(app6);
+						}
+						 ElementContains1(cName, mName,extLogger,driver,  Comp2, app5);
+						
+			}
+	
+}
+
+

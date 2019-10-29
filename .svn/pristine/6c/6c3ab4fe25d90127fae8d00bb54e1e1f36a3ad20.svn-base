@@ -1,0 +1,428 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.OrderCreationObjects;
+import au.wow.ngbomain.objects.OrderUpdationObject;
+import au.wow.ngbomain.tests.OrderCreationTests;
+
+public class OrderCreationPage extends BasePage{
+	
+	CommonFunctions common = PageFactory.initElements(OrderCreationTests.driver, CommonFunctions.class);
+	private Logger log = LogManager.getLogger(OrderCreationTests.class);
+	//SQLWrapper sql = PageFactory.initElements(OrderCreationTests.driver, SQLWrapper.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	public static XMLDataReader data;
+
+	ExtentTest extLogger=OrderCreationTests.extLogger;
+	String cName= OrderCreationTests.cName;
+	String mName=OrderCreationTests.mName;
+    WebDriver driver;
+    boolean isTrue = true;
+    public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+    
+    
+    public void toOrderEnqPage(OrderCreationObjects objOrderCreateObject,WebDriver driver) throws AWTException{
+		//waitForJSandJQueryToLoad(driver);; 
+		waitFor(5);
+		Point coordinates = objOrderCreateObject.orders.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(objOrderCreateObject.orders).click().build().perform();	
+		waitFor(5);
+		
+		Point coordinates2 = objOrderCreateObject.orderEnquiry.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates2.getX(),coordinates2.getY()+100);
+		
+	
+		action.moveToElement(objOrderCreateObject.orderEnquiry).click().build().perform();
+		waitFor(5);
+		
+		waitForJSandJQueryToLoad(driver);
+		
+	}
+
+    public void delCreatedOrderOfSameDate(OrderCreationObjects objOrderCreateObject,String originalDate,WebDriver driver) throws AWTException{
+    	
+    	int k=1,i=1;
+    	try{
+    		do{
+    			WebElement delDate = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.previousOrder, i, driver);
+    			String alreadyDelDate = delDate.getText().substring(delDate.getText().indexOf(":")+1).trim();
+    			String reqDate = alreadyDelDate.replace("/", "");
+    			if(alreadyDelDate.equals(originalDate)){
+    				WebElement exp = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.expander, k, driver);
+    				exp.click();
+    				List<WebElement> delete = prepareListWebElementWithDynamicXpathWithString(objOrderCreateObject.deleteArticle, reqDate, driver);
+    				for(int n=1;n<=delete.size();n++){
+    					WebElement deleteBtn = prepareWebElementWithDynamicXpathWithString(objOrderCreateObject.deleteArticle,reqDate, driver);
+    					deleteBtn.click();
+    					try{
+    						objOrderCreateObject.deletePopUp.isDisplayed();
+    						objOrderCreateObject.deleteYesBtn.click();
+    						waitForJSandJQueryToLoad(driver);
+    					}
+    					catch(Exception e){
+
+    					}
+    				}
+    			}
+    			else{
+    				k++;
+    			}
+    			i=i+2;
+    		}while(i<=objOrderCreateObject.alreadyCreatedOrderList.size()/2);
+    	}catch(Exception e){
+
+    	}
+    }
+
+    
+    
+    public String openingOrderDraft(OrderCreationObjects objOrderCreateObject,String originalDate,List<List<Object>>quantity,List<String>articlenum,boolean isaltVendor,WebDriver driver) throws AWTException, SQLException, IOException{
+    	int k=1;
+    	if(objOrderCreateObject.afterCreationList.size() == 2){
+    		WebElement delDateAfter = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.afterCreation, k, driver);
+    		String delDate = delDateAfter.getText().substring(delDateAfter.getText().indexOf(":")+1).trim();
+    		if(delDate.equals(originalDate)){
+    			WebElement expAfter = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.afterCreationExp, k, driver);
+    			expAfter.click();
+    		}
+    	}else{
+    		for(int i=1;i<=objOrderCreateObject.afterCreationList.size()-2;i++){
+    			WebElement delDateAfter = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.afterCreation, k, driver);
+    			String delDate = delDateAfter.getText().substring(delDateAfter.getText().indexOf(":")+1).trim();
+    			if(delDate.equals(originalDate)){
+    				WebElement expAfter = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.afterCreationExp, k, driver);
+    				expAfter.click();
+    				break;
+    			}
+    			k=k+2;
+    		}
+    	}   	
+    	verticalScroll(driver);
+    	//String date="";
+    	if(isaltVendor){
+    		originalDate = alternateVendorCheck(objOrderCreateObject, originalDate, driver);
+    	}
+    	if(objOrderCreateObject.validateBtn.size()>1){
+    		for(int n=1;n<=objOrderCreateObject.validateBtn.size();n++){
+    			try{
+    				WebElement validateDync = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.validate, n, driver);
+    				if(validateDync.isDisplayed()){
+    					validateDync.click();
+    				}
+    			}
+    			catch(Exception e){
+    				continue;
+    			}
+    		}	
+    	}
+    	else{
+    		objOrderCreateObject.singelValidateBtn.click();
+    	}
+    	
+    	return originalDate;
+
+    }
+    
+    public void createBtn(OrderCreationObjects objOrderCreateObject,WebDriver driver) throws AWTException{
+    	
+    	if(objOrderCreateObject.createBtn.size()>1){
+    		for(int n=1;n<=objOrderCreateObject.createBtn.size();n++){
+    			try{
+    				WebElement createDync = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.create, n, driver);
+    				if(createDync.isDisplayed()){
+    					createDync.click();
+    				}
+    			}
+    			catch(Exception e){
+    				continue;
+    			}
+    		}	
+    	}
+    	else{
+    		objOrderCreateObject.singelcreateBtn.click();
+    	}
+
+    }   
+    
+    
+    public void pbdArticleSelection(OrderCreationObjects objOrderCreateObject,WebDriver driver){
+    	
+    	try{
+    		if(objOrderCreateObject.pbdPopUp.isDisplayed()){
+    			int i = ThreadLocalRandom.current().nextInt(1,objOrderCreateObject.pbdList.size())+1;
+    			WebElement pbdCheck = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.pbdCheckBox, i, driver);
+    			pbdCheck.click();
+    			objOrderCreateObject.pbdArticleAddToList.click();
+    			waitForJSandJQueryToLoad(driver);
+    		}
+    	}catch(Exception e){
+
+    	}
+    }
+    
+    public void errorArticleDelete(OrderCreationObjects objOrderCreateObject,String supplier,WebDriver driver) throws AWTException{
+    	
+    	ArrayList<String> errArticle = new ArrayList<String>();
+    	if(objOrderCreateObject.errorArticleList.size()!=0){
+    		htmlToExtent(cName,mName,extLogger,driver, objOrderCreateObject.errorMessage.getText()+";;;Info");
+    		for(int i=1;i<=objOrderCreateObject.errorArticleList.size();i++){
+    			WebElement errorArtNumber = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.errorArticle, i, driver);
+    			errArticle.add(errorArtNumber.getText().substring(0,errorArtNumber.getText().indexOf("-")).replace("Article","").trim());
+    		}
+    		
+    		objOrderCreateObject.errorMessage.click();
+        	objOrderCreateObject.cancelCreation.click();
+        	
+        	htmlToExtent(cName,mName,extLogger,driver, "*****Deleting error article from the order draft*****;;;Info");
+        	for(int j=1;j<=errArticle.size();j++){
+        		htmlToExtent(cName,mName,extLogger,driver, "Deleting article #"+errArticle.get(j)+";;;Pass");
+        		WebElement errDeleBtn = prepareWebElementWithDynamicXpathWithStringInt(objOrderCreateObject.errorArticleDelete,errArticle.get(j),Integer.parseInt(supplier), driver);
+        		errDeleBtn.click();
+        		waitForElement(objOrderCreateObject.deletePopUp, driver);
+        		objOrderCreateObject.deleteYesBtn.click();
+        	}
+        	//addingArticles(objOrderCreateObject, errArticle.size(), articleresult, delDate,supplier, driver);
+        	objOrderCreateObject.singelValidateBtn.click();
+    	}
+    	else{
+    		htmlToExtent(cName,mName,extLogger,driver, "There are no error article added to draft;;;Info");
+    	}
+    	
+    }
+    
+    public void checkDeliveryDate(OrderCreationObjects objOrderCreateObject,String cDate,String availableDelDate,String ordertype,WebDriver driver){
+    	
+    	int k=1;
+    	List<WebElement> size = prepareListWebElementWithDynamicXpathWithString(objOrderCreateObject.del, cDate, driver);
+    	if(size.size()==2){
+			WebElement delDate = prepareWebElementWithDynamicXpathWithStringInt(objOrderCreateObject.deliveryDateDync,cDate, k, driver);
+			WebElement artnum = prepareWebElementWithDynamicXpathWithStringInt(objOrderCreateObject.articledync,cDate, k, driver);
+    		if(availableDelDate.equals(delDate.getAttribute("value"))){
+    			htmlToExtent(cName,mName,extLogger,driver, "Article #"+artnum.getText()+" delivery date been updated properly;;;Pass");
+    		}
+    		else{
+    			htmlToExtent(cName,mName,extLogger,driver, "Article #"+artnum.getText()+" delivery date not updated properly;;;Fail");
+    		}
+    	}
+    	else{
+    		for(int i=1;i<=size.size()/2;i++){
+    			WebElement delDate = prepareWebElementWithDynamicXpathWithStringInt(objOrderCreateObject.deliveryDateDync,cDate, k, driver);
+    			WebElement artnum = prepareWebElementWithDynamicXpathWithStringInt(objOrderCreateObject.articledync,cDate, k, driver);
+    			if(availableDelDate.equals(delDate.getAttribute("value"))){
+    				htmlToExtent(cName,mName,extLogger,driver, "Article #"+artnum.getText()+" delivery date been updated with "+ordertype+" delivery date;;;Pass");
+    			}
+    			else{
+    				htmlToExtent(cName,mName,extLogger,driver, "Article #"+artnum.getText()+" delivery date not updated with "+ordertype+" delivery date;;;Fail");
+    			}
+    			k=k+2;
+    		}
+    	}
+    	
+    }
+    
+    public void articleDetailsCheck(OrderCreationObjects objOrderCreateObject,String deliveryDate,List<List<Object>>quantity,List<List<Object>>articlenumber,WebDriver driver) throws SQLException, IOException{
+    	
+    	List<List<Object>> articledetails = new ArrayList<List<Object>>();
+    	List<List<Object>> artUOM = new ArrayList<List<Object>>();
+    	List<List<Object>> articledetailsDB = new ArrayList<List<Object>>();
+    	List<List<Object>> artResult = new ArrayList<List<Object>>();
+    	List<WebElement> artdetail = prepareListWebElementWithDynamicXpathWithString(objOrderCreateObject.articleDetails, deliveryDate.replace("/","").trim(), driver);
+    	articledetails = getValuesFromTable(artdetail);
+    	
+    	int size = articledetails.size();
+    	for(int i=0;i<size/2;i++){
+    		articledetails.remove(i+1);
+    	}
+    	
+    	for(int j=17;j>=11;j--){
+    		articledetails = removeIndex(articledetails, Integer.toString(j));
+    	}
+    	
+    	articledetails = removeIndex(articledetails, Integer.toString(9));
+    	articledetails = removeIndex(articledetails, Integer.toString(8));
+    	articledetails = removeIndex(articledetails, Integer.toString(5));
+    	articledetails = removeIndex(articledetails, Integer.toString(0));
+    	articledetails = removeIndex(articledetails, Integer.toString(6));
+    	
+    	//[[140818, C/H Potted Boronia Medium, 0, CAR, 12 EA, 36 EA, Verified]
+    	//[[140818, C/H Potted Boronia Medium, 0.000, CAR, 12.000 EA, 36.000 EA, Verified]
+    	//[[140818, C/H Potted Boronia Medium, 0.000, CAR, 12.000 EA, 72.000 EA, Verified],
+    	
+    	for(int i=0;i<articledetails.size();i++){
+    		articledetails.get(i).set(2, String.format("%.03f", Float.parseFloat(articledetails.get(i).get(2).toString())));
+    		String om[] = articledetails.get(i).get(4).toString().split(" ");
+    		String om1 = String.format("%.03f", Float.parseFloat(om[0]));
+    		articledetails.get(i).set(4, om1+" "+om[1]);
+    		String totalU[] = articledetails.get(i).get(5).toString().split(" ");
+    		String totalU1 = String.format("%.03f", Float.parseFloat(totalU[0]));
+    		articledetails.get(i).set(5, totalU1+" "+totalU[1]);
+    	}
+    	    	
+    	//[[140818, C/H Potted Boronia Medium, 0.000, CAR, 12.000]]
+    	
+    	for(int i=0;i<articlenumber.size();i++){
+    		String articleDetailsFromDB = testdata.getText("articledetailsDB").replace("article",articlenumber.get(i).get(0).toString());
+        	artResult = sql.executeQuery(getContext(), articleDetailsFromDB);
+        	for(int j=0;j<articlenumber.size();j++)
+        		if(artResult.get(0).get(0).toString().equals(quantity.get(j).get(0).toString())){
+        			String articleuom = testdata.getText("baseuom").replace("article",artResult.get(0).get(0).toString());
+                	artUOM = sql.executeQuery(getContext(), articleuom);
+        			String tempDB = artResult.get(0).get(0).toString()+":"+artResult.get(0).get(1).toString().trim().replaceAll("\\s{2,}"," ")+":"+artResult.get(0).get(2).toString()+":"+artResult.get(0).get(3).toString()+":"+artResult.get(0).get(4).toString()+" "+artUOM.get(0).get(0).toString()+":"+String.format("%.03f", ((Float.parseFloat(artResult.get(0).get(4).toString())*Float.parseFloat(quantity.get(j).get(1).toString()))))+" "+artUOM.get(0).get(0).toString();
+        			articledetailsDB.addAll(StringToListCreation(tempDB));
+        			System.out.println(articledetailsDB);
+        			break;
+        		}
+        		else{
+        			continue;
+        		}
+
+    	}
+    	htmlToExtent(cName,mName,extLogger,driver, "*****Comparing article details in draft between DB and Application*****;;;Info");
+    	ElementContains1(cName,mName,extLogger,driver,articledetails,articledetailsDB); 
+    }
+    
+    public String alternateVendorCheck(OrderCreationObjects objOrderCreateObject,String delDate,WebDriver driver){
+    	
+    	List<List<Object>> alternateVendor = new ArrayList<List<Object>>();
+    	List<WebElement> artSize = prepareListWebElementWithDynamicXpathWithString(objOrderCreateObject.artSize,delDate.replace("/", ""), driver);
+    	
+    	int j=1;
+    	do{
+    		WebElement artExpand = prepareWebElementWithDynamicXpathWithStringInt(objOrderCreateObject.article, delDate.replace("/", ""), j, driver);
+    		artExpand.click();
+    		htmlToExtent(cName,mName,extLogger,driver, "Default vendor for article is "+objOrderCreateObject.alternateVendorEdit.getText()+";;;Pass");
+        	objOrderCreateObject.alternateVendorEdit.click();
+        	waitForJSandJQueryToLoad(driver);
+        	if((objOrderCreateObject.alternateVendorPagination.size()-2) > 1){
+        		htmlToExtent(cName,mName,extLogger,driver,"Alternate vendor popup window has been displayed;;;Pass");
+        		for(int i=2;i<objOrderCreateObject.alternateVendorPagination.size();i++){
+        			WebElement page = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.altPage, i, driver);
+        			page.click();
+        			waitForJSandJQueryToLoad(driver);
+        			alternateVendor = getValuesFromTable(objOrderCreateObject.alternateVendors);
+        		}
+        		WebElement page = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.altPage, 2, driver);
+        		page.click();
+    			waitForJSandJQueryToLoad(driver);
+        	}
+        	else{
+        		alternateVendor = getValuesFromTable(objOrderCreateObject.alternateVendors);
+        	}
+        	System.out.println(alternateVendor); 
+        	
+        	//for(int k=1;k<=objOrderCreateObject.alternateVendors.size();k++){
+        	int randNum;
+        	if(objOrderCreateObject.alternateVendors.size()==1){randNum=1;}
+        	else{randNum = ThreadLocalRandom.current().nextInt(1,objOrderCreateObject.alternateVendors.size());}
+        	WebElement randVendor = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.randVendor, randNum, driver);
+        	htmlToExtent(cName,mName,extLogger,driver, "*****Selecting random vendor form the alternate vendor popup*****;;;Info");
+        	WebElement randVendorNumber = prepareWebElementWithDynamicXpathWithIntInt(objOrderCreateObject.vendorDetails,randNum, 1, driver);
+        	htmlToExtent(cName,mName,extLogger,driver, "Random Vendor number selected is "+randVendorNumber.getText()+";;;Pass");
+        	WebElement randVendorName = prepareWebElementWithDynamicXpathWithIntInt(objOrderCreateObject.vendorDetails,randNum, 2, driver);
+        	htmlToExtent(cName,mName,extLogger,driver, "Random Vendor name selected is "+randVendorName.getText()+";;;Pass");
+        	WebElement randVendorSelect = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.vendorSelect,randNum, driver);
+        	randVendorSelect.click();
+        	waitForJSandJQueryToLoad(driver);
+	    	//}
+        	
+    		j=j+2;
+    	}while(j<=artSize.size()/2);
+	
+    	isTrue = false;
+    	int i=1,k=1;
+    	//do{
+    			WebElement delDateAfter = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.afterCreation, 1, driver);
+    			String delDate1 = delDateAfter.getText().substring(delDateAfter.getText().indexOf(":")+1).trim();
+    			//if(delDate.equals(delDate1)){
+    				WebElement expAfter = prepareWebElementWithDynamicXpathWithInt(objOrderCreateObject.afterCreationExp, 1, driver);
+    				expAfter.click();
+    				driver.findElement(By.xpath("//*[contains(@class,'orderQty')]")).clear();
+    				driver.findElement(By.xpath("//*[contains(@class,'orderQty')]")).sendKeys("2");
+    				String actualDate = driver.findElement(By.xpath("//*[contains(@class,'delivery_date_valid')]")).getAttribute("value");
+    				driver.findElement(By.xpath("//*[contains(@class,'delivery_date_valid')]")).clear();
+    				driver.findElement(By.xpath("//*[contains(@class,'delivery_date_valid')]")).sendKeys(delDate);
+    			//	break;
+    			//}
+    			//k=k+2;
+    			//i++;
+    		//}while(i<=objOrderCreateObject.afterCreationList.size()/2);   	
+    	verticalScroll(driver);
+    	return actualDate;
+    }
+    
+   /* public void addingArticles(OrderCreationObjects objOrderCreateObject,int sizeOfLoop,List<List<Object>> articleresult,String delDate,String supplier,WebDriver driver) throws  AWTException {
+    	
+    	htmlToExtent(cName,mName,extLogger,driver, "*****Adding articles to draft*****;;;Info");
+    	int totalQty =0;
+		for(int i=0;i<sizeOfLoop;i++){
+			
+			waitForJSandJQueryToLoad(driver);
+			int rand = ThreadLocalRandom.current().nextInt(1,articleresult.size());
+			String article = articleresult.get(rand).get(0).toString();
+			//int indexOfArticle = articleresult.indexOf(articleresult.get(rand).get(0).toString());
+			//articleresult.remove(indexOfArticle);
+			objOrderCreateObject.articleSend.sendKeys(article);
+			String randQty = Integer.toString(ThreadLocalRandom.current().nextInt(1,7)+1);
+			totalQty = totalQty + Integer.parseInt(randQty);
+			objOrderCreateObject.orderQty.sendKeys(randQty);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "Article #"+articleresult.get(i).get(0).toString()+" of quantity "+randQty+" is added to draft;;;Pass");
+											
+			objOrderCreateObject.delDate.sendKeys(delDate);
+			objOrderCreateObject.createOrder.click();
+			waitFor(1);
+			objOrderCreateObject.searchBtn.click();
+			pbdArticleSelection(objOrderCreateObject, driver);
+			
+			try{
+				waitForElement(objOrderCreateObject.createOrderPopUp, driver);
+				objOrderCreateObject.createOrderPopUp.isDisplayed();
+				objOrderCreateObject.noBtn.click();
+			}
+			catch(Exception e){
+				
+			}
+			
+			objOrderCreateObject.articleSend.clear();
+		}
+		
+		//System.out.println(articleNumber);
+		
+		openingOrderDraft(objOrderCreateObject, delDate, driver);
+		htmlToExtent(cName,mName,extLogger,driver, "*****Verifing the Draft Order*****;;;Info");
+		errorArticleDelete(objOrderCreateObject, supplier,articleresult,delDate, driver);
+    	
+    }
+    
+   */ 
+    
+    
+}

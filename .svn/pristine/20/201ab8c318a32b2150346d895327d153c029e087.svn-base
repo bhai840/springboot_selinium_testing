@@ -1,0 +1,1313 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbomain.objects.GoodsMovementObjects;
+import au.wow.ngbomain.objects.InstoreOMAObject;
+import au.wow.ngbomain.objects.StockAdjObjects;
+import au.wow.ngbomain.objects.StockTakeObjects;
+import au.wow.ngbomain.objects.ltoreportobjects;
+import au.wow.ngbomain.objects.oocreportobjects;
+import au.wow.ngbomain.tests.AdjustmentLogReportTests;
+import au.wow.ngbomain.tests.GoodsMovementTests;
+
+public class GoodsMovementPage extends BasePage {
+
+	WebDriver driver ;
+	CommonFunctions common = PageFactory.initElements(driver,
+			CommonFunctions.class);
+	private Logger log = LogManager.getLogger(GoodsMovementTests.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	ExtentTest extLogger=GoodsMovementTests.extLogger;
+	String cName= GoodsMovementTests.cName;
+	String mName=GoodsMovementTests.mName;
+	public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+	public void ClickonReport(GoodsMovementObjects objGoodsObjects,WebDriver driver) throws AWTException{
+		waitForJSandJQueryToLoad(driver);
+		verticalScroll(driver);
+		waitForElement(objGoodsObjects.Reports,driver);
+		Point coordinates = objGoodsObjects.Reports.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+		waitFor(1);
+		Actions action = new Actions(driver);
+		action.moveToElement(objGoodsObjects.Reports).click().build()
+		.perform();
+		waitForJSandJQueryToLoad(driver);
+		waitForElement(objGoodsObjects.Stockmgmt,driver);
+		waitFor(1);
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objGoodsObjects.Stockmgmt).click().build()
+		.perform();
+		waitFor(1);
+		Actions action1 = new Actions(driver);
+		action1.moveToElement(objGoodsObjects.GoodsReport1).click().build().perform();
+		robot.mouseMove(5, 5);
+		waitForJSandJQueryToLoad(driver);
+	}
+
+	public void clickOnstockAdj(GoodsMovementObjects objGoodsObjects,WebDriver driver) throws AWTException{
+		waitForJSandJQueryToLoad(driver);
+		verticalScroll(driver);
+		waitForElement(objGoodsObjects.STManagement,driver);
+		Point coordinates = objGoodsObjects.STManagement.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+		waitFor(1);
+		Actions action = new Actions(driver);
+		action.moveToElement(objGoodsObjects.STManagement).click().build()
+		.perform();
+		waitForJSandJQueryToLoad(driver);
+		waitForElement(objGoodsObjects.STAdj,driver);
+		waitFor(1);
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objGoodsObjects.STAdj).click().build()
+		.perform();
+		waitFor(1);
+		robot.mouseMove(5, 5);
+		waitForJSandJQueryToLoad(driver);
+	}
+
+	public void clickOnStockTranfer(GoodsMovementObjects objGoodsObjects,WebDriver driver) throws AWTException{
+		waitForJSandJQueryToLoad(driver);
+		verticalScroll(driver);
+		waitForElement(objGoodsObjects.STManagement,driver);
+		Point coordinates = objGoodsObjects.STManagement.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+		waitFor(1);
+		Actions action = new Actions(driver);
+		action.moveToElement(objGoodsObjects.STManagement).click().build()
+		.perform();
+		waitForJSandJQueryToLoad(driver);
+		waitForElement(objGoodsObjects.STTransfer,driver);
+		waitFor(1);
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objGoodsObjects.STTransfer).click().build()
+		.perform();
+		waitFor(1);
+
+		robot.mouseMove(5, 5);
+		waitForJSandJQueryToLoad(driver);
+
+	}
+
+	public void clickOnRTV(GoodsMovementObjects objGoodsObjects,WebDriver driver) throws AWTException{
+		waitForJSandJQueryToLoad(driver);
+		verticalScroll(driver);
+		waitForElement(objGoodsObjects.STManagement,driver);
+		Point coordinates = objGoodsObjects.STManagement.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+		waitFor(1);
+		Actions action = new Actions(driver);
+		action.moveToElement(objGoodsObjects.STManagement).click().build()
+		.perform();
+		waitForJSandJQueryToLoad(driver);
+		waitForElement(objGoodsObjects.RTV,driver);
+		waitFor(1);
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objGoodsObjects.RTV).click().build()
+		.perform();
+		waitFor(1);
+
+		Actions action1 = new Actions(driver);
+		action1.moveToElement(objGoodsObjects.NewClaim).click().build().perform();
+		robot.mouseMove(5, 5);
+		waitForJSandJQueryToLoad(driver);
+
+	}
+
+
+
+	public void DeletePreArticles(GoodsMovementObjects objGoodsObjects,WebDriver driver) throws ParseException, IOException {
+
+		
+		verticalScroll(driver);		
+		//waitFor(1);
+		int DeleteRecordsSize = objGoodsObjects.DeleteSize.size();
+		//System.out.println(DeleteRecordsSize);
+		for(int i=1; i<=DeleteRecordsSize ; i++)
+		{
+			WebElement delete =  prepareWebElementWithDynamicXpathWithInt(objGoodsObjects.deletedraftdynamic, 1,driver);
+			delete.click();
+			waitFor(3);
+			objGoodsObjects.OKButton.click();
+		}
+
+		//System.out.println("Article deleted in the draft");
+	}
+	
+	public void SelectStore(GoodsMovementObjects objGoodsObjects,WebDriver driver) throws ParseException, IOException {
+		System.out.println(objGoodsObjects.StoresList.size());
+		int j=1;
+	for(int i=1;i<=objGoodsObjects.StoresList.size() ; i=i+2)
+	{
+	
+		WebElement Stores =  prepareWebElementWithDynamicXpathWithInt(objGoodsObjects.PickStore, i,driver);
+		System.out.println(Stores);
+		String St_Name=Stores.getText();
+		System.out.println(St_Name);
+		if(St_Name.contains("3200"))
+		{
+			WebElement Stores1 =  prepareWebElementWithDynamicXpathWithInt(objGoodsObjects.Expand1, j,driver);
+			System.out.println(Stores1);
+			Stores1.click();
+			break;
+		}
+		j++;
+	}
+	
+	}
+
+
+	protected List<List<Object>> removeExtraSpaces(List<List<Object>> one,int position) throws IOException {
+		for (Iterator<List<Object>> it = one.iterator(); it.hasNext();) {
+			List<Object> elem = it.next(); 
+			for(int i =0;i<elem.size();i++) {
+				if(i==position){
+					String s = elem.get(i).toString().replaceAll("\\s{2,}"," ");
+					elem.set(i, s);
+				}
+			}
+		}
+		return one;
+	}
+
+	public void ApplicationValuesSales(GoodsMovementObjects objGoodsObjects,List<List<Object>> results,WebDriver driver )
+			throws IOException {
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		for(int i=0;i<objGoodsObjects.RecordsSize.size();i++)
+		{
+			try{
+				List<Object> FirstValue = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicUOM.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicPrevSoh.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicNewSoh.replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtNumber=driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtDesc=driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempUOM=driver.findElement(By.xpath(objGoodsObjects.DynamicUOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempPrevSoh=driver.findElement(By.xpath(objGoodsObjects.DynamicPrevSoh.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempNewSoh=driver.findElement(By.xpath(objGoodsObjects.DynamicNewSoh.toString().replace("dynamic",Integer.toString(i)))).getText();
+				FirstValue.add(tempArtNumber);
+				FirstValue.add(tempArtDesc);
+				FirstValue.add(tempUOM);
+				FirstValue.add(tempPrevSoh);
+				FirstValue.add(tempNewSoh);
+				temp.add(FirstValue);
+				//System.out.println(FirstValue);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+		}
+
+		List<List<Object>> DB = new ArrayList<List<Object>>();
+		for (int i = 0; i < results.size(); i++)
+		{
+			for (int j = 0; j < results.get(i).size(); j++) 
+			{
+				//System.out.println(i + "" + j);
+				if (temp.get(i).get(j).toString().equals(results.get(i).get(j).toString())) {
+					//System.out.println(results.get(i).get(j));
+					//System.out.println(temp.get(i).get(j));
+					//System.out.println("Matched");
+					GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Application List MATCHES with DB List ;;;Pass");
+				} else {
+					//System.out.println(results.get(i).get(j));
+					//System.out.println(temp.get(i).get(j));
+					//System.out.println("Not Matched");
+					GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Application List NOT MATCHES with DB List ;;;Fail");
+				}
+			}
+		}
+	}
+
+	public void ValidationofRWTArticles(GoodsMovementObjects objGoodsObjects,List<List<Object>> results,WebDriver driver )
+			throws IOException {
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		for(int i=0;i<objGoodsObjects.RecordsSize.size();i++)
+		{
+			try{
+				List<Object> FirstValue = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicRWTUOM.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicPrevRWTKG.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicPrevRWTEA.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicCurrRWTKG.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicCurrRWTEA.replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtNumber=driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtDesc=driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempRWTUOM=driver.findElement(By.xpath(objGoodsObjects.DynamicRWTUOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempPrevRWTKG=driver.findElement(By.xpath(objGoodsObjects.DynamicPrevRWTKG.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempPrevRWTEA=driver.findElement(By.xpath(objGoodsObjects.DynamicPrevRWTEA.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempCurrRWTKG=driver.findElement(By.xpath(objGoodsObjects.DynamicCurrRWTKG.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempCurrRWTEA=driver.findElement(By.xpath(objGoodsObjects.DynamicCurrRWTEA.toString().replace("dynamic",Integer.toString(i)))).getText();
+				//System.out.println(tempArtNumber);
+				//System.out.println(tempArtDesc);
+				//System.out.println(tempRWTUOM);
+				//System.out.println(tempPrevRWTKG);
+				//System.out.println(tempPrevRWTEA);
+				//System.out.println(tempCurrRWTKG);
+				//System.out.println(tempCurrRWTEA);
+				FirstValue.add(tempArtNumber);
+				FirstValue.add(tempArtDesc);
+				FirstValue.add(tempRWTUOM);
+				FirstValue.add(tempPrevRWTKG);
+				FirstValue.add(tempPrevRWTEA);
+				FirstValue.add(tempCurrRWTKG);
+				FirstValue.add(tempCurrRWTEA);
+				temp.add(FirstValue);
+				//System.out.println(FirstValue);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+		}
+		List<List<Object>> DB = new ArrayList<List<Object>>();
+		for (int j = 0; j < results.size(); j++)
+		{
+			List<Object> tempdb = new ArrayList<Object>();
+			{
+				results=removeExtraSpaces(results,1);
+				String Articledb = results.get(j).get(0).toString();
+				String ArticleDescdb = results.get(j).get(1).toString();
+				String ArticleUOMdb = results.get(j).get(2).toString();
+				String CurrSOHKGdb = results.get(j).get(3).toString();
+				String CurrSOHEAdb = decimalFormat(results.get(j).get(4).toString());
+				String NewSOHKGdb = results.get(j).get(5).toString();
+				String NewSOHEAdb = decimalFormat(results.get(j).get(6).toString());
+				//System.out.println(Articledb);
+				//System.out.println(ArticleDescdb);
+				//System.out.println(ArticleUOMdb);
+				//System.out.println(CurrSOHKGdb);
+				//System.out.println(CurrSOHEAdb);
+				//System.out.println(NewSOHKGdb);
+				//System.out.println(NewSOHEAdb);
+				tempdb.add(Articledb);
+				tempdb.add(ArticleDescdb);
+				//removeExtraSpaces(DB,1);
+				tempdb.add(ArticleUOMdb);
+				tempdb.add(CurrSOHKGdb);
+				tempdb.add(CurrSOHEAdb);
+				tempdb.add(NewSOHKGdb);
+				tempdb.add(NewSOHEAdb);
+				DB.add(tempdb);
+			}
+		}
+		ElementContains1(cName, mName,extLogger,driver,DB,temp);
+		//System.out.println("Comparing the records Completed");
+		waitFor(1);
+	}
+
+
+
+	public void ValidationofPBDArticles(GoodsMovementObjects objGoodsObjects,List<List<Object>> results ,WebDriver driver)
+			throws IOException {
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		for(int i=0;i<objGoodsObjects.RecordsSize.size();i++)
+		{
+			try{
+				List<Object> FirstValue = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicUOM.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicPrevSoh.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.DynamicNewSoh.replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtNumber=driver.findElement(By.xpath(objGoodsObjects.DynamicArticles.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtDesc=driver.findElement(By.xpath(objGoodsObjects.DynamicDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempUOM=driver.findElement(By.xpath(objGoodsObjects.DynamicUOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempPrevSoh=driver.findElement(By.xpath(objGoodsObjects.DynamicPrevSoh.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempNewSoh=driver.findElement(By.xpath(objGoodsObjects.DynamicNewSoh.toString().replace("dynamic",Integer.toString(i)))).getText();
+				//System.out.println(tempArtNumber);
+				//System.out.println(tempArtDesc);
+				//System.out.println(tempUOM);
+				//System.out.println(tempPrevSoh);
+				//System.out.println(tempNewSoh);
+				FirstValue.add(tempArtNumber);
+				FirstValue.add(tempArtDesc);
+				FirstValue.add(tempUOM);
+				FirstValue.add(tempPrevSoh);
+				FirstValue.add(tempNewSoh);
+				temp.add(FirstValue);
+				//System.out.println(FirstValue);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+		}
+		List<List<Object>> DB = new ArrayList<List<Object>>();
+		for (int j = 0; j < results.size(); j++)
+		{
+			List<Object> tempdb = new ArrayList<Object>();
+			{
+				results=removeExtraSpaces(results,1);
+				String Articledb = results.get(j).get(0).toString();
+				String ArticleDescdb = results.get(j).get(1).toString();
+				String ArticleUOMdb = results.get(j).get(2).toString();
+				String PrevSOHdb = results.get(j).get(3).toString();
+				String NewSOHdb = results.get(j).get(4).toString();
+				//System.out.println(Articledb);
+				//System.out.println(ArticleDescdb);
+				//System.out.println(ArticleUOMdb);
+				//System.out.println(PrevSOHdb);
+				//System.out.println(NewSOHdb);
+				tempdb.add(Articledb);
+				tempdb.add(ArticleDescdb);
+				tempdb.add(ArticleUOMdb);
+				tempdb.add(PrevSOHdb);
+				tempdb.add(NewSOHdb);
+				DB.add(tempdb);
+				ElementContains1(cName, mName,extLogger,driver,  temp,DB);
+			}
+		}
+	}
+
+	public void ApplicationValuesAdjustment(GoodsMovementObjects objGoodsObjects,List<List<Object>> results ,WebDriver driver)
+			throws IOException {
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		List<List<Object>> DB = new ArrayList<List<Object>>();
+		for(int i=1;i<=objGoodsObjects.RecordsSize.size();i++)
+		{
+			try{
+				List<Object> FirstValue = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.ArtNumber.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.ArtDesc.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.UOM.replace("dynamic",Integer.toString(i)))).getText();
+				//driver.findElement(By.xpath(objGoodsObjects.PrevSOH.replace("dynamic",Integer.toString(i)))).getText();
+				//driver.findElement(By.xpath(objGoodsObjects.NewSOH.replace("dynamic",Integer.toString(i)))).getText();
+				//driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtNumber=driver.findElement(By.xpath(objGoodsObjects.ArtNumber.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtDesc=driver.findElement(By.xpath(objGoodsObjects.ArtDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempUOM=driver.findElement(By.xpath(objGoodsObjects.UOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String  tempPrevSoh=driver.findElement(By.xpath(objGoodsObjects.PrevSOH.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempNewSoh=driver.findElement(By.xpath(objGoodsObjects.NewSOH.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempadj=driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.toString().replace("dynamic",Integer.toString(i)))).getText();
+				FirstValue.add(tempArtNumber);
+				FirstValue.add(tempArtDesc);
+				FirstValue.add(tempUOM);
+				//FirstValue.add(tempPrevSoh);
+				//FirstValue.add(tempNewSoh);
+				//FirstValue.add(tempadj);
+				temp.add(FirstValue);
+				//System.out.println(FirstValue);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+			GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Listing the Application records for Parent Article Completed ;;;Pass");
+			//System.out.println("Listing the Application records for Parent Article Completed");
+		}
+		//System.out.println("Listing the DB records Started");
+		for (int j = 0; j < results.size(); j++)
+		{
+			List<Object> tempdb = new ArrayList<Object>();
+			{
+				results=removeExtraSpaces(results,1);
+				String Articledb = results.get(j).get(0).toString();
+				String ArticleDescdb = results.get(j).get(1).toString();
+				String ArticleUOMdb = results.get(j).get(2).toString();
+				tempdb.add(Articledb);
+				tempdb.add(ArticleDescdb);
+				tempdb.add(ArticleUOMdb);
+				//tempdb.add(PrevSOHdb);
+				//tempdb.add(NewSOHdb);
+				DB.add(tempdb);
+				//System.out.println(DB);
+				GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Listing the DB records for Parent Article Completed ;;;Pass");
+				//System.out.println("Listing the DB records for Parent Article Completed");
+				waitFor(1);
+			}
+		}
+		ElementContains1(cName, mName,extLogger,driver,  DB,temp);
+		GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Comparing the records for Parent Article Completed ;;;Pass");
+		//System.out.println("Comparing the records for Parent Article Completed");
+		//return DB;
+	}
+
+
+	public void ApplicationValuesRWTAdjustment(GoodsMovementObjects objGoodsObjects,List<List<Object>> results,WebDriver driver )
+			throws IOException {
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		for(int i=1;i<=objGoodsObjects.RecordsSize.size();i++)
+		{
+			try{
+				List<Object> FirstValue = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.ArtNumber.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.ArtDesc.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.RWTUOM.replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtNumber=driver.findElement(By.xpath(objGoodsObjects.ArtNumber.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtDesc=driver.findElement(By.xpath(objGoodsObjects.ArtDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempUOM=driver.findElement(By.xpath(objGoodsObjects.RWTUOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+				FirstValue.add(tempArtNumber);
+				FirstValue.add(tempArtDesc);
+				FirstValue.add(tempUOM);
+				temp.add(FirstValue);
+				//System.out.println(temp);
+				//System.out.println(FirstValue);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+		}
+		//String Records=data.getText("DETAILS").replace("FILTERDATE",FromDateF);
+		//results = sql.executeQuery(getContext(),Records);
+		List<List<Object>> DB = new ArrayList<List<Object>>();
+		for (int i = 0; i < results.size(); i++)
+		{
+			for (int j = 0; j < results.get(i).size(); j++) 
+			{
+				//System.out.println(i + "" + j);
+				results=removeExtraSpaces(results,1);
+				if (temp.get(i).get(j).toString().equals(results.get(i).get(j).toString())) {
+					//System.out.println(results.get(i).get(j));
+					//System.out.println(temp.get(i).get(j));
+					//System.out.println("Matched");
+					GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Application List MATCHES with DB List ;;;Pass");
+				} else {
+					//System.out.println(results.get(i).get(j));
+					//System.out.println(temp.get(i).get(j));
+					//System.out.println("Not Matched");
+					GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Application List NOT MATCHES with DB List ;;;Fail");
+				}
+			}
+		}
+	}
+
+	public void SOHValues(GoodsMovementObjects objGoodsObjects,List<List<Object>> results,List<List<Object>> results3,String tempNewSoh,WebDriver driver)
+			throws IOException {
+		List<List<Object>> SOHAppln = new ArrayList<List<Object>>();
+		List<List<Object>> SohDB = new ArrayList<List<Object>>();
+		for(int m=1;m<=objGoodsObjects.RecordsSize.size();m++)
+		{
+			try{
+				List<Object> SOHValues = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.PrevSOH.replace("dynamic",Integer.toString(m)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.NewSOH.replace("dynamic",Integer.toString(m)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.replace("dynamic",Integer.toString(m)))).getText();
+				String tempPrevSoh=driver.findElement(By.xpath(objGoodsObjects.PrevSOH.toString().replace("dynamic",Integer.toString(m)))).getText();
+				tempNewSoh=driver.findElement(By.xpath(objGoodsObjects.NewSOH.toString().replace("dynamic",Integer.toString(m)))).getText();
+				String tempadj=driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.toString().replace("dynamic",Integer.toString(m)))).getText();
+				SOHValues.add(tempPrevSoh);
+				SOHValues.add(tempNewSoh);
+				SOHValues.add(tempadj);
+				SOHAppln.add(SOHValues);
+				//System.out.println(SOHValues);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+		}
+		for (int n = 0; n < results3.size(); n++)
+		{
+			try{
+				List<Object> NewDB = new ArrayList<Object>();
+				{
+					String CurrentSOH =  results3.get(n).get(1).toString();
+					String Adjusted =  results3.get(n).get(3).toString();
+					double adj = Double.parseDouble(Adjusted);
+					double cur = Double.parseDouble(CurrentSOH);
+					double NewSOH= adj + cur ;
+					DecimalFormat df=new DecimalFormat("#.000");
+					String NewSOH1 = df.format(NewSOH);
+					//System.out.println("NEW SOH Value is " +NewSOH1);
+					NewDB.add(CurrentSOH);
+					NewDB.add(NewSOH1);
+					NewDB.add(Adjusted);
+					SohDB.add(NewDB);
+					//System.out.println(NewDB);
+					GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Calculated the NEW SOH Values "+NewSOH1+" ;;;Pass");
+					//System.out.println("Calculated the NEW SOH Values");
+				}
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+		}
+		ElementContains1(cName, mName,extLogger,driver, SohDB,SOHAppln);
+		//System.out.println("Comparing the records Completed");
+		waitFor(1);
+	}
+
+
+
+	public List<List<Object>> ApplicationRecords(GoodsMovementObjects objGoodsObjects,List<List<Object>> results,String PrevSOHdb,String NewSOHdb,String AdjQty ,WebDriver driver )
+			throws IOException {
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		List<List<Object>> DB = new ArrayList<List<Object>>();
+		for(int i=1;i<=objGoodsObjects.RecordsSize.size();i++)
+		{
+			try{
+				List<Object> FirstValue = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.ArtNumber.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.ArtDesc.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.UOM.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.PrevSOH.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.NewSOH.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtNumber=driver.findElement(By.xpath(objGoodsObjects.ArtNumber.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtDesc=driver.findElement(By.xpath(objGoodsObjects.ArtDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempUOM=driver.findElement(By.xpath(objGoodsObjects.UOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String  tempPrevSoh=driver.findElement(By.xpath(objGoodsObjects.PrevSOH.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempNewSoh=driver.findElement(By.xpath(objGoodsObjects.NewSOH.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempadj=driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.toString().replace("dynamic",Integer.toString(i)))).getText();
+				FirstValue.add(tempArtNumber);
+				FirstValue.add(tempArtDesc);
+				FirstValue.add(tempUOM);
+				//FirstValue.add(tempPrevSoh);
+				//FirstValue.add(tempNewSoh);
+				//FirstValue.add(tempadj);
+				temp.add(FirstValue);
+				//System.out.println(FirstValue);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+			//System.out.println("Listing the Application records for Parent Article Completed");
+		}
+		//System.out.println("Listing the DB records Started");
+		for (int j = 0; j < results.size(); j++)
+		{
+			List<Object> tempdb = new ArrayList<Object>();
+			{
+				results=removeExtraSpaces(results,1);
+				String Articledb = results.get(j).get(0).toString();
+				String ArticleDescdb = results.get(j).get(1).toString();
+				String ArticleUOMdb = results.get(j).get(2).toString();
+				if (results.get(j).get(3)==null){
+					PrevSOHdb = "!" ;
+				}else{
+					PrevSOHdb = results.get(j).get(3).toString();
+				}
+				if (results.get(j).get(4)==null){
+					NewSOHdb = "!" ;
+				}else{
+					NewSOHdb = results.get(j).get(4).toString();
+				}
+				//AdjQty = results.get(j).get(5).toString();
+				//System.out.println(AdjQty);
+				tempdb.add(Articledb);
+				tempdb.add(ArticleDescdb);
+				tempdb.add(ArticleUOMdb);
+				//tempdb.add(PrevSOHdb);
+				//tempdb.add(NewSOHdb);
+				DB.add(tempdb);
+				//System.out.println(DB);
+				//System.out.println("Listing the DB records for Parent Article Completed");
+				waitFor(1);
+			}
+		}
+		ElementContains1(cName, mName,extLogger,driver,  DB,temp);
+		//System.out.println("Comparing the records for Parent Article Completed");
+		return DB;
+	}
+
+	public  String ChildRecords(GoodsMovementObjects objGoodsObjects,List<List<Object>> results,List<List<Object>> results1,List<List<Object>> results3,String tempPrevSoh,String PrevSOHdb,String tempNewSoh,String Childdb,String  NewSOHdb,String tempPrevSoh1,String tempNewSoh1,String PrevSOHdb1 ,WebDriver driver)
+			throws IOException {
+		for (int t=0;t<results.size();t++)
+		{	
+			if(tempPrevSoh!=PrevSOHdb && tempNewSoh != NewSOHdb)
+			{
+				GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Records are matching ;;;Pass");
+			}
+			waitFor(1);
+		}
+		waitFor(1);
+		click(objGoodsObjects.ClickReport);
+		waitFor(1);
+		click(objGoodsObjects.CloseArticle);
+		waitFor(1);
+		if(results1.size()!=0)
+		{
+			//int num = common.RandomFromDB(results1);
+			//Childdb = results1.get(num).get(0).toString();
+			objGoodsObjects.SearchBox.sendKeys(Childdb);
+			waitFor(1);
+			objGoodsObjects.SearchBox.sendKeys(Keys.ENTER);
+		}
+		waitFor(1);
+		click(objGoodsObjects.GenerateReport);    
+		waitForJSandJQueryToLoad(driver);
+		click(objGoodsObjects.Sort);
+		click(objGoodsObjects.Sort);
+		List<List<Object>> temp1 = new ArrayList<List<Object>>();
+		for(int i=1;i<=objGoodsObjects.RecordsSize.size();i++)
+		{
+			try{
+				List<Object> ChildValue = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.ArtNumber.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.ArtDesc.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.UOM.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.PrevSOH.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.NewSOH.replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtNumber1=driver.findElement(By.xpath(objGoodsObjects.ArtNumber.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtDesc1=driver.findElement(By.xpath(objGoodsObjects.ArtDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempUOM1=driver.findElement(By.xpath(objGoodsObjects.UOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+				tempPrevSoh1=driver.findElement(By.xpath(objGoodsObjects.PrevSOH.toString().replace("dynamic",Integer.toString(i)))).getText();
+				tempNewSoh1=driver.findElement(By.xpath(objGoodsObjects.NewSOH.toString().replace("dynamic",Integer.toString(i)))).getText();
+				ChildValue.add(tempArtNumber1);
+				ChildValue.add(tempArtDesc1);
+				ChildValue.add(tempUOM1);
+				temp1.add(ChildValue);
+				//System.out.println(temp1);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+			//System.out.println("Listing the Application records for Child Article Completed");
+		}
+		//System.out.println("Listing the DB records Started");
+		List<List<Object>> DB1 = new ArrayList<List<Object>>();
+		for (int l = 0; l < results3.size(); l++)
+		{
+			List<Object> tempdb1 = new ArrayList<Object>();
+			{
+				results3=removeExtraSpaces(results3,1);
+				String Articledb1 = results3.get(l).get(0).toString();
+				String ArticleDescdb1 = results3.get(l).get(1).toString();
+				String ArticleUOMdb1 = results3.get(l).get(2).toString();
+				PrevSOHdb1 = results3.get(l).get(3).toString();
+				String NewSOHdb1 = results3.get(l).get(4).toString();
+				tempdb1.add(Articledb1);
+				tempdb1.add(ArticleDescdb1);
+				tempdb1.add(ArticleUOMdb1);
+				DB1.add(tempdb1);
+				//System.out.println(DB1);
+			}
+		}
+		ElementContains1(cName, mName,extLogger,driver,  DB1,temp1);
+		//System.out.println("Listing the DB records for Child Article Completed");
+		for (int r=0; r <= results3.size(); r++)
+		{	
+			//System.out.println(tempPrevSoh1);
+			//System.out.println(PrevSOHdb1);
+			if((tempPrevSoh1).equals(PrevSOHdb1))
+			{
+				GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Records are matching ;;;Pass");
+				//System.out.println("Records are matching in both Application and DB");
+			}else
+			{
+				GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Records are not matching ;;;Fail");
+				//System.out.println("Records are not matching in both Application and DB");
+			}
+			waitFor(0.5);
+		}
+		return  Childdb;
+	}
+
+	public List<List<Object>> AdjustmentCalculationSalesSet(GoodsMovementObjects objGoodsObjects,List<List<Object>> results,List<List<Object>> results2,List<List<Object>> results4,List<List<Object>> results5,String AdjQty ,String count,String Childadjusted,String Childdb,WebDriver driver)
+			throws IOException {
+		String Numerator =  results5.get(0).get(0).toString();
+		int NUM =Integer.parseInt(Numerator);
+		String Denominator =  results5.get(0).get(1).toString();
+		int DEN =Integer.parseInt(Denominator);
+
+
+		String ChildQty =  results2.get(0).get(0).toString();
+		count = decimalFormat(String.valueOf(Float.valueOf(AdjQty) *  (NUM/DEN) * Float.valueOf(ChildQty)) );
+		//System.out.println("Count Value is " +count);
+		waitFor(0.25);
+		GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Calculated the Stock adjusted using Child Factor quantity "+count+" ;;;Pass");
+		//System.out.println("Calculated the Stock adjusted using Child Factor quantity");
+
+
+
+		Childadjusted =  decimalFormat(results4.get(0).get(1).toString());
+		//System.out.println("Adjusted Sale value is " +Childadjusted);
+		waitFor(0.75);
+		GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Adjusted SOH for the Child Article "+Childadjusted+" ;;;Pass");
+		//System.out.println("Adjusted SOH for the Child Article");
+		if(count.equals(Childadjusted))
+		{
+			GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Comparison of the Sales Posted and Adjusted SOH for the Child Article is MATCHING  ;;;Pass");
+			//System.out.println("Comparison of the Stock adjusted and Adjusted SOH for the Child Article is MATCHING");
+		}else
+		{
+			GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Comparison of the Sales Posted and Adjusted SOH for the Child Article is NOT MATCHING  ;;;Fail");
+			//System.out.println("Comparison of the Stock adjusted and Adjusted SOH for the Child Article is NOT MATCHING");
+		}
+		//System.out.println("Comparing the records Completed");
+		return results5;
+	}
+
+	public List<List<Object>> AdjustmentCalculation(GoodsMovementObjects objGoodsObjects,List<List<Object>> results,List<List<Object>> results2,List<List<Object>> results4,List<List<Object>> results5,String AdjQty ,String count,String Childadjusted,String Childdb,WebDriver driver)
+			throws IOException {
+
+		String ChildQty =  results2.get(0).get(0).toString();
+		String ParentAdj = results.get(0).get(5).toString();
+		//String AdjQty1= results4.get(0).get(1).toString();
+		////System.out.println(AdjQty1);
+		//System.out.println(ChildQty);
+		//System.out.println(ParentAdj);
+		count = decimalFormat(String.valueOf(Float.valueOf(ParentAdj) *   Float.valueOf(ChildQty))) ;
+		//System.out.println("Count Value is " +count);
+		waitFor(0.25);
+		GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Calculated the Stock adjusted using Child Factor quantity "+count+" ;;;Pass");
+		//System.out.println("Calculated the Stock adjusted using Child Factor quantity");
+		Childadjusted =  decimalFormat(results4.get(0).get(1).toString());
+		//System.out.println("Adjusted SOH value is " +Childadjusted);
+		waitFor(0.75);
+		GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Adjusted SOH for the Child Article "+Childadjusted+" ;;;Pass");
+		//System.out.println("Adjusted SOH for the Child Article");
+		if(count.equals(Childadjusted))
+		{
+			GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Comparison of the Sales Posted and Adjusted SOH for the Child Article is MATCHING  ;;;Pass");
+			//System.out.println("Comparison of the Stock adjusted and Adjusted SOH for the Child Article is MATCHING");
+		}else
+		{
+			GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Comparison of the Sales Posted and Adjusted SOH for the Child Article is NOT MATCHING  ;;;Fail");
+			//System.out.println("Comparison of the Stock adjusted and Adjusted SOH for the Child Article is NOT MATCHING");
+		}
+		return results4;
+	}
+
+	public List<List<Object>> ApplicationRecordsIBT(GoodsMovementObjects objGoodsObjects,List<List<Object>> results,
+			String PrevSOHdb,String NewSOHdb,String AdjQty ,WebDriver driver )
+					throws IOException {
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		List<List<Object>> DB = new ArrayList<List<Object>>();
+		for(int i=1;i<=objGoodsObjects.RecordsSize.size();i++)
+		{
+			try{
+				List<Object> FirstValue = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.ArtNumber.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.ArtDesc.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.UOM.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.ReasonCode.replace("dynamic",Integer.toString(i)))).getText();
+				//driver.findElement(By.xpath(objGoodsObjects.PrevSOH.replace("dynamic",Integer.toString(i)))).getText();
+				//driver.findElement(By.xpath(objGoodsObjects.NewSOH.replace("dynamic",Integer.toString(i)))).getText();
+				//driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtNumber=driver.findElement(By.xpath(objGoodsObjects.ArtNumber.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtDesc=driver.findElement(By.xpath(objGoodsObjects.ArtDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempUOM=driver.findElement(By.xpath(objGoodsObjects.UOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempReason=driver.findElement(By.xpath(objGoodsObjects.ReasonCode.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String  tempPrevSoh=driver.findElement(By.xpath(objGoodsObjects.PrevSOH.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempNewSoh=driver.findElement(By.xpath(objGoodsObjects.NewSOH.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempadj=driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.toString().replace("dynamic",Integer.toString(i)))).getText();
+				FirstValue.add(tempArtNumber);
+				FirstValue.add(tempArtDesc);
+				FirstValue.add(tempUOM);
+				FirstValue.add(tempReason);
+				//FirstValue.add(tempPrevSoh);
+				//FirstValue.add(tempNewSoh);
+				//FirstValue.add(tempadj);
+				temp.add(FirstValue);
+				//System.out.println(FirstValue);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+			//System.out.println("Listing the Application records for Parent Article Completed");
+		}
+		//System.out.println("Listing the DB records Started");
+		for (int j = 0; j < results.size(); j++)
+		{
+			List<Object> tempdb = new ArrayList<Object>();
+			{
+				results=removeExtraSpaces(results,1);
+				String Articledb = results.get(j).get(0).toString();
+				String ArticleDescdb = results.get(j).get(1).toString();
+				String ArticleUOMdb = results.get(j).get(2).toString();
+				String ArticleReasondb = results.get(j).get(4).toString();
+				if (results.get(j).get(5)==null){
+					PrevSOHdb = "-" ;
+				}else{
+					PrevSOHdb = results.get(j).get(5).toString();
+				}
+				if (results.get(j).get(6)==null){
+					NewSOHdb = "-" ;
+				}else{
+					NewSOHdb = results.get(j).get(6).toString();
+				}
+				//AdjQty = results.get(j).get(5).toString();
+				//System.out.println(AdjQty);
+				tempdb.add(Articledb);
+				tempdb.add(ArticleDescdb);
+				tempdb.add(ArticleUOMdb);
+				tempdb.add(ArticleReasondb);
+				//tempdb.add(PrevSOHdb);
+				//tempdb.add(NewSOHdb);
+				DB.add(tempdb);
+				//System.out.println(DB);
+				//System.out.println("Listing the DB records for Parent Article Completed");
+				waitFor(1);
+			}
+		}
+		ElementContains1(cName, mName,extLogger,driver, DB,temp);
+		//System.out.println("Comparing the records for Parent Article Completed");
+		return DB;
+	}
+
+	public List<List<Object>> ApplicationRecordsAdjustmentRandomWeighted(GoodsMovementObjects objGoodsObjects,
+			List<List<Object>> results,WebDriver driver )
+					throws IOException {
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		List<List<Object>> DB = new ArrayList<List<Object>>();
+		for(int i=1;i<=objGoodsObjects.RecordsSize.size();i++)
+		{
+			try{
+				List<Object> FirstValue = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.ArtNumber.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.ArtDesc.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.RWTUOM.replace("dynamic",Integer.toString(i)))).getText();
+				//driver.findElement(By.xpath(objGoodsObjects.ReasonCode.replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtNumber=driver.findElement(By.xpath(objGoodsObjects.ArtNumber.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtDesc=driver.findElement(By.xpath(objGoodsObjects.ArtDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempUOM=driver.findElement(By.xpath(objGoodsObjects.RWTUOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+				//String tempReason=driver.findElement(By.xpath(objGoodsObjects.ReasonCode.toString().replace("dynamic",Integer.toString(i)))).getText();
+				FirstValue.add(tempArtNumber);
+				FirstValue.add(tempArtDesc);
+				FirstValue.add(tempUOM);
+				//FirstValue.add(tempReason);
+				temp.add(FirstValue);
+				//System.out.println(FirstValue);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+			//System.out.println("Listing the Application records for Random Weighted Article Completed");
+		}
+		//System.out.println("Listing the DB records Started");
+		for (int j = 0; j < results.size(); j++)
+		{
+			List<Object> tempdb = new ArrayList<Object>();
+			{
+				results=removeExtraSpaces(results,1);
+				String Articledb = results.get(j).get(0).toString();
+				String ArticleDescdb = results.get(j).get(1).toString();
+				String ArticleUOMdb = results.get(j).get(2).toString();
+				//String ArticleReasondb = results.get(j).get(4).toString();
+				tempdb.add(Articledb);
+				tempdb.add(ArticleDescdb);
+				tempdb.add(ArticleUOMdb);
+				//tempdb.add(ArticleReasondb);
+				DB.add(tempdb);
+				//System.out.println(DB);
+				//System.out.println("Listing the DB records for Parent Article Completed");
+				waitFor(1);
+			}
+		}
+		ElementContains1(cName, mName,extLogger,driver, DB,temp);
+		//System.out.println("Comparing the records for Parent Article Completed");
+		return DB;
+	}
+
+	public List<List<Object>> ApplicationRecordsIBTRandomWeighted(GoodsMovementObjects objGoodsObjects,
+			List<List<Object>> results,String PrevSOHdb,String NewSOHdb,String AdjQty,WebDriver driver  )
+					throws IOException {
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		List<List<Object>> DB = new ArrayList<List<Object>>();
+		for(int i=1;i<=objGoodsObjects.RecordsSize.size();i++)
+		{
+			try{
+				List<Object> FirstValue = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.ArtNumber.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.ArtDesc.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.RWTUOM.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.ReasonCode.replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtNumber=driver.findElement(By.xpath(objGoodsObjects.ArtNumber.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtDesc=driver.findElement(By.xpath(objGoodsObjects.ArtDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempUOM=driver.findElement(By.xpath(objGoodsObjects.RWTUOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempReason=driver.findElement(By.xpath(objGoodsObjects.ReasonCode.toString().replace("dynamic",Integer.toString(i)))).getText();
+				FirstValue.add(tempArtNumber);
+				FirstValue.add(tempArtDesc);
+				FirstValue.add(tempUOM);
+				FirstValue.add(tempReason);
+				temp.add(FirstValue);
+				//System.out.println(FirstValue);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+			//System.out.println("Listing the Application records for Random Weighted Article Completed");
+		}
+		//System.out.println("Listing the DB records Started");
+		for (int j = 0; j < results.size(); j++)
+		{
+			List<Object> tempdb = new ArrayList<Object>();
+			{
+				results=removeExtraSpaces(results,1);
+				String Articledb = results.get(j).get(0).toString();
+				String ArticleDescdb = results.get(j).get(1).toString();
+				String ArticleUOMdb = results.get(j).get(2).toString();
+				String ArticleReasondb = results.get(j).get(4).toString();
+				tempdb.add(Articledb);
+				tempdb.add(ArticleDescdb);
+				tempdb.add(ArticleUOMdb);
+				tempdb.add(ArticleReasondb);
+				DB.add(tempdb);
+				//System.out.println(DB);
+				//System.out.println("Listing the DB records for Parent Article Completed");
+				waitFor(1);
+			}
+		}
+		ElementContains1(cName, mName,extLogger,driver, DB,temp);
+		//System.out.println("Comparing the records for Parent Article Completed");
+		return DB;
+	}
+
+	public void SOHValuesIBTRandomWeighted(GoodsMovementObjects objGoodsObjects,List<List<Object>> results,
+			List<List<Object>> results2,String tempNewSoh,String CurrentSOHPIdb,String CurrentSOHdb,String Adjusteddb,
+			String NewSOH ,WebDriver driver)
+					throws IOException {
+		List<List<Object>> SOHAppln = new ArrayList<List<Object>>();
+		List<List<Object>> SohDB = new ArrayList<List<Object>>();
+		for(int m=1;m<=objGoodsObjects.RecordsSize.size();m++)
+		{
+			try{
+				List<Object> SOHValues = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.RWTPrev.replace("dynamic",Integer.toString(m)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.RWTPrev1.replace("dynamic",Integer.toString(m)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.RWTNew.replace("dynamic",Integer.toString(m)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.RWTNew1.replace("dynamic",Integer.toString(m)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.RWTQty.replace("dynamic",Integer.toString(m)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.RWTQty1.replace("dynamic",Integer.toString(m)))).getText();
+				String tempPrevSohKG=driver.findElement(By.xpath(objGoodsObjects.RWTPrev.toString().replace("dynamic",Integer.toString(m)))).getText();
+				String tempPrevSohEA=driver.findElement(By.xpath(objGoodsObjects.RWTPrev1.toString().replace("dynamic",Integer.toString(m)))).getText();
+				String tempNewSohKG=driver.findElement(By.xpath(objGoodsObjects.RWTNew.toString().replace("dynamic",Integer.toString(m)))).getText();
+				String tempNewSohEA=driver.findElement(By.xpath(objGoodsObjects.RWTNew1.toString().replace("dynamic",Integer.toString(m)))).getText();
+				String AdjustedKG=driver.findElement(By.xpath(objGoodsObjects.RWTQty.toString().replace("dynamic",Integer.toString(m)))).getText();
+				String AdjustedEA=driver.findElement(By.xpath(objGoodsObjects.RWTQty1.toString().replace("dynamic",Integer.toString(m)))).getText();
+				SOHValues.add(tempPrevSohKG);
+				SOHValues.add(tempPrevSohEA);
+				SOHValues.add(tempNewSohKG);
+				SOHValues.add(tempNewSohEA);
+				SOHValues.add(AdjustedKG);
+				SOHValues.add(AdjustedEA);
+				SOHAppln.add(SOHValues);
+				//System.out.println(SOHValues);
+				//System.out.println(SOHAppln);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+		}
+		for (int n = 0; n < results2.size(); n++)
+		{
+			try{
+				List<Object> NewDB = new ArrayList<Object>();
+				{
+					CurrentSOHdb =  results2.get(n).get(1).toString();
+					Adjusteddb =  results2.get(n).get(3).toString();
+					//System.out.println(CurrentSOHdb);
+					//System.out.println(Adjusteddb);
+					double adj = Double.parseDouble(Adjusteddb);
+					double cur = Double.parseDouble(CurrentSOHdb);
+					double NewSOHdb= adj + cur ;
+					DecimalFormat df=new DecimalFormat("#.000");
+					NewSOH = df.format(NewSOHdb);
+					//System.out.println("NEW_SOH Value is " +NewSOH);
+					//String CurrentSOHPIdb =  decimalFormat1(results2.get(n).get(4).toString());
+					if (results2.get(n).get(4)==null){
+						CurrentSOHPIdb = "0" ;
+					}else{
+						CurrentSOHPIdb = decimalFormat1(results2.get(n).get(4).toString());
+					}
+				}
+				//String AdjustedPIdb =  decimalFormat1(results2.get(n).get(6).toString());
+				String AdjustedPIdb =  results2.get(n).get(6).toString();
+				/*String signValue = AdjustedPIdb.substring(0, 1);
+				String AdjustedFinalPIdb = signValue + decimalFormat1(AdjustedPIdb);*/
+				//String signValue = AdjustedPIdb.substring(0, 1);
+				String AdjustedFinalPIdb;
+				if(AdjustedPIdb.contains("-")){
+					 AdjustedFinalPIdb =  decimalFormat1(AdjustedPIdb);
+					 //System.out.println("Contains NEGATIVE values and the updated value is" +AdjustedFinalPIdb);
+				}else{
+				 AdjustedFinalPIdb =  "+"+decimalFormat1(AdjustedPIdb);
+				 //System.out.println("Contains POSITIVE values and the updated value is" +AdjustedFinalPIdb);
+				}
+				//System.out.println("CurrentSOHPIdb value is " +CurrentSOHPIdb);
+				//System.out.println("AdjustedPIdb value is " +AdjustedPIdb);
+				//System.out.println("AdjustedFinalPIdb value is " +AdjustedFinalPIdb);
+				String ConvertedadjustedPI = decimalFormat1(AdjustedPIdb);
+				//System.out.println(ConvertedadjustedPI);
+				int newSOHPIdb= Integer.parseInt(ConvertedadjustedPI) + Integer.parseInt(CurrentSOHPIdb) ;
+				String Input=Integer.toString(newSOHPIdb);
+				//DecimalFormat df1=new DecimalFormat("#.000");
+				//String NewSOHPI = df.format(NewSOHPIdb);
+				//System.out.println("NEW_SOH_PI Value is " +Input);
+				NewDB.add(CurrentSOHdb);
+				NewDB.add(CurrentSOHPIdb);
+				NewDB.add(NewSOH);
+				NewDB.add(Input);
+				NewDB.add(Adjusteddb);
+				NewDB.add(AdjustedFinalPIdb);
+				SohDB.add(NewDB);
+				//System.out.println(NewDB);
+				//System.out.println(SohDB);
+				GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Calculated the NEW SOH Values  ;;;Pass");
+				//System.out.println("Calculated the NEW SOH Values");
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+		}
+
+		ElementContains1(cName, mName,extLogger,driver,SohDB,SOHAppln);
+		//System.out.println("Comparing the records Completed");
+		waitFor(1);
+	}
+
+	public List<List<Object>> ApplicationRecordsIBTStructured(GoodsMovementObjects objGoodsObjects,
+			List<List<Object>> results,String PrevSOHdb,String NewSOHdb,String AdjQty ,WebDriver driver )
+					throws IOException {
+		List<List<Object>> temp = new ArrayList<List<Object>>();
+		List<List<Object>> DB = new ArrayList<List<Object>>();
+		for(int i=1;i<=objGoodsObjects.RecordsSize.size();i++)
+		{
+			try{
+				List<Object> FirstValue = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.ArtNumber.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.ArtDesc.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.UOM.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.ReasonCode.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.PrevSOH.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.NewSOH.replace("dynamic",Integer.toString(i)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtNumber=driver.findElement(By.xpath(objGoodsObjects.ArtNumber.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempArtDesc=driver.findElement(By.xpath(objGoodsObjects.ArtDesc.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempUOM=driver.findElement(By.xpath(objGoodsObjects.UOM.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempReason=driver.findElement(By.xpath(objGoodsObjects.ReasonCode.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String  tempPrevSoh=driver.findElement(By.xpath(objGoodsObjects.PrevSOH.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempNewSoh=driver.findElement(By.xpath(objGoodsObjects.NewSOH.toString().replace("dynamic",Integer.toString(i)))).getText();
+				String tempadj=driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.toString().replace("dynamic",Integer.toString(i)))).getText();
+				FirstValue.add(tempArtNumber);
+				FirstValue.add(tempArtDesc);
+				FirstValue.add(tempUOM);
+				FirstValue.add(tempReason);
+				FirstValue.add(tempPrevSoh);
+				FirstValue.add(tempNewSoh);
+				FirstValue.add(tempadj);
+				temp.add(FirstValue);
+				//System.out.println(FirstValue);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+			//System.out.println("Listing the Application records for Parent Article Completed");
+		}
+		//System.out.println("Listing the DB records Started");
+		for (int j = 0; j < results.size(); j++)
+		{
+			List<Object> tempdb = new ArrayList<Object>();
+			{
+				results=removeExtraSpaces(results,1);
+				String Articledb = results.get(j).get(0).toString();
+				String ArticleDescdb = results.get(j).get(1).toString();
+				String ArticleUOMdb = results.get(j).get(2).toString();
+				String ArticleReasondb = results.get(j).get(4).toString();
+				if (results.get(j).get(5)==null){
+					PrevSOHdb = "-" ;
+				}else{
+					PrevSOHdb = results.get(j).get(5).toString();
+				}
+				if (results.get(j).get(6)==null){
+					NewSOHdb = "-" ;
+				}else{
+					NewSOHdb = results.get(j).get(6).toString();
+				}
+				AdjQty = results.get(j).get(7).toString();
+				//System.out.println(AdjQty);
+				tempdb.add(Articledb);
+				tempdb.add(ArticleDescdb);
+				tempdb.add(ArticleUOMdb);
+				tempdb.add(ArticleReasondb);
+				tempdb.add(PrevSOHdb);
+				tempdb.add(NewSOHdb);
+				tempdb.add(AdjQty);
+				DB.add(tempdb);
+				//System.out.println(DB);
+				//System.out.println("Listing the DB records for Parent Article Completed");
+				waitFor(1);
+			}
+		}
+		ElementContains1(cName, mName,extLogger,driver, DB,temp);
+		//System.out.println("Comparing the records for Parent Article Completed");
+		return DB;
+	}
+
+	public void selectNotRanged(GoodsMovementObjects objGoodsObjects, int size,String Parent,WebDriver driver) 
+	{
+		for (int i = 1; i <= size; i++) {
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(
+					GoodsMovementObjects.AddArticles, i,driver);
+			String val = element.getText();
+			if (val.equals(Parent)) {
+				WebElement elements= prepareWebElementWithDynamicXpathWithInt(
+						GoodsMovementObjects.artClick, i,driver);
+				elements.click();
+				waitForJSandJQueryToLoad(driver);
+				break;
+
+			}
+		}
+		click(objGoodsObjects.AddTOList);
+
+
+	}
+
+	public void SOHValuesRTVHigherUOM(GoodsMovementObjects objGoodsObjects,String Qty,List<List<Object>> results,
+			List<List<Object>> results2,List<List<Object>> results3,String tempNewSoh,WebDriver driver)
+					throws IOException {
+		List<List<Object>> SOHAppln = new ArrayList<List<Object>>();
+		List<List<Object>> SohDB = new ArrayList<List<Object>>();
+		for(int m=1;m<=objGoodsObjects.RecordsSize.size();m++)
+		{
+			try{
+				List<Object> SOHValues = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.PrevSOH.replace("dynamic",Integer.toString(m)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.NewSOH.replace("dynamic",Integer.toString(m)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.replace("dynamic",Integer.toString(m)))).getText();
+				String tempPrevSoh=driver.findElement(By.xpath(objGoodsObjects.PrevSOH.toString().replace("dynamic",Integer.toString(m)))).getText();
+				tempNewSoh=driver.findElement(By.xpath(objGoodsObjects.NewSOH.toString().replace("dynamic",Integer.toString(m)))).getText();
+				String tempadj=driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.toString().replace("dynamic",Integer.toString(m)))).getText();
+				SOHValues.add(tempPrevSoh);
+				SOHValues.add(tempNewSoh);
+				SOHValues.add(tempadj);
+				SOHAppln.add(SOHValues);
+				//System.out.println(SOHValues);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+		}
+		for (int n = 0; n < results2.size(); n++)
+		{
+			try{
+				List<Object> NewDB = new ArrayList<Object>();
+				String CurrentSOH =  results2.get(n).get(1).toString();
+				String Adjusted =results2.get(n).get(3).toString();
+				double adj = Double.parseDouble(Adjusted);
+				double cur = Double.parseDouble(CurrentSOH);
+				double NewSOH= adj + cur ;
+				DecimalFormat df=new DecimalFormat("#.000");
+				String NewSOH1 = df.format(NewSOH);
+				//System.out.println("NEW SOH Value is " +NewSOH1);
+				NewDB.add(CurrentSOH);
+				NewDB.add(NewSOH1);
+				NewDB.add(Adjusted);
+				SohDB.add(NewDB);
+				//System.out.println(NewDB);
+				GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Calculated the NEW SOH Values "+NewSOH1+" ;;;Pass");
+				//System.out.println("Calculated the NEW SOH Values");
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+		}
+		ElementContains1(cName, mName,extLogger,driver,  SohDB,SOHAppln);
+		//System.out.println("Comparing the records Completed");
+		waitFor(1);
+	}
+
+	public void SOHValuesRTV(GoodsMovementObjects objGoodsObjects,String Qty,List<List<Object>> results,
+			List<List<Object>> results2,String tempNewSoh,WebDriver driver)
+					throws IOException {
+		List<List<Object>> SOHAppln = new ArrayList<List<Object>>();
+		List<List<Object>> SohDB = new ArrayList<List<Object>>();
+		for(int m=1;m<=objGoodsObjects.RecordsSize.size();m++)
+		{
+			try{
+				List<Object> SOHValues = new ArrayList<Object>();
+				driver.findElement(By.xpath(objGoodsObjects.PrevSOH.replace("dynamic",Integer.toString(m)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.NewSOH.replace("dynamic",Integer.toString(m)))).getText();
+				driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.replace("dynamic",Integer.toString(m)))).getText();
+				String tempPrevSoh=driver.findElement(By.xpath(objGoodsObjects.PrevSOH.toString().replace("dynamic",Integer.toString(m)))).getText();
+				tempNewSoh=driver.findElement(By.xpath(objGoodsObjects.NewSOH.toString().replace("dynamic",Integer.toString(m)))).getText();
+				String tempadj=driver.findElement(By.xpath(objGoodsObjects.AdjustedQty.toString().replace("dynamic",Integer.toString(m)))).getText();
+				SOHValues.add(tempPrevSoh);
+				SOHValues.add(tempNewSoh);
+				SOHValues.add(tempadj);
+				SOHAppln.add(SOHValues);
+				System.out.println(SOHValues);
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+		}
+		for (int n = 0; n < results2.size(); n++)
+		{
+			try{
+				List<Object> NewDB = new ArrayList<Object>();
+				String CurrentSOH =  results2.get(n).get(1).toString();
+				String Adjusted =results2.get(n).get(3).toString();
+				/*String Article_OM = results3.get(0).get(0).toString();
+					//double last = toDouble(Article_OM);
+					//double first = toDouble(Qty);
+					//double Adjusted1 = (first) * (-1)   ;
+					//DecimalFormat d=new DecimalFormat("#.000");
+					//String FinalAdjusted = d.format(Adjusted1);
+				 */		           
+				double adj = Double.parseDouble(Adjusted);
+				double cur = Double.parseDouble(CurrentSOH);
+				double NewSOH= adj + cur ;
+				DecimalFormat df=new DecimalFormat("#.000");
+				String NewSOH1 = df.format(NewSOH);
+				System.out.println("NEW SOH Value is " +NewSOH1);
+				NewDB.add(CurrentSOH);
+				NewDB.add(NewSOH1);
+				NewDB.add(Adjusted);
+				SohDB.add(NewDB);
+				System.out.println(NewDB);
+				GoodsSummaryArtScenarios.put(GoodsSummaryArttestname, "Calculated the NEW SOH Values "+NewSOH1+" ;;;Pass");
+				System.out.println("Calculated the NEW SOH Values");
+			}
+			catch(Exception e)
+			{
+				//System.out.println(e);
+			}
+		}
+		ElementContains1(cName, mName,extLogger,driver,  SohDB,SOHAppln);
+		System.out.println("Comparing the records Completed");
+		waitFor(1);
+	}
+
+
+
+}

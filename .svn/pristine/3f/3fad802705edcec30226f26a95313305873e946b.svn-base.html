@@ -1,0 +1,1752 @@
+<html>
+<head>
+<title>TestNG:  POC_tests1</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>POC_tests1</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>38/9/23</td>
+</tr><tr>
+<td>Started on:</td><td>Mon Nov 13 20:06:42 IST 2017</td>
+</tr>
+<tr><td>Total time:</td><td>2132 seconds (2132564 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-failed'>
+<tr><td colspan='4' align='center'><b>FAILED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkWHdelivery()'><b>checkWHdelivery</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check WareHouse Under/Over Delivery<br/>
+<a href="#Output-275417406" onClick='toggleBox("Output-275417406", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-275417406" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-275417406">
+<a href='C:\Stores\NGBOProject\test-output\screenshots\checkWHdelivery.jpg'><font color='red'>Link</font></a><br/>
+</div>
+</td>
+<td><div><pre>org.openqa.selenium.InvalidElementStateException: invalid element state: Element is not currently interactable and may not be manipulated
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 11 milliseconds
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir25440_29156}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 46722a91b0f817ea8dee785c0781187e
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebElement.execute(RemoteWebElement.java:327)
+	at org.openqa.selenium.remote.RemoteWebElement.clear(RemoteWebElement.java:140)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:51)
+	at com.sun.proxy.$Proxy29.clear(Unknown Source)
+	at au.wow.ngbomain.pages.StockAdjPage.adjustSOH_whDelivery(StockAdjPage.java:912)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.checkWHdelivery(StockAdjustmentTests.java:592)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 17 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace275417406", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace275417406'><pre>org.openqa.selenium.InvalidElementStateException: invalid element state: Element is not currently interactable and may not be manipulated
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 11 milliseconds
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir25440_29156}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 46722a91b0f817ea8dee785c0781187e
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebElement.execute(RemoteWebElement.java:327)
+	at org.openqa.selenium.remote.RemoteWebElement.clear(RemoteWebElement.java:140)
+	at sun.reflect.GeneratedMethodAccessor12.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:51)
+	at com.sun.proxy.$Proxy29.clear(Unknown Source)
+	at au.wow.ngbomain.pages.StockAdjPage.adjustSOH_whDelivery(StockAdjPage.java:912)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.checkWHdelivery(StockAdjustmentTests.java:592)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>38</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.OrderEnquiryTests.orderCreation()'><b>orderCreation</b><br>Test class: au.wow.ngbomain.tests.OrderEnquiryTests<br>Test method: Creating Manual Preq orders for produce/Non produce of Warehouse/Vendor supplied in browser<br/>
+<a href="#Output-622694802" onClick='toggleBox("Output-622694802", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-622694802" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-622694802">
+<a href='C:\Stores\NGBOProject\test-output\screenshots\orderCreation.jpg'><font color='red'>Link</font></a><br/>
+</div>
+</td>
+<td><div><pre>org.openqa.selenium.InvalidElementStateException: invalid element state: Element is not currently interactable and may not be manipulated
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 55 milliseconds
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir10336_5687}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: ae4f02f0dc9a6cbd0b17f2a3f1b9c569
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebElement.execute(RemoteWebElement.java:327)
+	at org.openqa.selenium.remote.RemoteWebElement.clear(RemoteWebElement.java:140)
+	at au.wow.ngbomain.pages.OrderEnquiryPage.orderCreation(OrderEnquiryPage.java:910)
+	at au.wow.ngbomain.tests.OrderEnquiryTests.orderCreation(OrderEnquiryTests.java:222)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 14 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace622694802", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace622694802'><pre>org.openqa.selenium.InvalidElementStateException: invalid element state: Element is not currently interactable and may not be manipulated
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 55 milliseconds
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir10336_5687}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: ae4f02f0dc9a6cbd0b17f2a3f1b9c569
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebElement.execute(RemoteWebElement.java:327)
+	at org.openqa.selenium.remote.RemoteWebElement.clear(RemoteWebElement.java:140)
+	at au.wow.ngbomain.pages.OrderEnquiryPage.orderCreation(OrderEnquiryPage.java:910)
+	at au.wow.ngbomain.tests.OrderEnquiryTests.orderCreation(OrderEnquiryTests.java:222)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>40</td>
+<td>au.wow.ngbomain.tests.OrderEnquiryTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportAdditonalCriteriaSOH()'><b>verifyInventoryReportAdditonalCriteriaSOH</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH & MPL and Additional criteria SOH<br/>
+<a href="#Output-1439713231" onClick='toggleBox("Output-1439713231", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1439713231" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1439713231">
+<a href='C:\Stores\NGBOProject\test-output\screenshots\verifyInventoryReportAdditonalCriteriaSOH.jpg'><font color='red'>Link</font></a><br/>
+</div>
+</td>
+<td><div><pre>org.openqa.selenium.NoSuchElementException: The element:  xpath: //*[@id=&apos;addParameter&apos;]/div/div/span[2]/select could not be found
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:38)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.selectByVisibleText(BasePage.java:547)
+	at au.wow.ngbomain.pages.InventoryReportPage.fnChooseAdditionalCriteriaSOH(InventoryReportPage.java:527)
+	at au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportAdditonalCriteriaSOH(InventoryReportTests.java:252)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1439713231", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1439713231'><pre>org.openqa.selenium.NoSuchElementException: The element:  xpath: //*[@id=&apos;addParameter&apos;]/div/div/span[2]/select could not be found
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:38)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.selectByVisibleText(BasePage.java:547)
+	at au.wow.ngbomain.pages.InventoryReportPage.fnChooseAdditionalCriteriaSOH(InventoryReportPage.java:527)
+	at au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportAdditonalCriteriaSOH(InventoryReportTests.java:252)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>23</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportDeletedPLU()'><b>verifyPLUReportDeletedPLU</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for deleted PLU<br/>
+<a href="#Output-167337858" onClick='toggleBox("Output-167337858", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-167337858" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-167337858">
+<a href='C:\Stores\NGBOProject\test-output\screenshots\verifyPLUReportDeletedPLU.jpg'><font color='red'>Link</font></a><br/>
+</div>
+</td>
+<td><div><pre>java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportDeletedPLU(DSCandPLUReportTests.java:537)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace167337858", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace167337858'><pre>java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportDeletedPLU(DSCandPLUReportTests.java:537)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>29</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticles()'><b>verifyStockAdjDisplayArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Display Articles<br/>
+<a href="#Output-77683597" onClick='toggleBox("Output-77683597", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-77683597" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-77683597">
+<a href='C:\Stores\NGBOProject\test-output\screenshots\verifyStockAdjDisplayArticles.jpg'><font color='red'>Link</font></a><br/>
+</div>
+</td>
+<td><div><pre>java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticles(StockAdjustmentTests.java:2508)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace77683597", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace77683597'><pre>java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticles(StockAdjustmentTests.java:2508)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>18</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupDisplayArticles()'><b>verifylookupDisplayArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for linked Articles<br/>
+<a href="#Output-162986041" onClick='toggleBox("Output-162986041", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-162986041" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-162986041">
+<a href='C:\Stores\NGBOProject\test-output\screenshots\verifylookupDisplayArticles.jpg'><font color='red'>Link</font></a><br/>
+</div>
+</td>
+<td><div><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupDisplayArticles(StockAdjustmentTests.java:2794)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace162986041", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace162986041'><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupDisplayArticles(StockAdjustmentTests.java:2794)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>11</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupLinkedArticles()'><b>verifylookupLinkedArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for linked Articles<br/>
+<a href="#Output-1239895933" onClick='toggleBox("Output-1239895933", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1239895933" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1239895933">
+<a href='C:\Stores\NGBOProject\test-output\screenshots\verifylookupLinkedArticles.jpg'><font color='red'>Link</font></a><br/>
+</div>
+</td>
+<td><div><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupLinkedArticles(StockAdjustmentTests.java:2392)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1239895933", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1239895933'><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupLinkedArticles(StockAdjustmentTests.java:2392)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>11</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupRandomWeightArticles()'><b>verifylookupRandomWeightArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for Random Weight Articles<br/>
+<a href="#Output-826497782" onClick='toggleBox("Output-826497782", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-826497782" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-826497782">
+<a href='C:\Stores\NGBOProject\test-output\screenshots\verifylookupRandomWeightArticles.jpg'><font color='red'>Link</font></a><br/>
+</div>
+</td>
+<td><div><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupRandomWeightArticles(StockAdjustmentTests.java:3076)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace826497782", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace826497782'><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupRandomWeightArticles(StockAdjustmentTests.java:3076)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>11</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupWeightArticles()'><b>verifylookupWeightArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for Weight Articles<br/>
+<a href="#Output-1977845149" onClick='toggleBox("Output-1977845149", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1977845149" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1977845149">
+<a href='C:\Stores\NGBOProject\test-output\screenshots\verifylookupWeightArticles.jpg'><font color='red'>Link</font></a><br/>
+</div>
+</td>
+<td><div><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupWeightArticles(StockAdjustmentTests.java:2933)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1977845149", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1977845149'><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupWeightArticles(StockAdjustmentTests.java:2933)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>11</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+</table><p>
+<table width='100%' border='1' class='invocation-passed'>
+<tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkBWSarticle()'><b>checkBWSarticle</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check IDT and Reverse IDT is applicable for BWS articles</td>
+<td></td>
+<td>34</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkIDTandRIDT()'><b>checkIDTandRIDT</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check IDT and Reverse IDT</td>
+<td></td>
+<td>72</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkIDTandRIDT_weighted()'><b>checkIDTandRIDT_weighted</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check IDT and Reverse IDT for weighted articles</td>
+<td></td>
+<td>62</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkNoNodeIDforIDTandRIDT()'><b>checkNoNodeIDforIDTandRIDT</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check IDT and Reverse IDT</td>
+<td></td>
+<td>37</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.OrderEnquiryTests.deletionOfOrders()'><b>deletionOfOrders</b><br>Test class: au.wow.ngbomain.tests.OrderEnquiryTests<br>Test method: Deleting existing Orders</td>
+<td></td>
+<td>34</td>
+<td>au.wow.ngbomain.tests.OrderEnquiryTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.OrderEnquiryTests.orderAdvanceSearch()'><b>orderAdvanceSearch</b><br>Test class: au.wow.ngbomain.tests.OrderEnquiryTests<br>Test method: Verify Order Advance search details</td>
+<td></td>
+<td>129</td>
+<td>au.wow.ngbomain.tests.OrderEnquiryTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.OrderEnquiryTests.orderEnquiry()'><b>orderEnquiry</b><br>Test class: au.wow.ngbomain.tests.OrderEnquiryTests<br>Test method: check whether order Enquiry details is loaded</td>
+<td></td>
+<td>32</td>
+<td>au.wow.ngbomain.tests.OrderEnquiryTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.OrderEnquiryTests.orderOnReceipt()'><b>orderOnReceipt</b><br>Test class: au.wow.ngbomain.tests.OrderEnquiryTests<br>Test method: Order Creation using Order On Receipt</td>
+<td></td>
+<td>120</td>
+<td>au.wow.ngbomain.tests.OrderEnquiryTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportAllDepartments()'><b>verifyDSCReportAllDepartments</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying Daily Stock Check Report for All Departments</td>
+<td></td>
+<td>44</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportLitreArticle()'><b>verifyDSCReportLitreArticle</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying Daily Stock Check Report for Litre Articles </td>
+<td></td>
+<td>16</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportMeatDepartment()'><b>verifyDSCReportMeatDepartment</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying Daily Stock Check Report for Meat Departments- Random weight, weight and Normal articles</td>
+<td></td>
+<td>19</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportPDBArticle()'><b>verifyDSCReportPDBArticle</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying Daily Stock Check Report for PDB Articles </td>
+<td></td>
+<td>17</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportPartialDepartment()'><b>verifyDSCReportPartialDepartment</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying Daily Stock Check Report for PDB Articles </td>
+<td></td>
+<td>16</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportMPL()'><b>verifyInventoryReportMPL</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with MPL and Primary deparment Criteria</td>
+<td></td>
+<td>23</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportMultiDepartment()'><b>verifyInventoryReportMultiDepartment</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH & MPL and partial deparment Criteria</td>
+<td></td>
+<td>27</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportSOH()'><b>verifyInventoryReportSOH</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH and Primary deparment Criteria</td>
+<td></td>
+<td>23</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportSOH_MPL_AllDepartment()'><b>verifyInventoryReportSOH_MPL_AllDepartment</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH & MPL and partial deparment Criteria</td>
+<td></td>
+<td>54</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportSOH_MPL_PartialDepartment()'><b>verifyInventoryReportSOH_MPL_PartialDepartment</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH & MPL and partial deparment Criteria</td>
+<td></td>
+<td>46</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportSOHandMPL()'><b>verifyInventoryReportSOHandMPL</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH & MPL and Primary deparment Criteria</td>
+<td></td>
+<td>22</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportAllDepartment()'><b>verifyPLUReportAllDepartment</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for All Department </td>
+<td></td>
+<td>29</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportForArticleNumber()'><b>verifyPLUReportForArticleNumber</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for Article num and Desc </td>
+<td></td>
+<td>52</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportForArticlePLU()'><b>verifyPLUReportForArticlePLU</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for Article PLU Code </td>
+<td></td>
+<td>39</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportMultiDepartment()'><b>verifyPLUReportMultiDepartment</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for Multiple Departments</td>
+<td></td>
+<td>27</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportPartialDepartment()'><b>verifyPLUReportPartialDepartment</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for Partial Department </td>
+<td></td>
+<td>18</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportPrimaryDepartment()'><b>verifyPLUReportPrimaryDepartment</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for Primary Departments</td>
+<td></td>
+<td>19</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjArt()'><b>verifyStockAdjArt</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment</td>
+<td></td>
+<td>60</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDesc()'><b>verifyStockAdjDesc</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment</td>
+<td></td>
+<td>70</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticlesDescription()'><b>verifyStockAdjDisplayArticlesDescription</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Display Articles</td>
+<td></td>
+<td>50</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticlesEAN()'><b>verifyStockAdjDisplayArticlesEAN</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Display Articles</td>
+<td></td>
+<td>32</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjEAN()'><b>verifyStockAdjEAN</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment</td>
+<td></td>
+<td>69</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjLinkedArticles()'><b>verifyStockAdjLinkedArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for linked Articles</td>
+<td></td>
+<td>57</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjLinkedArticlesDescription()'><b>verifyStockAdjLinkedArticlesDescription</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for linked Articles - Descrption</td>
+<td></td>
+<td>57</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjLinkedArticlesEAN()'><b>verifyStockAdjLinkedArticlesEAN</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for linked Articles - EAN</td>
+<td></td>
+<td>44</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjLinkedArticlesPLU()'><b>verifyStockAdjLinkedArticlesPLU</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for linked Articles - PLU</td>
+<td></td>
+<td>61</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjPLU()'><b>verifyStockAdjPLU</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment</td>
+<td></td>
+<td>15</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjRandomWeighedArticles()'><b>verifyStockAdjRandomWeighedArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Random Weighed Articles</td>
+<td></td>
+<td>44</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjWeighedArticles()'><b>verifyStockAdjWeighedArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Weighed Articles</td>
+<td></td>
+<td>51</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.wareHouseemptyORDERlist()'><b>wareHouseemptyORDERlist</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check WareHouse Delivery</td>
+<td></td>
+<td>35</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+</table><p>
+<table width='100%' border='1' class='invocation-skipped'>
+<tr><td colspan='4' align='center'><b>SKIPPED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkWHdelivery()'><b>checkWHdelivery</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check WareHouse Under/Over Delivery</td>
+<td><div><pre>org.openqa.selenium.InvalidElementStateException: invalid element state: Element is not currently interactable and may not be manipulated
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 16 milliseconds
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir19328_3126}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 9842afe81e06b672dc19f500224ee206
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebElement.execute(RemoteWebElement.java:327)
+	at org.openqa.selenium.remote.RemoteWebElement.clear(RemoteWebElement.java:140)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:51)
+	at com.sun.proxy.$Proxy29.clear(Unknown Source)
+	at au.wow.ngbomain.pages.StockAdjPage.adjustSOH_whDelivery(StockAdjPage.java:883)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.checkWHdelivery(StockAdjustmentTests.java:709)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 17 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace576507944", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace576507944'><pre>org.openqa.selenium.InvalidElementStateException: invalid element state: Element is not currently interactable and may not be manipulated
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 16 milliseconds
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir19328_3126}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 9842afe81e06b672dc19f500224ee206
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebElement.execute(RemoteWebElement.java:327)
+	at org.openqa.selenium.remote.RemoteWebElement.clear(RemoteWebElement.java:140)
+	at sun.reflect.GeneratedMethodAccessor12.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:51)
+	at com.sun.proxy.$Proxy29.clear(Unknown Source)
+	at au.wow.ngbomain.pages.StockAdjPage.adjustSOH_whDelivery(StockAdjPage.java:883)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.checkWHdelivery(StockAdjustmentTests.java:709)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>84</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.checkWHdelivery()'><b>checkWHdelivery</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: check WareHouse Under/Over Delivery</td>
+<td><div><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;xpath&quot;,&quot;selector&quot;:&quot;//*[@id=&apos;yes&apos;]/label&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.04 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir6940_3140}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 97bb2ab73cc069e3bdc76d46dcbd7953
+*** Element info: {Using=xpath, value=//*[@id=&apos;yes&apos;]/label}
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByXPath(RemoteWebDriver.java:500)
+	at org.openqa.selenium.By$ByXPath.findElement(By.java:361)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.isDisplayed(Unknown Source)
+	at au.wow.ngbomain.pages.StockAdjPage.saveSOH(StockAdjPage.java:1183)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.checkWHdelivery(StockAdjustmentTests.java:714)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 13 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace468675900", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace468675900'><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;xpath&quot;,&quot;selector&quot;:&quot;//*[@id=&apos;yes&apos;]/label&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.04 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir6940_3140}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 97bb2ab73cc069e3bdc76d46dcbd7953
+*** Element info: {Using=xpath, value=//*[@id=&apos;yes&apos;]/label}
+	at sun.reflect.GeneratedConstructorAccessor47.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByXPath(RemoteWebDriver.java:500)
+	at org.openqa.selenium.By$ByXPath.findElement(By.java:361)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.isDisplayed(Unknown Source)
+	at au.wow.ngbomain.pages.StockAdjPage.saveSOH(StockAdjPage.java:1183)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.checkWHdelivery(StockAdjustmentTests.java:714)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>101</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.OrderEnquiryTests.orderCreation()'><b>orderCreation</b><br>Test class: au.wow.ngbomain.tests.OrderEnquiryTests<br>Test method: Creating Manual Preq orders for produce/Non produce of Warehouse/Vendor supplied in browser</td>
+<td><div><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;xpath&quot;,&quot;selector&quot;:&quot;(//*[@id=&apos;validationStatus&apos;])[5]/label&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.03 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir20832_15852}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 862e202930d6e8613f95d53e0384fad4
+*** Element info: {Using=xpath, value=(//*[@id=&apos;validationStatus&apos;])[5]/label}
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByXPath(RemoteWebDriver.java:500)
+	at org.openqa.selenium.By$ByXPath.findElement(By.java:361)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at au.wow.ngbo.utils.BasePage.prepareWebElementWithDynamicXpathWithInt(BasePage.java:93)
+	at au.wow.ngbomain.pages.OrderEnquiryPage.orderCreation(OrderEnquiryPage.java:1015)
+	at au.wow.ngbomain.tests.OrderEnquiryTests.orderCreation(OrderEnquiryTests.java:222)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 13 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1254689729", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1254689729'><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;xpath&quot;,&quot;selector&quot;:&quot;(//*[@id=&apos;validationStatus&apos;])[5]/label&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.03 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir20832_15852}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 862e202930d6e8613f95d53e0384fad4
+*** Element info: {Using=xpath, value=(//*[@id=&apos;validationStatus&apos;])[5]/label}
+	at sun.reflect.GeneratedConstructorAccessor47.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByXPath(RemoteWebDriver.java:500)
+	at org.openqa.selenium.By$ByXPath.findElement(By.java:361)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at au.wow.ngbo.utils.BasePage.prepareWebElementWithDynamicXpathWithInt(BasePage.java:93)
+	at au.wow.ngbomain.pages.OrderEnquiryPage.orderCreation(OrderEnquiryPage.java:1015)
+	at au.wow.ngbomain.tests.OrderEnquiryTests.orderCreation(OrderEnquiryTests.java:222)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>97</td>
+<td>au.wow.ngbomain.tests.OrderEnquiryTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.OrderEnquiryTests.orderCreation()'><b>orderCreation</b><br>Test class: au.wow.ngbomain.tests.OrderEnquiryTests<br>Test method: Creating Manual Preq orders for produce/Non produce of Warehouse/Vendor supplied in browser</td>
+<td><div><pre>org.openqa.selenium.InvalidElementStateException: invalid element state: Element is not currently interactable and may not be manipulated
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 30 milliseconds
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir13440_15266}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: cd5f206c2e4143cf51ce7ce6fb091da8
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebElement.execute(RemoteWebElement.java:327)
+	at org.openqa.selenium.remote.RemoteWebElement.clear(RemoteWebElement.java:140)
+	at au.wow.ngbomain.pages.OrderEnquiryPage.orderCreation(OrderEnquiryPage.java:910)
+	at au.wow.ngbomain.tests.OrderEnquiryTests.orderCreation(OrderEnquiryTests.java:222)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 14 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1319339952", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1319339952'><pre>org.openqa.selenium.InvalidElementStateException: invalid element state: Element is not currently interactable and may not be manipulated
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 30 milliseconds
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir13440_15266}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: cd5f206c2e4143cf51ce7ce6fb091da8
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebElement.execute(RemoteWebElement.java:327)
+	at org.openqa.selenium.remote.RemoteWebElement.clear(RemoteWebElement.java:140)
+	at au.wow.ngbomain.pages.OrderEnquiryPage.orderCreation(OrderEnquiryPage.java:910)
+	at au.wow.ngbomain.tests.OrderEnquiryTests.orderCreation(OrderEnquiryTests.java:222)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>41</td>
+<td>au.wow.ngbomain.tests.OrderEnquiryTests@548e6d58</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportLitreArticle()'><b>verifyDSCReportLitreArticle</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying Daily Stock Check Report for Litre Articles </td>
+<td><div><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Daily Stock Check Report&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.05 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir11980_13775}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 2ad6110dbb424133602bcc764bfb5c3f
+*** Element info: {Using=link text, value=Daily Stock Check Report}
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByLinkText(RemoteWebDriver.java:428)
+	at org.openqa.selenium.By$ByLinkText.findElement(By.java:246)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.getCoordinates(Unknown Source)
+	at org.openqa.selenium.interactions.internal.MouseAction.getActionLocation(MouseAction.java:51)
+	at org.openqa.selenium.interactions.MoveMouseAction.perform(MoveMouseAction.java:39)
+	at org.openqa.selenium.interactions.CompositeAction.perform(CompositeAction.java:50)
+	at au.wow.ngbomain.pages.DSCandPLUReportPage.clickOnDsctReport(DSCandPLUReportPage.java:63)
+	at au.wow.ngbomain.tests.DSCandPLUReportTests.navToDSCReport(DSCandPLUReportTests.java:683)
+	at au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportLitreArticle(DSCandPLUReportTests.java:321)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 13 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace161308633", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace161308633'><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Daily Stock Check Report&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.05 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir11980_13775}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 2ad6110dbb424133602bcc764bfb5c3f
+*** Element info: {Using=link text, value=Daily Stock Check Report}
+	at sun.reflect.GeneratedConstructorAccessor47.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByLinkText(RemoteWebDriver.java:428)
+	at org.openqa.selenium.By$ByLinkText.findElement(By.java:246)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.getCoordinates(Unknown Source)
+	at org.openqa.selenium.interactions.internal.MouseAction.getActionLocation(MouseAction.java:51)
+	at org.openqa.selenium.interactions.MoveMouseAction.perform(MoveMouseAction.java:39)
+	at org.openqa.selenium.interactions.CompositeAction.perform(CompositeAction.java:50)
+	at au.wow.ngbomain.pages.DSCandPLUReportPage.clickOnDsctReport(DSCandPLUReportPage.java:63)
+	at au.wow.ngbomain.tests.DSCandPLUReportTests.navToDSCReport(DSCandPLUReportTests.java:683)
+	at au.wow.ngbomain.tests.DSCandPLUReportTests.verifyDSCReportLitreArticle(DSCandPLUReportTests.java:321)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>19</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportAdditonalCriteriaSOH()'><b>verifyInventoryReportAdditonalCriteriaSOH</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH & MPL and Additional criteria SOH</td>
+<td><div><pre>org.openqa.selenium.NoSuchElementException: The element:  xpath: //*[@id=&apos;addParameter&apos;]/div/div/span[2]/select could not be found
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:38)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.selectByVisibleText(BasePage.java:547)
+	at au.wow.ngbomain.pages.InventoryReportPage.fnChooseAdditionalCriteriaSOH(InventoryReportPage.java:527)
+	at au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportAdditonalCriteriaSOH(InventoryReportTests.java:252)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1085164341", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1085164341'><pre>org.openqa.selenium.NoSuchElementException: The element:  xpath: //*[@id=&apos;addParameter&apos;]/div/div/span[2]/select could not be found
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:38)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.selectByVisibleText(BasePage.java:547)
+	at au.wow.ngbomain.pages.InventoryReportPage.fnChooseAdditionalCriteriaSOH(InventoryReportPage.java:527)
+	at au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportAdditonalCriteriaSOH(InventoryReportTests.java:252)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>25</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportAdditonalCriteriaSOH()'><b>verifyInventoryReportAdditonalCriteriaSOH</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH & MPL and Additional criteria SOH</td>
+<td><div><pre>org.openqa.selenium.NoSuchElementException: The element:  xpath: //*[@id=&apos;addParameter&apos;]/div/div/span[2]/select could not be found
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:38)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.selectByVisibleText(BasePage.java:547)
+	at au.wow.ngbomain.pages.InventoryReportPage.fnChooseAdditionalCriteriaSOH(InventoryReportPage.java:527)
+	at au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportAdditonalCriteriaSOH(InventoryReportTests.java:252)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace784042814", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace784042814'><pre>org.openqa.selenium.NoSuchElementException: The element:  xpath: //*[@id=&apos;addParameter&apos;]/div/div/span[2]/select could not be found
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:38)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.selectByVisibleText(BasePage.java:547)
+	at au.wow.ngbomain.pages.InventoryReportPage.fnChooseAdditionalCriteriaSOH(InventoryReportPage.java:527)
+	at au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportAdditonalCriteriaSOH(InventoryReportTests.java:252)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>24</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportSOH()'><b>verifyInventoryReportSOH</b><br>Test class: au.wow.ngbomain.tests.InventoryReportTests<br>Test method: Verifying Inventory Report with SOH and Primary deparment Criteria</td>
+<td><div><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Inventory Report&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.07 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir14496_22454}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: d5467e3efe2e0da476b1313dd6b508fb
+*** Element info: {Using=link text, value=Inventory Report}
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByLinkText(RemoteWebDriver.java:428)
+	at org.openqa.selenium.By$ByLinkText.findElement(By.java:246)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.getCoordinates(Unknown Source)
+	at org.openqa.selenium.interactions.internal.MouseAction.getActionLocation(MouseAction.java:51)
+	at org.openqa.selenium.interactions.MoveMouseAction.perform(MoveMouseAction.java:39)
+	at org.openqa.selenium.interactions.CompositeAction.perform(CompositeAction.java:50)
+	at au.wow.ngbomain.pages.InventoryReportPage.clickOnInventoryReport(InventoryReportPage.java:62)
+	at au.wow.ngbomain.tests.InventoryReportTests.navToInventoryReport(InventoryReportTests.java:282)
+	at au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportSOH(InventoryReportTests.java:67)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 13 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace442758057", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace442758057'><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;link text&quot;,&quot;selector&quot;:&quot;Inventory Report&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.07 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir14496_22454}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: d5467e3efe2e0da476b1313dd6b508fb
+*** Element info: {Using=link text, value=Inventory Report}
+	at sun.reflect.GeneratedConstructorAccessor47.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByLinkText(RemoteWebDriver.java:428)
+	at org.openqa.selenium.By$ByLinkText.findElement(By.java:246)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.getCoordinates(Unknown Source)
+	at org.openqa.selenium.interactions.internal.MouseAction.getActionLocation(MouseAction.java:51)
+	at org.openqa.selenium.interactions.MoveMouseAction.perform(MoveMouseAction.java:39)
+	at org.openqa.selenium.interactions.CompositeAction.perform(CompositeAction.java:50)
+	at au.wow.ngbomain.pages.InventoryReportPage.clickOnInventoryReport(InventoryReportPage.java:62)
+	at au.wow.ngbomain.tests.InventoryReportTests.navToInventoryReport(InventoryReportTests.java:282)
+	at au.wow.ngbomain.tests.InventoryReportTests.verifyInventoryReportSOH(InventoryReportTests.java:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>19</td>
+<td>au.wow.ngbomain.tests.InventoryReportTests@a1cdc6d</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportDeletedPLU()'><b>verifyPLUReportDeletedPLU</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for deleted PLU</td>
+<td><div><pre>java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportDeletedPLU(DSCandPLUReportTests.java:537)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1519703428", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1519703428'><pre>java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportDeletedPLU(DSCandPLUReportTests.java:537)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>39</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportDeletedPLU()'><b>verifyPLUReportDeletedPLU</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for deleted PLU</td>
+<td><div><pre>java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportDeletedPLU(DSCandPLUReportTests.java:537)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace720024227", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace720024227'><pre>java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportDeletedPLU(DSCandPLUReportTests.java:537)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>27</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportMultiDepartment()'><b>verifyPLUReportMultiDepartment</b><br>Test class: au.wow.ngbomain.tests.DSCandPLUReportTests<br>Test method: Verifying PLU Report for Multiple Departments</td>
+<td><div><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;xpath&quot;,&quot;selector&quot;:&quot;//*[@id=&apos;subCategoryLst&apos;]/li[1]/input&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.02 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir9732_23441}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 3022a9d0e571169608c4dc50d1c779d2
+*** Element info: {Using=xpath, value=//*[@id=&apos;subCategoryLst&apos;]/li[1]/input}
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByXPath(RemoteWebDriver.java:500)
+	at org.openqa.selenium.By$ByXPath.findElement(By.java:361)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at au.wow.ngbomain.pages.DSCandPLUReportPage.prepareWebElementWithDynamicXpathWithInt(DSCandPLUReportPage.java:370)
+	at au.wow.ngbomain.pages.DSCandPLUReportPage.fnverifyPLUReportMultiDepartment(DSCandPLUReportPage.java:1127)
+	at au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportMultiDepartment(DSCandPLUReportTests.java:577)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 13 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace699264420", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace699264420'><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;xpath&quot;,&quot;selector&quot;:&quot;//*[@id=&apos;subCategoryLst&apos;]/li[1]/input&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.02 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir9732_23441}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 3022a9d0e571169608c4dc50d1c779d2
+*** Element info: {Using=xpath, value=//*[@id=&apos;subCategoryLst&apos;]/li[1]/input}
+	at sun.reflect.GeneratedConstructorAccessor47.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByXPath(RemoteWebDriver.java:500)
+	at org.openqa.selenium.By$ByXPath.findElement(By.java:361)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at au.wow.ngbomain.pages.DSCandPLUReportPage.prepareWebElementWithDynamicXpathWithInt(DSCandPLUReportPage.java:370)
+	at au.wow.ngbomain.pages.DSCandPLUReportPage.fnverifyPLUReportMultiDepartment(DSCandPLUReportPage.java:1127)
+	at au.wow.ngbomain.tests.DSCandPLUReportTests.verifyPLUReportMultiDepartment(DSCandPLUReportTests.java:577)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>26</td>
+<td>au.wow.ngbomain.tests.DSCandPLUReportTests@623a8092</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticles()'><b>verifyStockAdjDisplayArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Display Articles</td>
+<td><div><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;xpath&quot;,&quot;selector&quot;:&quot;//*[@id=&apos;no&apos;]/label&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.01 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir10984_16586}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 8a45a3df015ca3907ff2a3d69c0b4555
+*** Element info: {Using=xpath, value=//*[@id=&apos;no&apos;]/label}
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByXPath(RemoteWebDriver.java:500)
+	at org.openqa.selenium.By$ByXPath.findElement(By.java:361)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.isDisplayed(Unknown Source)
+	at au.wow.ngbomain.pages.StockAdjPage.recentHistoryCheck(StockAdjPage.java:366)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticles(StockAdjustmentTests.java:2532)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 13 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace340552819", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace340552819'><pre>org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {&quot;method&quot;:&quot;xpath&quot;,&quot;selector&quot;:&quot;//*[@id=&apos;no&apos;]/label&quot;}
+  (Session info: chrome=59.0.3071.86)
+  (Driver info: chromedriver=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41),platform=Windows NT 6.1.7601 SP1 x86_64) (WARNING: The server did not provide any stacktrace information)
+Command duration or timeout: 5.01 seconds
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Capabilities [{applicationCacheEnabled=false, rotatable=false, mobileEmulationEnabled=false, networkConnectionEnabled=false, chrome={chromedriverVersion=2.30.477700 (0057494ad8732195794a7b32078424f92a5fce41), userDataDir=C:\Users\xmmni\AppData\Local\Temp\scoped_dir10984_16586}, takesHeapSnapshot=true, pageLoadStrategy=normal, databaseEnabled=false, handlesAlerts=true, hasTouchScreen=false, version=59.0.3071.86, platform=XP, browserConnectionEnabled=false, nativeEvents=true, acceptSslCerts=true, locationContextEnabled=true, webStorageEnabled=true, browserName=chrome, takesScreenshot=true, javascriptEnabled=true, cssSelectorsEnabled=true, unexpectedAlertBehaviour=}]
+Session ID: 8a45a3df015ca3907ff2a3d69c0b4555
+*** Element info: {Using=xpath, value=//*[@id=&apos;no&apos;]/label}
+	at sun.reflect.GeneratedConstructorAccessor47.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.openqa.selenium.remote.ErrorHandler.createThrowable(ErrorHandler.java:206)
+	at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed(ErrorHandler.java:158)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:678)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:363)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElementByXPath(RemoteWebDriver.java:500)
+	at org.openqa.selenium.By$ByXPath.findElement(By.java:361)
+	at org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:355)
+	at org.openqa.selenium.support.pagefactory.DefaultElementLocator.findElement(DefaultElementLocator.java:69)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:38)
+	at com.sun.proxy.$Proxy29.isDisplayed(Unknown Source)
+	at au.wow.ngbomain.pages.StockAdjPage.recentHistoryCheck(StockAdjPage.java:366)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticles(StockAdjustmentTests.java:2532)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>40</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticles()'><b>verifyStockAdjDisplayArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Display Articles</td>
+<td><div><pre>java.lang.NumberFormatException: empty String
+	at sun.misc.FloatingDecimal.readJavaFormatString(Unknown Source)
+	at sun.misc.FloatingDecimal.parseFloat(Unknown Source)
+	at java.lang.Float.parseFloat(Unknown Source)
+	at au.wow.ngbo.utils.BasePage.isDecimalEquals(BasePage.java:1872)
+	at au.wow.ngbomain.pages.StockAdjPage.validateDisplayChildArticles(StockAdjPage.java:2312)
+	at au.wow.ngbomain.pages.StockAdjPage.fnAdjustSohDisplayArticles(StockAdjPage.java:2238)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticles(StockAdjustmentTests.java:2526)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace34127283", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace34127283'><pre>java.lang.NumberFormatException: empty String
+	at sun.misc.FloatingDecimal.readJavaFormatString(Unknown Source)
+	at sun.misc.FloatingDecimal.parseFloat(Unknown Source)
+	at java.lang.Float.parseFloat(Unknown Source)
+	at au.wow.ngbo.utils.BasePage.isDecimalEquals(BasePage.java:1872)
+	at au.wow.ngbomain.pages.StockAdjPage.validateDisplayChildArticles(StockAdjPage.java:2312)
+	at au.wow.ngbomain.pages.StockAdjPage.fnAdjustSohDisplayArticles(StockAdjPage.java:2238)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticles(StockAdjustmentTests.java:2526)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>31</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticlesEAN()'><b>verifyStockAdjDisplayArticlesEAN</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Display Articles</td>
+<td><div><pre>java.lang.NumberFormatException: empty String
+	at sun.misc.FloatingDecimal.readJavaFormatString(Unknown Source)
+	at sun.misc.FloatingDecimal.parseFloat(Unknown Source)
+	at java.lang.Float.parseFloat(Unknown Source)
+	at au.wow.ngbo.utils.BasePage.isDecimalEquals(BasePage.java:1872)
+	at au.wow.ngbomain.pages.StockAdjPage.validateDisplayChildArticles(StockAdjPage.java:2312)
+	at au.wow.ngbomain.pages.StockAdjPage.fnAdjustSohDisplayArticles(StockAdjPage.java:2238)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticlesEAN(StockAdjustmentTests.java:2772)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace85969201", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace85969201'><pre>java.lang.NumberFormatException: empty String
+	at sun.misc.FloatingDecimal.readJavaFormatString(Unknown Source)
+	at sun.misc.FloatingDecimal.parseFloat(Unknown Source)
+	at java.lang.Float.parseFloat(Unknown Source)
+	at au.wow.ngbo.utils.BasePage.isDecimalEquals(BasePage.java:1872)
+	at au.wow.ngbomain.pages.StockAdjPage.validateDisplayChildArticles(StockAdjPage.java:2312)
+	at au.wow.ngbomain.pages.StockAdjPage.fnAdjustSohDisplayArticles(StockAdjPage.java:2238)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjDisplayArticlesEAN(StockAdjustmentTests.java:2772)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>30</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjWeighedArticles()'><b>verifyStockAdjWeighedArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment for Weighed Articles</td>
+<td><div><pre>org.openqa.selenium.NoSuchElementException: The element: roxy element for: DefaultElementLocator &apos;By.xpath: //*[@id=&apos;secondaryDetails&apos;]/label[1]/strong could not be found
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:38)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.getText(BasePage.java:503)
+	at au.wow.ngbomain.pages.StockAdjPage.fnStockAdjustmentWeighedArticles(StockAdjPage.java:2448)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjWeighedArticles(StockAdjustmentTests.java:2897)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1656312516", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1656312516'><pre>org.openqa.selenium.NoSuchElementException: The element: roxy element for: DefaultElementLocator &apos;By.xpath: //*[@id=&apos;secondaryDetails&apos;]/label[1]/strong could not be found
+For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
+Build info: version: &apos;2.53.0&apos;, revision: &apos;35ae25b&apos;, time: &apos;2016-03-15 16:57:40&apos;
+System info: host: &apos;NCDWIN7PXD17050&apos;, ip: &apos;10.136.232.201&apos;, os.name: &apos;Windows 7&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;6.1&apos;, java.version: &apos;1.8.0_131&apos;
+Driver info: driver.version: unknown
+	at au.wow.ngbo.utils.CustomException.exceptionHandler(CustomException.java:38)
+	at au.wow.ngbo.utils.CustomException.&lt;init&gt;(CustomException.java:23)
+	at au.wow.ngbo.utils.BasePage.getText(BasePage.java:503)
+	at au.wow.ngbomain.pages.StockAdjPage.fnStockAdjustmentWeighedArticles(StockAdjPage.java:2448)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifyStockAdjWeighedArticles(StockAdjustmentTests.java:2897)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>28</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupDisplayArticles()'><b>verifylookupDisplayArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for linked Articles</td>
+<td><div><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupDisplayArticles(StockAdjustmentTests.java:2794)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1899172146", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1899172146'><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupDisplayArticles(StockAdjustmentTests.java:2794)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>11</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupDisplayArticles()'><b>verifylookupDisplayArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for linked Articles</td>
+<td><div><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupDisplayArticles(StockAdjustmentTests.java:2794)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace2021438668", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace2021438668'><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupDisplayArticles(StockAdjustmentTests.java:2794)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>11</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupLinkedArticles()'><b>verifylookupLinkedArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for linked Articles</td>
+<td><div><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupLinkedArticles(StockAdjustmentTests.java:2392)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace719191309", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace719191309'><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupLinkedArticles(StockAdjustmentTests.java:2392)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>11</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupLinkedArticles()'><b>verifylookupLinkedArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for linked Articles</td>
+<td><div><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupLinkedArticles(StockAdjustmentTests.java:2392)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1704006211", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1704006211'><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupLinkedArticles(StockAdjustmentTests.java:2392)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>11</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupRandomWeightArticles()'><b>verifylookupRandomWeightArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for Random Weight Articles</td>
+<td><div><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupRandomWeightArticles(StockAdjustmentTests.java:3076)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace388261290", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace388261290'><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupRandomWeightArticles(StockAdjustmentTests.java:3076)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>11</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupRandomWeightArticles()'><b>verifylookupRandomWeightArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for Random Weight Articles</td>
+<td><div><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupRandomWeightArticles(StockAdjustmentTests.java:3076)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace336038335", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace336038335'><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupRandomWeightArticles(StockAdjustmentTests.java:3076)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>11</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupWeightArticles()'><b>verifylookupWeightArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for Weight Articles</td>
+<td><div><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupWeightArticles(StockAdjustmentTests.java:2933)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1101605380", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1101605380'><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupWeightArticles(StockAdjustmentTests.java:2933)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:816)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1124)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>11</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+<tr>
+<td title='au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupWeightArticles()'><b>verifylookupWeightArticles</b><br>Test class: au.wow.ngbomain.tests.StockAdjustmentTests<br>Test method: Verifying Stock Adjustment from lookup for Weight Articles</td>
+<td><div><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupWeightArticles(StockAdjustmentTests.java:2933)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+... Removed 10 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace927067510", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace927067510'><pre>java.lang.NullPointerException
+	at au.wow.ngbomain.pages.ArticleLookUpPage.clickOnArticleReportReport(ArticleLookUpPage.java:40)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.navToAricleLookUp(StockAdjustmentTests.java:3169)
+	at au.wow.ngbomain.tests.StockAdjustmentTests.verifylookupWeightArticles(StockAdjustmentTests.java:2933)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:639)
+	at org.testng.internal.Invoker.retryFailed(Invoker.java:963)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1142)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:125)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:108)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+</pre></div></td>
+<td>11</td>
+<td>au.wow.ngbomain.tests.StockAdjustmentTests@2f465398</td></tr>
+</table><p>
+</body>
+</html>

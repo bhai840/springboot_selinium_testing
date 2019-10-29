@@ -1,0 +1,2745 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.ReturnToVendorObjects;
+import au.wow.ngbomain.objects.RoutineObjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.ReturnToVendorPage;
+//import au.wow.ngbomain.pages.OrderEnquiryPage;
+import au.wow.ngbomain.pages.RoutinesPage;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.thoughtworks.selenium.webdriven.commands.Refresh;
+
+
+public class ReturnToVendorTests  extends TestBase {
+
+
+	private Logger log = LogManager.getLogger(ReturnToVendorTests.class);
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	XMLDataReader data;
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	RoutinesPage objRoutinesPage;
+	ReturnToVendorPage returnToVendorPage;
+	ReturnToVendorObjects returnToVendorObjects;
+	RoutineObjects objRoutineObjects;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;			
+	List<List<Object>> result;
+	List<List<Object>> result_temp;
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+	public static boolean isFirstTest=true;
+	int count=0;		
+	int MCcount=0;
+	public static WebDriver driver;
+
+
+
+	public ReturnToVendorTests(){
+		super.log=log;
+	}
+
+	public void navToReturnToVendor(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		if(System.getProperty("store")==null){
+			StoreNo = getContext().getStringProperty("store");
+
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			returnToVendorPage = loginPage.navToReturnToVendor(getContext().getStringProperty("store"),driver);
+		}else{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store :  + store;;;Pass");
+			returnToVendorPage = loginPage.navToReturnToVendor(store,driver);
+		}
+
+		log.info("-------------Navigate to Return To Vendor Page------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to ReturnToVendor Page--------------------;;;Pass");
+		//Report_AddStep("testcase", "----------------Navigate to Routines Page--------------------","","", "Pass");
+		returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+	}
+	
+	public void navToReturnToVendorAnotherUser(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		if(System.getProperty("store")==null){
+			StoreNo = getContext().getStringProperty("store");
+
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			returnToVendorPage = loginPage.navToReturnToVendorRTV(getContext().getStringProperty("store"),driver);
+		}else{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store :  + store;;;Pass");
+			returnToVendorPage = loginPage.navToReturnToVendorRTV(store,driver);
+		}
+
+		log.info("-------------Navigate to Return To Vendor Page------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to ReturnToVendor Page--------------------;;;Pass");
+		//Report_AddStep("testcase", "----------------Navigate to Routines Page--------------------","","", "Pass");
+		returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+	}
+	
+	public void navToReturnToVendorAnotherUserClaimEnquiry(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		if(System.getProperty("store")==null){
+			StoreNo = getContext().getStringProperty("store");
+
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			returnToVendorPage = loginPage.navToReturnToVendorRTV(getContext().getStringProperty("store"),driver);
+		}else{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store :  + store;;;Pass");
+			returnToVendorPage = loginPage.navToReturnToVendorRTV(store,driver);
+		}
+
+		log.info("-------------Navigate to Return To Vendor Page------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to ReturnToVendor Page--------------------;;;Pass");
+		//Report_AddStep("testcase", "----------------Navigate to Routines Page--------------------","","", "Pass");
+		returnToVendorPage.clickOnReturnToVendorClaimEnquiry(returnToVendorObjects,driver);
+	}
+	
+	public void navToReturnToVendorbigW(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		if(System.getProperty("store")==null){
+			StoreNo = getContext().getStringProperty("BigWstore");
+
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("BigWstore")+";;;Pass");
+			returnToVendorPage = loginPage.navToReturnToVendor(getContext().getStringProperty("BigWstore"),driver);
+		}else{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store :  + store;;;Pass");
+			returnToVendorPage = loginPage.navToReturnToVendor(store,driver);
+		}
+
+		log.info("-------------Navigate to Return To Vendor Page------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to ReturnToVendor Page--------------------;;;Pass");
+		//Report_AddStep("testcase", "----------------Navigate to Routines Page--------------------","","", "Pass");
+		returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+	}
+	
+	public void navToReturnToVendorPEL(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		if(System.getProperty("store")==null){
+			StoreNo = getContext().getStringProperty("NZstore");
+
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("NZstore")+";;;Pass");
+			returnToVendorPage = loginPage.navToReturnToVendor(getContext().getStringProperty("NZstore"),driver);
+		}else{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store :  + store;;;Pass");
+			returnToVendorPage = loginPage.navToReturnToVendor(store,driver);
+		}
+
+		log.info("-------------Navigate to Return To Vendor Page------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to ReturnToVendor Page--------------------;;;Pass");
+		//Report_AddStep("testcase", "----------------Navigate to Routines Page--------------------","","", "Pass");
+		returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+	}
+
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		waitFor(2);
+		System.out.println("test1 - beforemethod");
+		mName=m9.getName().toString().trim();			
+		if(!methodList.contains(m9.getName().toString().trim())){
+			methodList.add(m9.getName().toString().trim());
+			extLogger = extReport.startTest(m9.getName().toString().trim());
+		}	
+
+		initializeTestcontext();
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		}else{
+			String title = driver.getCurrentUrl();
+			if(title.contains("logginOut"))
+			{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+			}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+						WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+						scrolltoElement(home,driver);
+						home.click();
+						TimeUnit.SECONDS.sleep(5);
+						loginPage.Logout(ReturnToVendorArtScenarios, ReturnToVendorArttestname, driver);
+						driver.navigate().refresh();
+						TimeUnit.SECONDS.sleep(5);}
+				}
+			}
+		}
+			isFirstTest=false;
+		
+		//driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"),cName,mName,extLogger,driver); 
+		setDriver(driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		ReturnToVendorArttestname = m9.getName().toString().trim();
+		ReturnToVendorArttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		returnToVendorObjects = PageFactory.initElements(this.driver, ReturnToVendorObjects.class);
+		returnToVendorPage = PageFactory.initElements(this.driver, ReturnToVendorPage.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+	}
+
+	@BeforeClass
+	public void loadXMLFile(){	
+		//initializeTestcontext();
+		System.out.println("test1 - Beforeclass");
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\ReturnToVendor.xml");
+		customreport.createExtentReport();
+	}
+
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitFor(1);
+		System.out.println("afterclass");
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(), MCcount);
+		//System.out.println(extentList);
+		//System.out.println(methodList);
+		extReport.endTest(extLogger);
+		extReport.flush();
+		removeDriver();
+		closeDriver(driver);
+		waitFor(1);
+		moduleName.put("Modules", ReturnToVendorArtModules);
+		waitFor(1);
+		Date ppModEnd2 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		ReturnToVendorArtenddateex = dateFormat.format(ppModEnd2);
+
+		//System.out.println(RoutinesArtenddateex);
+		waitFor(2);
+		int OEArtM=MCcount;
+		ReturnToVendorArtMC=""+OEArtM;
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+		System.out.println("AffterMethod");
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				//System.out.println();
+
+			}
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")){
+			int cnt = ReturnToVendorArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			ReturnToVendorArtpreCount2++;
+		}
+		waitFor(1);
+		if(ReturnToVendorArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+			ReturnToVendorArtpreCount2=-1;
+		}
+	}
+	
+	//Srivinith
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Search - SuperMarket")
+	public void articleSearch()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		TestStatus status = getTestStatus();
+		try{
+		navToReturnToVendor(status);
+		String returnQuantity = "5";
+		//For Accepting Articles
+		//HAWA Articles
+		try{
+		List<String> articleDetailsHawa = returnToVendorPage.getList(returnToVendorObjects, "randomArticleHawa", "articleDetailsHawa","HAWA","SM");
+		if(articleDetailsHawa.size()!=0){
+			String articleNumber = articleDetailsHawa.get(0);
+			String vendorDetails = data.getText("hawaVendor");
+	    	vendorDetails = vendorDetails.replace("articleNumber",articleNumber);
+			List<String> vendorDetailsResults = sql.executeQueryList(getContext(),vendorDetails);
+			
+			returnToVendorPage.inputValidationsForArticleTextBox(articleDetailsHawa,vendorDetailsResults,returnToVendorObjects,driver);
+			returnToVendorPage.validationForOtherFields(articleDetailsHawa,returnToVendorObjects,"HAWA",returnQuantity,driver);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for HAWA Type;;;Fail");
+		}
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		
+		//PBD Articles
+		try{
+		driver.navigate().refresh();
+		List<String> articleDetailsPbd = returnToVendorPage.getList(returnToVendorObjects, "randomArticlePbd", "articleDetailsPbd","PBD","SM");
+		if(articleDetailsPbd.size()!=0){
+			String articleNumber = articleDetailsPbd.get(0);
+			String vendorDetails = data.getText("pbdVendor");
+	    	vendorDetails = vendorDetails.replace("articleNumber",articleNumber);
+			List<String> vendorDetailsResults = sql.executeQueryList(getContext(),vendorDetails);
+			
+			returnToVendorPage.inputValidationsForArticleTextBox(articleDetailsPbd,vendorDetailsResults,returnToVendorObjects,driver);
+			returnToVendorPage.validationForOtherFields(articleDetailsPbd,returnToVendorObjects,"PBD",returnQuantity,driver);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for PBD Type;;;Fail");
+		}
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		
+		//Litre Articles
+		try{
+		driver.navigate().refresh();
+		List<String> articleDetailsLitre = returnToVendorPage.getList(returnToVendorObjects, "randomArticleLitre", "articleDetailsLitre","Litre","SM");
+		if(articleDetailsLitre.size()!=0){
+			String articleNumber = articleDetailsLitre.get(0);
+			String vendorDetails = data.getText("litreVendor");
+	    	vendorDetails = vendorDetails.replace("articleNumber",articleNumber);
+			List<String> vendorDetailsResults = sql.executeQueryList(getContext(),vendorDetails);
+			
+			returnToVendorPage.inputValidationsForArticleTextBox(articleDetailsLitre,vendorDetailsResults,returnToVendorObjects,driver);
+			returnToVendorPage.validationForOtherFields(articleDetailsLitre,returnToVendorObjects,"Litre",returnQuantity,driver);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for Litre Type;;;Fail");
+		}
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		
+		//Display Exception Articles
+		try{
+		driver.navigate().refresh();
+		List<String> articleDetailsDisplayException = returnToVendorPage.getList(returnToVendorObjects, "randomArticleDisplayException", "articleDetailsDisplayException","Display Exception","SM");
+		if(articleDetailsDisplayException.size()!=0){
+			String articleNumber = articleDetailsDisplayException.get(0);
+			String vendorDetails = data.getText("displayExceptionVendor");
+	    	vendorDetails = vendorDetails.replace("articleNumber",articleNumber);
+			List<String> vendorDetailsResults = sql.executeQueryList(getContext(),vendorDetails);
+			
+			returnToVendorPage.inputValidationsForArticleTextBox(articleDetailsDisplayException,vendorDetailsResults,returnToVendorObjects,driver);
+			returnToVendorPage.validationForOtherFields(articleDetailsDisplayException,returnToVendorObjects,"Display Exception",returnQuantity,driver);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for Display Exception Type;;;Fail");
+		}
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		
+		//For Not Accepting Articles
+		//Weighted
+		try{
+		driver.navigate().refresh();
+		List<String> articleDetailsWeighted = returnToVendorPage.getList(returnToVendorObjects, "randomArticleWeighted", "articleDetailsWeighted","Weighted","SM");
+		if(articleDetailsWeighted.size()!=0){
+		returnToVendorPage.inputValidationsForRestrictedArticleTextBox(articleDetailsWeighted,returnToVendorObjects,"Weighted",driver);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for Weighted Type;;;Fail");
+		}
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		
+		//Random Weighted
+		try{
+		driver.navigate().refresh();
+		List<String> articleDetailsRandomWeighted = returnToVendorPage.getList(returnToVendorObjects, "randomArticleRandomWeighted", "articleDetailsRandomWeighted","Random Weighted","SM");
+		if(articleDetailsRandomWeighted.size()!=0){
+		returnToVendorPage.inputValidationsForRestrictedArticleTextBox(articleDetailsRandomWeighted,returnToVendorObjects,"Random Weighted",driver);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for Random Weighted Type;;;Fail");
+		}
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		
+		//CPBD Weighted
+		try{
+		driver.navigate().refresh();
+		List<String> articleDetailsCpbd = returnToVendorPage.getList(returnToVendorObjects, "randomArticleCpbd", "articleDetailsCpbd","CPBD","SM");
+		if(articleDetailsCpbd.size()!=0){
+		returnToVendorPage.inputValidationsForRestrictedArticleTextBox(articleDetailsCpbd,returnToVendorObjects,"CPBD",driver);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for CPBD Type;;;Fail");
+		}
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		
+		//Display Article
+		try{
+		driver.navigate().refresh();
+		List<String> articleDetailsDisplay = returnToVendorPage.getList(returnToVendorObjects, "randomArticleDisplay", "articleDetailsDisplay","Display","SM");
+		if(articleDetailsDisplay.size()!=0){
+		returnToVendorPage.inputValidationsForRestrictedArticleTextBox(articleDetailsDisplay,returnToVendorObjects,"Display",driver);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for Display Type;;;Fail");
+		}
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		
+		//DIEN Article
+		try{
+		driver.navigate().refresh();
+		List<String> articleDetailsDien = returnToVendorPage.getList(returnToVendorObjects, "randomArticleDien", "articleDetailsDien","DIEN","SM");
+		if(articleDetailsDien.size()!=0){
+		returnToVendorPage.inputValidationsForRestrictedArticleTextBox(articleDetailsDien,returnToVendorObjects,"DIEN",driver);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for DIEN Type;;;Fail");
+		}
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		
+		//Produced Article
+		try{
+		driver.navigate().refresh();
+		List<String> articleDetailsDien = returnToVendorPage.getList(returnToVendorObjects, "randomArticleProduce", "articleDetailsProduce","Produce","SM");
+		if(articleDetailsDien.size()!=0){
+		returnToVendorPage.inputValidationsForRestrictedArticleTextBox(articleDetailsDien,returnToVendorObjects,"Produce",driver);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for Produce Type;;;Fail");
+		}
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		
+		//Non Returnable, Maximum Return Quantity, PLU Same Article Number Search Aticles and Deleting Article Validation
+		try{
+		driver.navigate().refresh();
+		List<String> articleDetailsNonReturn = returnToVendorPage.getList(returnToVendorObjects, "randomArticleNonReturnHawa", "articleDetailsNonReturnHawa","HAWA","SM");
+		String pluArticleNumSame = data.getText("pluArticleNumberSame");
+		List<List<Object>> pluArticle = sql.executeQuery(getContext(),pluArticleNumSame);
+		int num = common.RandomFromDB(pluArticle);
+		String pluArtNumber = pluArticle.get(num).get(0).toString();
+		if(articleDetailsNonReturn.size()!=0){
+		returnToVendorPage.inputValidationsForNonReturnArticleTextBox(articleDetailsNonReturn,returnToVendorObjects,pluArtNumber,"HAWA",driver);
+		}
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+		}
+		
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Search - bigW")
+	public void articleSearchbigW()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToReturnToVendorbigW(status);
+			String returnQuantity = "05";
+			//Generic Articles
+			List<String> articleDetailsHawa = returnToVendorPage.getList(returnToVendorObjects, "randomArticle", "articleDetails","Generic","bigW");
+			if(articleDetailsHawa.size()!=0){
+				String articleNumber = articleDetailsHawa.get(0);
+				String vendorDetails = data.getText("genericVendor");
+		    	vendorDetails = vendorDetails.replace("articleNumber",articleNumber);
+				List<String> vendorDetailsResults = sql.executeQueryStoreList(getContext(),vendorDetails,getContext().getStringProperty("BWSSTORE"));
+				returnToVendorPage.inputValidationsForArticleTextBox(articleDetailsHawa,vendorDetailsResults,returnToVendorObjects,driver);
+				returnToVendorPage.validationForOtherFields(articleDetailsHawa,returnToVendorObjects,"Generic",returnQuantity,driver);
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for Generic Type;;;Fail");
+			}
+		
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Search - PEL")
+	public void articleSearchPEL()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToReturnToVendorPEL(status);
+			String returnQuantity = "5";
+		//2Level PBD Articles
+		List<String> articleDetailsHawa = returnToVendorPage.getList(returnToVendorObjects, "randomArticle", "articleDetails","2Level PBD","PEL");
+		if(articleDetailsHawa.size()!=0){
+			String articleNumber = articleDetailsHawa.get(0);
+			String vendorDetails = data.getText("twoLevelVendor");
+	    	vendorDetails = vendorDetails.replace("articleNumber",articleNumber);
+			List<String> vendorDetailsResults = sql.executeQueryList(getContext(),vendorDetails);
+			returnToVendorPage.inputValidationsForArticleTextBox(articleDetailsHawa,vendorDetailsResults,returnToVendorObjects,driver);
+			returnToVendorPage.validationForOtherFields(articleDetailsHawa,returnToVendorObjects,"2Level PBD",returnQuantity,driver);
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for 2Level PBD Type;;;Fail");
+		}
+		
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Finalising Validation")
+	public void articleSearchFieldsAndFinaliseValidations()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+2;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToReturnToVendor(status);
+			String returnQuantity = "5.500";
+			String returnQty = "5";
+			
+			//HAWA Articles
+			try{
+			List<String> articleDetailsHawa = returnToVendorPage.getList(returnToVendorObjects, "randomArticleHawa", "articleDetailsHawa","HAWA","SM");				
+			if(articleDetailsHawa.size()!=0){
+			returnToVendorPage.validationForMainFields(articleDetailsHawa,returnToVendorObjects,"HAWA",returnQuantity,driver);
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+			//KG Articles Decimal Validation in Return Quantity Box
+			try{
+			String vendorDetails = data.getText("randomArticleKG");
+			List<List<Object>> kgArticleResults = sql.executeQuery(getContext(),vendorDetails);
+			int num = common.RandomFromDB(kgArticleResults);
+			String articleNumberKG = kgArticleResults.get(num).get(0).toString();
+			returnToVendorPage.validationForKGArticleReturnQuantityDecimal(articleNumberKG,returnToVendorObjects,returnQuantity,driver);
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+			//HAWA Articles Finalizing
+			try{
+			List<String> articleDetailHawa = returnToVendorPage.getList(returnToVendorObjects, "randomArticleHawa", "articleDetailsHawa","HAWA","SM");
+			if(articleDetailHawa.size()!=0){
+			returnToVendorPage.validationForFinaliseClaim(articleDetailHawa,returnToVendorObjects,"HAWA",returnQty,driver);
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for HAWA Type;;;Fail");
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+			//PBD Articles Finalizing
+			try{
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			driver.navigate().refresh();
+			List<String> articleDetailsPbd = returnToVendorPage.getList(returnToVendorObjects, "randomArticlePbd", "articleDetailsPbd","PBD","SM");
+			if(articleDetailsPbd.size()!=0){
+			returnToVendorPage.validationForFinaliseClaim(articleDetailsPbd,returnToVendorObjects,"PBD",returnQty,driver);
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for PBD Type;;;Fail");
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+			//Litre Articles Finalizing
+			try{
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			driver.navigate().refresh();
+			List<String> articleDetailsLitre = returnToVendorPage.getList(returnToVendorObjects, "randomArticleLitre", "articleDetailsLitre","Litre","SM");
+			if(articleDetailsLitre.size()!=0){
+			returnToVendorPage.validationForFinaliseClaim(articleDetailsLitre,returnToVendorObjects,"Litre",returnQty,driver);
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for Litre Type;;;Fail");
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+			//Display Exception Articles Finalizing
+			try{
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			driver.navigate().refresh();
+			List<String> articleDetailsDisplayException = returnToVendorPage.getList(returnToVendorObjects, "randomArticleDisplayException", "articleDetailsDisplayException","Display Exception","SM");
+			if(articleDetailsDisplayException.size()!=0){
+			returnToVendorPage.validationForFinaliseClaim(articleDetailsDisplayException,returnToVendorObjects,"Display Exception",returnQty,driver);
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for Display Exception Type;;;Fail");
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Drafting Validations")
+	public void articleDraftingValidations()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToReturnToVendor(status);
+			String returnQuantity = "5.500";
+			String returnQty = "4";
+			
+			//HAWA Articles Drafting
+			try{
+			List<String> articleDetailHawa = returnToVendorPage.getList(returnToVendorObjects, "randomArticleHawa", "articleDetailsHawa","HAWA","SM");
+			if(articleDetailHawa.size()!=0){
+			returnToVendorPage.validationForDraftClaim(articleDetailHawa,returnToVendorObjects,"HAWA",returnQty,driver);
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for HAWA Type;;;Fail");
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+			//PBD Articles Drafting
+			try{
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			driver.navigate().refresh();
+			List<String> articleDetailsPbd = returnToVendorPage.getList(returnToVendorObjects, "randomArticlePbd", "articleDetailsPbd","PBD","SM");
+			if(articleDetailsPbd.size()!=0){
+			returnToVendorPage.validationForDraftClaim(articleDetailsPbd,returnToVendorObjects,"PBD",returnQty,driver);
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for PBD Type;;;Fail");
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+			//Litre Articles Drafting
+			try{
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			driver.navigate().refresh();
+			List<String> articleDetailsLitre = returnToVendorPage.getList(returnToVendorObjects, "randomArticleLitre", "articleDetailsLitre","Litre","SM");
+			if(articleDetailsLitre.size()!=0){
+			returnToVendorPage.validationForDraftClaim(articleDetailsLitre,returnToVendorObjects,"Litre",returnQty,driver);
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for Litre Type;;;Fail");
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+			//Display Exception Articles Drafting
+			try{
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			driver.navigate().refresh();
+			List<String> articleDetailsDisplayException = returnToVendorPage.getList(returnToVendorObjects, "randomArticleDisplayException", "articleDetailsDisplayException","Display Exception","SM");
+			if(articleDetailsDisplayException.size()!=0){
+			returnToVendorPage.validationForDraftClaim(articleDetailsDisplayException,returnToVendorObjects,"Display Exception",returnQty,driver);
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Articles are Not available in DB for Display Exception Type;;;Fail");
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Limitaions and Different Vendor Type")
+	public void articleLimitAndVendorType()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+2;}
+
+		TestStatus status = getTestStatus();
+		
+		//Adding More than 50 Articles
+		try{
+			String returnQuantity = "5";
+			navToReturnToVendor(status);
+			try{
+			/*List<String> articleNotList = new ArrayList<String>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(num).get(0).toString();
+//			String vendorNum ="0000336001";
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<String> vendorArticlesResults = sql.executeQueryList(getContext(),vendorArticle);
+			String claimNumber = returnToVendorPage.validationFor50Articles(vendorArticlesResults,returnQuantity,returnToVendorObjects,driver);
+			returnToVendorPage.validationForDraftToFinaliseMaxArticles(claimNumber,vendorNum,vendorArticlesResults,articleNotList,returnToVendorObjects,driver);*/
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Fail");
+			}
+			
+		//Different Supplier Validation
+			try{
+				driver.navigate().refresh();
+				returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+				String vendorNumber = data.getText("supplierNumber");
+				List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+				int num = common.RandomFromDB(vendorNumberResults);
+				String articleNumber = vendorNumberResults.get(num).get(0).toString();
+				String vendorNumber1 = vendorNumberResults.get(num).get(1).toString();
+				
+				returnToVendorPage.validationForSupplierTypes(articleNumber,"1",returnToVendorObjects,driver);
+				
+				String nextVendorNumber = data.getText("nextSupplierNumber");
+				nextVendorNumber = nextVendorNumber.replace("vendorNumber", vendorNumber1);
+				List<List<Object>> vendorResults = sql.executeQuery(getContext(),nextVendorNumber);
+				num = common.RandomFromDB(vendorResults);
+				String nextArticleNumber = vendorResults.get(num).get(0).toString();
+				
+				returnToVendorPage.validationForSupplierTypes(nextArticleNumber,"2",returnToVendorObjects,driver);
+				
+				returnToVendorPage.validationForSupplierTypes(articleNumber,"3",returnToVendorObjects,driver);
+				
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Differebt Types of Suppliers Validation;;;Pass");
+			}
+		
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Draft to Finalise")
+	public void articleDraftandFinalise()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		
+		try{
+			navToReturnToVendor(status);
+			try{
+			int min=0;
+			String returnQuantity = "5";
+			List<String> articleList = new ArrayList<>();
+			List<String> sohListBefore = new ArrayList<>();
+			List<String> sohListAfter = new ArrayList<>();
+			List<String> articleNotList = new ArrayList<>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(num).get(0).toString();
+				
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<String> vendorArticlesResults = sql.executeQueryList(getContext(),vendorArticle);
+			int max=vendorArticlesResults.size()-1;
+			
+			int i = generateRandomNumber(min,max);
+			int y;
+			int z;
+			do{
+				y=generateRandomNumber(min,max);
+			}while(y==i);
+			
+			do{
+				z=generateRandomNumber(min,max);
+			}while((y==i)&&(i==z)&&(z==y));
+			
+			articleList.add(vendorArticlesResults.get(i));
+			articleList.add(vendorArticlesResults.get(y));
+			articleList.add(vendorArticlesResults.get(z));
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Article Numbers are: "+articleList.get(0)+ " and " +articleList.get(1)+";;;Pass");
+			
+			String sohArt1 = data.getText("soh");
+			sohArt1 = sohArt1.replace("articleNumber", articleList.get(0));
+			List<String> soh1 = sql.executeQueryList(getContext(),sohArt1);
+			
+			sohListBefore.add(soh1.get(0).replace(".000", ""));
+			
+			String sohArt2 = data.getText("soh");
+			sohArt2 = sohArt2.replace("articleNumber", articleList.get(1));
+			List<String> soh2 = sql.executeQueryList(getContext(),sohArt2);
+			
+			sohListBefore.add(soh2.get(0).replace(".000", ""));
+			
+			String vendorNumberNext = data.getText("supplierNumber");
+			vendorNumberNext = vendorNumberNext.replace("vendorNumber", vendorNum);
+			List<List<Object>> vendorNumberNextResults = sql.executeQuery(getContext(),vendorNumberNext);
+			num = common.RandomFromDB(vendorNumberResults);
+			String articleNumberNot = vendorNumberNextResults.get(num).get(0).toString();
+			String vendorNumberNot = vendorNumberNextResults.get(num).get(1).toString();
+			
+			
+			String vendorArticleNext = data.getText("supplierArticle");
+			vendorArticleNext = vendorArticleNext.replace("articleNumber", articleNumberNot);
+			List<List<Object>> vendorNumberArticleResults = sql.executeQuery(getContext(),vendorArticleNext);
+			String articleNumberDescNot = vendorNumberArticleResults.get(0).get(1).toString();
+			String articleNumberEANNot = vendorNumberArticleResults.get(0).get(3).toString();
+			String articleNumberPLUNot = vendorNumberArticleResults.get(0).get(5).toString();
+			
+			articleNotList.add(articleNumberNot);
+			articleNotList.add(articleNumberDescNot);
+			articleNotList.add(articleNumberEANNot);
+			articleNotList.add(articleNumberPLUNot);
+			
+			String claimNumber =returnToVendorPage.validationForDraftAndAdvansedSearch(articleList,vendorNum,returnQuantity,returnToVendorObjects,driver);
+			
+			returnToVendorPage.validationForDraftToFinaliseAndCancel(claimNumber,vendorNum,articleList,articleNotList,"Finalise",returnToVendorObjects,"1",driver);
+			
+			
+			String sohArtA1 = data.getText("soh");
+			sohArtA1 = sohArtA1.replace("articleNumber", articleList.get(0));
+			List<String> sohA1 = sql.executeQueryList(getContext(),sohArtA1);
+			
+			sohListAfter.add(sohA1.get(0).replace(".000", ""));
+			
+			String sohArtA2 = data.getText("soh");
+			sohArtA2 = sohArtA2.replace("articleNumber", articleList.get(1));
+			List<String> sohA2 = sql.executeQueryList(getContext(),sohArtA2);
+			
+			sohListAfter.add(sohA2.get(0).replace(".000", ""));
+			
+			returnToVendorPage.sohValidationForArticles(sohListBefore,sohListAfter,returnQuantity,articleList,"Finalise",returnToVendorObjects,driver);
+			
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Pass");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Draft to Cancel")
+	public void articleDraftandCancel()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		
+		try{
+			navToReturnToVendor(status);
+			try{
+			int min=0;
+			String returnQuantity = "5";
+			List<String> articleList = new ArrayList<>();
+			List<String> sohListBefore = new ArrayList<>();
+			List<String> sohListAfter = new ArrayList<>();
+			List<String> articleNotList = new ArrayList<>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(num).get(0).toString();
+				
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<String> vendorArticlesResults = sql.executeQueryList(getContext(),vendorArticle);
+			int max=vendorArticlesResults.size()-1;
+			
+			int i = generateRandomNumber(min,max);
+			int y;
+			int z;
+			do{
+				y=generateRandomNumber(min,max);
+			}while(y==i);
+			
+			do{
+				z=generateRandomNumber(min,max);
+			}while((y==i)&&(i==z)&&(z==y));
+			
+			articleList.add(vendorArticlesResults.get(i));
+			articleList.add(vendorArticlesResults.get(y));
+			articleList.add(vendorArticlesResults.get(z));
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Article Numbers are: "+articleList.get(0)+ " and " +articleList.get(1)+";;;Pass");
+			
+			String sohArt1 = data.getText("soh");
+			sohArt1 = sohArt1.replace("articleNumber", articleList.get(0));
+			List<String> soh1 = sql.executeQueryList(getContext(),sohArt1);
+			
+			sohListBefore.add(soh1.get(0).replace(".000", ""));
+			
+			String sohArt2 = data.getText("soh");
+			sohArt2 = sohArt2.replace("articleNumber", articleList.get(1));
+			List<String> soh2 = sql.executeQueryList(getContext(),sohArt2);
+			
+			sohListBefore.add(soh2.get(0).replace(".000", ""));
+			
+			String vendorNumberNext = data.getText("supplierNumber");
+			vendorNumberNext = vendorNumberNext.replace("vendorNumber", vendorNum);
+			List<List<Object>> vendorNumberNextResults = sql.executeQuery(getContext(),vendorNumberNext);
+			num = common.RandomFromDB(vendorNumberResults);
+			String articleNumberNot = vendorNumberNextResults.get(num).get(0).toString();
+			String vendorNumberNot = vendorNumberNextResults.get(num).get(1).toString();
+			
+			
+			String vendorArticleNext = data.getText("supplierArticle");
+			vendorArticleNext = vendorArticleNext.replace("articleNumber", articleNumberNot);
+			List<List<Object>> vendorNumberArticleResults = sql.executeQuery(getContext(),vendorArticleNext);
+			String articleNumberDescNot = vendorNumberArticleResults.get(0).get(1).toString();
+			String articleNumberEANNot = vendorNumberArticleResults.get(0).get(3).toString();
+			String articleNumberPLUNot = vendorNumberArticleResults.get(0).get(5).toString();
+			
+			articleNotList.add(articleNumberNot);
+			articleNotList.add(articleNumberDescNot);
+			articleNotList.add(articleNumberEANNot);
+			articleNotList.add(articleNumberPLUNot);
+			
+			String claimNumber =returnToVendorPage.validationForDraftAndAdvansedSearch(articleList,vendorNum,returnQuantity,returnToVendorObjects,driver);
+			
+			returnToVendorPage.validationForDraftToFinaliseAndCancel(claimNumber,vendorNum,articleList,articleNotList,"Cancel",returnToVendorObjects,"1",driver);
+			
+			
+			String sohArtA1 = data.getText("soh");
+			sohArtA1 = sohArtA1.replace("articleNumber", articleList.get(0));
+			List<String> sohA1 = sql.executeQueryList(getContext(),sohArtA1);
+			
+			sohListAfter.add(sohA1.get(0).replace(".000", ""));
+			
+			String sohArtA2 = data.getText("soh");
+			sohArtA2 = sohArtA2.replace("articleNumber", articleList.get(1));
+			List<String> sohA2 = sql.executeQueryList(getContext(),sohArtA2);
+			
+			sohListAfter.add(sohA2.get(0).replace(".000", ""));
+			
+			returnToVendorPage.sohValidationForArticles(sohListBefore,sohListAfter,returnQuantity,articleList,"Cancel",returnToVendorObjects,driver);
+			
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Pass");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Finalise Consignment and Non-Consignment")
+	public void articleFinaliseValidationsConsignmentAndNonConsignment()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToReturnToVendor(status);
+			String returnQuantity = "5.500";
+			String returnQty = "5";
+			List<String> articleList = new ArrayList<String>();			
+			String vendorNum = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNum);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNumber = vendorNumberResults.get(num).get(0).toString();
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Vendor Numbers is: "+vendorNumber+";;;Pass");
+			
+			String vendorConsignmentArticle = data.getText("consignmentArticles");
+			vendorConsignmentArticle = vendorConsignmentArticle.replace("vendorNumber", vendorNumber);
+			List<List<Object>> vendorConsignmentArticleResults = sql.executeQuery(getContext(),vendorConsignmentArticle);
+			num = common.RandomFromDB(vendorConsignmentArticleResults);
+			String consignmentArticleNumber = vendorConsignmentArticleResults.get(num).get(0).toString();
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Consignment Article Numbers is: "+consignmentArticleNumber+";;;Pass");
+			
+			
+			String vendorNonConsignmentArticle = data.getText("nonConsignmentArticles");
+			vendorNonConsignmentArticle = vendorNonConsignmentArticle.replace("vendorNumber", vendorNumber);
+			List<List<Object>> vendorNonConsignmentArticleResults = sql.executeQuery(getContext(),vendorNonConsignmentArticle);
+			num = common.RandomFromDB(vendorNonConsignmentArticleResults);
+			String nonConsignmentArticleNumber = vendorNonConsignmentArticleResults.get(num).get(0).toString();
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Non Consignment Article Numbers is: "+nonConsignmentArticleNumber+";;;Pass");
+			
+			
+			articleList.add(consignmentArticleNumber);
+			articleList.add(nonConsignmentArticleNumber);
+			
+			//Consignment and Non-Consignment Articles Finalizing
+			try{
+			if(articleList.size()!=0){
+			returnToVendorPage.validationForFinaliseClaimConsignmentArticle(articleList,returnToVendorObjects,"Consignment And Non Consignment",returnQty,"smkt",driver);
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+		
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Draft and Finalise ConsignmentAndNonConsignment")
+	public void articleDraftandFinaliseConsignmentAndNonConsignment()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+3;}
+
+		TestStatus status = getTestStatus();
+		
+		try{
+			navToReturnToVendor(status);
+			try{
+			int min=0;
+			String returnQuantity = "5";
+			List<String> articleList = new ArrayList<>();
+			List<String> sohListBefore = new ArrayList<>();
+			List<String> sohListAfter = new ArrayList<>();
+			List<String> articleNotList = new ArrayList<>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(num).get(0).toString();
+				
+			String consignmentArticle = data.getText("consignmentArticles");
+			consignmentArticle = consignmentArticle.replace("vendorNumber",vendorNum);
+			List<String> consignmentArticlesResults = sql.executeQueryList(getContext(),consignmentArticle);
+			
+			String nonConsignmentArticle = data.getText("nonConsignmentArticles");
+			nonConsignmentArticle = nonConsignmentArticle.replace("vendorNumber",vendorNum);
+			List<String> nonConsignmentArticlesResults = sql.executeQueryList(getContext(),nonConsignmentArticle);
+			
+			int max=consignmentArticlesResults.size()-1;
+			
+			int i = generateRandomNumber(min,max);
+			int y;
+			do{
+				y=generateRandomNumber(min,max);
+			}while(y==i);
+			
+			articleList.add(consignmentArticlesResults.get(i));
+			articleList.add(consignmentArticlesResults.get(y));
+			
+			int max1=nonConsignmentArticlesResults.size()-1;
+			
+			int ii = generateRandomNumber(min,max1);
+			int yy;
+			do{
+				yy=generateRandomNumber(min,max1);
+			}while(yy==ii);
+			
+			articleList.add(nonConsignmentArticlesResults.get(ii));
+			articleList.add(nonConsignmentArticlesResults.get(yy));
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Article Numbers are: "+articleList.get(0)+ " and " +articleList.get(2)+";;;Pass");
+			
+			String sohArt1 = data.getText("soh");
+			sohArt1 = sohArt1.replace("articleNumber", articleList.get(0));
+			List<String> soh1 = sql.executeQueryList(getContext(),sohArt1);
+			
+			sohListBefore.add(soh1.get(0).replace(".000", ""));
+			
+			String sohArt2 = data.getText("soh");
+			sohArt2 = sohArt2.replace("articleNumber", articleList.get(2));
+			List<String> soh2 = sql.executeQueryList(getContext(),sohArt2);
+			
+			sohListBefore.add(soh2.get(0).replace(".000", ""));
+			
+			
+			String vendorArticleNext = data.getText("supplierArticle");
+			vendorArticleNext = vendorArticleNext.replace("articleNumber", vendorNum);
+			List<List<Object>> vendorNumberArticleResults = sql.executeQuery(getContext(),vendorArticleNext);
+			String articleNumberNot = vendorNumberArticleResults.get(0).get(0).toString();
+			
+			articleNotList.add(articleNumberNot);
+			
+			List<String> claimNumbers =returnToVendorPage.validationForDraftAndAdvansedSearchConsignment(articleList,vendorNum,returnQuantity,returnToVendorObjects,driver);
+			
+			String claimNumber1 = claimNumbers.get(0);
+			String claimNumber2 = claimNumbers.get(1);
+			
+			returnToVendorPage.validationForDraftToFinaliseAndCancelConsignment(claimNumber1,vendorNum,articleList,articleNotList,"Finalise","1",returnToVendorObjects,driver);
+			returnToVendorObjects.backHeaderButton.click();
+			returnToVendorPage.validationForDraftToFinaliseAndCancelConsignment(claimNumber2,vendorNum,articleList,articleNotList,"Finalise","2",returnToVendorObjects,driver);
+			
+			String sohArtA1 = data.getText("soh");
+			sohArtA1 = sohArtA1.replace("articleNumber", articleList.get(0));
+			List<String> sohA1 = sql.executeQueryList(getContext(),sohArtA1);
+			
+			sohListAfter.add(sohA1.get(0).replace(".000", ""));
+			
+			String sohArtA2 = data.getText("soh");
+			sohArtA2 = sohArtA2.replace("articleNumber", articleList.get(2));
+			List<String> sohA2 = sql.executeQueryList(getContext(),sohArtA2);
+			
+			sohListAfter.add(sohA2.get(0).replace(".000", ""));
+			
+			returnToVendorPage.sohValidationForArticles(sohListBefore,sohListAfter,returnQuantity,articleList,"Finalise",returnToVendorObjects,driver);
+			
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Pass");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Draft and Cancel ConsignmentAndNonConsignment")
+	public void articleDraftandCancelConsignmentAndNonConsignment()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+3;}
+
+		TestStatus status = getTestStatus();
+		
+		try{
+			navToReturnToVendor(status);
+			try{
+			int min=0;
+			String returnQuantity = "5";
+			List<String> articleList = new ArrayList<>();
+			List<String> sohListBefore = new ArrayList<>();
+			List<String> sohListAfter = new ArrayList<>();
+			List<String> articleNotList = new ArrayList<>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(num).get(0).toString();
+				
+			String consignmentArticle = data.getText("consignmentArticles");
+			consignmentArticle = consignmentArticle.replace("vendorNumber",vendorNum);
+			List<String> consignmentArticlesResults = sql.executeQueryList(getContext(),consignmentArticle);
+			
+			String nonConsignmentArticle = data.getText("nonConsignmentArticles");
+			nonConsignmentArticle = nonConsignmentArticle.replace("vendorNumber",vendorNum);
+			List<String> nonConsignmentArticlesResults = sql.executeQueryList(getContext(),nonConsignmentArticle);
+			
+			int max=consignmentArticlesResults.size()-1;
+			
+			int i = generateRandomNumber(min,max);
+			int y;
+			do{
+				y=generateRandomNumber(min,max);
+			}while(y==i);
+			
+			articleList.add(consignmentArticlesResults.get(i));
+			articleList.add(consignmentArticlesResults.get(y));
+			
+			int max1=nonConsignmentArticlesResults.size()-1;
+			
+			int ii = generateRandomNumber(min,max1);
+			int yy;
+			do{
+				yy=generateRandomNumber(min,max1);
+			}while(yy==ii);
+			
+			articleList.add(nonConsignmentArticlesResults.get(ii));
+			articleList.add(nonConsignmentArticlesResults.get(yy));
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Article Numbers are: "+articleList.get(0)+ " and " +articleList.get(2)+";;;Pass");
+			
+			String sohArt1 = data.getText("soh");
+			sohArt1 = sohArt1.replace("articleNumber", articleList.get(0));
+			List<String> soh1 = sql.executeQueryList(getContext(),sohArt1);
+			
+			sohListBefore.add(soh1.get(0).replace(".000", ""));
+			
+			String sohArt2 = data.getText("soh");
+			sohArt2 = sohArt2.replace("articleNumber", articleList.get(2));
+			List<String> soh2 = sql.executeQueryList(getContext(),sohArt2);
+			
+			sohListBefore.add(soh2.get(0).replace(".000", ""));
+			
+			
+			String vendorArticleNext = data.getText("supplierArticle");
+			vendorArticleNext = vendorArticleNext.replace("articleNumber", vendorNum);
+			List<List<Object>> vendorNumberArticleResults = sql.executeQuery(getContext(),vendorArticleNext);
+			String articleNumberNot = vendorNumberArticleResults.get(0).get(0).toString();
+			
+			articleNotList.add(articleNumberNot);
+			
+			List<String> claimNumbers =returnToVendorPage.validationForDraftAndAdvansedSearchConsignment(articleList,vendorNum,returnQuantity,returnToVendorObjects,driver);
+			
+			String claimNumber1 = claimNumbers.get(0);
+			String claimNumber2 = claimNumbers.get(1);
+			
+			returnToVendorPage.validationForDraftToFinaliseAndCancelConsignment(claimNumber1,vendorNum,articleList,articleNotList,"Cancel","1",returnToVendorObjects,driver);
+			returnToVendorObjects.backHeaderButton.click();
+			returnToVendorPage.validationForDraftToFinaliseAndCancelConsignment(claimNumber2,vendorNum,articleList,articleNotList,"Cancel","2",returnToVendorObjects,driver);
+			
+			String sohArtA1 = data.getText("soh");
+			sohArtA1 = sohArtA1.replace("articleNumber", articleList.get(0));
+			List<String> sohA1 = sql.executeQueryList(getContext(),sohArtA1);
+			
+			sohListAfter.add(sohA1.get(0).replace(".000", ""));
+			
+			String sohArtA2 = data.getText("soh");
+			sohArtA2 = sohArtA2.replace("articleNumber", articleList.get(2));
+			List<String> sohA2 = sql.executeQueryList(getContext(),sohArtA2);
+			
+			sohListAfter.add(sohA2.get(0).replace(".000", ""));
+			
+			returnToVendorPage.sohValidationForArticles(sohListBefore,sohListAfter,returnQuantity,articleList,"Cancel",returnToVendorObjects,driver);
+			
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Pass");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "articleDuplicateMessageValidations")
+	public void articleDuplicateMessageValidations()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+4;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToReturnToVendor(status);
+			int min = 0;
+			List<String> articleList = new ArrayList<String>();
+			String returnQty = "2";
+			String returnQty1 = "3";
+			
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(num).get(0).toString();
+				
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<String> vendorArticlesResults = sql.executeQueryList(getContext(),vendorArticle);
+			int max=vendorArticlesResults.size()-1;
+			
+			int i = generateRandomNumber(min,max);
+			int y;
+			do{
+				y=generateRandomNumber(min,max);
+			}while(y==i);
+			
+			articleList.add(vendorArticlesResults.get(i));
+			articleList.add(vendorArticlesResults.get(y));
+			
+			returnToVendorPage.validationForDuplicateFinaliseClaim(articleList,returnToVendorObjects,"1",returnQty,vendorNum,driver);
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			returnToVendorPage.validationForDuplicateFinaliseClaim(articleList,returnToVendorObjects,"2",returnQty,vendorNum,driver);
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			returnToVendorPage.validationForDuplicateFinaliseClaim(articleList,returnToVendorObjects,"3",returnQty1,vendorNum,driver);
+			
+			//Another User
+			htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+			htmlToExtent(cName, mName, extLogger, driver, "Login with Another User;;;Pass");
+			navToReturnToVendorAnotherUser(status);
+			returnToVendorPage.validationForDuplicateFinaliseClaim(articleList,returnToVendorObjects,"4",returnQty1,vendorNum,driver);
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			returnToVendorPage.validationForDuplicateFinaliseClaim(articleList,returnToVendorObjects,"5",returnQty,vendorNum,driver);
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			returnToVendorPage.validationForDuplicateFinaliseClaimOther(articleList,returnToVendorObjects,"1",returnQty1,vendorNum,driver);
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			returnToVendorPage.validationForDuplicateFinaliseClaimOther(articleList,returnToVendorObjects,"2",returnQty1,vendorNum,driver);
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			returnToVendorPage.validationForDuplicateFinaliseClaimOther(articleList,returnToVendorObjects,"3",returnQty1,vendorNum,driver);
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "articleDuplicateMessageValidationsConsignmentAndNonConsignment")
+	public void articleDuplicateMessageValidationsConsignmentAndNonConsignment()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+3;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToReturnToVendor(status);
+			String returnQty = "5";
+			List<String> articleList = new ArrayList<String>();			
+			String vendorNum = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNum);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNumber = vendorNumberResults.get(num).get(0).toString();
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Vendor Numbers is: "+vendorNumber+";;;Pass");
+			
+			String vendorConsignmentArticle = data.getText("consignmentArticles");
+			vendorConsignmentArticle = vendorConsignmentArticle.replace("vendorNumber", vendorNumber);
+			List<List<Object>> vendorConsignmentArticleResults = sql.executeQuery(getContext(),vendorConsignmentArticle);
+			num = common.RandomFromDB(vendorConsignmentArticleResults);
+			String consignmentArticleNumber = vendorConsignmentArticleResults.get(num).get(0).toString();
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Consignment Article Numbers is: "+consignmentArticleNumber+";;;Pass");
+			
+			
+			String vendorNonConsignmentArticle = data.getText("nonConsignmentArticles");
+			vendorNonConsignmentArticle = vendorNonConsignmentArticle.replace("vendorNumber", vendorNumber);
+			List<List<Object>> vendorNonConsignmentArticleResults = sql.executeQuery(getContext(),vendorNonConsignmentArticle);
+			num = common.RandomFromDB(vendorNonConsignmentArticleResults);
+			String nonConsignmentArticleNumber = vendorNonConsignmentArticleResults.get(num).get(0).toString();
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Consignment Article Numbers is: "+nonConsignmentArticleNumber+";;;Pass");
+			
+			
+			articleList.add(consignmentArticleNumber);
+			articleList.add(nonConsignmentArticleNumber);
+			
+			//Consignment and Non-Consignment Articles Duplicate Message Finalizing
+			try{
+			if(articleList.size()!=0){
+			returnToVendorPage.validationForDuplicateMessageFinaliseClaimConsignmentArticle(articleList,returnToVendorObjects,"1",vendorNumber,"Consignment And Non Consignment",returnQty,driver);
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			returnToVendorPage.validationForDuplicateMessageFinaliseClaimConsignmentArticle(articleList,returnToVendorObjects,"2",vendorNumber,"Consignment And Non Consignment",returnQty,driver);
+			}
+			else{
+				htmlToExtent(cName, mName, extLogger, driver, "No Data Available in DB;;;Info");
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+		
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "articleFinaliseValidationsDangerousArticle")
+	public void articleFinaliseValidationsDangerousArticle()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToReturnToVendor(status);
+			String returnQty = "5";
+			
+			//Dangerous Articles Finalizing
+			try{
+				returnToVendorPage.clickOnReturnToVendorClaimEnquiry(returnToVendorObjects,driver);
+				waitFor(3);
+				returnToVendorObjects.errorCloseClaimEnquiry.click();
+				waitFor(1);
+				returnToVendorObjects.createNewClaimLink.click();
+				htmlToExtent(cName,mName,extLogger,driver, "Create New Claim is Clicled in Claim Enquiry Page;;;Pass");
+				waitFor(2);
+				if(returnToVendorObjects.articleTextBox.isDisplayed()){
+					htmlToExtent(cName,mName,extLogger,driver, "The Page is Re-Directed to Raise New Claim Page;;;Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver, "The Page is Not Re-Directed to Raise New Claim Page;;;Fail");
+				}
+				
+				List<String> articleList = new ArrayList<String>();			
+				String vendorNum = data.getText("vendorNumber");
+				List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNum);
+				int num = common.RandomFromDB(vendorNumberResults);
+				String vendorNumber = vendorNumberResults.get(num).get(0).toString();
+				
+				htmlToExtent(cName,mName,extLogger,driver, "The Vendor Numbers is: "+vendorNumber+";;;Pass");
+				
+				String vendorDangeroustArticle = data.getText("dangerousArticles");
+				vendorDangeroustArticle = vendorDangeroustArticle.replace("vendorNumber", vendorNumber);
+				List<List<Object>> vendorDangerousArticleResults = sql.executeQuery(getContext(),vendorDangeroustArticle);
+				num = common.RandomFromDB(vendorDangerousArticleResults);
+				String dangerousArticleNumber = vendorDangerousArticleResults.get(num).get(0).toString();
+				
+				htmlToExtent(cName,mName,extLogger,driver, "The Dangerous Article Numbers is: "+dangerousArticleNumber+";;;Pass");
+				
+				articleList.add(dangerousArticleNumber);
+			
+				if(articleList.size()!=0){
+					returnToVendorPage.validationForFinaliseClaim(articleList,returnToVendorObjects,"Dangerous",returnQty,driver);
+				}
+				else{
+					htmlToExtent(cName, mName, extLogger, driver, "No Data Available in DB;;;Info");
+				}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "ArticleDraftandFinaliseDangerous")
+	public void articleDraftandFinaliseDangerous()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		
+		try{
+			navToReturnToVendor(status);
+			try{
+			int min=0;
+			String returnQuantity = "5";
+			List<String> articleList = new ArrayList<>();
+			List<String> sohListBefore = new ArrayList<>();
+			List<String> sohListAfter = new ArrayList<>();
+			List<String> articleNotList = new ArrayList<>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(num).get(1).toString();
+				
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<String> vendorArticlesResults = sql.executeQueryList(getContext(),vendorArticle);
+			int max=vendorArticlesResults.size()-1;
+			
+			int i = generateRandomNumber(min,max);
+			int y;
+			do{
+				y=generateRandomNumber(min,max);
+			}while(y==i);
+			
+			articleList.add(vendorArticlesResults.get(i));
+			articleList.add(vendorArticlesResults.get(y));
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Article Numbers are: "+articleList.get(0)+ " and " +articleList.get(1)+";;;Pass");
+			
+			String sohArt1 = data.getText("soh");
+			sohArt1 = sohArt1.replace("articleNumber", articleList.get(0));
+			List<String> soh1 = sql.executeQueryList(getContext(),sohArt1);
+			
+			sohListBefore.add(soh1.get(0).replace(".000", ""));
+			
+			String sohArt2 = data.getText("soh");
+			sohArt2 = sohArt2.replace("articleNumber", articleList.get(1));
+			List<String> soh2 = sql.executeQueryList(getContext(),sohArt2);
+			
+			sohListBefore.add(soh2.get(0).replace(".000", ""));
+			
+			String vendorNumberNext = data.getText("supplierNumber");
+			vendorNumberNext = vendorNumberNext.replace("vendorNumber", vendorNum);
+			List<List<Object>> vendorNumberNextResults = sql.executeQuery(getContext(),vendorNumberNext);
+			num = common.RandomFromDB(vendorNumberResults);
+			String articleNumberNot = vendorNumberNextResults.get(num).get(0).toString();
+			String vendorNumberNot = vendorNumberNextResults.get(num).get(1).toString();
+			
+			
+			String vendorArticleNext = data.getText("supplierArticle");
+			vendorArticleNext = vendorArticleNext.replace("articleNumber", articleNumberNot);
+			List<List<Object>> vendorNumberArticleResults = sql.executeQuery(getContext(),vendorArticleNext);
+			String articleNumberDescNot = vendorNumberArticleResults.get(0).get(1).toString();
+			String articleNumberEANNot = vendorNumberArticleResults.get(0).get(3).toString();
+			String articleNumberPLUNot = vendorNumberArticleResults.get(0).get(5).toString();
+			
+			articleNotList.add(articleNumberNot);
+			articleNotList.add(articleNumberDescNot);
+			articleNotList.add(articleNumberEANNot);
+			articleNotList.add(articleNumberPLUNot);
+			
+			String claimNumber =returnToVendorPage.validationForDraftAndAdvansedSearchDangerous(articleList,vendorNum,returnQuantity,returnToVendorObjects,driver);
+			
+			returnToVendorPage.validationForDraftToFinaliseAndCancelDangerous(claimNumber,vendorNum,articleList,articleNotList,"Finalise",returnToVendorObjects,driver);
+			
+			
+			String sohArtA1 = data.getText("soh");
+			sohArtA1 = sohArtA1.replace("articleNumber", articleList.get(0));
+			List<String> sohA1 = sql.executeQueryList(getContext(),sohArtA1);
+			
+			sohListAfter.add(sohA1.get(0).replace(".000", ""));
+			
+			String sohArtA2 = data.getText("soh");
+			sohArtA2 = sohArtA2.replace("articleNumber", articleList.get(1));
+			List<String> sohA2 = sql.executeQueryList(getContext(),sohArtA2);
+			
+			sohListAfter.add(sohA2.get(0).replace(".000", ""));
+			
+			returnToVendorPage.sohValidationForArticles(sohListBefore,sohListAfter,returnQuantity,articleList,"Finalise",returnToVendorObjects,driver);
+			
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Pass");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "ArticleFinaliseValidationsMarketDayFloral")
+	public void articleFinaliseValidationsMarketDayFloral()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToReturnToVendor(status);
+			String returnQty = "5";
+			
+			//Market Day Floral Articles Finalizing
+			try{
+				List<String> articleList = new ArrayList<String>();			
+				String vendorNum = data.getText("vendorNumber");
+				List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNum);
+//				int num = common.RandomFromDB(vendorNumberResults);
+				String vendorNumber = vendorNumberResults.get(0).get(1).toString();
+				
+				htmlToExtent(cName,mName,extLogger,driver, "The Vendor Numbers is: "+vendorNumber+";;;Pass");
+				
+				String vendorFloraltArticle = data.getText("floralArticles");
+				vendorFloraltArticle = vendorFloraltArticle.replace("vendorNumber", vendorNumber);
+				List<List<Object>> vendorDangerousArticleResults = sql.executeQuery(getContext(),vendorFloraltArticle);
+				int num = common.RandomFromDB(vendorDangerousArticleResults);
+				String floralArticleNumber = vendorDangerousArticleResults.get(num).get(0).toString();
+				
+				htmlToExtent(cName,mName,extLogger,driver, "The Market day Floral Article Numbers is: "+floralArticleNumber+";;;Pass");
+				
+				articleList.add(floralArticleNumber);
+			
+				if(articleList.size()!=0){
+					returnToVendorPage.validationForFinaliseClaim(articleList,returnToVendorObjects,"Floral",returnQty,driver);
+				}
+				else{
+					htmlToExtent(cName, mName, extLogger, driver, "No Data Available in DB;;;Info");
+				}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "ArticleFinaliseValidationsMarketDayPotted")
+	public void articleFinaliseValidationsMarketDayPotted()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToReturnToVendor(status);
+			String returnQty = "5";
+			
+			//Market Day Potted Articles Finalizing
+			try{
+				List<String> articleList = new ArrayList<String>();			
+				String vendorNum = data.getText("vendorNumber");
+				List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNum);
+//				int num = common.RandomFromDB(vendorNumberResults);
+				String vendorNumber = vendorNumberResults.get(0).get(1).toString();
+				
+				htmlToExtent(cName,mName,extLogger,driver, "The Vendor Numbers is: "+vendorNumber+";;;Pass");
+				
+				String vendorPottedArticle = data.getText("pottedArticles");
+				vendorPottedArticle = vendorPottedArticle.replace("vendorNumber", vendorNumber);
+				List<List<Object>> vendorPottedArticleResults = sql.executeQuery(getContext(),vendorPottedArticle);
+				int num = common.RandomFromDB(vendorPottedArticleResults);
+				String pottedArticleNumber = vendorPottedArticleResults.get(num).get(0).toString();
+				
+				htmlToExtent(cName,mName,extLogger,driver, "The Market day Potted Article Numbers is: "+pottedArticleNumber+";;;Pass");
+				
+				articleList.add(pottedArticleNumber);
+			
+				if(articleList.size()!=0){
+					returnToVendorPage.validationForFinaliseClaim(articleList,returnToVendorObjects,"Floral",returnQty,driver);
+				}
+				else{
+					htmlToExtent(cName, mName, extLogger, driver, "No Data Available in DB;;;Info");
+				}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "ArticleDraftandFinalisemarketDayFloral")
+	public void articleDraftandFinalisemarketDayFloral()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		
+		try{
+			navToReturnToVendor(status);
+			try{
+			int min=0;
+			String returnQuantity = "5";
+			List<String> articleList = new ArrayList<>();
+			List<String> sohListBefore = new ArrayList<>();
+			List<String> sohListAfter = new ArrayList<>();
+			List<String> articleNotList = new ArrayList<>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(0).get(1).toString();
+				
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<List<Object>> vendorArticlesResults = sql.executeQuery(getContext(),vendorArticle);
+			num = common.RandomFromDB(vendorArticlesResults);
+			String aticleNumber1 = vendorArticlesResults.get(num).get(0).toString();
+			
+			String vendorArticle1 = data.getText("vendorArticlesNot1");
+			vendorArticle1 = vendorArticle1.replace("vendorNumber",vendorNum);
+			vendorArticle1 = vendorArticle1.replace("articleNumber1",aticleNumber1);
+			List<List<Object>> vendorArticlesResults1 = sql.executeQuery(getContext(),vendorArticle1);
+			num = common.RandomFromDB(vendorArticlesResults1);
+			String aticleNumber2 = vendorArticlesResults1.get(num).get(0).toString();
+			
+			String vendorArticle2 = data.getText("vendorArticlesNot2");
+			vendorArticle2 = vendorArticle2.replace("vendorNumber",vendorNum);
+			vendorArticle2 = vendorArticle2.replace("articleNumber1",aticleNumber1);
+			vendorArticle2 = vendorArticle2.replace("aticleNumber2",aticleNumber2);
+			List<List<Object>> vendorArticlesResults2= sql.executeQuery(getContext(),vendorArticle2);
+			num = common.RandomFromDB(vendorArticlesResults2);
+			String aticleNumber3 = vendorArticlesResults2.get(num).get(0).toString();
+			
+			
+			articleList.add(aticleNumber1);
+			articleList.add(aticleNumber2);
+			articleList.add(aticleNumber3);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Article Numbers are: "+articleList.get(0)+ " and " +articleList.get(1)+";;;Pass");
+			
+			String sohArt1 = data.getText("soh");
+			sohArt1 = sohArt1.replace("articleNumber", articleList.get(0));
+			List<String> soh1 = sql.executeQueryList(getContext(),sohArt1);
+			
+			sohListBefore.add(soh1.get(0).replace(".000", ""));
+			
+			String sohArt2 = data.getText("soh");
+			sohArt2 = sohArt2.replace("articleNumber", articleList.get(1));
+			List<String> soh2 = sql.executeQueryList(getContext(),sohArt2);
+			
+			sohListBefore.add(soh2.get(0).replace(".000", ""));
+			
+			String vendorNumberNext = data.getText("supplierNumber");
+			vendorNumberNext = vendorNumberNext.replace("vendorNumber", vendorNum);
+			List<List<Object>> vendorNumberNextResults = sql.executeQuery(getContext(),vendorNumberNext);
+			num = common.RandomFromDB(vendorNumberResults);
+			String articleNumberNot = vendorNumberNextResults.get(num).get(0).toString();
+			String vendorNumberNot = vendorNumberNextResults.get(num).get(1).toString();
+			
+			
+			String vendorArticleNext = data.getText("supplierArticle");
+			vendorArticleNext = vendorArticleNext.replace("articleNumber", articleNumberNot);
+			List<List<Object>> vendorNumberArticleResults = sql.executeQuery(getContext(),vendorArticleNext);
+			String articleNumberDescNot = vendorNumberArticleResults.get(0).get(1).toString();
+			String articleNumberEANNot = vendorNumberArticleResults.get(0).get(3).toString();
+			String articleNumberPLUNot = vendorNumberArticleResults.get(0).get(5).toString();
+			
+			articleNotList.add(articleNumberNot);
+			articleNotList.add(articleNumberDescNot);
+			articleNotList.add(articleNumberEANNot);
+			articleNotList.add(articleNumberPLUNot);
+			
+			String claimNumber =returnToVendorPage.validationForDraftAndAdvansedSearch(articleList,vendorNum,returnQuantity,returnToVendorObjects,driver);
+			
+			returnToVendorPage.validationForDraftToFinaliseAndCancel(claimNumber,vendorNum,articleList,articleNotList,"Finalise",returnToVendorObjects,"1",driver);
+			
+			
+			String sohArtA1 = data.getText("soh");
+			sohArtA1 = sohArtA1.replace("articleNumber", articleList.get(0));
+			List<String> sohA1 = sql.executeQueryList(getContext(),sohArtA1);
+			
+			sohListAfter.add(sohA1.get(0).replace(".000", ""));
+			
+			String sohArtA2 = data.getText("soh");
+			sohArtA2 = sohArtA2.replace("articleNumber", articleList.get(1));
+			List<String> sohA2 = sql.executeQueryList(getContext(),sohArtA2);
+			
+			sohListAfter.add(sohA2.get(0).replace(".000", ""));
+			
+			returnToVendorPage.sohValidationForArticles(sohListBefore,sohListAfter,returnQuantity,articleList,"Finalise",returnToVendorObjects,driver);
+			
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Pass");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "articleDraftandCancelmarketDayFloral")
+	public void articleDraftandCancelmarketDayFloral()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		
+		try{
+			navToReturnToVendor(status);
+			try{
+			int min=0;
+			String returnQuantity = "5";
+			List<String> articleList = new ArrayList<>();
+			List<String> sohListBefore = new ArrayList<>();
+			List<String> sohListAfter = new ArrayList<>();
+			List<String> articleNotList = new ArrayList<>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(0).get(1).toString();
+				
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<List<Object>> vendorArticlesResults = sql.executeQuery(getContext(),vendorArticle);
+			num = common.RandomFromDB(vendorArticlesResults);
+			String aticleNumber1 = vendorArticlesResults.get(num).get(0).toString();
+			
+			String vendorArticle1 = data.getText("vendorArticlesNot1");
+			vendorArticle1 = vendorArticle1.replace("vendorNumber",vendorNum);
+			vendorArticle1 = vendorArticle1.replace("articleNumber1",aticleNumber1);
+			List<List<Object>> vendorArticlesResults1 = sql.executeQuery(getContext(),vendorArticle1);
+			num = common.RandomFromDB(vendorArticlesResults1);
+			String aticleNumber2 = vendorArticlesResults1.get(num).get(0).toString();
+			
+			String vendorArticle2 = data.getText("vendorArticlesNot2");
+			vendorArticle2 = vendorArticle2.replace("vendorNumber",vendorNum);
+			vendorArticle2 = vendorArticle2.replace("articleNumber1",aticleNumber1);
+			vendorArticle2 = vendorArticle2.replace("aticleNumber2",aticleNumber2);
+			List<List<Object>> vendorArticlesResults2= sql.executeQuery(getContext(),vendorArticle2);
+			num = common.RandomFromDB(vendorArticlesResults2);
+			String aticleNumber3 = vendorArticlesResults2.get(num).get(0).toString();
+			
+			
+			articleList.add(aticleNumber1);
+			articleList.add(aticleNumber2);
+			articleList.add(aticleNumber3);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Article Numbers are: "+articleList.get(0)+ " and " +articleList.get(1)+";;;Pass");
+			
+			String sohArt1 = data.getText("soh");
+			sohArt1 = sohArt1.replace("articleNumber", articleList.get(0));
+			List<String> soh1 = sql.executeQueryList(getContext(),sohArt1);
+			
+			sohListBefore.add(soh1.get(0).replace(".000", ""));
+			
+			String sohArt2 = data.getText("soh");
+			sohArt2 = sohArt2.replace("articleNumber", articleList.get(1));
+			List<String> soh2 = sql.executeQueryList(getContext(),sohArt2);
+			
+			sohListBefore.add(soh2.get(0).replace(".000", ""));
+			
+			String vendorNumberNext = data.getText("supplierNumber");
+			vendorNumberNext = vendorNumberNext.replace("vendorNumber", vendorNum);
+			List<List<Object>> vendorNumberNextResults = sql.executeQuery(getContext(),vendorNumberNext);
+			num = common.RandomFromDB(vendorNumberResults);
+			String articleNumberNot = vendorNumberNextResults.get(num).get(0).toString();
+			String vendorNumberNot = vendorNumberNextResults.get(num).get(1).toString();
+			
+			
+			String vendorArticleNext = data.getText("supplierArticle");
+			vendorArticleNext = vendorArticleNext.replace("articleNumber", articleNumberNot);
+			List<List<Object>> vendorNumberArticleResults = sql.executeQuery(getContext(),vendorArticleNext);
+			String articleNumberDescNot = vendorNumberArticleResults.get(0).get(1).toString();
+			String articleNumberEANNot = vendorNumberArticleResults.get(0).get(3).toString();
+			String articleNumberPLUNot = vendorNumberArticleResults.get(0).get(5).toString();
+			
+			articleNotList.add(articleNumberNot);
+			articleNotList.add(articleNumberDescNot);
+			articleNotList.add(articleNumberEANNot);
+			articleNotList.add(articleNumberPLUNot);
+			
+			String claimNumber =returnToVendorPage.validationForDraftAndAdvansedSearch(articleList,vendorNum,returnQuantity,returnToVendorObjects,driver);
+			
+			returnToVendorPage.validationForDraftToFinaliseAndCancel(claimNumber,vendorNum,articleList,articleNotList,"Cancel",returnToVendorObjects,"1",driver);
+			
+			
+			String sohArtA1 = data.getText("soh");
+			sohArtA1 = sohArtA1.replace("articleNumber", articleList.get(0));
+			List<String> sohA1 = sql.executeQueryList(getContext(),sohArtA1);
+			
+			sohListAfter.add(sohA1.get(0).replace(".000", ""));
+			
+			String sohArtA2 = data.getText("soh");
+			sohArtA2 = sohArtA2.replace("articleNumber", articleList.get(1));
+			List<String> sohA2 = sql.executeQueryList(getContext(),sohArtA2);
+			
+			sohListAfter.add(sohA2.get(0).replace(".000", ""));
+			
+			returnToVendorPage.sohValidationForArticles(sohListBefore,sohListAfter,returnQuantity,articleList,"Cancel",returnToVendorObjects,driver);
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Pass");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "ArticleDraftandFinalisemarketDayPotted")
+	public void articleDraftandFinalisemarketDayPotted()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		
+		try{
+			navToReturnToVendor(status);
+			try{
+			int min=0;
+			String returnQuantity = "5";
+			List<String> articleList = new ArrayList<>();
+			List<String> sohListBefore = new ArrayList<>();
+			List<String> sohListAfter = new ArrayList<>();
+			List<String> articleNotList = new ArrayList<>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(0).get(1).toString();
+				
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<List<Object>> vendorArticlesResults = sql.executeQuery(getContext(),vendorArticle);
+			num = common.RandomFromDB(vendorArticlesResults);
+			String aticleNumber1 = vendorArticlesResults.get(num).get(0).toString();
+			
+			String vendorArticle1 = data.getText("vendorArticlesNot1");
+			vendorArticle1 = vendorArticle1.replace("vendorNumber",vendorNum);
+			vendorArticle1 = vendorArticle1.replace("articleNumber1",aticleNumber1);
+			List<List<Object>> vendorArticlesResults1 = sql.executeQuery(getContext(),vendorArticle1);
+			num = common.RandomFromDB(vendorArticlesResults1);
+			String aticleNumber2 = vendorArticlesResults1.get(num).get(0).toString();
+			
+			String vendorArticle2 = data.getText("vendorArticlesNot2");
+			vendorArticle2 = vendorArticle2.replace("vendorNumber",vendorNum);
+			vendorArticle2 = vendorArticle2.replace("articleNumber1",aticleNumber1);
+			vendorArticle2 = vendorArticle2.replace("aticleNumber2",aticleNumber2);
+			List<List<Object>> vendorArticlesResults2= sql.executeQuery(getContext(),vendorArticle2);
+			num = common.RandomFromDB(vendorArticlesResults2);
+			String aticleNumber3 = vendorArticlesResults2.get(num).get(0).toString();
+			
+			
+			articleList.add(aticleNumber1);
+			articleList.add(aticleNumber2);
+			articleList.add(aticleNumber3);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Article Numbers are: "+articleList.get(0)+ " and " +articleList.get(1)+";;;Pass");
+			
+			String sohArt1 = data.getText("soh");
+			sohArt1 = sohArt1.replace("articleNumber", articleList.get(0));
+			List<String> soh1 = sql.executeQueryList(getContext(),sohArt1);
+			
+			sohListBefore.add(soh1.get(0).replace(".000", ""));
+			
+			String sohArt2 = data.getText("soh");
+			sohArt2 = sohArt2.replace("articleNumber", articleList.get(1));
+			List<String> soh2 = sql.executeQueryList(getContext(),sohArt2);
+			
+			sohListBefore.add(soh2.get(0).replace(".000", ""));
+			
+			String vendorNumberNext = data.getText("supplierNumber");
+			vendorNumberNext = vendorNumberNext.replace("vendorNumber", vendorNum);
+			List<List<Object>> vendorNumberNextResults = sql.executeQuery(getContext(),vendorNumberNext);
+			num = common.RandomFromDB(vendorNumberResults);
+			String articleNumberNot = vendorNumberNextResults.get(num).get(0).toString();
+			String vendorNumberNot = vendorNumberNextResults.get(num).get(1).toString();
+			
+			
+			String vendorArticleNext = data.getText("supplierArticle");
+			vendorArticleNext = vendorArticleNext.replace("articleNumber", articleNumberNot);
+			List<List<Object>> vendorNumberArticleResults = sql.executeQuery(getContext(),vendorArticleNext);
+			String articleNumberDescNot = vendorNumberArticleResults.get(0).get(1).toString();
+			String articleNumberEANNot = vendorNumberArticleResults.get(0).get(3).toString();
+			String articleNumberPLUNot = vendorNumberArticleResults.get(0).get(5).toString();
+			
+			articleNotList.add(articleNumberNot);
+			articleNotList.add(articleNumberDescNot);
+			articleNotList.add(articleNumberEANNot);
+			articleNotList.add(articleNumberPLUNot);
+			
+			String claimNumber =returnToVendorPage.validationForDraftAndAdvansedSearch(articleList,vendorNum,returnQuantity,returnToVendorObjects,driver);
+			
+			returnToVendorPage.validationForDraftToFinaliseAndCancel(claimNumber,vendorNum,articleList,articleNotList,"Finalise",returnToVendorObjects,"1",driver);
+			
+			
+			String sohArtA1 = data.getText("soh");
+			sohArtA1 = sohArtA1.replace("articleNumber", articleList.get(0));
+			List<String> sohA1 = sql.executeQueryList(getContext(),sohArtA1);
+			
+			sohListAfter.add(sohA1.get(0).replace(".000", ""));
+			
+			String sohArtA2 = data.getText("soh");
+			sohArtA2 = sohArtA2.replace("articleNumber", articleList.get(1));
+			List<String> sohA2 = sql.executeQueryList(getContext(),sohArtA2);
+			
+			sohListAfter.add(sohA2.get(0).replace(".000", ""));
+			
+			returnToVendorPage.sohValidationForArticles(sohListBefore,sohListAfter,returnQuantity,articleList,"Finalise",returnToVendorObjects,driver);
+			
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Pass");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "ArticleDraftandCancelmarketDayPotted")
+	public void articleDraftandCancelmarketDayPotted()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		
+		try{
+			navToReturnToVendor(status);
+			try{
+			int min=0;
+			String returnQuantity = "5";
+			List<String> articleList = new ArrayList<>();
+			List<String> sohListBefore = new ArrayList<>();
+			List<String> sohListAfter = new ArrayList<>();
+			List<String> articleNotList = new ArrayList<>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(0).get(1).toString();
+				
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<List<Object>> vendorArticlesResults = sql.executeQuery(getContext(),vendorArticle);
+			num = common.RandomFromDB(vendorArticlesResults);
+			String aticleNumber1 = vendorArticlesResults.get(num).get(0).toString();
+			
+			String vendorArticle1 = data.getText("vendorArticlesNot1");
+			vendorArticle1 = vendorArticle1.replace("vendorNumber",vendorNum);
+			vendorArticle1 = vendorArticle1.replace("articleNumber1",aticleNumber1);
+			List<List<Object>> vendorArticlesResults1 = sql.executeQuery(getContext(),vendorArticle1);
+			num = common.RandomFromDB(vendorArticlesResults1);
+			String aticleNumber2 = vendorArticlesResults1.get(num).get(0).toString();
+			
+			String vendorArticle2 = data.getText("vendorArticlesNot2");
+			vendorArticle2 = vendorArticle2.replace("vendorNumber",vendorNum);
+			vendorArticle2 = vendorArticle2.replace("articleNumber1",aticleNumber1);
+			vendorArticle2 = vendorArticle2.replace("aticleNumber2",aticleNumber2);
+			List<List<Object>> vendorArticlesResults2= sql.executeQuery(getContext(),vendorArticle2);
+			num = common.RandomFromDB(vendorArticlesResults2);
+			String aticleNumber3 = vendorArticlesResults2.get(num).get(0).toString();
+			
+			
+			articleList.add(aticleNumber1);
+			articleList.add(aticleNumber2);
+			articleList.add(aticleNumber3);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Article Numbers are: "+articleList.get(0)+ " and " +articleList.get(1)+";;;Pass");
+			
+			String sohArt1 = data.getText("soh");
+			sohArt1 = sohArt1.replace("articleNumber", articleList.get(0));
+			List<String> soh1 = sql.executeQueryList(getContext(),sohArt1);
+			
+			sohListBefore.add(soh1.get(0).replace(".000", ""));
+			
+			String sohArt2 = data.getText("soh");
+			sohArt2 = sohArt2.replace("articleNumber", articleList.get(1));
+			List<String> soh2 = sql.executeQueryList(getContext(),sohArt2);
+			
+			sohListBefore.add(soh2.get(0).replace(".000", ""));
+			
+			String vendorNumberNext = data.getText("supplierNumber");
+			vendorNumberNext = vendorNumberNext.replace("vendorNumber", vendorNum);
+			List<List<Object>> vendorNumberNextResults = sql.executeQuery(getContext(),vendorNumberNext);
+			num = common.RandomFromDB(vendorNumberResults);
+			String articleNumberNot = vendorNumberNextResults.get(num).get(0).toString();
+			String vendorNumberNot = vendorNumberNextResults.get(num).get(1).toString();
+			
+			
+			String vendorArticleNext = data.getText("supplierArticle");
+			vendorArticleNext = vendorArticleNext.replace("articleNumber", articleNumberNot);
+			List<List<Object>> vendorNumberArticleResults = sql.executeQuery(getContext(),vendorArticleNext);
+			String articleNumberDescNot = vendorNumberArticleResults.get(0).get(1).toString();
+			String articleNumberEANNot = vendorNumberArticleResults.get(0).get(3).toString();
+			String articleNumberPLUNot = vendorNumberArticleResults.get(0).get(5).toString();
+			
+			articleNotList.add(articleNumberNot);
+			articleNotList.add(articleNumberDescNot);
+			articleNotList.add(articleNumberEANNot);
+			articleNotList.add(articleNumberPLUNot);
+			
+			String claimNumber =returnToVendorPage.validationForDraftAndAdvansedSearch(articleList,vendorNum,returnQuantity,returnToVendorObjects,driver);
+			
+			returnToVendorPage.validationForDraftToFinaliseAndCancel(claimNumber,vendorNum,articleList,articleNotList,"Cancel",returnToVendorObjects,"1",driver);
+			
+			
+			String sohArtA1 = data.getText("soh");
+			sohArtA1 = sohArtA1.replace("articleNumber", articleList.get(0));
+			List<String> sohA1 = sql.executeQueryList(getContext(),sohArtA1);
+			
+			sohListAfter.add(sohA1.get(0).replace(".000", ""));
+			
+			String sohArtA2 = data.getText("soh");
+			sohArtA2 = sohArtA2.replace("articleNumber", articleList.get(1));
+			List<String> sohA2 = sql.executeQueryList(getContext(),sohArtA2);
+			
+			sohListAfter.add(sohA2.get(0).replace(".000", ""));
+			
+			returnToVendorPage.sohValidationForArticles(sohListBefore,sohListAfter,returnQuantity,articleList,"Cancel",returnToVendorObjects,driver);
+			
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Pass");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "ArticleDraftandFinaliseAnotherUser")
+	public void articleDraftandFinaliseAnotherUser()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		
+		try{
+			navToReturnToVendor(status);
+			try{
+			int min=0;
+			String returnQuantity = "5";
+			List<String> articleList = new ArrayList<>();
+			List<String> sohListBefore = new ArrayList<>();
+			List<String> sohListAfter = new ArrayList<>();
+			List<String> articleNotList = new ArrayList<>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(num).get(0).toString();
+				
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<String> vendorArticlesResults = sql.executeQueryList(getContext(),vendorArticle);
+			int max=vendorArticlesResults.size()-1;
+			
+			int i = generateRandomNumber(min,max);
+			int y;
+			int z;
+			do{
+				y=generateRandomNumber(min,max);
+			}while(y==i);
+			
+			do{
+				z=generateRandomNumber(min,max);
+			}while((y==i)&&(i==z)&&(z==y));
+			
+			articleList.add(vendorArticlesResults.get(i));
+			articleList.add(vendorArticlesResults.get(y));
+			articleList.add(vendorArticlesResults.get(z));
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Article Numbers are: "+articleList.get(0)+ " and " +articleList.get(1)+";;;Pass");
+			
+			String sohArt1 = data.getText("soh");
+			sohArt1 = sohArt1.replace("articleNumber", articleList.get(0));
+			List<String> soh1 = sql.executeQueryList(getContext(),sohArt1);
+			
+			sohListBefore.add(soh1.get(0).replace(".000", ""));
+			
+			String sohArt2 = data.getText("soh");
+			sohArt2 = sohArt2.replace("articleNumber", articleList.get(1));
+			List<String> soh2 = sql.executeQueryList(getContext(),sohArt2);
+			
+			sohListBefore.add(soh2.get(0).replace(".000", ""));
+			
+			String vendorNumberNext = data.getText("supplierNumber");
+			vendorNumberNext = vendorNumberNext.replace("vendorNumber", vendorNum);
+			List<List<Object>> vendorNumberNextResults = sql.executeQuery(getContext(),vendorNumberNext);
+			num = common.RandomFromDB(vendorNumberResults);
+			String articleNumberNot = vendorNumberNextResults.get(num).get(0).toString();
+			String vendorNumberNot = vendorNumberNextResults.get(num).get(1).toString();
+			
+			
+			String vendorArticleNext = data.getText("supplierArticle");
+			vendorArticleNext = vendorArticleNext.replace("articleNumber", articleNumberNot);
+			List<List<Object>> vendorNumberArticleResults = sql.executeQuery(getContext(),vendorArticleNext);
+			String articleNumberDescNot = vendorNumberArticleResults.get(0).get(1).toString();
+			String articleNumberEANNot = vendorNumberArticleResults.get(0).get(3).toString();
+			String articleNumberPLUNot = vendorNumberArticleResults.get(0).get(5).toString();
+			
+			articleNotList.add(articleNumberNot);
+			articleNotList.add(articleNumberDescNot);
+			articleNotList.add(articleNumberEANNot);
+			articleNotList.add(articleNumberPLUNot);
+			
+			String claimNumber =returnToVendorPage.validationForDraftAndAdvansedSearch(articleList,vendorNum,returnQuantity,returnToVendorObjects,driver);
+			
+			htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+			htmlToExtent(cName, mName, extLogger, driver, "Login with Another User;;;Pass");
+			navToReturnToVendorAnotherUserClaimEnquiry(status);
+			
+			waitFor(3);
+			returnToVendorObjects.errorCloseClaimEnquiry.click();
+			returnToVendorObjects.advansedSearchBox.sendKeys(claimNumber);
+			returnToVendorObjects.advansedSearch.click();
+			waitFor(1);
+			returnToVendorObjects.advGoButon.click();
+			waitForJSandJQueryToLoad(driver);;
+			waitFor(2);
+			
+			returnToVendorPage.validationForDraftToFinaliseAndCancel(claimNumber,vendorNum,articleList,articleNotList,"Finalise",returnToVendorObjects,"2",driver);
+			
+			
+			String sohArtA1 = data.getText("soh");
+			sohArtA1 = sohArtA1.replace("articleNumber", articleList.get(0));
+			List<String> sohA1 = sql.executeQueryList(getContext(),sohArtA1);
+			
+			sohListAfter.add(sohA1.get(0).replace(".000", ""));
+			
+			String sohArtA2 = data.getText("soh");
+			sohArtA2 = sohArtA2.replace("articleNumber", articleList.get(1));
+			List<String> sohA2 = sql.executeQueryList(getContext(),sohArtA2);
+			
+			sohListAfter.add(sohA2.get(0).replace(".000", ""));
+			
+			returnToVendorPage.sohValidationForArticles(sohListBefore,sohListAfter,returnQuantity,articleList,"Finalise",returnToVendorObjects,driver);
+			
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Pass");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Draf tand Cancel Another User")
+	public void articleDraftandCancelAnotherUser()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		
+		try{
+			navToReturnToVendor(status);
+			try{
+			int min=0;
+			String returnQuantity = "5";
+			List<String> articleList = new ArrayList<>();
+			List<String> sohListBefore = new ArrayList<>();
+			List<String> sohListAfter = new ArrayList<>();
+			List<String> articleNotList = new ArrayList<>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(num).get(0).toString();
+				
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<String> vendorArticlesResults = sql.executeQueryList(getContext(),vendorArticle);
+			int max=vendorArticlesResults.size()-1;
+			
+			int i = generateRandomNumber(min,max);
+			int y;
+			int z;
+			do{
+				y=generateRandomNumber(min,max);
+			}while(y==i);
+			
+			do{
+				z=generateRandomNumber(min,max);
+			}while((y==i)&&(i==z)&&(z==y));
+			
+			articleList.add(vendorArticlesResults.get(i));
+			articleList.add(vendorArticlesResults.get(y));
+			articleList.add(vendorArticlesResults.get(z));
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Article Numbers are: "+articleList.get(0)+ " and " +articleList.get(1)+";;;Pass");
+			
+			String sohArt1 = data.getText("soh");
+			sohArt1 = sohArt1.replace("articleNumber", articleList.get(0));
+			List<String> soh1 = sql.executeQueryList(getContext(),sohArt1);
+			
+			sohListBefore.add(soh1.get(0).replace(".000", ""));
+			
+			String sohArt2 = data.getText("soh");
+			sohArt2 = sohArt2.replace("articleNumber", articleList.get(1));
+			List<String> soh2 = sql.executeQueryList(getContext(),sohArt2);
+			
+			sohListBefore.add(soh2.get(0).replace(".000", ""));
+			
+			String vendorNumberNext = data.getText("supplierNumber");
+			vendorNumberNext = vendorNumberNext.replace("vendorNumber", vendorNum);
+			List<List<Object>> vendorNumberNextResults = sql.executeQuery(getContext(),vendorNumberNext);
+			num = common.RandomFromDB(vendorNumberResults);
+			String articleNumberNot = vendorNumberNextResults.get(num).get(0).toString();
+			String vendorNumberNot = vendorNumberNextResults.get(num).get(1).toString();
+			
+			
+			String vendorArticleNext = data.getText("supplierArticle");
+			vendorArticleNext = vendorArticleNext.replace("articleNumber", articleNumberNot);
+			List<List<Object>> vendorNumberArticleResults = sql.executeQuery(getContext(),vendorArticleNext);
+			String articleNumberDescNot = vendorNumberArticleResults.get(0).get(1).toString();
+			String articleNumberEANNot = vendorNumberArticleResults.get(0).get(3).toString();
+			String articleNumberPLUNot = vendorNumberArticleResults.get(0).get(5).toString();
+			
+			articleNotList.add(articleNumberNot);
+			articleNotList.add(articleNumberDescNot);
+			articleNotList.add(articleNumberEANNot);
+			articleNotList.add(articleNumberPLUNot);
+			
+			String claimNumber =returnToVendorPage.validationForDraftAndAdvansedSearch(articleList,vendorNum,returnQuantity,returnToVendorObjects,driver);
+			
+			htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+			htmlToExtent(cName, mName, extLogger, driver, "Login with Another User;;;Pass");
+			navToReturnToVendorAnotherUserClaimEnquiry(status);
+			
+			waitFor(3);
+			returnToVendorObjects.errorCloseClaimEnquiry.click();
+			returnToVendorObjects.advansedSearchBox.sendKeys(claimNumber);
+			returnToVendorObjects.advansedSearch.click();
+			waitFor(1);
+			returnToVendorObjects.advGoButon.click();
+			waitForJSandJQueryToLoad(driver);;
+			waitFor(2);
+			
+			returnToVendorPage.validationForDraftToFinaliseAndCancel(claimNumber,vendorNum,articleList,articleNotList,"Cancel",returnToVendorObjects,"2",driver);
+			
+			
+			String sohArtA1 = data.getText("soh");
+			sohArtA1 = sohArtA1.replace("articleNumber", articleList.get(0));
+			List<String> sohA1 = sql.executeQueryList(getContext(),sohArtA1);
+			
+			sohListAfter.add(sohA1.get(0).replace(".000", ""));
+			
+			String sohArtA2 = data.getText("soh");
+			sohArtA2 = sohArtA2.replace("articleNumber", articleList.get(1));
+			List<String> sohA2 = sql.executeQueryList(getContext(),sohArtA2);
+			
+			sohListAfter.add(sohA2.get(0).replace(".000", ""));
+			
+			returnToVendorPage.sohValidationForArticles(sohListBefore,sohListAfter,returnQuantity,articleList,"Cancel",returnToVendorObjects,driver);
+			
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Pass");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Draft and Mandatory Check")
+	public void articleDraftandMandatoryCheck()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		
+		try{
+			navToReturnToVendor(status);
+			try{
+			int min=0;
+			String returnQuantity = "5";
+			List<String> articleList = new ArrayList<>();
+			List<String> sohListBefore = new ArrayList<>();
+			List<String> sohListAfter = new ArrayList<>();
+			List<String> articleNotList = new ArrayList<>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(num).get(0).toString();
+				
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<String> vendorArticlesResults = sql.executeQueryList(getContext(),vendorArticle);
+			int max=vendorArticlesResults.size()-1;
+			
+			int i = generateRandomNumber(min,max);
+			
+			articleList.add(vendorArticlesResults.get(i));
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Article Numbers is: "+articleList.get(0)+";;;Pass");
+			
+			String claimNumber =returnToVendorPage.validationForDraftMandatory(articleList,vendorNum,returnQuantity,returnToVendorObjects,driver);
+			
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Pass");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify Claim Enquiry Screen")
+	public void verifyClaimEnquiryScreen()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		TestStatus status = getTestStatus();
+		
+		try{
+			navToReturnToVendor(status);
+			try{
+				returnToVendorPage.clickOnReturnToVendorClaimEnquiry(returnToVendorObjects,driver);
+				
+				returnToVendorPage.validationsForVerifyEnquiryPage(returnToVendorObjects,driver);
+				returnToVendorPage.validationsForAdvanceSearch(returnToVendorObjects,driver);
+			
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Pass");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Finalise Validations International Vendors")
+	public void articleFinaliseValidationsInternationalVendors()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+3;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToReturnToVendorbigW(status);
+			String returnQuantity = "5.500";
+			String returnQty = "5";
+			List<String> articleList = new ArrayList<String>();			
+			List<String> articleList1 = new ArrayList<String>();	
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The International Vendor agent with different sub category Article Numbers are: 592172 and 592173;;;Pass");
+			
+			articleList.add("592172");
+			articleList.add("592173");
+			
+			//International Vendor agent with different sub category Finalizing
+			try{
+			if(articleList.size()!=0){
+			returnToVendorPage.validationForFinaliseClaimConsignmentArticle(articleList,returnToVendorObjects,"International Vendor agent with different sub category",returnQty,"bigW",driver);
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			waitFor(2);
+			
+			//International Vendor agent with same sub category
+			htmlToExtent(cName,mName,extLogger,driver, "International Vendor agent with same sub category Article Numbers are: 944646 and 944643;;;Pass");
+			
+			articleList1.add("944646");
+			articleList1.add("944643");
+			
+			try{
+			if(articleList1.size()!=0){
+			returnToVendorPage.validationForFinaliseClaimConsignmentArticle(articleList1,returnToVendorObjects,"International Vendor agent with same sub category",returnQty,"bigW",driver);
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			waitFor(2);
+			
+			//International Vendor agent with Site and article
+			htmlToExtent(cName,mName,extLogger,driver, "International Vendor agent with Site and article Article Numbers are: 944646 and 944643;;;Pass");
+			try{
+			List<String> articleDetailHawa = new ArrayList<String>();
+			articleDetailHawa.add("944645");
+			articleDetailHawa.add("944621");
+			if(articleDetailHawa.size()!=0){
+			returnToVendorPage.validationForFinaliseClaimInternational(articleDetailHawa,returnToVendorObjects,"International Vendor agent with Site and article",returnQty,"bigW",driver);
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+		
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Draft Validations International Vendors")
+	public void articleDraftValidationsInternationalVendors()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+3;}
+
+		TestStatus status = getTestStatus();
+		try{
+			navToReturnToVendorbigW(status);
+			String returnQty = "5";
+			List<String> articleList = new ArrayList<String>();			
+			List<String> articleList1 = new ArrayList<String>();	
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The International Vendor agent with different sub category Article Numbers are: 592172 and 592173;;;Pass");
+			
+			articleList.add("592172");
+			articleList.add("592173");
+			
+			//International Vendor agent with different sub category Finalizing
+			try{
+			if(articleList.size()!=0){
+			returnToVendorPage.validationForDraftClaimInternational(articleList,returnToVendorObjects,"International Vendor agent with different sub category",returnQty,"1",driver);
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			waitFor(2);
+			
+			//International Vendor agent with same sub category
+			htmlToExtent(cName,mName,extLogger,driver, "International Vendor agent with same sub category Article Numbers are: 944646 and 944643;;;Pass");
+			
+			articleList1.add("944646");
+			articleList1.add("944643");
+			
+			try{
+			if(articleList1.size()!=0){
+			returnToVendorPage.validationForDraftClaimInternational(articleList1,returnToVendorObjects,"International Vendor agent with same sub category",returnQty,"1",driver);
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+			
+			returnToVendorPage.clickOnReturnToVendor(returnToVendorObjects,driver);
+			waitFor(2);
+			
+			//International Vendor agent with Site and article
+			htmlToExtent(cName,mName,extLogger,driver, "International Vendor agent with Site and article Article Numbers are: 944646 and 944643;;;Pass");
+			try{
+			List<String> articleDetailHawa = new ArrayList<String>();
+			articleDetailHawa.add("944645");
+			articleDetailHawa.add("944621");
+			if(articleDetailHawa.size()!=0){
+			returnToVendorPage.validationForDraftClaimInternational(articleDetailHawa,returnToVendorObjects,"International Vendor agent with Site and article",returnQty,"2",driver);
+			}
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			}
+		
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	//Prograssion
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Limitaions For Smkt")
+	public void articleLimitSmkt()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+4;}
+
+		TestStatus status = getTestStatus();
+		
+		//Adding More than 100 Articles
+		try{
+			int count =90;
+			String returnQuantity = "5";
+			navToReturnToVendor(status);
+			try{
+			List<String> articleNotList = new ArrayList<String>();
+//			String vendorNumber = data.getText("vendorNumber");
+//			List<List<Object>> vendorNumberResults = sql.executeQuery(getContext(),vendorNumber);
+//			int num = common.RandomFromDB(vendorNumberResults);
+//			String vendorNum = vendorNumberResults.get(num).get(0).toString();
+			String vendorNum ="0000336001";
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<String> vendorArticlesResults = sql.executeQueryList(getContext(),vendorArticle);
+			String claimNumber = returnToVendorPage.validationFor100Articles(vendorArticlesResults,returnQuantity,count,returnToVendorObjects,driver);
+			returnToVendorPage.validationForDraftToFinaliseMaxArticles(claimNumber,vendorNum,vendorArticlesResults,articleNotList,returnToVendorObjects,driver);
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Fail");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Article Limitaions For Smkt")
+	public void articleLimitBigW()// throws SQLException, IOException, AWTException, ParseException
+	{
+		if(ReturnToVendorArtpreCount2==-1){
+			MCcount=MCcount+4;}
+
+		TestStatus status = getTestStatus();
+		
+		//Adding More than 150 Articles
+		try{
+			navToReturnToVendorbigW(status);
+			String returnQuantity = "5";
+			int count =150;
+			try{
+			List<String> articleNotList = new ArrayList<String>();
+			String vendorNumber = data.getText("vendorNumber");
+			List<List<Object>> vendorNumberResults = sql.executeQueryStore(getContext(),vendorNumber, getContext().getStringProperty("BigWstore"));
+			int num = common.RandomFromDB(vendorNumberResults);
+			String vendorNum = vendorNumberResults.get(num).get(0).toString();
+//			String vendorNum ="0000336001";
+			String vendorArticle = data.getText("vendorArticles");
+			vendorArticle = vendorArticle.replace("vendorNumber",vendorNum);
+			List<String> vendorArticlesResults = sql.executeQueryStoreList(getContext(),vendorArticle, getContext().getStringProperty("BigWstore"));
+			
+			String claimNumber = returnToVendorPage.validationFor100Articles(vendorArticlesResults,returnQuantity,count,returnToVendorObjects,driver);
+			returnToVendorPage.validationForDraftToFinaliseMaxArticles(claimNumber,vendorNum,vendorArticlesResults,articleNotList,returnToVendorObjects,driver);
+			
+			}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName, mName, extLogger, driver, "Exception occured in Articles Limit Validation;;;Fail");
+			}
+			
+		log.info("-----------------Logout from Application------------------");
+		htmlToExtent(cName, mName, extLogger, driver, loginPage.logoutFromAppl(RoutinesArtScenarios, RoutinesArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName, mName, extLogger, driver, "Logout from application;;;Pass");
+			}
+		status.assertAll();
+	}
+}
+

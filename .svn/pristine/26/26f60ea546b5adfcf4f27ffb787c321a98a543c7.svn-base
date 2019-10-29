@@ -1,0 +1,548 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class ReturnToVendorObjects {
+	
+	public static final String departmentName="//*[@id='depDropDwnList']/li[dynamic]/label";
+	
+	public static final String departmentCheckBox="//*[@id='depDropDwnList']/li[dynamic]/input";
+	
+	public static final String departmentListMulti="//*[@id='deptlst']/li[dynamic]/label";
+	
+	public static final String categoryList="//*[@id='categoryLst']/li[dynamic]/label";
+	
+	public static final String subCategoryList="//*[@id='subCategoryLst']/li[dynamic]/label";
+	
+	public static final String segmentList="//*[@id='segmentLst']/li[dynamic]/label";
+	
+	public static final String deparmentchkBox="//*[@id='deptlst']/li[dynamic]/input";
+	
+	public static final String categoryChkBox="//*[@id='categoryLst']/li[dynamic]/input";
+	
+	public static final String subCategoryChkBox="//*[@id='subCategoryLst']/li[dynamic]/input";
+	
+	public static final String segmentChkBox="//*[@id='segmentLst']/li[dynamic]/input";
+	
+	public static final String invPageNo="//*[@id='Report_Inventory_Table_head_page']/ul/li[dynamic]";
+	
+	public static final String warehouse = "//*[@id='warehouseID']/option[dynamic]";
+	
+	public static final String seasonal_activity = "//*[@id='ui-id-7']/li[dynamic]";
+	
+	public static final String article_id = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[1]";
+	
+	public static final String article_soh = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[5]";
+	
+	public static final String article_date = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[11]";
+	
+	public static final String SIT = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[7]";
+	
+	public static final String SOO = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[8]";
+	
+	public static final String OM = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[4]";
+	
+	public static final String UOM = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[3]";
+
+	@FindBy(xpath ="//*[@id='stockManage']")
+	public WebElement stockManagementMenu;
+	
+	@FindBy(xpath ="//*[@id='stockManage']/ul/li[7]/a")
+	public WebElement returnToVendorAndClaims;
+	
+	@FindBy(xpath ="//*[@id='stockManage']/ul/li[7]/ul/li[2]/a")
+	public WebElement raiseNewClaim;
+	
+	@FindBy(xpath ="//*[@id='stockManage']/ul/li[7]/ul/li[1]/a")
+	public WebElement claimEnquiry;
+	
+	@FindBy(xpath ="//*[contains(@class,'textbox textboxDefaultText searchboxInEdit searchbox ui-autocomplete-input')]")
+	public WebElement articleTextBox;
+	
+	@FindBy(xpath ="(//*[contains(@class,'textbox textboxDefaultText searchbox')])[1]")
+	public WebElement articleTextBox1;
+	
+	@FindBy(xpath ="(//*[@id='searchAndAdd'])[2]")
+	public WebElement searchAddButton;
+	
+	@FindBy(xpath ="(//*[@id='searchAndAdd'])[1]")
+	public WebElement searchAddButtonClaim;
+	
+	@FindBy(xpath ="(//*[@id='errorMsg'])[3]")
+	public WebElement errorMsgDesc;
+	
+	@FindBy(xpath ="//*[@class='ContentTable treetable drilldownTable tableSorter']/tbody/tr[4]/td[1]")
+	public WebElement articleNumberScreen;
+	
+	@FindBy(xpath ="//*[@class='ContentTable treetable drilldownTable tableSorter']/tbody/tr[4]/td[2]")
+	public WebElement articleDescriptionScreen;
+	
+	@FindBy(xpath ="//*[@class='ContentTable treetable drilldownTable tableSorter']/tbody/tr[4]/td[7]")
+	public WebElement articleOMScreen;
+	
+	@FindBy(xpath ="(//*[@class='close'])[4]")
+	public List<WebElement> errorClose;
+	
+	@FindBy(xpath ="(//*[@class='close'])[4]")
+	public WebElement errorClose1;
+	
+	@FindBy(xpath ="(//*[@class='close'])[1]")
+	public List<WebElement> errorCloseClaim;
+	
+	@FindBy(xpath ="(//*[@class='close'])[1]")
+	public WebElement errorCloseClaim1;
+	
+	@FindBy(xpath ="(//*[@class='close'])[6]")
+	public List<WebElement> errorCloseClaim50Articles1;
+	
+	@FindBy(xpath ="(//*[@class='close'])[6]")
+	public WebElement errorCloseClaim50Articles;
+	
+	@FindBy(xpath ="//*[@id='error_msg']/li")
+	public WebElement errorMessage;  
+	
+	@FindBy(xpath ="(//*[@id='message'])[1]")
+	public WebElement conformationPopup;
+	
+	@FindBy(xpath ="(//*[@id='message'])[2]")
+	public WebElement conformationPopup1;
+	
+	@FindBy(xpath ="(//*[@id='message'])[3]")
+	public WebElement dangerousConformationPopup;
+	
+	@FindBy(xpath ="//*[@id='yesbtn']/label")
+	public WebElement conYesButton;
+	
+	@FindBy(xpath ="(//*[@class='actionBtn'])[24]")
+	public WebElement dangerousconYesButton;
+	
+	@FindBy(xpath ="(//*[@class='actionBtn'])[20]")
+	public WebElement dangerousconYesButtonDraftClaim;
+	
+	@FindBy(xpath ="//*[@id='nobtn']/label")
+	public WebElement conNoButton;
+	
+	@FindBy(xpath ="(//*[@id='qty'])[2]")
+	public WebElement returnQuantity;
+	
+	@FindBy(xpath ="(//*[@class='editNumCell textbox textboxDefaultText orderQty'])[1]")
+	public WebElement returnQuantityCheck;
+	
+	@FindBy(xpath ="(//*[@class='editNumCell textbox textboxDefaultText orderQty'])[2]")
+	public WebElement returnQuantityCheckNextArticle;
+	
+	@FindBy(xpath ="//*[@class='centerValue  totalUnits']")
+	public WebElement returnQuantityCheck1;
+	
+	@FindBy(xpath ="(//*[@class='secondaryActionBtn'])[7]")
+	public WebElement cancelPopupButton;
+	
+	@FindBy(xpath ="(//*[@id='errorMsg'])[3]")
+	public List<WebElement> errorMsg;	
+	
+	@FindBy(xpath ="(//*[@id='errorContent'])")
+	public WebElement errorMsgMandatory;	
+	
+	@FindBy(xpath ="(//*[@class='deleteRecord'])[3]")
+	public WebElement deleteArticleButton;
+	
+	@FindBy(xpath ="(//*[@class='deleteRecord'])[3]")
+	public List<WebElement> deleteArticleButton1;
+	
+	@FindBy(xpath ="(//*[@class='deleteRecord'])[4]")
+	public WebElement deleteArticleButtonNextArticle;
+	
+	@FindBy(xpath ="(//*[@id='ok']/label)[1]")
+	public WebElement okButtonPopup;
+	
+	@FindBy(xpath ="(//*[@id='ok']/label)[2]")
+	public WebElement dangerousOkButtonPopup;
+	
+	@FindBy(xpath ="(//*[@id='ok']/label)[1]")
+	public List<WebElement> okButtonPopup1;
+	
+	@FindBy(xpath ="//*[@id='topLink4']/ul/li[3]/a")
+	public WebElement topLinkMenu; 
+	
+	@FindBy(xpath ="//*[@id='createLink']/li[3]")
+	public WebElement lookUpLinkMenu; 
+	
+	@FindBy(xpath ="(//*[@class='thumbUp'])[2]")
+	public WebElement finaliseButton;    
+	
+	@FindBy(xpath ="//*[@id='errorContent']/li/ol")
+	public WebElement errorMessageCalim;	
+	
+	@FindBy(xpath ="//*[@class='selectOptions supplyDrop reason tooltip errorField']")
+	public WebElement reasonCodeDropdown;
+	
+	@FindBy(xpath ="//*[@id='okBtn']")
+	public WebElement invalidSupplierPopupOk;
+	
+	@FindBy(xpath ="//*[@id='alertBox']")
+	public WebElement invalidSupplierPopupText;
+	
+	public static final String reasonCode = "//*[@id='editTable']/tbody/tr[2]/td/select/option[dynamic]";
+	
+	public static final String reasonCodeClaim = "//*[@id='submitQuery']/div[2]/div[2]/div/div/table/tbody/tr[3]/td[2]/select/option[dynamic]";
+	
+	public static final String reasonCodeFinalise = "//*[@id='claimsFinalisePopUpForm']/div/div/table/tbody/tr[1]/td[2]/select/option[dynamic]";
+	
+	public static final String reasonCodeNextArticle = "//*[@id='editTable']/tbody/tr[6]/td/select/option[dynamic]";
+	
+	@FindBy(xpath ="//*[@class='editNumCell textbox textboxDefaultText orderQty tooltip errorField']")
+	public WebElement returnQunatityBottomTextBox;
+	
+	@FindBy(xpath ="//*[@class='textbox textboxDefaultText inputDate authDateInput  authdate hasDatepicker']")
+	public WebElement authorisationDate;
+	
+	@FindBy(xpath ="(//*[@class='textbox textboxDefaultText inputDate editDateCell  onEditOnly hdr_authorisedDate hasDatepicker'])[2]")
+	public WebElement authorisationDateClaim;
+	
+	@FindBy(xpath ="//*[@class='textbox mediumbox otherReasonTxt']")
+	public WebElement reasonCodeTextbox;
+	
+	@FindBy(xpath ="//*[@id='editTable']/tbody/tr[2]/td/select/option[11]")
+	public WebElement otherReasonCodeOption;
+	
+	@FindBy(xpath ="(//*[@class='selectOptions supplyDrop reason'])[1]")
+	public WebElement reasonCodeDropdown1;
+	
+	@FindBy(xpath ="(//*[@class='selectOptions onEditOnly supplyDrop hdr_reason'])[2]")
+	public WebElement reasonCodeDropdownClaim1;
+	
+	@FindBy(xpath ="(//*[@class='selectOptions supplyDrop reason'])")
+	public WebElement reasonCodeDropdownFinalise;
+	
+	@FindBy(xpath ="(//*[@class='selectOptions supplyDrop reason'])[2]")
+	public WebElement nextreasonCodeDropdown1;
+
+	@FindBy(xpath ="//*[@class='groupedBy rowSection rowHighlight']/strong")
+	public WebElement vendorNumber;
+	
+	@FindBy(xpath ="//*[@id='nobtn']/label")
+	public WebElement PopUpConformationNo;
+	
+	@FindBy(xpath ="//*[@class='textbox  smallbox authCodeInput authcode']")
+	public WebElement authorasationCodeBox;
+	
+	@FindBy(xpath ="//*[@class='textbox onEditOnly authCodeInput smallbox hdr_authCode']")
+	public WebElement authorasationCodeBoxClaim;
+	
+	@FindBy(xpath ="//*[@class='textbox authCodeInput smallbox  authcode']")
+	public WebElement authorasationCodeBoxFinalise;
+	
+	@FindBy(xpath ="//*[@class='textbox  smallbox vehicleInput vehiclecode']")
+	public WebElement vehicleRegNoBox;
+	
+	@FindBy(xpath ="(//*[@class='textbox  smallbox  vehicleInput hdr_vehiclecode onEditOnly'])[1]")
+	public WebElement vehicleRegNoBoxClaim;
+	
+	@FindBy(xpath ="//*[@class='textbox  mediumbox  vehicleInput vehiclecode']")
+	public WebElement vehicleRegNoBoxFinalise;
+	
+	@FindBy(xpath ="//*[@class='textbox smallbox cartonCountInput carrCountcode']")
+	public WebElement cartonPickupQtyBox;
+	
+	@FindBy(xpath ="(//*[@class='textbox  carrCountInput smallbox hdr_carrCountcode onEditOnly'])")
+	public WebElement cartonPickupQtyBoxClaim;
+	
+	@FindBy(xpath ="(//*[@class='textbox  cartonCountInput mediumbox carrCountcode'])")
+	public WebElement cartonPickupQtyBoxClaimFinalise;
+	
+	@FindBy(xpath ="//*[@class='textbox  mediumbox carrierNameInput carrierNamecode']")
+	public WebElement carrierNameBox;
+	
+	@FindBy(xpath ="//*[@class='textbox  smallbox carrierNameInput hdr_carrierNamecode onEditOnly']")
+	public WebElement carrierNameBoxClaim;
+	
+	@FindBy(xpath ="//*[@class='textbox  mediumbox  carrierNameInput carrierNamecode']")
+	public WebElement carrierNameBoxFinalise;
+	
+	@FindBy(xpath ="(//*[@class='positiveFlag'])[1]")
+	public WebElement finaliseNumberPopUp;
+	
+	@FindBy(xpath ="(//*[@class='positiveFlag'])[2]")
+	public WebElement finaliseNumberPopUpNextArticle;
+	
+	@FindBy(xpath ="//*[@id='message']/li/ol/li[1]/label")
+	public WebElement finaliseNumberPopUpError;
+	
+	@FindBy(xpath ="//*[@id='message']/li/ol/li[2]/label")
+	public WebElement finaliseNumberPopUpNextArticleError;
+	
+	@FindBy(xpath ="//*[@class='notepad']")
+	public WebElement saveAsDraftButton;
+	
+	@FindBy(xpath ="//*[@class='artCount']")
+	public WebElement articleCount;
+	
+	@FindBy(xpath ="//*[@class='orderUom']")
+	public WebElement uomRadioButton;
+	
+	@FindBy(xpath ="//*[@class='centerValue omColumn  <!--onViewOnly-->']")
+	public WebElement uomValue;
+	
+	@FindBy(xpath ="//*[@class='centerValue  totalUnits']")
+	public WebElement totalUnitsValue;
+	
+	@FindBy(xpath ="//*[@class='articleUom']")
+	public WebElement uonRadioButtonEA;
+	
+	@FindBy(xpath ="(//*[@class='close'])[3]")
+	public WebElement errorCloseClaimEnquiry;
+	
+	@FindBy(xpath ="(//*[@class='title'])[5]")
+	public WebElement errorCloseClaimEnquiryMessage;
+	
+	@FindBy(xpath ="//*[@class='textbox textboxDefaultText']")
+	public WebElement lookUpClaimBox;
+	
+	@FindBy(xpath ="//*[@id='titleDraft']")
+	public WebElement draftClaimTab;
+	
+	@FindBy(xpath ="//*[@id='titleFinalised']")
+	public WebElement finalisedClaimTab;
+	
+	@FindBy(xpath ="//*[@id='titleCancelled']")
+	public WebElement cancelledClaimTab;
+	
+	@FindBy(xpath ="(//*[@class='textbox textboxDefaultText'])")
+	public WebElement advansedSearchBox;
+	
+	@FindBy(xpath ="(//*[@class='advancedSearch'])[2]")
+	public WebElement advansedSearch;
+	
+	@FindBy(xpath ="//*[@class='textbox textboxDefaultText mediumbox']")
+	public WebElement advsupplierTextBox;
+	
+	@FindBy(xpath ="//*[@id='dateFrom']")
+	public WebElement advFromDateTextBox;
+	
+	@FindBy(xpath ="(//*[@class='selectOptions mediumbox '])[1]")
+	public WebElement advOrderStatusDropdown;
+	
+	@FindBy(xpath ="(//*[@class='selectOptions mediumbox '])[2]")
+	public WebElement advSourceDropdown;
+	
+	@FindBy(xpath ="(//*[@id='advGoButton'])")
+	public WebElement advGoButon;
+	
+	@FindBy(xpath ="(//*[@class='advancedSearch'])[1]")
+	public WebElement advSearchSymbol;
+	
+	@FindBy(xpath ="//*[@id='tabs-2']/table/tbody/tr[2]/td[1]")
+	public WebElement tableClaimNumber;
+	
+	@FindBy(xpath ="//*[@id='tabs-4']/table/tbody/tr[2]/td[1]")
+	public WebElement tableCancelClaimNumber;
+	
+	@FindBy(xpath ="//*[@id='tabs-4']/table/tbody/tr/td[1]")
+	public List<WebElement> tableCancelClaimNumber1;
+	
+	@FindBy(xpath ="//*[@id='finaliseClaimResults']/tbody/tr[2]/td[1]")
+	public WebElement tableFinalClaimNumber;
+	
+	@FindBy(xpath ="//*[@id='finaliseClaimResults']/tbody/tr/td[1]")
+	public List<WebElement> tableFinalClaimNumber1;
+	
+	@FindBy(xpath ="//*[@id='tabs-2']/table/tbody/tr/td[1]")
+	public List<WebElement> tableClaimNumber1;
+	
+	@FindBy(xpath ="//*[@id='editTable']/tbody/tr[1]/td[1]")
+	public WebElement tableClaimNumberEditPage;
+	
+	@FindBy(xpath ="//*[@id='tabs-2']/table/tbody/tr[2]/td[6]")
+	public WebElement tableClaimStatus;
+	
+	@FindBy(xpath ="//*[@id='noDataWarning']/li")
+	public WebElement claimErrorMessage;
+	
+	@FindBy(xpath ="//*[@id='validateErrorsClaimlookup']/li")
+	public WebElement dateErrorMessage;
+	
+	@FindBy(xpath ="(//*[@class='close'])[5]")
+	public List<WebElement> claimErrorClose1;
+	
+	@FindBy(xpath ="(//*[@class='close'])[2]")
+	public WebElement claimErrorClose2;
+	
+	@FindBy(xpath ="(//*[@class='close'])[5]")
+	public WebElement claimErrorClose;
+	
+	@FindBy(xpath ="//*[@class='orderStatus']")
+	public WebElement claimHeaderStatus;
+	
+	@FindBy(xpath ="//*[@class='articleTitle hdr_claimId']")
+	public WebElement claimHeaderClaimNumber;
+	
+	@FindBy(xpath ="//*[@class='hdr_supplier']")
+	public WebElement claimHeaderSupplierNumber;
+	
+	@FindBy(xpath ="//*[@class='hdr_createdDate']")
+	public WebElement claimHeaderDate;
+	
+	@FindBy(xpath ="//*[@class='hdr_store']")
+	public WebElement claimHeaderSource; 
+	
+	@FindBy(xpath ="//*[@class='hdr_createdby']")
+	public WebElement claimHeaderCreatedBy; 
+	
+	@FindBy(xpath ="//*[@class='editBtn ']")
+	public WebElement claimHeaderEditButton;
+	
+	@FindBy(xpath ="//*[@class='actionBtn PRNT']")
+	public WebElement claimHeaderPrintButton;
+	
+	@FindBy(xpath ="//*[@class='dropdownLabel']")
+	public WebElement claimHeaderClaimNotePrint;
+	
+	@FindBy(xpath ="(//*[@class='textbox  smallbox  consignInput hdr_consigncode onEditOnly'])[1]")
+	public WebElement consignmentNumberTextBoxClaim;
+			
+	@FindBy(xpath ="(//*[@class='textbox  mediumbox  consignInput consigncode'])")
+	public WebElement consignmentNumberTextBoxClaimFinalise;
+
+	@FindBy(xpath ="(//*[@class='textbox  smallbox  consignInput hdr_consigncode onEditOnly'])[1]")
+	public WebElement consignmentNumberTextBoxFinalise;
+	
+	@FindBy(xpath ="//*[@id='editCancel']")
+	public WebElement cancelSaveClaim;
+	
+	@FindBy(xpath ="//*[@id='editUpdate']")
+	public WebElement saveClaim;
+	
+	@FindBy(xpath ="//*[@id='nobtn']/label")
+	public WebElement noPopupSaveClaim;
+			
+	@FindBy(xpath ="(//*[@class='thumbUp'])[1]")
+	public WebElement FinaliseClaimButton;
+	
+	@FindBy(xpath ="//*[@id='dialog-promptFinalise']/div/div[2]/span/label[1]")
+	public WebElement FinaliseButtonPopupWindow;
+	
+	@FindBy(xpath ="//*[@id='cartonCount']")
+	public WebElement cartonPickupQtyTextBox;
+	
+	@FindBy(xpath ="//*[@id='dialog-cartonCount']/div/div[2]/span/label[1]")
+	public WebElement cartonPickupQtyOkPopUp;
+	
+	@FindBy(xpath ="//*[@id='deleteOrder']")
+	public WebElement cancelHeaderButton;
+	
+	@FindBy(xpath ="//*[@id='mainBackBtn']")
+	public WebElement backHeaderButton;
+	
+	@FindBy(xpath ="(//*[@class='secondaryActionBtn'])[6]")
+	public WebElement cancleButtonInFinalise;
+	
+	@FindBy(xpath ="//*[@id='submitted_date']")
+	public WebElement finalisedDateHeader;
+	
+	@FindBy(xpath ="//*[@id='editClaimTable']/table/tbody/tr[1]/td[1]")
+	public WebElement articleVerifyFinalTable1;
+	
+	@FindBy(xpath ="//*[@id='editClaimTable']/table/tbody/tr[2]/td[1]")
+	public WebElement articleVerifyFinalTable2;
+	
+	@FindBy(xpath ="(//*[@class='valueInfo authorisation-code lastColumn'])[1]/label[1]")
+	public WebElement AuthorisationCodeFinal;
+	
+	@FindBy(xpath ="(//*[@class='valueInfo lastColumn'])[1]/label")
+	public WebElement cartonPickupQuantityFinal;
+	
+	@FindBy(xpath ="(//*[@class='valueInfo  lastColumn'])[1]/label")
+	public WebElement cartonPickupQuantityFinal1;
+	
+	@FindBy(xpath ="(//*[@class='valueInfo'])[4]/label")
+	public WebElement carrierNameFinal;
+	
+	@FindBy(xpath ="(//td[@class='valueInfo'])[5]/label")
+	public WebElement carrierNameFinal1;
+	
+	@FindBy(xpath ="(//*[@class='valueInfo '])[3]/label")
+	public WebElement vehicleRegoNumberFinal;
+	
+	@FindBy(xpath ="(//*[@class='valueInfo '])[4]/label")
+	public WebElement vehicleRegoNumberFinal1;
+	
+	@FindBy(xpath ="(//*[@class='valueInfo lastColumn'])[2]/label")
+	public WebElement ConsignNumberFinal;
+	
+	@FindBy(xpath ="(//*[@class='valueInfo lastColumn'])[3]/label")
+	public WebElement ConsignNumberFinal1;
+	
+	@FindBy(xpath ="(//*[@class='valueInfo'])[1]/label[1]")
+	public WebElement totalUnitsFinal;
+	
+	@FindBy(xpath ="(//*[@class='editNumCell textbox textboxDefaultText orderQty'])[1]")
+	public WebElement returnQuantityClaimTextbox;
+	
+	@FindBy(xpath ="(//*[@class='editNumCell textbox textboxDefaultText orderQty'])[2]")
+	public WebElement returnQuantityClaimTextbox1;
+	
+	@FindBy(xpath ="//*[@class='deleteRecord']")
+	public WebElement deleteArticleFormDraft;
+	
+	@FindBy(xpath ="//*[@id='draftClaimCount']")
+	public WebElement draftClaimCount;
+	
+	@FindBy(xpath ="//*[@id='draftClaimResults']/thead/tr/th[1]")
+	public WebElement returnOrderHeaderDraft;
+	
+	@FindBy(xpath ="//*[@id='draftClaimResults']/thead/tr/th[2]")
+	public WebElement supplierHeaderDraft;
+	
+	@FindBy(xpath ="//*[@id='draftClaimResults']/thead/tr/th[3]")
+	public WebElement sourceHeaderDraft;
+	
+	@FindBy(xpath ="//*[@id='draftClaimResults']/thead/tr/th[4]")
+	public WebElement reasonHeaderDraft;
+	
+	@FindBy(xpath ="//*[@id='draftClaimResults']/thead/tr/th[5]")
+	public WebElement createdDateHeaderDraft;
+	
+	@FindBy(xpath ="//*[@id='draftClaimResults']/thead/tr/th[6]")
+	public WebElement statusDateHeaderDraft;
+	
+	@FindBy(xpath ="//*[@id='tabs-2']/table/tbody/tr/td[6]")
+	public List<WebElement> DraftrecordSize;
+	
+	@FindBy(xpath ="//*[@id='draftPagination']/ul/li/a")
+	public List<WebElement> draftPageSize;
+	
+	@FindBy(xpath ="//*[@id='tabs-2']/table/tbody/tr/td[6]")
+	public List<WebElement> draftClaimCountScreen;
+	
+	@FindBy(xpath ="//*[@id='createNewClaimBtn']")
+	public WebElement createNewClaimLink;
+	
+	@FindBy(xpath ="//*[@id='dialog-mulipleArticles']/div/div[1]/h4")
+	public WebElement multipleArticlePopup;
+	
+	@FindBy(xpath ="(//*[@name='articlecheckbox'])[1]")
+	public WebElement multipleArticlePopupCheckBox;
+	
+	@FindBy(xpath ="//*[@id='addtolist']")
+	public WebElement addToListButton;
+	
+	public static final String articleCheckClaimTable = "//*[@id='editClaimTable']/table/tbody/tr[dynamic]/td[1]";
+	
+	public static final String deleteArticleButtonClaim = "(//*[@class='deleteRecord'])[dynamic]";
+	
+	public static final String tableClaimNumberDraft = "//*[@id='tabs-2']/table/tbody/tr[dynamic]/td[1]";
+	
+	public static final String tableClaimNumberFinal = "//*[@id='finaliseClaimResults']/tbody/tr[dynamic]/td[1]";
+	
+	public static final String tableClaimNumberCancel = "//*[@id='tabs-4']/table/tbody/tr[dynamic]/td[1]";
+	
+	public static final String draftTableReturnOrder = "(//tr[@mainrow]/td[1])[dynamic]";
+	
+	public static final String draftPageSizeCount = "//*[@id='draftPagination']/ul/li[dynamic]/a";
+	
+	public static final String returnQuantityCheckAllArticles = "(//*[@class='editNumCell textbox textboxDefaultText orderQty'])[dynamic]";
+	
+}

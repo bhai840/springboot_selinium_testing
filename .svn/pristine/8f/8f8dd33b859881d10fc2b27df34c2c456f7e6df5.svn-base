@@ -1,0 +1,2123 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.ltoreportobjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.WoWLoginPage;
+import au.wow.ngbomain.pages.ltoreportpage;
+//import au.wow.ngbomain.pages.oocreportpages;
+
+
+
+
+
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+//import au.wow.ngbomain.pages.OrderEnquiryPage;
+
+
+public class ltoreporttest extends TestBase {
+
+	private Logger log = LogManager.getLogger(ltoreporttest.class);
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	public static XMLDataReader data;
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	ltoreportpage ltopage;
+	ltoreporttest ltotest;
+	ltoreportobjects ltoobj;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;
+	List<List<Object>> result;
+	List<List<Object>> result_temp;
+	private List<List<Object>> listDept;
+	public ltoreporttest() {
+		super.log = log;
+	}
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+	int MCcount=0;
+	public static WebDriver driver;
+	public static boolean isFirstTest=true;
+	
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Count")//query available,query works fine when executed
+	public void verifyreport() //throws SQLException, IOException, AWTException,	ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		TestStatus status = getTestStatus();	
+		try{	
+			navtoltoreport(status);
+			String datef = common.addDaystoCurrentDate(-28);//start date
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			String datet = common.addDaystoCurrentDate(+0);//End date
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}else{
+			ltopage.paginationhandling(ltoobj,driver);
+			String indiv_UomArticle_sql2 = data.getText("countdb");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+			replacenullToZero(results);
+			//System.out.println("results"+results); 
+			ltopage.dbcomparison(ltoobj,results,driver);}//Db comparison
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Audit")//Query available asked query to ram//##Check
+	public void verifyltoaudit() //throws SQLException, IOException, AWTException,	ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		List<List<Object>> DBList = new ArrayList<List<Object>>();
+		TestStatus status = getTestStatus();
+		try{
+			//waitfor(1);
+			navtoltoreport(status);
+			//waitfor(1);
+			//Click lto audit RB
+			ltoobj.ltoaudit.click();
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitfor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitfor(1);
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);	
+			if (ltoobj.msg.size()!=0)//No records found
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();				
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}	
+			}
+			else	
+			{
+				ltopage.paginationhandling(ltoobj,driver);
+				String indiv_UomArticle_sql3 = data.getText("auditdb");
+				results = sql.executeQuery(getContext(),indiv_UomArticle_sql3);	
+				results1 = ltopage.removeExtraSpacesmodi(results, 1);
+				replacenullToZero(results1);	
+				String OM;
+				String Shlf_cap;
+				String lto_qty;
+				String Audit_qty;
+				String difference;
+				for(int i = 0;i<results1.size();i++)
+				{
+					if(results1.get(i).get(3).equals("")){
+						OM = "0";
+					}
+					else{
+						OM = decimalFormat(results1.get(i).get(3).toString());//##converts 36.000 to 36
+					}
+					if(results1.get(i).get(4).equals("0.00")){
+						Shlf_cap = " ";
+					}
+					else{
+						Shlf_cap = decimalFormat(results1.get(i).get(4).toString());//##null to 0
+					}
+					if(results1.get(i).get(5).equals("0.0000")){
+						lto_qty = " ";
+					}
+					else{
+						lto_qty = decimalFormat(results1.get(i).get(5).toString());//##0.0000 to 0
+					}
+					if(results1.get(i).get(6).equals("0.0000")){
+						Audit_qty = " ";
+					}
+					else{
+						Audit_qty = decimalFormat(results1.get(i).get(6).toString());
+					}
+					if(results1.get(i).get(7).equals("0.0000")){
+						difference = " ";
+					}
+					else{
+						difference = decimalFormat(results1.get(i).get(7).toString());
+					}
+					String Str = ""+results1.get(i).get(0).toString()+":"+results1.get(i).get(1).toString()+":"+results1.get(i).get(2).toString()+":"+OM+":"+Shlf_cap+":"+lto_qty+":"+Audit_qty+":"+difference;					DBList.addAll(StringToListCreation(Str));
+					//System.out.println("DBList is" +DBList);
+				}
+			}
+			ltopage.auditdbcomparison(ltoobj, DBList,driver);
+			//waitfor(1);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}
+		status.assertAll();
+	}
+		
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Logs")//Query available asked query to ram
+	public void verifyltologs() //throws SQLException, IOException, AWTException,	ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		TestStatus status = getTestStatus();
+		//waitfor(1);
+		try{		
+			navtoltoreport(status);
+			//waitfor(1);
+			LocalDate fdate = LocalDate.now().minusDays(27);
+			LocalDate tdate = LocalDate.now().plusDays(0);
+			ltoobj.ltologs.click();
+			String datef = common.addDaystoCurrentDate(-27);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitfor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);
+			//waitfor(1);
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}else{
+			ltopage.paginationhandling(ltoobj,driver);
+			String indiv_UomArticle_sql2 = data.getText("logsdb").replaceFirst("2017-09-29",fdate.toString());
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replaceFirst("2017-09-30", tdate.toString());
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+			results1 = ltopage.removeExtraSpacesmodi(results, 1);
+			replacenullToZero(results1);
+			ltopage.removequadzero(results1, 3);
+			ltopage.logsdbcomparison(ltoobj, results1,driver);}
+			//waitfor(1);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));		
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Audit- EAN")//Query available
+	public void ltoauditean() //throws SQLException, IOException, AWTException,	ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		TestStatus status = getTestStatus();
+		List<String>articleList = new ArrayList<String>();
+		//waitfor(1);
+		try{	
+			navtoltoreport(status);
+			ltoobj.ltoaudit.click();
+			waitFor(1);
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitfor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitfor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("ean");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			if(results.size()==0)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No Articles are Present in DB, so report cannot be generated ;;;Pass");
+			}
+			else
+			{
+				int sze=0;
+				if(results.size()>2){sze=3;}else{sze=results.size();}
+				for (int a = 1; a <= sze; a++) {int num = common.RandomFromDB(results);
+
+				String art1 = ltopage.randart(results, num);	
+				String artNumber = ltopage.randartNumber(results, num);
+				articleList.add(artNumber);
+				ltoobj.box.clear();
+				ltoobj.box.sendKeys(art1);
+				ltoobj.box.sendKeys(Keys.ENTER);
+				waitForJSandJQueryToLoad(driver);
+				//waitFor(1);
+				ltopage.descClick(ltoobj, art1);
+				if(ltoobj.technicalissue.size()!=0)
+				{
+					if(ltoobj.technicalissue1.isDisplayed()){
+						if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+						{
+							htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+						}
+					ltoobj.closetechnicalissue.click();
+					//waitfor(1);
+					ltoobj.box.clear();}
+				}else{
+					ltoobj.generatereport.click();
+					waitForJSandJQueryToLoad(driver);
+					if (ltoobj.msg.size()!=0)
+					{
+						String noarticles = ltoobj.msgtext.getText();
+						if(noarticles.equals("Sorry, No records found."))
+						{
+							ltoobj.close.click();
+							htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+						}		
+					}else{
+					ltopage.paginationhandling(ltoobj,driver);
+					ltoobj.clickarticle.click();
+					String ar1 = articleList.get(0);
+					String indiv_UomArticle_sql2 = data.getText("auditdbean");
+					indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+					results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+					results1 = ltopage.removeExtraSpacesmodi(results, 1);
+					replacenullToZero(results1);
+					ltopage.removeLastZeromodi(results1, 3);
+					ltopage.removedoublezero(results1, 4);
+					ltopage.removequadzero(results1, 5);
+					ltopage.removequadzero(results1, 6);
+					ltopage.removequadzero(results1, 7);
+					//waitfor(1);
+					ltopage.auditinputdbcomparison(ltoobj, results1,driver);		
+					//waitfor(1);
+					}
+					if(ltoobj.generateltoreport.isDisplayed()){
+					ltoobj.generateltoreport.click();}
+					//waitfor(1);
+				}}
+				ltoobj.backbutton.click();
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));
+			}}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+			}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Count-matnr")//Query available
+	public void MCcountmatnr() //throws SQLException, IOException, AWTException,	ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		TestStatus status = getTestStatus();
+		//waitfor(1);
+		try{
+			navtoltoreport(status);
+			List<String>articleList = new ArrayList<String>();
+			//waitfor(1);
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitfor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitfor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("matnr");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			int sze=0;
+			if(results.size()>2){sze=3;}else{sze=results.size();}
+			for (int a = 1; a <= sze; a++) {
+				int num = common.RandomFromDB(results);			
+				String art1 = ltopage.randart(results, num);
+				articleList.add(art1);
+				ltoobj.box.clear();
+				ltoobj.box.sendKeys(art1);// types the article in the text box
+				ltoobj.box.sendKeys(Keys.ENTER);// Enter button is pressed after typing
+				waitForJSandJQueryToLoad(driver);
+				//waitFor(1);
+				ltopage.descClick(ltoobj, art1);
+				if(ltoobj.technicalissue.size()!=0)
+				{
+					if(ltoobj.technicalissue1.isDisplayed()){
+						if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+						{
+							htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+						}
+					ltoobj.closetechnicalissue.click();
+					//waitfor(1);
+					ltoobj.box.clear();}
+				}
+			}
+			//waitfor(2);
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}else{
+			ltopage.paginationhandling(ltoobj,driver);
+			//waitfor(2);
+			ltoobj.clicklocation.click();
+			String ar1 = articleList.get(0);
+			String ar2 = articleList.get(1);
+			String ar3 = articleList.get(2);
+			String indiv_UomArticle_sql2 = data.getText("dbmatnr");
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar2", ar2);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar3", ar3);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+			List<List<Object>> results0 = ltopage.removequadzero(results, 2);
+			List<List<Object>> results1 = ltopage.removequadzero(results0, 6);
+			replacenullToZero(results1);
+			ltopage.countmatnrdbcomparison(ltoobj,results1,driver);}
+			waitFor(1);
+			click(ltoobj.backbutton);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));				
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Audit- matnr")//Query available
+	public void ltoauditmatnr() //throws SQLException, IOException, AWTException,	ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		TestStatus status = getTestStatus();
+		List<String>articleList = new ArrayList<String>();
+		String art1="";
+		//waitfor(1);		
+		try{		
+			navtoltoreport(status);
+			ltoobj.ltoaudit.click();         
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitfor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitfor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("matnr");
+			List<List<Object>> results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);		
+			if(results.size()==0)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No Articles are Present in DB, so report cannot be generated ;;;Pass");
+			}
+			else
+			{
+				int sze=0;
+				if(results.size()>2){sze=3;}else{sze=results.size();}
+				for (int a = 1; a <= sze; a++) {
+					int num = common.RandomFromDB(results);				
+					art1 = ltopage.randart(results, num);
+//					String artNumber = ltopage.randartNumber(results, num);
+					articleList.add(art1);
+					ltoobj.box.sendKeys(art1);
+					ltoobj.box.sendKeys(Keys.ENTER);
+					waitForJSandJQueryToLoad(driver);			
+					//waitFor(1);
+					ltopage.descClick(ltoobj, art1);
+					if(ltoobj.technicalissue.size()!=0)
+					{
+						if(ltoobj.technicalissue1.isDisplayed()){
+							if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+							{
+								htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+							}
+							else
+							{
+								htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+							}
+						ltoobj.closetechnicalissue.click();
+						//waitfor(1);
+						ltoobj.box.clear();}
+					}
+				}
+				//waitfor(2);
+				ltoobj.generatereport.click();
+				waitForJSandJQueryToLoad(driver);
+				if (ltoobj.msg.size()!=0)
+				{
+					String noarticles = ltoobj.msgtext.getText();
+					if(noarticles.equals("Sorry, No records found."))
+					{
+						ltoobj.close.click();
+						htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+					}		
+				}else{
+				ltopage.paginationhandling(ltoobj,driver);
+				ltoobj.clickarticle.click();
+				String ar1 = articleList.get(0);
+				String ar2 = articleList.get(1);
+				String ar3 = articleList.get(2);
+				String indiv_UomArticle_sql2 = data.getText("auditdbmatnr");
+				indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", art1);
+				indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar2", ar2);
+				indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar3", ar3);
+				results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+				results1 = ltopage.removeExtraSpacesmodi(results, 1);
+				replacenullToZero(results1);
+				ltopage.removeLastZeromodi(results1, 3);
+				ltopage.removedoublezero(results1, 4);
+				ltopage.removequadzero(results1, 5);
+				ltopage.removequadzero(results1, 6);
+				ltopage.removequadzero(results1, 7);
+				ltopage.auditinputdbcomparison(ltoobj, results1,driver);}}
+				waitFor(1);
+				click(ltoobj.backbutton);		
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Logs-matnr")//Query available
+	public void ltologsmatnr() //throws SQLException, IOException, AWTException,ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		
+		//waitfor(1);
+		try{
+			TestStatus status = getTestStatus();
+			List<String>articleList = new ArrayList<String>();
+			navtoltoreport(status);
+			//waitfor(1);
+			ltoobj.ltologs.click();
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitfor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);
+			//waitfor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("matnr");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			int sze=0;
+			if(results.size()>2){sze=3;}else{sze=results.size();}
+			for (int a = 1; a <= sze; a++) {
+				int num = common.RandomFromDB(results);				
+				String art1 = ltopage.randart(results, num);
+				articleList.add(art1);
+				ltoobj.box.clear();
+				ltoobj.box.sendKeys(art1);
+				ltoobj.box.sendKeys(Keys.ENTER);
+				waitForJSandJQueryToLoad(driver);
+				//waitfor(1);
+				ltopage.descClick(ltoobj, art1);
+				if(ltoobj.technicalissue.size()!=0)
+				{
+					if(ltoobj.technicalissue1.isDisplayed()){
+						if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+						{
+							htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+						}
+					ltoobj.closetechnicalissue.click();
+					//waitfor(1);
+					ltoobj.box.clear();}
+				}
+			}
+			//waitfor(2);
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}else{
+			ltopage.paginationhandling(ltoobj,driver);
+			String ar1 = articleList.get(0);
+			String ar2 = articleList.get(1);
+			String ar3 = articleList.get(2);
+			LocalDate fdate = LocalDate.now().minusDays(28);
+			LocalDate tdate = LocalDate.now().plusDays(0);		
+			String indiv_UomArticle_sql2 = data.getText("logsdb").replaceFirst("2017-09-29",fdate.toString());
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replaceFirst("2017-09-30", tdate.toString());
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar2", ar2);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar3", ar3);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+			results1 = ltopage.removeExtraSpacesmodi(results, 1);
+			replacenullToZero(results1);
+			ltopage.removequadzero(results1, 3);
+			ltopage.logsinputdbcomparison(ltoobj, results1,driver);}
+			waitFor(1);
+			click(ltoobj.backbutton);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));				
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}	
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Count-desc")//Query available
+	public void MCcountdescription()// throws SQLException, IOException, AWTException,	ParseException 
+	{	
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		TestStatus status = getTestStatus();
+		//waitfor(1);
+		try{		
+			navtoltoreport(status);
+			//waitfor(1);
+			List<String>articleList = new ArrayList<String>();
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitfor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitfor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("description");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			int sze=0;
+			if(results.size()>2){sze=3;}else{sze=results.size();}
+			for (int a = 1; a <= sze; a++) {
+				int num = common.RandomFromDB(results);			
+				String art1 = ltopage.randart(results, num);
+				String artNumber = ltopage.randartNumber(results, num);
+				articleList.add(artNumber);
+				ltoobj.box.clear();
+				ltoobj.box.sendKeys(art1);
+				ltoobj.box.sendKeys(Keys.ENTER);
+				waitForJSandJQueryToLoad(driver);
+				//waitfor(1);
+				ltopage.descClick(ltoobj, art1);
+				if(ltoobj.technicalissue.size()!=0)
+				{
+					if(ltoobj.technicalissue1.isDisplayed()){
+						if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+						{
+							htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+						}
+					ltoobj.closetechnicalissue.click();
+					//waitfor(1);
+					ltoobj.box.clear();}
+				}
+			}
+			//waitfor(2);
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}else{
+			ltopage.paginationhandling(ltoobj,driver);
+			ltoobj.clicklocation.click();
+			String ar1 = articleList.get(0);
+			String ar2 = articleList.get(1);
+			String ar3 = articleList.get(2);
+			
+			
+			String indiv_UomArticle_sql2 = data.getText("dbcountdesc");
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar2", ar2);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar3", ar3);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+			replacenullToZero(results);
+			ltopage.removequadzero(results, 2);
+			ltopage.removequadzero(results, 4);	
+			ltopage.removequadzero(results, 6);	
+			ltopage.countmatnrdbcomparison(ltoobj,results,driver);}
+			waitFor(1);
+			click(ltoobj.backbutton);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));		
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}	
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Audit-Desc")//Query available
+	public void ltoauditdescription() //throws SQLException, IOException, AWTException,ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		TestStatus status = getTestStatus();
+		//waitFor(1);
+		try{		
+			navtoltoreport(status);
+			List<String>articleList = new ArrayList<String>();
+			//waitFor(1);
+			ltoobj.ltoaudit.click();
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitFor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitFor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("description");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);		
+			if(results.size()==0)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No Articles are Present in DB, so report cannot be generated ;;;Pass");
+			}
+			else
+			{
+				int sze=0;
+				if(results.size()>2){sze=3;}else{sze=results.size();}
+				for (int a = 1; a <= sze; a++) {
+					int num = common.RandomFromDB(results);				
+					String art1 = ltopage.randart(results, num);
+					String artNumber = ltopage.randartNumber(results, num);
+					articleList.add(artNumber);
+					ltoobj.box.clear();
+					ltoobj.box.sendKeys(art1);
+					ltoobj.box.sendKeys(Keys.ENTER);
+					waitForJSandJQueryToLoad(driver);
+					//waitFor(1);
+					ltopage.descClick(ltoobj, art1);
+					if(ltoobj.technicalissue.size()!=0)
+					{
+						if(ltoobj.technicalissue1.isDisplayed()){
+							if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+							{
+								htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+							}
+							else
+							{
+								htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+							}
+						ltoobj.closetechnicalissue.click();
+						//waitFor(1);
+						ltoobj.box.clear();}
+					}else{
+						ltoobj.generatereport.click();
+						waitForJSandJQueryToLoad(driver);
+						if (ltoobj.msg.size()!=0)
+						{
+							String noarticles = ltoobj.msgtext.getText();
+							if(noarticles.equals("Sorry, No records found."))
+							{
+								ltoobj.close.click();
+								htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+							}		
+						}else{
+						ltopage.paginationhandlingAudit(ltoobj,driver);
+						ltoobj.clickarticle.click();
+						String ar1 = articleList.get(0);
+						
+						String indiv_UomArticle_sql2 = data.getText("auditdbdesc");
+						indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+						
+						results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+						results1 = ltopage.removeExtraSpacesmodi(results, 1);
+						replacenullToZero(results1);
+						ltopage.removeLastZeromodi(results1, 3);
+						ltopage.removedoublezero(results1, 4);
+						ltopage.removequadzero(results1, 5);
+						ltopage.removequadzero(results1, 6);
+						ltopage.removequadzero(results1, 7);
+						ltopage.auditinputdbcomparison(ltoobj, results1,driver);}
+						if(ltoobj.generateltoreport.isDisplayed()){
+						ltoobj.generateltoreport.click();}
+						waitForJSandJQueryToLoad(driver);
+					}
+					}
+				waitFor(1);
+				click(ltoobj.backbutton);
+				log.info("-----------------Logout from Application------------------");
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));				
+			}}catch(Exception e){
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+			}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Logs-desc")//Query available
+	public void ltologsdescription() //throws SQLException, IOException, AWTException,	ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		TestStatus status = getTestStatus();
+		//waitFor(1);
+		try{
+			navtoltoreport(status);
+			List<String>articleList = new ArrayList<String>();
+			//waitFor(1);
+			LocalDate fdate = LocalDate.now().minusDays(28);
+			LocalDate tdate = LocalDate.now().plusDays(0);
+			ltoobj.ltologs.click();
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitFor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+		//	waitFor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("description");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			int sze=0;
+			if(results.size()>2){sze=3;}else{sze=results.size();}
+			for (int a = 1; a <= sze; a++) {
+				int num = common.RandomFromDB(results);			
+				String art1 = ltopage.randart(results, num);
+				String artNumber = ltopage.randartNumber(results, num);
+				articleList.add(artNumber);
+				ltoobj.box.clear();
+				ltoobj.box.sendKeys(art1);
+				ltoobj.box.sendKeys(Keys.ENTER);
+				waitForJSandJQueryToLoad(driver);
+				//waitFor(1);
+				ltopage.descClick(ltoobj, art1);
+				if(ltoobj.technicalissue.size()!=0)
+				{
+					if(ltoobj.technicalissue1.isDisplayed()){
+						if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+						{
+							htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+						}
+					ltoobj.closetechnicalissue.click();
+					//waitFor(1);
+					ltoobj.box.clear();}
+				}
+			}
+			//waitFor(1);
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}else{
+			ltopage.paginationhandling(ltoobj,driver);
+			String ar1 = articleList.get(0);
+			String ar2 = articleList.get(1);
+			String ar3 = articleList.get(2);
+			String indiv_UomArticle_sql2 = data.getText("logsdb").replaceFirst("2017-09-29",fdate.toString());
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replaceFirst("2017-09-30", tdate.toString());
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar2", ar2);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar3", ar3);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+			results1 = ltopage.removeExtraSpacesmodi(results, 1);
+			replacenullToZero(results1);
+			ltopage.removequadzero(results1, 3);
+			ltopage.logsinputdbcomparison(ltoobj, results1,driver);}
+			waitFor(1);
+			click(ltoobj.backbutton);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}	
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Count-PLU")//Query available
+	public void MCcountplu() //throws SQLException, IOException, AWTException,	ParseException 
+	{	
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		//waitFor(1);
+		try{		
+			navtoltoreport(status);
+			List<String>articleList = new ArrayList<String>();
+			//waitFor(1);
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitFor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitFor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("plu");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			int sze=0;
+			if(results.size()>2){sze=3;}else{sze=results.size();}
+			for (int a = 1; a <= sze; a++) {
+				int num = common.RandomFromDB(results);			
+				String art1 = ltopage.randart(results, num);
+				String artNumber = ltopage.randartNumber(results, num);
+				articleList.add(artNumber);
+				ltoobj.box.clear();
+				ltoobj.box.sendKeys(art1);
+				ltoobj.box.sendKeys(Keys.ENTER);
+				waitForJSandJQueryToLoad(driver);
+				waitFor(1);ltopage.descClick(ltoobj, art1);
+				if(ltoobj.technicalissue.size()!=0)
+				{
+					if(ltoobj.technicalissue1.isDisplayed()){
+						if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+						{
+							htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+						}
+					ltoobj.closetechnicalissue.click();
+					//waitFor(1);
+					ltoobj.box.clear();}
+				}
+			}
+			//waitFor(1);
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}else{
+			ltopage.paginationhandling(ltoobj,driver);
+			ltoobj.clicklocation.click();
+			String ar1 = articleList.get(0);
+			String ar2 = articleList.get(1);
+			String ar3 = articleList.get(2);
+			
+			String indiv_UomArticle_sql2 = data.getText("dbcountplu");
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar2", ar2);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar3", ar3);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+			replacenullToZero(results);
+			ltopage.removequadzero(results, 2);
+			ltopage.removequadzero(results, 4);
+			ltopage.removequadzero(results, 6);
+			ltopage.countmatnrdbcomparison(ltoobj,results,driver);}
+			waitFor(1);
+			click(ltoobj.backbutton);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));				
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Audit-PLU")//Query available and works 
+	public void ltoauditplu() //throws SQLException, IOException, AWTException,	ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		//waitFor(1);
+		try{		
+			navtoltoreport(status);
+			List<String>articleList = new ArrayList<String>();
+			String art1="";
+			//waitFor(1);
+			ltoobj.ltoaudit.click();
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+		//	waitFor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("plu");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			if(results.size()==0)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No Articles are Present in DB, so report cannot be generated ;;;Pass");
+			}
+			else
+			{
+				int sze=0;
+				if(results.size()>2){sze=3;}else{sze=results.size();}	
+				for (int a = 1; a <= sze; a++) {int num = common.RandomFromDB(results);				
+				art1 = ltopage.randart(results, num);
+				String artNumber = ltopage.randartNumber(results, num);
+				articleList.add(artNumber);
+				ltoobj.box.clear();
+				ltoobj.box.sendKeys(art1);
+				ltoobj.box.sendKeys(Keys.ENTER);
+				waitForJSandJQueryToLoad(driver);
+				waitFor(1);
+				ltopage.descClick(ltoobj, art1);
+				if(ltoobj.technicalissue.size()!=0)
+				{
+					if(ltoobj.technicalissue1.isDisplayed()){
+						if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+						{
+							htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+						}
+					ltoobj.closetechnicalissue.click();
+					//waitFor(1);
+					ltoobj.box.clear();}
+				}
+				}
+			//	waitFor(2);
+				ltoobj.generatereport.click();
+				waitForJSandJQueryToLoad(driver);
+				if(ltoobj.DesclistCheck.isDisplayed()){
+				ltopage.descClick(ltoobj, art1);
+				}
+				if (ltoobj.msg.size()!=0)
+				{
+					String noarticles = ltoobj.msgtext.getText();
+					if(noarticles.equals("Sorry, No records found."))
+					{
+						ltoobj.close.click();
+						htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+					}		
+				}else{
+				ltopage.paginationhandling(ltoobj,driver);
+				waitFor(2);
+				ltoobj.clickarticle.click();
+				String ar1 = articleList.get(0);
+				String ar2 = articleList.get(1);
+				String ar3 = articleList.get(2);
+				String indiv_UomArticle_sql2 = data.getText("auditdbplu");
+				indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+				indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar2", ar2);
+				indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar3", ar3);
+				results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+				results1 = ltopage.removeExtraSpacesmodi(results, 1);
+				replacenullToZero(results1);
+				ltopage.removeLastZeromodi(results1, 3);
+				ltopage.removedoublezero(results1, 4);
+				ltopage.removequadzero(results1, 5);
+				ltopage.removequadzero(results1, 6);
+				ltopage.removequadzero(results1, 7);
+				ltopage.auditinputdbcomparison(ltoobj, results,driver);}
+				waitFor(1);
+				click(ltoobj.backbutton);
+			}
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));
+
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Logs-PLU")//Query available
+	public void ltologsplu() //throws SQLException, IOException, AWTException,ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		TestStatus status = getTestStatus();
+	//	waitFor(1);
+		try{		
+			navtoltoreport(status);
+			List<String>articleList = new ArrayList<String>();
+			//waitFor(1);
+			LocalDate fdate = LocalDate.now().minusDays(28);
+			LocalDate tdate = LocalDate.now().plusDays(0);
+			ltoobj.ltologs.click();
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitFor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitFor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("plu");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			int sze=0;
+			if(results.size()>2){sze=3;}else{sze=results.size();}
+			for (int a = 1; a <= sze; a++) {
+				int num = common.RandomFromDB(results);			
+				String art1 = ltopage.randart(results, num);
+				String artNumber = ltopage.randartNumber(results, num);
+				articleList.add(artNumber);
+				ltoobj.box.clear();
+				ltoobj.box.sendKeys(art1);
+				ltoobj.box.sendKeys(Keys.ENTER);
+				waitForJSandJQueryToLoad(driver);
+				waitFor(1);ltopage.descClick(ltoobj, art1);
+				if(ltoobj.technicalissue.size()!=0)
+				{
+					if(ltoobj.technicalissue1.isDisplayed()){
+						if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+						{
+							htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+						}
+					ltoobj.closetechnicalissue.click();
+					//waitFor(1);
+					ltoobj.box.clear();}
+				}
+			}
+			//waitFor(2);
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}else{
+			ltopage.paginationhandling(ltoobj,driver);
+			String ar1 = articleList.get(0);
+			String ar2 = articleList.get(1);
+			String ar3 = articleList.get(2);
+			String indiv_UomArticle_sql2 = data.getText("logsdb").replaceFirst("2017-09-29",fdate.toString());
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replaceFirst("2017-09-30", tdate.toString());
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar2", ar2);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar3", ar3);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+			results1 = ltopage.removeExtraSpacesmodi(results, 1);
+			replacenullToZero(results1);
+			ltopage.removequadzero(results1, 3);
+			ltopage.logsinputdbcomparison(ltoobj, results1,driver);}
+			waitFor(1);
+			click(ltoobj.backbutton);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));				
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}	
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Date Discrepancy")//No query
+	public void datediscrepancy() //throws SQLException, IOException, AWTException,ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		//waitFor(1);
+		try{		
+			navtoltoreport(status);
+			//waitFor(1);
+			for(int i=1;i<=1;i++)
+			{
+				if(i==1)// From date past date
+				{
+					String datef = common.addDaystoCurrentDate(-30);
+					ltoobj.fromdate.clear();
+					ltoobj.fromdate.sendKeys(datef);
+				//	waitFor(1);
+					String datet = common.addDaystoCurrentDate(+0);
+					ltoobj.todate.clear();
+					ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+					//waitFor(1);
+					ltoobj.chummadate.click();
+				}
+				if(i==2)// Date To cannot be a future date
+				{
+					String datef1 = common.addDaystoCurrentDate(0);
+					ltoobj.fromdate.clear();
+					ltoobj.fromdate.sendKeys(datef1);
+					//waitFor(1);
+					String datet1 = common.addDaystoCurrentDate(+20);
+					ltoobj.todate.clear();
+					ltoobj.todate.sendKeys(datet1);// Entertesxt() insert
+					//waitFor(1);
+					ltoobj.chummadate.click();
+				}
+
+				ltoobj.generatereport.click();
+				waitForJSandJQueryToLoad(driver);
+				String datemsg = ltoobj.dateerrormsg.getText();
+				ltoobj.dateerrorclose.click();
+				htmlToExtent(cName,mName,extLogger,driver, "" + datemsg + ";;;Info");
+				waitFor(1);
+				click(ltoobj.backbutton);
+			}
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));				
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}	
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Count- EAN")//Query available
+	public void MCcountean() //throws SQLException, IOException, AWTException,	ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		//waitFor(1);
+		try{		
+			navtoltoreport(status);
+			List<String>articleList = new ArrayList<String>();
+			//waitFor(1);
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitFor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitFor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("ean");// Table to get EAN
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			int sze=0;
+			if(results.size()>2){sze=3;}else{sze=results.size();}
+			for (int a = 1; a <= sze; a++) {
+				int num = common.RandomFromDB(results);			
+				String art1 = ltopage.randart(results, num);
+				String artNumber = ltopage.randartNumber(results, num);
+				articleList.add(artNumber);
+				ltoobj.box.clear();
+				ltoobj.box.sendKeys(art1);
+				ltoobj.box.sendKeys(Keys.ENTER);
+				waitForJSandJQueryToLoad(driver);
+				waitFor(1);ltopage.descClick(ltoobj, art1);
+				if(ltoobj.technicalissue.size()!=0)
+				{
+					if(ltoobj.technicalissue1.isDisplayed()){
+						if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+						{
+							htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+						}
+					ltoobj.closetechnicalissue.click();
+					//waitFor(1);
+					ltoobj.box.clear();}
+				}
+			}
+			//waitFor(2);
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}else{
+			ltopage.paginationhandling(ltoobj,driver);
+			ltoobj.clicklocation.click();
+			String ar1 = articleList.get(0);
+			String ar2 = articleList.get(1);
+			String ar3 = articleList.get(2);
+			String indiv_UomArticle_sql2 = data.getText("dbcountean");
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar2", ar2);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar3", ar3);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);		
+			replacenullToZero(results);
+			ltopage.removequadzero(results, 2);
+			ltopage.removequadzero(results, 4);
+			ltopage.removequadzero(results, 6);
+			ltopage.countmatnrdbcomparison(ltoobj,results,driver);}
+			waitFor(1);
+			click(ltoobj.backbutton);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));				
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Logs- EAN")//Query available
+	public void ltologsean() //throws SQLException, IOException, AWTException,ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		waitFor(1);
+		try{		
+			navtoltoreport(status);
+			List<String>articleList = new ArrayList<String>();
+			//waitFor(1);
+			LocalDate fdate = LocalDate.now().minusDays(28);
+			LocalDate tdate = LocalDate.now().plusDays(0);
+			ltoobj.ltologs.click();
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitFor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitFor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("ean");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			int sze=0;
+			if(results.size()>2){sze=3;}else{sze=results.size();}
+			for (int a = 1; a <= sze; a++) {
+				int num = common.RandomFromDB(results);
+				String art1 = ltopage.randart(results, num);
+				String artNumber = ltopage.randartNumber(results, num);
+				articleList.add(artNumber);
+				ltoobj.box.clear();
+				ltoobj.box.sendKeys(art1);
+				ltoobj.box.sendKeys(Keys.ENTER);
+				waitForJSandJQueryToLoad(driver);
+				//waitFor(1);
+				ltopage.descClick(ltoobj, art1);
+				if(ltoobj.technicalissue.size()!=0)
+				{
+					if(ltoobj.technicalissue1.isDisplayed()){
+						if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+						{
+							htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+						}
+					ltoobj.closetechnicalissue.click();
+					//waitFor(1);
+					ltoobj.box.clear();}
+				}		
+			}
+		//	waitFor(2);
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}else{
+			ltopage.paginationhandling(ltoobj,driver);
+			String ar1 = articleList.get(0);
+			String ar2 = articleList.get(1);
+			String ar3 = articleList.get(2);
+			String indiv_UomArticle_sql2 = data.getText("logsdb").replaceFirst("2017-09-29",fdate.toString());		
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replaceFirst("2017-09-30", tdate.toString());
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar2", ar2);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar3", ar3);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+			results1 = ltopage.removeExtraSpacesmodi(results, 1);
+			replacenullToZero(results1);
+			ltopage.removequadzero(results1, 3);
+			ltopage.logsinputdbcomparison(ltoobj, results1,driver);}
+			waitFor(1);
+			click(ltoobj.backbutton);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Count- TUN")//Query available
+	public void MCcounttun()// throws SQLException, IOException, AWTException,ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+	//	waitFor(1);
+		try{		
+			navtoltoreport(status);
+			List<String>articleList = new ArrayList<String>();
+		//	waitFor(1);
+			LocalDate fdate = LocalDate.now().minusDays(28);
+			LocalDate tdate = LocalDate.now().plusDays(0);		
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+		//	waitFor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitFor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("tun");// TUN numbers are present in this query
+			List<List<Object>> results9 = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			int sze=0;
+			if(results9.size()>2){sze=3;}else{sze=results9.size();}		
+			for (int a = 1; a <= sze; a++) {
+				int num = common.RandomFromDB(results9);
+				String art1 = ltopage.randart(results9, num);
+				String artNumber = ltopage.randartNumber(results9, num);
+				articleList.add(artNumber);
+				ltoobj.box.clear();
+				ltoobj.box.sendKeys(art1);
+				ltoobj.box.sendKeys(Keys.ENTER);
+				waitForJSandJQueryToLoad(driver);
+			//	waitFor(1);
+				ltopage.descClick(ltoobj, art1);
+				if(ltoobj.technicalissue.size()!=0)
+				{
+					if(ltoobj.technicalissue1.isDisplayed()){
+						if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+						{
+							htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+						}
+					ltoobj.closetechnicalissue.click();
+					//waitFor(1);
+					ltoobj.box.clear();}
+				}
+			}
+		//	waitFor(2);
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}else{
+//			ltopage.paginationhandling(ltoobj,driver);
+//			ltoobj.clicklocation.click();
+//			String indiv_UomArticle_sql2 = data.getText("dbcounttun").replaceFirst("2018-01-28", fdate.toString());
+//			indiv_UomArticle_sql2=indiv_UomArticle_sql2.replaceFirst("2018-02-25", tdate.toString());
+//			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+//			replacenullToZero(results);
+//			ltopage.removequadzero(results, 9);
+//			ltopage.removequadzero(results, 11);
+//			ltopage.removequadzero(results, 12);		
+//			ltopage.removeExtraSpacesmodi(results, 4);		
+			ltopage.paginationhandling(ltoobj,driver);
+			ltoobj.clicklocation.click();
+			String ar1 = articleList.get(0);
+			String ar2 = articleList.get(1);
+			String ar3 = articleList.get(2);
+			String indiv_UomArticle_sql2 = data.getText("dbcounttun");
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar2", ar2);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar3", ar3);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+			replacenullToZero(results);
+			ltopage.removequadzero(results, 2);
+			ltopage.removequadzero(results, 4);
+			ltopage.removequadzero(results, 6);
+			ltopage.countmatnrdbcomparison(ltoobj,results,driver);}
+			waitFor(1);
+			click(ltoobj.backbutton);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));				
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Logs- TUN")//Query available
+	public void ltologstun() //throws SQLException, IOException, AWTException,ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+3;}
+		//waitFor(1);
+		try{
+			TestStatus status = getTestStatus();
+			List<String>articleList = new ArrayList<String>();
+			LocalDate fdate = LocalDate.now().minusDays(28);
+			LocalDate tdate = LocalDate.now().plusDays(0);
+			navtoltoreport(status);
+			//waitFor(1);
+			ltoobj.ltologs.click();
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitFor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitFor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("tun");// TUN numbers are present in this query
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			int sze=0;
+			if(results.size()>2){sze=3;}else{sze=results.size();}
+			for (int a = 1; a <= sze; a++) {
+				int num = common.RandomFromDB(results);			
+				String art1 = ltopage.randart(results, num);
+				String artNumber = ltopage.randartNumber(results, num);
+				articleList.add(artNumber);
+				ltoobj.box.clear();
+				ltoobj.box.sendKeys(art1);
+				ltoobj.box.sendKeys(Keys.ENTER);
+				waitForJSandJQueryToLoad(driver);
+				//waitFor(1);
+				ltopage.descClick(ltoobj, art1);
+				if(ltoobj.technicalissue.size()!=0)
+				{
+					if(ltoobj.technicalissue1.isDisplayed()){
+						if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+						{
+							htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+						}
+					ltoobj.closetechnicalissue.click();
+					//waitFor(1);
+					ltoobj.box.clear();}
+				}
+			}
+			//waitFor(2);
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}else{
+			ltopage.paginationhandling(ltoobj,driver);
+			String ar1 = articleList.get(0);
+			String ar2 = articleList.get(1);
+			String ar3 = articleList.get(2);
+			String indiv_UomArticle_sql2 = data.getText("logsdb").replaceFirst("2017-09-29",fdate.toString());
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replaceFirst("2017-09-30", tdate.toString());
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar2", ar2);
+			indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar3", ar3);
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+			results1 = ltopage.removeExtraSpacesmodi(results, 1);
+			replacenullToZero(results1);
+			ltopage.removequadzero(results1, 3);
+			ltopage.logsinputdbcomparison(ltoobj, results1,driver);}
+			waitFor(1);
+			click(ltoobj.backbutton);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));
+			status.assertAll();
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Audit- TUN")//Query available
+	public void ltoaudittun()// throws SQLException, IOException, AWTException,	ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		//waitFor(1);		
+		try{		
+			navtoltoreport(status);
+			List<String>articleList = new ArrayList<String>();
+			//waitFor(1);
+			ltoobj.ltoaudit.click();
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitFor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);
+			//waitFor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("tun");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);		
+			if(results.size()==0)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No Articles are Present in DB, so report cannot be generated ;;;Pass");
+			}		
+			else
+			{
+				int sze=0;
+				if(results.size()>2){sze=3;}else{sze=results.size();}
+				for (int a = 1; a <= sze; a++) {
+					int num = common.RandomFromDB(results);				
+					String art1 = ltopage.randart(results, num);
+					String artNumber = ltopage.randartNumber(results, num);
+					articleList.add(artNumber);
+					ltoobj.box.clear();
+					ltoobj.box.sendKeys(art1);
+					ltoobj.box.sendKeys(Keys.ENTER);
+					waitForJSandJQueryToLoad(driver);			
+				//	waitFor(1);
+					ltopage.descClick(ltoobj, art1);
+					if(ltoobj.technicalissue.size()!=0)
+					{
+						if(ltoobj.technicalissue1.isDisplayed()){
+							if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+							{
+								htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+							}
+							else
+							{
+								htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+							}
+						ltoobj.closetechnicalissue.click();
+						//waitFor(1);
+						ltoobj.box.clear();}
+					}
+				}
+				//waitFor(2);
+				ltoobj.generatereport.click();
+				waitForJSandJQueryToLoad(driver);
+				if (ltoobj.msg.size()!=0)
+				{
+					String noarticles = ltoobj.msgtext.getText();
+					if(noarticles.equals("Sorry, No records found."))
+					{
+						ltoobj.close.click();
+						htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+					}		
+				}else{
+				ltopage.paginationhandling(ltoobj,driver);
+				ltoobj.clickarticle.click();
+				String ar1 = articleList.get(0);
+				String ar2 = articleList.get(1);
+				String ar3 = articleList.get(2);
+				String indiv_UomArticle_sql2 = data.getText("auditdbtun");
+				indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar1", ar1);
+				indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar2", ar2);
+				indiv_UomArticle_sql2 = indiv_UomArticle_sql2.replace("ar3", ar3);
+				results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+				results1 = ltopage.removeExtraSpacesmodi(results, 1);
+				replacenullToZero(results1);
+				ltopage.removeLastZeromodi(results1, 3);
+				ltopage.removedoublezero(results1, 4);
+				ltopage.removequadzero(results1, 5);
+				ltopage.removequadzero(results1, 6);
+				ltopage.removequadzero(results1, 7);
+				ltopage.auditinputdbcomparison(ltoobj, results1,driver);}
+				waitFor(1);
+				click(ltoobj.backbutton);
+			}
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}	
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "DB Filter")//Query available// Validating by giving DB filter and removing DB filter
+	public void dbfilter() //throws SQLException, IOException, AWTException,	ParseException 
+	{	
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+	//	waitFor(1);
+		try{		
+			navtoltoreport(status);
+			//waitFor(1);
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitFor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitFor(1);
+			ltoobj.chummadate.click();
+			ltoobj.departmentcheckbox.click();
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}else{
+			ltopage.paginationhandling(ltoobj,driver);
+			ltoobj.clicklocation.click();
+			String indiv_UomArticle_sql2 = data.getText("dbmatnr");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql2);
+			replacenullToZero(results);
+			removeLastZero(results, 6);
+			ltopage.removequadzero(results, 2);
+			ltopage.removequadzero(results, 4);		
+			ltopage.countmatnrdbcomparison(ltoobj,results,driver);}
+			waitFor(1);
+			click(ltoobj.backbutton);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));				
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "LTO Count- Non lto article")//Query available// Randomly giving any article that is not present in LTO
+	public void nonltoarticles() //throws SQLException, IOException, AWTException,	ParseException 
+	{
+		if(ltoReportArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		//waitFor(1);
+		try{
+			navtoltoreport(status);
+		//	waitFor(1);
+			String datef = common.addDaystoCurrentDate(-28);
+			ltoobj.fromdate.clear();
+			ltoobj.fromdate.sendKeys(datef);
+			//waitFor(1);
+			String datet = common.addDaystoCurrentDate(+0);
+			ltoobj.todate.clear();
+			ltoobj.todate.sendKeys(datet);// Entertesxt() insert
+			//waitFor(1);
+			ltoobj.chummadate.click();
+			String indiv_UomArticle_sql1 = data.getText("matnr");
+			results = sql.executeQuery(getContext(),indiv_UomArticle_sql1);
+			int sze=0;
+			if(results.size()>2){sze=3;}else{sze=results.size();}
+			for (int a = 1; a <= sze; a++) {
+				int num = common.RandomFromDB(results);			
+				String art1 = ltopage.randart(results, num);
+				ltoobj.box.sendKeys(art1);
+				ltoobj.box.sendKeys(Keys.ENTER);
+				waitForJSandJQueryToLoad(driver);
+				//waitFor(1);
+				ltopage.descClick(ltoobj, art1);
+				if(ltoobj.technicalissue.size()!=0)
+				{
+					if(ltoobj.technicalissue1.isDisplayed()){
+						if(ltoobj.technicalissuetext.getText().contains("Sorry, Some technical issue"))
+						{
+							htmlToExtent(cName,mName,extLogger,driver, ""+ltoobj.technicalissuetext.getText()+";;;Info");
+						}
+						else
+						{
+							htmlToExtent(cName,mName,extLogger,driver, "Article already added "+art1+";;;Info");
+						}
+					ltoobj.closetechnicalissue.click();
+					//waitFor(1);
+					ltoobj.box.clear();}
+				}
+			}
+		//	waitFor(2);
+			ltoobj.generatereport.click();
+			waitForJSandJQueryToLoad(driver);		
+			if (ltoobj.msg.size()!=0)
+			{
+				String noarticles = ltoobj.msgtext.getText();
+				if(noarticles.equals("Sorry, No records found."))
+				{
+					ltoobj.close.click();
+					htmlToExtent(cName,mName,extLogger,driver, " Sorry, No records found. ;;;Pass");
+				}		
+			}
+			waitFor(1);
+			click(ltoobj.backbutton);
+			log.info("-----------------Logout from Application------------------");
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(ltoReportArtScenarios, ltoReportArttestname,driver));				
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from Application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	
+	
+//##
+	public void navtoltoreport(TestStatus status) throws IOException,
+	AWTException, NumberFormatException, ParseException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, " ---------------Login into Application--------------------;;;Pass");
+		//Report_AddStep("testcase","---------------Login into Application--------------------","", "", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(),
+				log, status, data, WoWLoginPage.class);
+		if (System.getProperty("store") == null) {
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, " Login with the Store : "+ getContext().getStringProperty("store")+";;;Pass");
+			//Report_AddStep("testcase", "Login with the Store : "+ getContext().getStringProperty("store"), "", "", "Pass");
+			// articleLookUpPage =
+			// loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			ltopage = loginPage.navtoltoreport(getContext().getStringProperty(
+					"store"),driver);
+		} else {
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, " Login with the Store : "+ store+";;Pass");
+			Report_AddStep("testcase", "Login with the Store : " + store, "",
+					"", "Pass");
+			// articleLookUpPage = loginPage.navToArticlLookUp(store);
+			ltopage = loginPage.navtoltoreport(store,driver);
+		}
+
+		log.info("-------------Navigate to Routines Page------------");
+		htmlToExtent(cName,mName,extLogger,driver, " ----------------Navigate to Routines Page--------------------;;;Pass");
+		//Report_AddStep("testcase","----------------Navigate to Routines Page--------------------","", "", "Pass");
+		ltopage.clickOnroutines(ltoobj,driver);
+		// oocpage.oocrepo(oocobj);
+	}
+
+
+	/*@BeforeMethod
+	public void setUp(Method m, ITestContext testcontext) throws IOException {
+		initializeTestcontext();
+		//System.out.println("test1 - beforemethod");
+		log.info("Loading Testdata for the test case: "
+				+ m.getName().toString());
+		data.getTCNameFromChildren(m.getName().toString().trim());
+		createDriver(getContext().getStringProperty("baseURL"), getContext()
+				.getStringProperty("browser"));
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		moduledesc = m.getName().toString().trim();
+		dtmoduledesc = m.getAnnotation(Test.class).description();
+		try{
+
+		}
+	catch (Exception ex) {
+		throw ex;
+	}
+		testcasesttime = new Date();
+		// objArticleLookup = PageFactory.initElements(this.driver,
+		// ArticleLookUpObjects.class);
+		ltoobj = PageFactory.initElements(this.driver,
+				ltoreportobjects.class);
+		ltoobj = PageFactory.initElements(this.driver,
+				ltoreportobjects.class);
+		// objArticleDetail = PageFactory.initElements(this.driver,
+		// ArticleDetailsObjects.class);
+
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver,
+				CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver,
+				StoreProperties.class);
+
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy_hmmss");
+		String formattedDate = sdf.format(date);
+		//System.out.println(formattedDate); // 12/01/2011 4:48:16 PM
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String formattedDate1 = dateFormat.format(date);
+		//System.out.println(formattedDate1); // 12/01/2011 4:48:16 PM
+		String dat = formattedDate1;
+		Report_Header("testcase", reportPath, moduledesc, dat);
+
+	}
+
+
+	@BeforeClass
+	public void loadXMLFile() {
+		// initializeTestcontext();
+		//System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport = new CustomExtentReports();
+		log.info("Loading data for the class: ");
+		data.loadTestDataXML(System.getProperty("user.dir")
+				+ "\\TestData\\NGBO\\ltoreport.xml");
+		customreport.createExtentReport();
+<<<<<<< .mine
+	}*/
+
+	
+	
+	
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		waitFor(2);
+        mName=m9.getName().toString().trim();			
+		if(!methodList.contains(m9.getName().toString().trim())){
+		methodList.add(m9.getName().toString().trim());
+		extLogger = extReport.startTest(m9.getName().toString().trim());
+		}
+		initializeTestcontext();	
+		System.out.println("test1 - beforemethod");	
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		}else{
+			String title = driver.getCurrentUrl();
+			if(title.contains("logginOut"))
+			{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+			}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+						WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+						scrolltoElement(home,driver);
+						home.click();
+						TimeUnit.SECONDS.sleep(5);
+						loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+						driver.navigate().refresh();
+						TimeUnit.SECONDS.sleep(5);}
+				}
+			}
+		}
+			isFirstTest=false;
+		
+		//	driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser")); setDriver(driver);
+		setDriver(driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		ltoReportArttestname = m9.getName().toString().trim();
+		ltoReportArttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		ltoobj = PageFactory.initElements(this.driver,ltoreportobjects.class);
+		ltoobj = PageFactory.initElements(this.driver,ltoreportobjects.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+		
+		/*Date ppStartdat1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String formattedDatepp = dateFormat.format(ppStartdat1);
+		//System.out.println(formattedDatepp); // 12/01/2011 4:48:16 PM
+		ltoReportArtStartdat = formattedDatepp;*/
+	}
+
+	
+	@BeforeClass
+	public void loadXMLFile(){	
+		//initializeTestcontext();
+		System.out.println("test1 - Beforeclass");		
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir")	+ "\\TestData\\NGBO\\ltoreport.xml");
+		customreport.createExtentReport();
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+		/*Date enhancedArtMod = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		ltoReportArtStdateex = dateFormat.format(enhancedArtMod);*/
+	}
+	
+	
+	
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitFor(1);
+		System.out.println("afterclass");
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(), MCcount);
+		//System.out.println(extentList);
+		//System.out.println(methodList);
+        extReport.endTest(extLogger);
+		extReport.flush();
+		removeDriver();
+		closeDriver(driver);
+		
+	/*	String Pp1className = this.getClass().getSimpleName().toString();
+		ltoReportArtModules.put(Pp1className, ltoReportArtScenarios);
+		waitFor(1);*/
+		moduleName.put("Modules", ltoReportArtModules);
+		waitFor(1);
+		/*Date ppModEnd2 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		ltoReportArtenddateex = dateFormat.format(ppModEnd2);
+
+		//System.out.println(ltoReportArtenddateex);
+		waitFor(2);
+		*/
+		int ltoArtM=MCcount;
+		ltoReportArtMC=""+ltoArtM;				
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+		System.out.println("AffterMethod");
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				//System.out.println();
+			
+			}
+
+		waitFor(1);
+		/*Date ppMEndDate1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		ltoReportArtMEndDate = dateFormat.format(ppMEndDate1);
+		//System.out.println(ltoReportArtMEndDate); // 12/01/2011 4:48:16 PM
+		String EnhancedArtTime = ltoReportArttestdesc +";"+ ltoReportArtStartdat +";" + ltoReportArtMEndDate;
+
+		ltoReportArtTime.put(ltoReportArttestname, EnhancedArtTime);
+		//Report_AddStep("testcase", "Running Completed Status","","", getResultStatusName(result.getStatus()));
+		waitFor(4);*/
+		//closeDriver(driver);		
+		//waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")){
+			int cnt = ltoReportArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			ltoReportArtpreCount2++;
+		}
+		//closeDriver(driver);
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+	/*	waitFor(1);
+		if((getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail") || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info"))&& ltoReportArtpreCount2!=reCount){
+			waitFor(1);
+			ltoReportArtTime.removeAll(ltoReportArttestname);
+			waitFor(1);
+			ltoReportArtScenarios.removeAll(ltoReportArttestname);
+		}
+		waitFor(1);*/
+		if(ltoReportArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+			ltoReportArtpreCount2=-1;
+		}
+		waitFor(2);
+		
+	}
+	
+	
+}//##

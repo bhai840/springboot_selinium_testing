@@ -1,0 +1,1548 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Color;
+import java.awt.Robot;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+//import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javax.swing.JScrollBar;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.tools.ant.taskdefs.Concat;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.google.common.base.Objects;
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.AdjustmentLogReportObjects;
+import au.wow.ngbomain.objects.EnhancedArticleLookUpObjects;
+import au.wow.ngbomain.objects.StockAdjObjects;
+import au.wow.ngbomain.objects.oocreportobjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.tests.AdjustmentLogReportTests;
+
+public class AdjustmentLogReportPage extends BasePage{
+
+	 
+	WebDriver driver ;
+		CommonFunctions common = PageFactory.initElements(driver,
+				CommonFunctions.class);
+		private Logger log = LogManager.getLogger(AdjustmentLogReportTests.class);
+		SQLWrapper sql = new SQLWrapper(log);
+		
+		
+		ExtentTest extLogger=AdjustmentLogReportTests.extLogger;
+		String cName= AdjustmentLogReportTests.cName;
+		String mName=AdjustmentLogReportTests.mName;
+		public void setDriver(WebDriver driver){
+			this.driver=driver;
+		}		
+		
+		
+		public void clickOnAdjusmentLogReport(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)throws AWTException {
+			waitForJSandJQueryToLoad(driver);
+			
+			waitForJSandJQueryToLoad(driver);;
+			verticalScroll(driver);
+			waitForElement(objAdjustmentLogReport.reports,driver);
+
+			driver.findElement(By.id("reports")).click();
+			driver.findElement(By.linkText("Stock Management")).click();
+			driver.findElement(By.linkText("Adjustment Log Report")).click();
+			
+			waitForInvisibilityOfElement(By.id("statusImg"),driver);
+			waitForJSandJQueryToLoad(driver);
+			
+			//driver.navigate().to("http://ngbo-acpt.gss.woolworths.com.au/StoreCentral/1005/stockAdjReport/loadStockAdjReport.htm");
+			//http://ngbo-acpt.gss.woolworths.com.au/StoreCentral/1005/stockAdjReport/loadStockAdjReport.htm
+			//driver.navigate().to(getContext().getStringProperty("baseURL")+"/1005/stockAdjReport/loadStockAdjReport.htm");
+			//waitForJSandJQueryToLoad(driver);
+		//}
+			waitForJSandJQueryToLoad(driver);
+			waitFor(1);
+			/*Point coordinates = objAdjustmentLogReport.Reports.getLocation();
+			Robot robot = new Robot();
+			robot.mouseMove(coordinates.getX(), coordinates.getY() + 100);
+
+			Actions action = new Actions(getDriver());
+			action.moveToElement(objAdjustmentLogReport.Reports).click().build()
+			.perform();
+			waitFor(1);
+
+			Point coordinates1 = objAdjustmentLogReport.Stockmanagement.getLocation();
+			Robot robo1t = new Robot();
+			robo1t.mouseMove(coordinates1.getX(), coordinates1.getY() + 100);
+
+			Actions action2 = new Actions(getDriver());
+			action2.moveToElement(objAdjustmentLogReport.Stockmanagement).click().build()
+			.perform();
+			waitFor(1);
+			
+			Point coordinates3 = objAdjustmentLogReport.AdjLogreports.getLocation();
+			Robot robo1t1 = new Robot();
+			robo1t1.mouseMove(coordinates3.getX(),coordinates3.getY()+100);
+			
+			Actions action3= new Actions(getDriver());
+			action3.moveToElement(objAdjustmentLogReport.AdjLogreports).click().build().perform();
+			waitFor(1);
+			robot.mouseMove(5, 5);
+			waitForJSandJQueryToLoad(driver);;
+			waitFor(1);*/
+			}
+		
+
+		
+		public void verifyDate(AdjustmentLogReportObjects objAdjustmentLogReport) throws ParseException
+		{
+			objAdjustmentLogReport.fromdate.clear();
+			String frmdate=date(-5);
+			objAdjustmentLogReport.fromdate.sendKeys(frmdate);
+			waitFor(1);
+			String fromdate = objAdjustmentLogReport.fromdate.getText();
+			
+			objAdjustmentLogReport.enddate.clear();
+			String endate=date(-2);
+			objAdjustmentLogReport.enddate.sendKeys(endate);
+			waitFor(2);
+			if(fromdate.equals(frmdate))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "From date and end date is modified;;;Pass");
+			}
+			
+			objAdjustmentLogReport.fromdate.clear();
+			frmdate=date(5);
+			objAdjustmentLogReport.fromdate.sendKeys(frmdate);
+			waitFor(1);
+			objAdjustmentLogReport.enddate.clear();
+			endate=date(2);
+			objAdjustmentLogReport.enddate.sendKeys(endate);
+			objAdjustmentLogReport.Generatereportsbtn.click();
+			waitFor(1);
+			if(objAdjustmentLogReport.errorclosebtn.isDisplayed())
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "From date and end date is modified;;;Pass");
+				htmlToExtent(cName,mName,extLogger,driver, "From date and end date should not be future date;;;Pass");
+			}
+				objAdjustmentLogReport.errorclosebtn.click();
+				
+		}
+
+		public void verifypagination(AdjustmentLogReportObjects objAdjustmentLogReport, String a, String b)
+		{
+			if(a.equals(b))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Page is not navigated;;;Pass");
+			}
+			else
+			{
+				////System.out.println(a + b );
+				htmlToExtent(cName,mName,extLogger,driver, "Page is navigated;;;Pass");
+			}
+		}
+		
+public String date(int i) throws ParseException
+{
+	String currentDate = common.getCurrentDate();
+	////System.out.println(currentDate);
+	String date = common.AddDate(common.ConvertdateFormatddmmyy(currentDate), i);
+	return date;
+}
+
+
+public int random_no(int max) {
+	Random rand = new Random();
+	int n = rand.nextInt(max);
+	return n;
+		}
+		
+public int random_no1(int i) {
+	Random rand = new Random();
+	int  n = rand.nextInt(i) + 1;
+	return n;
+} 
+
+public String eanNumber(AdjustmentLogReportObjects objAdjustmentLogReport, List<List<Object>> results)
+		throws IOException {
+	String eanNum = null;
+	for(int i = 0; i<results.size();i++)
+	{
+		int num = common.RandomFromDB(results);
+		String EanTun = results.get(num).get(2).toString();
+		if(EanTun.length()<14)
+		{
+			eanNum = EanTun;
+			break;
+		}
+	}
+	 return eanNum;
+}
+public String tUNNumber(AdjustmentLogReportObjects objAdjustmentLogReport, List<List<Object>> results)
+		throws IOException {
+	String tunNum = null;
+	for(int i = 0; i<results.size();i++)
+	{
+		int num = common.RandomFromDB(results);
+		String EanTun = results.get(num).get(2).toString();
+		if(EanTun.length()>13)
+		{
+			tunNum = EanTun;
+			break;
+		}
+	}
+	 return tunNum;
+}
+
+		
+public void plunumber(AdjustmentLogReportObjects objAdjustmentLogReport)
+		throws IOException {
+	////System.out.println("displayed");
+	htmlToExtent(cName,mName,extLogger,driver, "Pop up is displayed if PLU number is same as article number;;;Pass");
+	int PLUartSize =objAdjustmentLogReport.pludialogList.size();
+	int x = random_no(PLUartSize)+1;
+	waitFor(1);
+	WebElement element = prepareWebElementWithDynamicXpathWithInt(
+			objAdjustmentLogReport.dialogBoxchkbox, x,driver);
+	element.click();
+	waitFor(1);
+	objAdjustmentLogReport.AddtoListbtn.click();
+}
+
+public void pagination(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver) throws IOException
+{
+	objAdjustmentLogReport.Generatereportsbtn.click();
+	waitForJSandJQueryToLoad(driver);
+	waitFor(3);
+	htmlToExtent(cName,mName,extLogger,driver, "Generate report button is clicked;;;Pass");
+	
+	try
+	{
+	if(objAdjustmentLogReport.Reporttable.isDisplayed())
+	{
+		if(objAdjustmentLogReport.pageList.size()>0){
+	//int min=3, max=6;
+	int min=2, max=objAdjustmentLogReport.pageList.size()-2;
+	int randomNo=generateRandomNumber(min, max);
+	WebElement element = prepareWebElementWithDynamicXpathWithInt(
+			objAdjustmentLogReport.pageno, randomNo,driver);
+	waitFor(1);
+	String pageNo =element.getText();
+	waitFor(1);
+	element.click();
+	waitFor(1);
+	waitForJSandJQueryToLoad(driver);
+	
+	if(objAdjustmentLogReport.Reportstable.size()!=0)
+		htmlToExtent(cName,mName,extLogger,driver, "Inventory Report is Navigated Successfully to the Page No : "+pageNo+" ;;;Pass");
+	waitFor(1);
+	click(objAdjustmentLogReport.invReportNextBtn);
+	waitForJSandJQueryToLoad(driver);
+	if(objAdjustmentLogReport.Reportstable.size()!=0)
+	{
+		   int nextPageNo=Integer.parseInt(pageNo)+1;
+		   htmlToExtent(cName,mName,extLogger,driver, "Inventory Report is Navigated Successfully to the Next Page No : "+nextPageNo+" ;;;Pass");
+	}
+	}
+	}
+	else{
+		htmlToExtent(cName,mName,extLogger,driver, "Pages are not available for pagination;;;Pass");
+	}
+	}
+	catch(WebDriverException reportcheck){
+		htmlToExtent(cName,mName,extLogger,driver, "No Reports found;;;Pass");
+		objAdjustmentLogReport.errorclosebtn.click();
+	}
+}
+
+public void selectallUsers(AdjustmentLogReportObjects objAdjustmentLogReport) throws IOException
+{
+	String users = objAdjustmentLogReport.Userdd.getText();									
+	if(users.contains("All users"))									
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "All Users is selected;;;Pass");
+	}
+	else
+	{
+		objAdjustmentLogReport.userddselect.click();
+		objAdjustmentLogReport.AllusersCB.click();
+		htmlToExtent(cName,mName,extLogger,driver, "All Users is not selected;;;Pass");
+	}
+}
+public void selectallReasons(AdjustmentLogReportObjects objAdjustmentLogReport) throws IOException
+{
+	String reasons = objAdjustmentLogReport.reasoncodedd.getText();	
+	if(reasons.contains("All reasons"))                         
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "All Reasons is selected;;;Pass");
+	}
+	else
+	{
+		objAdjustmentLogReport.reasoncodedd.click();
+		objAdjustmentLogReport.AllreasonCB.click();
+		htmlToExtent(cName,mName,extLogger,driver, "Reasons Code drop down is not having All reasons on Page Load;;;Pass");
+	}}
+
+public List<String> PartialDepartment(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)
+		throws IOException {
+	List<String> selectedDept = new ArrayList<String>();
+	int max = objAdjustmentLogReport.listDept.size();
+	////System.out.println("The no.of elements is" + max);
+	int min = 2;
+	List<Integer> randomNumbers = new ArrayList<Integer>();
+	objAdjustmentLogReport.dropdownselect.click();
+
+	if (isSelected(objAdjustmentLogReport.AlldeptCB))
+	{
+		click(objAdjustmentLogReport.AlldeptCB);
+		waitForJSandJQueryToLoad(driver);
+	}
+	else {
+		click(objAdjustmentLogReport.AlldeptCB);
+		waitForJSandJQueryToLoad(driver);
+		click(objAdjustmentLogReport.AlldeptCB);
+		waitForJSandJQueryToLoad(driver);
+	}
+	randomNumbers = generateMultiplRandomNumber(min, max, 3);
+	for (int i = 0; i < 3; i++) {
+		WebElement element = prepareWebElementWithDynamicXpathWithInt(
+				objAdjustmentLogReport.partialdeptselectiondynamic,
+				randomNumbers.get(i),driver);
+		String dptName = element.getText().trim();
+		////System.out.println(dptName);
+		
+		Coordinates coordinate = ((Locatable) element).getCoordinates();
+		coordinate.onPage();
+		coordinate.inViewPort();
+
+		WebElement deptCheckbox = prepareWebElementWithDynamicXpathWithInt(
+				objAdjustmentLogReport.partialcheckboxselectiondynamic,
+				randomNumbers.get(i),driver);
+		click(deptCheckbox);
+		////System.out.println(deptCheckbox);
+		selectedDept.add(dptName);
+	}
+	htmlToExtent(cName,mName,extLogger,driver, "Selected Departments are: "+selectedDept.get(0)+", "+selectedDept.get(1)+", "+selectedDept.get(2)+";;;Pass");
+	objAdjustmentLogReport.Deptdonebtn.click();
+	return selectedDept;
+}
+
+		
+public List<Integer> generateMultiplRandomNumber(int min, int max,
+		int multiple) {
+	ArrayList<Integer> list = new ArrayList<Integer>();
+
+	for (int i = min; i < max; i++) {
+		list.add(new Integer(i));
+	}
+	Collections.shuffle(list);
+	for (int i = 0; i < multiple; i++) {
+		////System.out.println(list.get(i));
+	}
+
+	return list;
+} 
+
+
+public List<String> PartialUser(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)
+		throws IOException {
+	List<String> selecteduser = new ArrayList<String>();
+	int max = objAdjustmentLogReport.listuser.size();
+	////System.out.println("The no.of elements is" + max);
+	int min = 2;
+
+	List<Integer> randomNumbers = new ArrayList<Integer>();
+	objAdjustmentLogReport.userdd.click();
+
+	if (isSelected(objAdjustmentLogReport.AllusersCB))
+	{
+		click(objAdjustmentLogReport.AllusersCB);
+		waitForJSandJQueryToLoad(driver);
+	}
+	else {
+		click(objAdjustmentLogReport.AllusersCB);
+		waitForJSandJQueryToLoad(driver);
+	}
+	randomNumbers = generateMultiplRandomNumber(min, max, 3);
+	for (int i = 0; i < 3; i++) {
+		WebElement element = prepareWebElementWithDynamicXpathWithInt(
+				objAdjustmentLogReport.partialuserselectiondynamic,
+				randomNumbers.get(i),driver);
+		String user = element.getText().trim();
+		////System.out.println(user);
+		
+		Coordinates coordinate = ((Locatable) element).getCoordinates();
+		coordinate.onPage();
+		coordinate.inViewPort();
+
+		WebElement userCheckbox = prepareWebElementWithDynamicXpathWithInt(
+				objAdjustmentLogReport.partialusercheckboxselectiondynamic,
+				randomNumbers.get(i),driver);
+		click(userCheckbox);
+		////System.out.println(userCheckbox);
+		selecteduser.add(user);
+	}
+	htmlToExtent(cName,mName,extLogger,driver, "Selected Users are: "+selecteduser.get(0)+", "+selecteduser.get(1)+", "+selecteduser.get(2)+";;;Pass");
+	objAdjustmentLogReport.Donebtn.click(); waitFor(1);
+	return selecteduser;}
+
+
+public List<String> PartialReason(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)
+		throws IOException {
+	List<String> selectedReason = new ArrayList<String>();
+	int max = objAdjustmentLogReport.listreason.size();
+	////System.out.println("The no.of elements is" + max);
+	int min = 2;
+
+	List<Integer> randomNumbers = new ArrayList<Integer>();
+	objAdjustmentLogReport.reasoncodedd.click();
+
+	if (isSelected(objAdjustmentLogReport.AllreasonCB))
+	{
+		click(objAdjustmentLogReport.AllreasonCB);
+		waitForJSandJQueryToLoad(driver);
+	}
+	else {
+		click(objAdjustmentLogReport.AllreasonCB);
+		waitForJSandJQueryToLoad(driver);
+	}
+	randomNumbers = generateMultiplRandomNumber(min, max, 3);
+	for (int i = 0; i < 3; i++) {
+		WebElement element = prepareWebElementWithDynamicXpathWithInt(
+				objAdjustmentLogReport.partialreasonselectiondynamic,
+				randomNumbers.get(i),driver);
+		String reason = element.getText().trim();
+		////System.out.println(reason);
+		
+		Coordinates coordinate = ((Locatable) element).getCoordinates();
+		coordinate.onPage();
+		coordinate.inViewPort();
+
+		WebElement reasonCheckbox = prepareWebElementWithDynamicXpathWithInt(
+				objAdjustmentLogReport.partialreasoncheckboxselectiondynamic,
+				randomNumbers.get(i),driver);
+		click(reasonCheckbox);
+		////System.out.println(reasonCheckbox);
+		selectedReason.add(reason);
+	}
+	htmlToExtent(cName,mName,extLogger,driver, "Selected Reasons are: "+selectedReason.get(0)+", "+selectedReason.get(1)+", "+selectedReason.get(2)+";;;Pass");
+	objAdjustmentLogReport.reasondonebtn.click(); waitFor(1);
+	return selectedReason;}
+
+
+
+public List<String> primarydepartment123(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)
+		throws IOException {
+	List<String> deptNameListApp = new ArrayList<String>();
+	objAdjustmentLogReport.dropdownselect.click();
+	waitForJSandJQueryToLoad(driver);
+
+	int deptsize = objAdjustmentLogReport.innerDD.size();
+	for (int i = 2; i < deptsize; i++) {
+		WebElement deptCheckbox = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.partialcheckboxselectiondynamic, i,driver);
+		Coordinates coordinate = ((Locatable) deptCheckbox).getCoordinates();
+		coordinate.onPage();
+		coordinate.inViewPort();
+		if (isSelected(deptCheckbox)) {
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(
+					objAdjustmentLogReport.partialdeptselectiondynamic, i,driver);
+			String dptName = element.getText().trim();
+			deptNameListApp.add(dptName);
+		}
+	}
+	htmlToExtent(cName,mName,extLogger,driver, "Selected Departments are: "+deptNameListApp+";;;Pass");
+	objAdjustmentLogReport.Deptdonebtn.click(); waitFor(1);
+	return deptNameListApp;}
+
+
+public List<String> SingleReason(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)
+		throws IOException {
+	List<String> selectedReason = new ArrayList<String>();
+	int max = objAdjustmentLogReport.listreason.size();
+	////System.out.println("The no.of elements is" + max);
+	int min = 2;
+	List<Integer> randomNumbers = new ArrayList<Integer>();
+	objAdjustmentLogReport.reasoncodedd.click();
+	if (isSelected(objAdjustmentLogReport.AllreasonCB))
+	{
+		click(objAdjustmentLogReport.AllreasonCB);
+		waitForJSandJQueryToLoad(driver);
+	}
+	else {
+		click(objAdjustmentLogReport.AllreasonCB);
+		waitForJSandJQueryToLoad(driver);
+	}
+
+	randomNumbers = generateMultiplRandomNumber(min, max, 1);
+
+	for (int i = 0; i < 1; i++) {
+		WebElement element = prepareWebElementWithDynamicXpathWithInt(
+				objAdjustmentLogReport.partialreasonselectiondynamic,
+				randomNumbers.get(i),driver);
+		String reason = element.getText().trim();
+		////System.out.println(reason);
+		
+		Coordinates coordinate = ((Locatable) element).getCoordinates();
+		coordinate.onPage();
+		coordinate.inViewPort();
+		WebElement reasonCheckbox = prepareWebElementWithDynamicXpathWithInt(
+				objAdjustmentLogReport.partialreasoncheckboxselectiondynamic,
+				randomNumbers.get(i),driver);
+		click(reasonCheckbox);
+		////System.out.println(reasonCheckbox);
+		selectedReason.add(reason);
+	}
+	htmlToExtent(cName,mName,extLogger,driver, "Selected Reason is: "+selectedReason.get(0)+";;;Pass");
+	objAdjustmentLogReport.reasondonebtn.click(); waitFor(1);
+	return selectedReason;
+}
+
+public List<String> SingleUser(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)
+		throws IOException {
+	List<String> selecteduser = new ArrayList<String>();
+	int max = objAdjustmentLogReport.listuser.size();
+	////System.out.println("The no.of elements is" + max);
+	int min = 2;
+	List<Integer> randomNumbers = new ArrayList<Integer>();
+	objAdjustmentLogReport.userdd.click();
+	if (isSelected(objAdjustmentLogReport.AllusersCB))
+	{
+		click(objAdjustmentLogReport.AllusersCB);
+		waitForJSandJQueryToLoad(driver);
+	}
+	else {
+		click(objAdjustmentLogReport.AllusersCB);
+		waitForJSandJQueryToLoad(driver);
+	}
+	randomNumbers = generateMultiplRandomNumber(min, max, 1);
+	for (int i = 0; i < 1; i++) {
+		WebElement element = prepareWebElementWithDynamicXpathWithInt(
+				objAdjustmentLogReport.partialuserselectiondynamic,
+				randomNumbers.get(i),driver);
+		String user = element.getText().trim();
+		////System.out.println(user);
+		Coordinates coordinate = ((Locatable) element).getCoordinates();
+		coordinate.onPage();
+		coordinate.inViewPort();
+		WebElement userCheckbox = prepareWebElementWithDynamicXpathWithInt(
+				objAdjustmentLogReport.partialusercheckboxselectiondynamic,
+				randomNumbers.get(i),driver);
+		click(userCheckbox);
+		////System.out.println(userCheckbox);
+		selecteduser.add(user);
+	}
+	htmlToExtent(cName,mName,extLogger,driver, "Selected User is: "+selecteduser.get(0)+";;;Pass");
+	objAdjustmentLogReport.Donebtn.click(); waitFor(1);
+	return selecteduser;
+}
+
+		
+public List<String> multipledeptorsubcategory1(AdjustmentLogReportObjects objAdjustmentLogReport, List<Object> randomRecord, WebDriver driver) throws ParseException, IOException
+	{
+	String dept_name = randomRecord.get(0).toString();
+	String cat_name = randomRecord.get(1).toString();
+	String subcat_name = randomRecord.get(2).toString();
+	String seg_name = randomRecord.get(3).toString();
+	List<String> deptlist = new ArrayList<String>();
+	objAdjustmentLogReport.dropdownselect.click();
+
+	if (isSelected(objAdjustmentLogReport.AlldeptCB))
+	{
+		click(objAdjustmentLogReport.AlldeptCB);
+		waitForJSandJQueryToLoad(driver);		
+	}
+	else {
+		click(objAdjustmentLogReport.AlldeptCB);
+		waitForJSandJQueryToLoad(driver);
+		click(objAdjustmentLogReport.AlldeptCB);
+		waitForJSandJQueryToLoad(driver);
+	}
+	objAdjustmentLogReport.Deptdonebtn.click();
+	click(objAdjustmentLogReport.selectdept);
+	htmlToExtent(cName,mName,extLogger,driver, "Multi department option is choosen ;;;Pass");
+	waitFor(1);
+	int deptsize=objAdjustmentLogReport.department.size();
+	for(int i=1;i<=deptsize;i++)
+	{
+		WebElement element = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.departmentListMulti,i,driver);
+		String dept_name_appl = element.getText();
+		if(dept_name.equals(dept_name_appl))
+		{
+			verticalinternalscroll(element,driver);
+			WebElement element1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.deparmentchkBox,i,driver);
+			element1.click();
+			deptlist.add(dept_name_appl);
+			htmlToExtent(cName,mName,extLogger,driver, "Department is selected with a random value: " +dept_name_appl+" ;;;Pass");
+			break;
+		}
+	}
+	click(objAdjustmentLogReport.categoryAll);
+	int min= 2;
+	int categorymax = objAdjustmentLogReport.category.size();
+	if(min== categorymax)
+	{
+		WebElement categclick = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.multiplecategselect,min,driver);
+		click(categclick);//clicking the respective category
+	}
+	else
+	{
+		for(int i=2;i<=categorymax;i++)
+		{
+	//int categoryrandomNum = ThreadLocalRandom.current().nextInt(min, categorymax);
+	WebElement element = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.categoryList,i,driver);
+	String cat_name_appl = element.getText();
+	if(cat_name.equals(cat_name_appl))
+	{
+		verticalinternalscroll(element,driver);
+		waitFor(1);
+		WebElement element1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.categoryChkBox,i,driver);
+		element1.click();  
+		waitFor(1); deptlist.add(cat_name_appl);
+		htmlToExtent(cName,mName,extLogger,driver, "Category is selected with a random value: " +cat_name_appl+" ;;;Pass");
+		break;
+	}
+		}}
+	
+	click(objAdjustmentLogReport.subCategoryAll);
+	int subcategorymax = objAdjustmentLogReport.subCategory.size();
+	if(min== subcategorymax)
+	{
+		WebElement subcategclick = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.multiplesubcategselect,min,driver);
+		click(subcategclick);//clicking the respective sub-category
+	}
+	else
+	{
+	for(int i=2;i<=subcategorymax;i++)
+	{
+	//int subcategrandomnum = ThreadLocalRandom.current().nextInt(min, subcategorymax);
+	WebElement element = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.subCategoryList, i,driver);
+	String subcat_name_appl = element.getText();
+	if(subcat_name.equals(subcat_name_appl))
+	{
+	verticalinternalscroll(element,driver); 
+	waitFor(1);
+	WebElement element1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.subCategoryChkBox,i,driver);
+	element1.click(); 
+	waitFor(1); deptlist.add(subcat_name_appl);
+	htmlToExtent(cName,mName,extLogger,driver, "SubCategory is selected with a random value: " +subcat_name_appl+" ;;;Pass");
+	break;
+	}
+	}}
+	waitFor(1);
+	click(objAdjustmentLogReport.segmentselect);
+	int segmentmax = objAdjustmentLogReport.segmentsize.size();
+	if(min== segmentmax)
+	{
+		WebElement segmentclick = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.multiplesegmentselect,min,driver);
+		click(segmentclick);//clicking the respective segment
+	}
+	else
+	{
+	for(int i=1;i<=segmentmax;i++)
+	{
+	int segementrandomnum = ThreadLocalRandom.current().nextInt(min, segmentmax);
+	WebElement element = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.segmentList, i,driver);
+	String seg_name_appl = element.getText();
+	if(seg_name.equals(seg_name_appl))
+	{
+	verticalinternalscroll(element,driver);
+	waitFor(1);
+	WebElement element1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.segmentChkBox,i,driver);
+	element1.click();
+	waitFor(1); deptlist.add(seg_name_appl);
+	htmlToExtent(cName,mName,extLogger,driver, "Segment is selected with a random value: " +seg_name_appl+" ;;;Pass");
+	break;
+	}
+	}}
+	////System.out.println(deptlist);
+	return deptlist;
+}
+
+
+		
+ public void allDEPT(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)
+			throws IOException {
+	 objAdjustmentLogReport.dropdownselect.click();
+		if (isSelected(objAdjustmentLogReport.AlldeptCB))
+		{
+			//click(objAdjustmentLogReport.AlldeptCB);
+			//waitForJSandJQueryToLoad(driver);
+		}
+		else {
+			click(objAdjustmentLogReport.AlldeptCB);
+			waitForJSandJQueryToLoad(driver);
+			//click(objAdjustmentLogReport.AlldeptCB);
+			//waitForJSandJQueryToLoad(driver);
+		}
+		objAdjustmentLogReport.Deptdonebtn.click(); waitFor(1);
+}
+ 
+ public void allDEPTMPL(AdjustmentLogReportObjects objAdjustmentLogReport, String selectoption, String criteria, String value , WebDriver driver)
+			throws IOException {
+	 objAdjustmentLogReport.dropdownselect.click();
+		if (isSelected(objAdjustmentLogReport.AlldeptCB))
+		{
+			click(objAdjustmentLogReport.AlldeptCB);
+			waitForJSandJQueryToLoad(driver);
+		}
+		else {
+			click(objAdjustmentLogReport.AlldeptCB);
+			waitForJSandJQueryToLoad(driver);
+			click(objAdjustmentLogReport.AlldeptCB);
+			waitForJSandJQueryToLoad(driver);
+		}
+		objAdjustmentLogReport.Deptdonebtn.click(); waitFor(1);
+}
+ 
+/* public void additionalCriteria(AdjustmentLogReportObjects objAdjustmentLogReport, String selectoption, String criteria, String value )
+			throws IOException {
+	selectByValue(objAdjustmentLogReport.additionalcriteriadd11, selectoption);
+	selectByValue(objAdjustmentLogReport.additionalcriteriadd12, criteria);
+	objAdjustmentLogReport.additionalvalue.sendKeys(value);
+ }*/
+ 
+ public void additionalCriteriatrial(AdjustmentLogReportObjects objAdjustmentLogReport, int num, String selectoption, String criteria, String value , WebDriver driver)
+			throws IOException {
+	 
+	 WebElement filter = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.seltFilter,num,driver);
+	 WebElement option = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.Options,num,driver);
+	 WebElement inputValue = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.Value,num,driver);
+	
+	selectByValue(filter, selectoption);
+	selectByValue(option, criteria);
+	inputValue.sendKeys(value);
+	htmlToExtent(cName,mName,extLogger,driver, "Additional Criteria is: "+selectoption+" "+criteria+" "+value+";;;Pass");
+} 
+ 
+ 
+ public void reporttableCheck(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)
+			throws IOException {
+	objAdjustmentLogReport.Generatereportsbtn.click(); waitFor(2);
+	htmlToExtent(cName,mName,extLogger,driver, "Generate report button is clicked;;;Pass");
+	
+	try
+	{
+	if(objAdjustmentLogReport.Reporttable.isDisplayed())
+	{
+	if(objAdjustmentLogReport.Tabletitle.isDisplayed())							//total article validation
+	{
+		String tabletitle = objAdjustmentLogReport.Tabletitle.getText();
+		htmlToExtent(cName,mName,extLogger,driver, "Header- "+tabletitle+" ;;;Pass");
+	}
+	objAdjustmentLogReport.cleargroup.click();									//groupby and clearby validation
+	waitForJSandJQueryToLoad(driver);
+	try
+	{
+	if(objAdjustmentLogReport.groupbytext.isDisplayed())
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "groupBy is not disabled;;;Fail");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "groupBy is disabled;;;Pass");
+	}
+	}
+	catch(WebDriverException groupbycheck)
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "groupBy is disabled;;;Pass");
+	}
+	objAdjustmentLogReport.groupby.click();									
+	waitForJSandJQueryToLoad(driver);
+	try
+	{
+	if(objAdjustmentLogReport.groupbytext.isDisplayed()&&(objAdjustmentLogReport.articleradiobtn.isDisplayed())
+			&&(objAdjustmentLogReport.reasonradiobtn.isDisplayed())&&(objAdjustmentLogReport.userradiobtn.isDisplayed())
+			&&(objAdjustmentLogReport.dateradiobtn.isDisplayed())&&(objAdjustmentLogReport.articleradiobtn.isSelected()))
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "groupBy is enabled and Article,Reason,User,Date dropdown are displayed;;;Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "groupBy is not enabled and Article,Reason,User,Date dropdown are not displayed;;;Fail");
+	}
+	}
+	catch(WebDriverException groupbycheck)
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "groupBy is not enabled and Article,Reason,User,Date dropdown are not displayed;;;Fail");
+	}
+	}
+	}
+	catch(WebDriverException reportcheck){
+		htmlToExtent(cName,mName,extLogger,driver, "No Reports found;;;Pass");
+	}
+	}
+
+ 
+	public void additionalcriteria(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)
+			throws IOException {
+	for(int i=0;i<5;i++)
+	{
+	objAdjustmentLogReport.addmore.click();
+	}
+	if(objAdjustmentLogReport.addmorewarning.isDisplayed()){
+		htmlToExtent(cName,mName,extLogger,driver, "Maximum number of allowed Additional criteria is 5;;;Pass");
+	}	
+	objAdjustmentLogReport.warningclose.click();
+	objAdjustmentLogReport.removefilter.click();
+	waitFor(1);
+	try
+	{
+	if(objAdjustmentLogReport.Deletedfilter.isDisplayed())
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "Filter is not deleted on removing the filter;;;Fail");
+	}
+	else
+	{
+		////System.out.println("removed");
+		htmlToExtent(cName,mName,extLogger,driver, "Filter is deleted on removing the filter;;;Pass");
+	}
+	}
+	catch(WebDriverException filtercheck)
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "Filter is deleted on removing the filter;;;Pass");
+	}
+}
+ 		
+	public void verifyfilter(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)
+				throws IOException {
+		
+		List<String> dropdownlist= getOptionsText(objAdjustmentLogReport.additionalcriteriadd11);
+		if(dropdownlist.contains("Qty. Adjusted"))
+		{
+		selectByValue(objAdjustmentLogReport.additionalcriteriadd11, "QTY_ADJUSTED");
+		htmlToExtent(cName,mName,extLogger,driver, "Qty adjusted filter option is selected;;;Pass");
+		}
+		
+		List<String> dropdownlist1= getOptionsText(objAdjustmentLogReport.additionalcriteriadd12);
+		if(dropdownlist1.contains("Less than")&&dropdownlist1.contains("Greater than")&&dropdownlist1.contains("Equal to"))
+		{
+		selectByValue(objAdjustmentLogReport.additionalcriteriadd12, "LT");
+		selectByValue(objAdjustmentLogReport.additionalcriteriadd12, "GT");
+		selectByValue(objAdjustmentLogReport.additionalcriteriadd12, "ET");
+		htmlToExtent(cName,mName,extLogger,driver, "less than filter option is selected;;;Pass");
+		}
+
+		objAdjustmentLogReport.addmore.click();
+		waitFor(1);
+		selectByValue(objAdjustmentLogReport.additionalcriteriadd21, "VALUE_ADJUSTED");
+		waitFor(1);
+	}
+		
+	public void groupBYDisCheck(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)
+			throws IOException {
+		objAdjustmentLogReport.Generatereportsbtn.click();
+		waitFor(3);
+		htmlToExtent(cName,mName,extLogger,driver, "Generate report button is clicked;;;Pass");
+		
+		try
+		{
+		if(objAdjustmentLogReport.Reporttable.isDisplayed())
+		{
+		if(objAdjustmentLogReport.articleradiobtn.isSelected()){
+		String firstart = objAdjustmentLogReport.firstart.getText().trim();
+		String[] article = objAdjustmentLogReport.valueinfo.getText().split("Full");
+		String firstarticle = article[0].trim();
+		if(firstarticle.equals(firstart))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Report is grouped by article:"+firstart+";;;Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Report is not grouped by article;;;Pass");
+		}}
+		objAdjustmentLogReport.reasonradiobtn.click();
+		if(objAdjustmentLogReport.reasonradiobtn.isSelected()){
+			String reason = objAdjustmentLogReport.firstreason.getText();
+			String r[] = reason.split("\\(");
+			String firstrsn = r[0].trim();
+			String firstreason = objAdjustmentLogReport.valueinfo.getText().trim();
+			if(firstreason.contains(firstrsn))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is grouped by reason:"+firstrsn+";;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is not grouped by reason;;;Pass");
+			}}
+		objAdjustmentLogReport.userradiobtn.click();
+		if(objAdjustmentLogReport.userradiobtn.isSelected()){
+			String user = objAdjustmentLogReport.firstuser.getText();
+			//String r[] = reason.split("\\(");
+			//String firstrsn = r[0].trim();
+			String valueUSER = objAdjustmentLogReport.valueinfo.getText().trim();
+			if(valueUSER.contains(user))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is grouped by user:"+user+";;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is not grouped by user;;;Pass");
+			}}
+		objAdjustmentLogReport.dateradiobtn.click();
+		if(objAdjustmentLogReport.dateradiobtn.isSelected()){
+			String date = objAdjustmentLogReport.firstdate.getText();
+			//String r[] = reason.split("\\(");
+			//String firstrsn = r[0].trim();
+			String valueDATE = objAdjustmentLogReport.valueinfo.getText().trim();
+			if(date.contains(valueDATE))
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is grouped by Date:"+valueDATE+";;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is not grouped by Date;;;Pass");
+			}}
+		}
+		}
+		catch(WebDriverException reportcheck){
+			htmlToExtent(cName,mName,extLogger,driver, "No Reports found;;;Pass");
+		}
+	}
+	
+	public void tvADJCheck(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)
+			throws IOException {
+		objAdjustmentLogReport.Generatereportsbtn.click(); waitForJSandJQueryToLoad(driver);
+		htmlToExtent(cName,mName,extLogger,driver, "Generate report button is clicked;;;Pass");
+		
+		try
+		{
+		if(objAdjustmentLogReport.Reporttable.isDisplayed())
+		{
+		String article = objAdjustmentLogReport.firstart.getText();
+		List<WebElement> row_value =driver.findElements(By.xpath("//*[text()='"+article+"']"));
+		int y = row_value.size();
+		int x = y-1;
+		int z= x+2;
+		
+		WebElement totalvalue = prepareWebElementWithDynamicXpathWithInt(
+				objAdjustmentLogReport.totalValueAdj, z,driver);
+		String totalValue = totalvalue.getText();
+		String thirdpart[] = totalValue.split(":");
+		String tValue = thirdpart[1].trim(); 
+		double sum =  Math.round(Double.parseDouble(tValue));
+		double value1; double sum1 = 0.00; 
+		for(int k=1;k<=x;k++)
+		{
+			WebElement totalvalues = prepareWebElementWithDynamicXpathWithInt(
+					objAdjustmentLogReport.totalvalues, k+1,driver);
+			String value = totalvalues.getText();
+			value1 = Double.parseDouble(value);
+			sum1 =  sum1+value1;
+		}
+		sum1 =  Math.round(sum1);
+		if(sum==sum1){
+			htmlToExtent(cName,mName,extLogger,driver, "Total Stock Value adjusted is displayed correctly;"+sum1+";;Pass");
+		}
+		else{
+			htmlToExtent(cName,mName,extLogger,driver, "Total Stock Value adjusted is not displayed correctly;"+sum1+";;Fail");
+		}
+		}
+		}
+		catch(WebDriverException reportcheck){
+			htmlToExtent(cName,mName,extLogger,driver, "No Reports found;;;Pass");
+		}
+		
+	}
+	
+	
+public void randomarticle(AdjustmentLogReportObjects  objAdjustmentLogReport, WebDriver driver)
+	{
+	int size = objAdjustmentLogReport.table.size();
+	int y = random_no(size-1)+1;
+	List<WebElement> table_value=driver.findElements(By.xpath("//*[@id='Report_Stk_Adj_table']/tbody/tr["+y+"]"));
+	List<List<Object>> artTableList = getValuesFromTable(table_value);
+}
+	
+public void DBverify(AdjustmentLogReportObjects objAdjustmentLogReport, List<List<Object>> results, WebDriver driver) throws IOException
+{
+	try
+	{
+	if(objAdjustmentLogReport.Reporttable.isDisplayed())
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "Report is generated successfully;;;Pass");
+		String article = objAdjustmentLogReport.firstart.getText();
+		List<WebElement> row_value =driver.findElements(By.xpath("//*[text()='"+article+"']"));
+		int y = row_value.size();
+		int x = y-1;
+		
+		List<List<Object>> reportlist = new ArrayList<List<Object>>();
+		List<WebElement> table_value = null;
+		for(int k=1;k<=x;k++)
+		{
+			List firstrow = new ArrayList();
+			table_value =driver.findElements(By.xpath("//*[@id='Report_Stk_Adj_table']/tbody/tr["+(k+1)+"]"));
+			////System.out.println(table_value);
+		for(int i=1;i<=11;i++)
+		{
+			WebElement cell = prepareWebElementWithDynamicXpathWithIntInt(
+					objAdjustmentLogReport.firstrowelements, k+1, i,driver);
+			String a = cell.getText();
+			firstrow.add(a);
+		}
+		reportlist.add(firstrow);
+		}
+		removeIndex(results, "10"); removeExtraSpaces(results, 1); removemultiplespaces(results, 10); replacenullToZeropointzero(results); 
+		replaceplussymbol(results, "+"); replaceplussymbol(results, "-"); replacenullToZeropointzero(reportlist);  replacenullToZeropointzero(reportlist); 
+		removeIndex(reportlist, "10"); replaceplussymbol(reportlist, "+"); replacenullToZero(reportlist); replaceplussymbol(reportlist, "-");  
+		
+		////System.out.println(reportlist);
+		////System.out.println(results);
+		htmlToExtent(cName,mName,extLogger,driver, "Validating the Application result with DB result;;;Pass");
+		ElementContains1(cName, mName,extLogger,driver,  reportlist, results);
+		waitFor(2); 
+		
+		/*String articledb = results.get(1).get(0).toString();
+		String[] articlede =  results.get(1).get(1).toString().split("   ");
+		String articlede2 =  articlede[0];
+		String part2 = articlede[1];
+		String articledescdb = articlede2+part2 ;
+		String reasoncodedb = results.get(1).get(2).toString();
+		String timedb = results.get(1).get(3).toString();
+		String usernamedb = results.get(1).get(4).toString();
+		String adjqtydb = "+"+results.get(1).get(7).toString(); 
+		String salespricedb = results.get(1).get(8).toString();
+		////System.out.println(articledescdb);
+		////System.out.println(adjqtydb);
+		String articleui = reportlist.get(0).get(0).toString();
+		String articledescui =  reportlist.get(0).get(1).toString();
+		String reasoncode = reportlist.get(0).get(2).toString();
+		String time = reportlist.get(0).get(3).toString();
+		String username = reportlist.get(0).get(4).toString();
+		String adjqty = reportlist.get(0).get(7).toString()+"0";
+		String salesprice = reportlist.get(0).get(8).toString();
+		if((articledescdb.equalsIgnoreCase(articledescui))&&(adjqtydb.equalsIgnoreCase(adjqty)))
+		{
+		htmlToExtent(cName,mName,extLogger,driver, "matching;;;Pass");
+		}*/
+	}
+	else
+	{
+		//htmlToExtent(cName,mName,extLogger,driver, "Report is not generated for the above combination.;;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver, "Sorry, no records found;;;Pass");
+		objAdjustmentLogReport.errorclosebtn.click();
+	}}
+	catch(WebDriverException ReportCheck){
+		htmlToExtent(cName,mName,extLogger,driver, "Sorry, no records found;;;Pass");
+		objAdjustmentLogReport.errorclosebtn.click();
+	}
+	
+}
+
+public void DBverifyFacing(AdjustmentLogReportObjects objAdjustmentLogReport, List<List<Object>> results, WebDriver driver) throws IOException
+{try
+{
+if(objAdjustmentLogReport.Reporttable.isDisplayed())
+{
+	htmlToExtent(cName,mName,extLogger,driver, "Report is generated successfully;;;Pass");
+		String article = objAdjustmentLogReport.firstart.getText();
+		List<WebElement> row_value =driver.findElements(By.xpath("//*[text()='"+article+"']"));
+		int y = row_value.size();
+		int x = y-1;
+		
+		List<List<Object>> reportlist = new ArrayList<List<Object>>();
+		List<WebElement> table_value = null;
+		for(int k=1;k<=x;k++)
+		{
+			List firstrow = new ArrayList();
+			table_value =driver.findElements(By.xpath("//*[@id='Report_Stk_Adj_table']/tbody/tr["+(k+1)+"]"));
+			////System.out.println(table_value);
+		for(int i=1;i<=8;i++)
+		{
+			WebElement cell = prepareWebElementWithDynamicXpathWithIntInt(
+					objAdjustmentLogReport.firstrowelements, k+1, i,driver);
+			String a = cell.getText();
+			firstrow.add(a);
+		}
+		reportlist.add(firstrow);
+		}
+		////System.out.println(reportlist);
+		////System.out.println(results);
+		ElementContains1(cName, mName,extLogger,driver,  reportlist, results);
+		waitFor(2); 
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "Report is not generated for the above combination.;;;Pass");
+	}}
+	catch(WebDriverException ReportCheck){
+		htmlToExtent(cName,mName,extLogger,driver, "Report is not generated for the above combination.;;;Pass");
+	}
+}
+	
+	public void DBverifyMPL(AdjustmentLogReportObjects objAdjustmentLogReport, List<List<Object>> results, List<List<Object>> results1, WebDriver driver) throws IOException
+	{
+		try
+	{
+		if(objAdjustmentLogReport.Reporttable.isDisplayed())
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Report is generated successfully;;;Pass");
+			List<List<Object>> reportlist = new ArrayList<List<Object>>();
+			List<WebElement> table_value = null;
+			//if(objAdjustmentLogReport.Pagination.isDisplayed())\
+			int pageSize = objAdjustmentLogReport.Pagination.size();
+			for( int j=0; j<=pageSize;j++)
+			{
+				if(pageSize>1)
+				{
+				WebElement page = prepareWebElementWithDynamicXpathWithInt(
+						objAdjustmentLogReport.page_no, j+2,driver);
+				page.click();
+				}
+			String article = objAdjustmentLogReport.firstart.getText();
+			List<WebElement> row_value =driver.findElements(By.xpath("//*[text()='"+article+"']"));
+			int y = row_value.size();
+			int x = y-1;
+			for(int k=1;k<=x;k++)
+			{
+				List firstrow = new ArrayList();
+				table_value =driver.findElements(By.xpath("//*[@id='Report_Stk_Adj_table']/tbody/tr["+(k+1)+"]"));
+				////System.out.println(table_value);
+			for(int i=1;i<=11;i++)
+			{
+				WebElement cell = prepareWebElementWithDynamicXpathWithIntInt(
+						objAdjustmentLogReport.firstrowelements, k+1, i,driver);
+				String a = cell.getText();
+				firstrow.add(a);
+			}
+			reportlist.add(firstrow);}
+			try{
+			if(objAdjustmentLogReport.secondValueInfo.isDisplayed())
+			{
+				break;
+			}}
+			catch(WebDriverException report)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Second Value Information is not present in the same page;;;Pass");
+			}
+			} 
+			replaceblankspaceToZero(reportlist);
+			////System.out.println(reportlist); ////System.out.println(results); ////System.out.println(results1);
+			ElementContains1(cName, mName,extLogger,driver,  results, reportlist);
+			ElementContains1(cName, mName,extLogger,driver,  results1, reportlist);
+		}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is not generated for the above combination.;;;Pass");
+				objAdjustmentLogReport.errorclosebtn.click();
+			}}
+			catch(WebDriverException ReportCheck){
+				htmlToExtent(cName,mName,extLogger,driver, "Report is not generated for the above combination.;;;Pass");
+				objAdjustmentLogReport.errorclosebtn.click();
+			}
+		}
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public void sortreporttable(AdjustmentLogReportObjects objAdjustmentLogReport, WebDriver driver)  throws IOException, ParseException
+	{
+		objAdjustmentLogReport.reasoncodedd.click();
+		verticalScroll(driver);
+		objAdjustmentLogReport.AllreasonCB.click();
+		int max = objAdjustmentLogReport.listreason.size();
+		int n = random_no1(max);
+		
+		WebElement element = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.partialreasoncheckboxselectiondynamic, n,driver);
+		verticalinternalscroll(element,driver);
+		element.click();
+		objAdjustmentLogReport.reasondonebtn.click(); waitFor(1);
+		
+		objAdjustmentLogReport.userdd.click();
+		verticalScroll(driver);
+		objAdjustmentLogReport.AllusersCB.click();
+		max = objAdjustmentLogReport.listuser.size();
+		n = random_no1(max);
+		element = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.partialusercheckboxselectiondynamic, n,driver);
+		verticalinternalscroll(element,driver);
+		element.click();
+		objAdjustmentLogReport.Donebtn.click(); waitFor(1);
+		objAdjustmentLogReport.Generatereportsbtn.click();
+		waitFor(3);
+		htmlToExtent(cName,mName,extLogger,driver, "Generate report button is clicked;;;Pass");
+		
+		try
+		{
+		if(objAdjustmentLogReport.Reporttable.isDisplayed())
+		{
+	ArrayList<Integer> artno_obtainedList = new ArrayList<>();
+	ArrayList<String> artdesc_obtainedList = new ArrayList<>(); 
+	ArrayList<String> reason_obtainedList = new ArrayList<>(); 
+	ArrayList<String> date_obtainedList = new ArrayList<>();
+	ArrayList<String> user_obtainedList = new ArrayList<>();
+	ArrayList<Double> prevSOH_obtainedList = new ArrayList<>();
+	ArrayList<Double> newSOH_obtainedList = new ArrayList<>();
+	ArrayList<Double> qtyadj_obtainedList = new ArrayList<>(); 
+	ArrayList<Double> stdsellprice_obtainedList = new ArrayList<>();
+	ArrayList<Double> SVadj_obtainedList = new ArrayList<>();
+	ArrayList<String> addinfo_obtainedList = new ArrayList<>();
+	
+	ArrayList<Integer> artno_sortedList = new ArrayList<>();
+	ArrayList<String> artdesc_sortedList = new ArrayList<>();
+	ArrayList<String> reason_sortedList = new ArrayList<>();
+	ArrayList<String> date_sortedList = new ArrayList<>();
+	ArrayList<String> user_sortedList = new ArrayList<>();
+	ArrayList<Double> prevSOH_sortedList = new ArrayList<>();
+	ArrayList<Double> newSOH_sortedList = new ArrayList<>();
+	ArrayList<Double> qtyadj_sortedList = new ArrayList<>(); 
+	ArrayList<Double> stdsellprice_sortedList = new ArrayList<>();
+	ArrayList<Double> SVadj_sortedList = new ArrayList<>();
+	ArrayList<String> addinfo_sortedList = new ArrayList<>();
+	
+	objAdjustmentLogReport.cleargroup.click();
+	waitForJSandJQueryToLoad(driver);
+	int PAGEsize=0;
+	List<WebElement> REPORTlist = objAdjustmentLogReport.reportlist;
+	int REPORTsize = REPORTlist.size();
+	try{
+	if(objAdjustmentLogReport.Page.isDisplayed()){
+		List<WebElement> PAGElist = objAdjustmentLogReport.Pagination;
+		PAGEsize = PAGElist.size();
+	}
+	}
+	catch(WebDriverException e){
+		PAGEsize = 3;
+	}
+	//before sort
+	for(int k=2;k<PAGEsize;k++)
+	{
+		if(PAGEsize>3){
+		WebElement page =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, k,driver);
+		page.click();
+		waitForJSandJQueryToLoad(driver);}
+		for(int s=1;s<=REPORTlist.size();s++)
+		{
+		WebElement articleno =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.articleno_sort, s,driver);
+		int article_no = Integer.parseInt(articleno.getText());
+		artno_obtainedList.add(article_no);
+		WebElement articledesc =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.articledesc_sort, s,driver);
+		String articledescription = articledesc.getText();
+		artdesc_obtainedList.add(articledescription);
+		WebElement reason =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.reasoncode_sort, s,driver);
+		String reasoncode = reason.getText();
+		reason_obtainedList.add(reasoncode);
+		WebElement date =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.date_sort, s,driver);
+		String dateandtime = date.getText();
+		date_obtainedList.add(dateandtime);
+		WebElement user =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.user_sort, s,driver);
+		String users = user.getText();
+		user_obtainedList.add(users);
+		WebElement prev =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.prevSOH_sort, s,driver);
+		double prevSOH = Double.parseDouble(prev.getText());
+		prevSOH_obtainedList.add(prevSOH);
+		WebElement new1 =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.newSOH_sort, s,driver);
+		double newSOH = Double.parseDouble(new1.getText());
+		newSOH_obtainedList.add(newSOH);
+		WebElement qty =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.qtyadj_sort, s,driver);
+		double qtyadj = Double.parseDouble(qty.getText());
+		qtyadj_obtainedList.add(qtyadj);
+		WebElement sellprice =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.sellprice_sort, s,driver);
+		double stdsellprice = Double.parseDouble(sellprice.getText());
+		stdsellprice_obtainedList.add(stdsellprice);
+		WebElement stock =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.stockvalue_sort, s,driver);
+		double SVAdj = Double.parseDouble(stock.getText());
+		SVadj_obtainedList.add(SVAdj);
+		WebElement addinfo =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.addinfo_sort, s,driver);
+		String addinformation = addinfo.getText();
+		addinfo_obtainedList.add(addinformation);
+		}
+	}
+	Collections.sort(artno_obtainedList); Collections.sort(artdesc_obtainedList, String.CASE_INSENSITIVE_ORDER); Collections.sort(reason_obtainedList);
+	Collections.sort(date_obtainedList); Collections.sort(user_obtainedList); Collections.sort(prevSOH_obtainedList); Collections.sort(newSOH_obtainedList);
+	Collections.sort(qtyadj_obtainedList); Collections.sort(stdsellprice_obtainedList); Collections.sort(SVadj_obtainedList);Collections.sort(addinfo_obtainedList);
+	////System.out.println(addinfo_obtainedList);
+	
+	
+	//sort
+	if(PAGEsize>3){
+	WebElement page1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, 2,driver);
+	page1.click();}
+	WebElement articlenum = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.column, 1,driver);
+	articlenum.click();
+	for(int k=2;k<PAGEsize;k++)
+	{
+		if(PAGEsize>3){
+		WebElement page =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, k,driver);
+		page.click();
+		waitForJSandJQueryToLoad(driver);	}
+	for(int s=1;s<=REPORTlist.size();s++)
+	{
+	WebElement articleno_sort =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.articleno_sort, s,driver);
+	int article_no = Integer.parseInt(articleno_sort.getText());
+	artno_sortedList.add(article_no);
+	}
+	}
+	if(artno_obtainedList.equals(artno_sortedList)){
+		htmlToExtent(cName,mName,extLogger,driver, "Report is sorted by article number successfully;;;Pass");
+	}
+	waitFor(1);
+	
+	if(PAGEsize>3){
+		WebElement page1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, 2,driver);
+		page1.click();}
+	WebElement articledesc = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.column, 2,driver);
+	articledesc.click();
+		for(int k=2;k<PAGEsize;k++)
+		{
+			if(PAGEsize>3){
+			WebElement page =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, k,driver);
+			page.click();
+			waitForJSandJQueryToLoad(driver);	}
+		for(int s=1;s<=REPORTlist.size();s++)
+		{
+			WebElement articledesc_sort =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.articledesc_sort, s,driver);
+			String articledescription = articledesc_sort.getText();
+			artdesc_sortedList.add(articledescription);
+		}
+		}
+		if(artdesc_obtainedList.equals(artdesc_sortedList)){
+			htmlToExtent(cName,mName,extLogger,driver, "Report is sorted by article description successfully;;;Pass");
+		}
+		waitFor(1);
+		
+		if(PAGEsize>3){WebElement page1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, 2,driver);
+			page1.click();}
+		WebElement reasonc = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.column, 3,driver);
+		reasonc.click();
+			for(int k=2;k<PAGEsize;k++)
+			{
+				if(PAGEsize>3){WebElement page =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, k,driver);
+				page.click();
+				waitForJSandJQueryToLoad(driver);	}
+			for(int s=1;s<=REPORTlist.size();s++)
+			{
+				WebElement reason =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.reasoncode_sort, s,driver);
+				String reasoncode = reason.getText();
+				reason_sortedList.add(reasoncode);
+			}
+			}
+			if(reason_obtainedList.equals(reason_sortedList)){
+				htmlToExtent(cName,mName,extLogger,driver, "Report is sorted by reason successfully;;;Pass");
+			}
+	waitFor(1);
+		
+	
+	if(PAGEsize>3){WebElement page1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, 2,driver);
+	page1.click();}
+	WebElement dateC = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.column, 4,driver);
+	dateC.click();
+	for(int k=2;k<PAGEsize;k++)
+	{
+		if(PAGEsize>3){WebElement page =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, k,driver);
+		page.click();
+		waitForJSandJQueryToLoad(driver);	}
+	for(int s=1;s<=REPORTlist.size();s++)
+	{
+		WebElement date =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.date_sort, s,driver);
+		String dateandtime = date.getText();
+		date_sortedList.add(dateandtime);
+	}
+	}
+	if(date_obtainedList.equals(date_sortedList)){
+		htmlToExtent(cName,mName,extLogger,driver, "Report is sorted by date successfully;;;Pass");
+	}
+waitFor(1);
+	
+if(PAGEsize>3){WebElement page1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, 2,driver);
+page1.click();}
+WebElement userC = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.column, 5,driver);
+userC.click();
+for(int k=2;k<PAGEsize;k++)
+{
+	if(PAGEsize>3){WebElement page =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, k,driver);
+	page.click();
+	waitForJSandJQueryToLoad(driver);	}
+for(int s=1;s<=REPORTlist.size();s++)
+{
+	WebElement user =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.user_sort, s,driver);
+	String users = user.getText();
+	user_sortedList.add(users);
+}
+}
+if(user_obtainedList.equals(user_sortedList)){
+	htmlToExtent(cName,mName,extLogger,driver, "Report is sorted by user successfully;;;Pass");
+}
+waitFor(1);
+		
+
+if(PAGEsize>3){WebElement page1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, 2,driver);
+page1.click();}
+WebElement prevSOFC = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.column, 6,driver);
+prevSOFC.click();
+for(int k=2;k<PAGEsize;k++)
+{
+	if(PAGEsize>3){WebElement page =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, k,driver);
+	page.click();
+	waitForJSandJQueryToLoad(driver);	}
+for(int s=1;s<=REPORTlist.size();s++)
+{
+	WebElement prev =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.prevSOH_sort, s,driver);
+	double prevSOH = Double.parseDouble(prev.getText());
+	prevSOH_sortedList.add(prevSOH);
+}
+}
+if(prevSOH_obtainedList.equals(prevSOH_sortedList)){
+	htmlToExtent(cName,mName,extLogger,driver, "Report is sorted by Previous SOH value successfully;;;Pass");
+}
+waitFor(1);
+
+if(PAGEsize>3){WebElement page1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, 2,driver);
+page1.click();}
+WebElement newSOFC = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.column, 7,driver);
+newSOFC.click();
+for(int k=2;k<PAGEsize;k++)
+{
+	if(PAGEsize>3){WebElement page =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, k,driver);
+	page.click();
+	waitForJSandJQueryToLoad(driver);	}
+for(int s=1;s<=REPORTlist.size();s++)
+{
+	WebElement new1 =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.newSOH_sort, s,driver);
+	double newSOH  = Double.parseDouble(new1.getText());
+	newSOH_sortedList.add(newSOH);
+}
+}
+if(newSOH_obtainedList.equals(newSOH_sortedList)){
+	htmlToExtent(cName,mName,extLogger,driver, "Report is sorted by New SOH value successfully;;;Pass");
+}
+waitFor(1);
+
+
+if(PAGEsize>3){WebElement page1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, 2,driver);
+page1.click();}
+WebElement qtyC = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.column, 8,driver);
+qtyC.click();
+for(int k=2;k<PAGEsize;k++)
+{
+	if(PAGEsize>3){WebElement page =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, k,driver);
+	page.click();
+	waitForJSandJQueryToLoad(driver);	}
+for(int s=1;s<=REPORTlist.size();s++)
+{
+	WebElement qty =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.qtyadj_sort, s,driver);
+	double qtyadj  = Double.parseDouble(qty.getText());
+	qtyadj_sortedList.add(qtyadj);
+}
+}
+if(qtyadj_obtainedList.equals(qtyadj_sortedList)){
+	htmlToExtent(cName,mName,extLogger,driver, "Report is sorted by quantity adjusted value successfully;;;Pass");
+}
+waitFor(1);
+
+if(PAGEsize>3){WebElement page1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, 2,driver);
+page1.click();}
+WebElement sellpriceC = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.column, 9,driver);
+sellpriceC.click();
+for(int k=2;k<PAGEsize;k++)
+{
+	if(PAGEsize>3){WebElement page =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, k,driver);
+	page.click();
+	waitForJSandJQueryToLoad(driver);	}
+for(int s=1;s<=REPORTlist.size();s++)
+{
+	WebElement sellprice =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.sellprice_sort, s,driver);
+	double stdsellprice  = Double.parseDouble(sellprice.getText());
+	stdsellprice_sortedList.add(stdsellprice);
+}
+}
+if(stdsellprice_obtainedList.equals(stdsellprice_sortedList)){
+	htmlToExtent(cName,mName,extLogger,driver, "Report is sorted by Standard sell price successfully;;;Pass");
+}
+waitFor(1);
+
+if(PAGEsize>3){WebElement page1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, 2,driver);
+page1.click();}
+WebElement SVadjC = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.column, 10,driver);
+SVadjC.click();
+for(int k=2;k<PAGEsize;k++)
+{
+	if(PAGEsize>3){WebElement page =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, k,driver);
+	page.click();
+	waitForJSandJQueryToLoad(driver);	}
+for(int s=1;s<=REPORTlist.size();s++)
+{
+	WebElement stock =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.stockvalue_sort, s,driver);
+	double SVAdj  = Double.parseDouble(stock.getText());
+	SVadj_sortedList.add(SVAdj);
+}
+}
+if(SVadj_obtainedList.equals(SVadj_sortedList)){
+	htmlToExtent(cName,mName,extLogger,driver, "Report is sorted by Stock value adjustment successfully;;;Pass");
+}
+waitFor(1);
+
+
+if(PAGEsize>3){WebElement page1 = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, 2,driver);
+page1.click();}
+WebElement addinfoC = prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.column, 11,driver);
+addinfoC.click();
+for(int k=2;k<PAGEsize;k++)
+{
+	if(PAGEsize>3){WebElement page =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.page_no, k,driver);
+	page.click();
+	waitForJSandJQueryToLoad(driver);	}
+for(int s=1;s<=REPORTlist.size();s++)
+{
+	WebElement addinfo =  prepareWebElementWithDynamicXpathWithInt(objAdjustmentLogReport.addinfo_sort, s,driver);
+	String addinformation  = addinfo.getText();
+	addinfo_sortedList.add(addinformation);
+}
+}
+
+if(addinfo_obtainedList.equals(addinfo_sortedList)){
+	htmlToExtent(cName,mName,extLogger,driver, "Report is sorted by additional information successfully;;;Pass");
+}
+waitFor(1);
+	}
+
+	}
+	catch(WebDriverException reportcheck){
+		htmlToExtent(cName,mName,extLogger,driver, "No Reports found;;;Pass");
+		objAdjustmentLogReport.errorclosebtn.click();
+	}
+	}
+	
+	
+	
+	
+	
+}
+		
+		
+

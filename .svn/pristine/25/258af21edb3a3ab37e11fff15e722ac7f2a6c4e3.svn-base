@@ -1,0 +1,140 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class OrderUpdationObject {
+	
+	@FindBy(xpath="//*[@id='orders']/a")
+	public WebElement orders;
+	
+	@FindBy(xpath="//*[@id='orders']/ul/li[2]/a")
+	public WebElement orderEnquiry;
+	
+	@FindBy(xpath="//*[@id='over_due_tbl_table']")
+	public WebElement overDueTable;
+	
+	@FindBy(xpath="//*[@id='error_msg']")
+	public WebElement errorMessage;
+	
+	@FindBy(xpath="//*[@id='orderNo']")
+	public WebElement orderNoSend;
+	
+	@FindBy(xpath="//*[contains(@id,'tbl_table')]/tbody")
+	public WebElement filteredOrder; 
+	
+	@FindBy(xpath="//*[contains(@class,'goButton')]")
+	public WebElement goBtn; 
+	
+	@FindBy(xpath="//*[text()='Clear Group By']")
+	public WebElement clearGroup;
+	
+	@FindBy(xpath="//*[contains(@id,'tbl_table')]/tbody/tr")
+	public List<WebElement> orderDetails;
+	
+	@FindBy(xpath="//*[@class='articleHead']/div/h2")
+	public WebElement orderNumberAppln;
+	
+	@FindBy(xpath="//*[@class='orderStatus']/strong")
+	public WebElement statusAppln;
+	
+	@FindBy(xpath="//*[@id='openTotArticle']")
+	public WebElement totalArticleAppln;
+	
+	@FindBy(xpath="//*[contains(text(),'Cartons Ordered')]/following::td")
+	public WebElement totalCartonOrderedAppln;
+	
+	@FindBy(xpath="//*[@class='articleInfoWrapper ']")
+	public WebElement orderDateSupplierDetails;
+	
+	@FindBy(xpath="//*[@id='open_item_tab_table']/tbody/tr")
+	public List<WebElement> orderTable;
+	
+	@FindBy(xpath="//*[@id='editAction']/a/label")
+	public WebElement editBtn;
+	
+	public static final String orderQty = "(//*[contains(@id,'showQty')]/input)[dynamic]";
+	
+	@FindBy(xpath="//*[contains(@id,'showQty')]/input")
+	public List<WebElement> orderedQtyList;
+	
+	public static final String articleNumber = "//*[@id='open_item_tab_table']/tbody/tr[dynamic]/td[2]";
+	
+	public static final String plusBtn = "//*[@id='open_item_tab_table']/tbody/tr[dynamic]/td[1]";
+	
+	public static final String soo = "(//*[contains(@id,'order_item_expand')]//tr[2]//a)[dynamic]";
+	
+	public static final String sit = "(//*[contains(@id,'order_item_expand')]//tr[3]/td[2])[dynamic]";
+	
+	@FindBy(xpath="//*[@id='saveOpenOrders']//label")
+	public WebElement doneBtn;
+	
+	@FindBy(xpath="//*[@id='yes']/label")
+	public WebElement confirmYesBtn;
+	
+	@FindBy(xpath="//*[@id='dialog-alert-conf']")
+	public WebElement saveOrderPopUp;
+	
+	@FindBy(xpath="//*[@id='dialog-alert-conf']/div/div[1]")
+	public WebElement saveOrderPopUpDialogText;
+	
+	@FindBy(xpath="//*[@id='success_msg']")
+	public WebElement successfulMessage;
+	
+	@FindBy(xpath="//*[contains(@id,'order_status')]")
+	public WebElement oStatus;
+	
+	public static final String blockUpdation = "//*[contains(@id,'dynamic')][1]/td[6]/input";
+	
+	@FindBy(xpath="//*[@id='message']")
+	public WebElement warningMessage;
+	
+	@FindBy(xpath="//*[text()='Accept']")
+	public WebElement acceptHighQuantity;
+	
+	public static final String deleteArticleBtn = "(//*[@class='deleteRecord'])[dynamic]";
+	
+	@FindBy(xpath="//*[@id='dialog-alert-conf']")
+	public WebElement deletePopup;
+	
+	@FindBy(xpath="//*[@id='ok']/label")
+	public WebElement deleteOkBtn;
+	
+	@FindBy(xpath="//*[contains(@id,'add_article')]")
+	public WebElement addarticleinput;
+	
+	@FindBy(xpath="//*[contains(@id,'add_qty')]")
+	public WebElement addquantity;
+	
+	@FindBy(xpath="//*[contains(@id,'search_and_add')]/a")
+	public WebElement searchandaddBtn;
+	
+	@FindBy(xpath="//*[contains(text(),'Supplier:')]/strong")
+	public WebElement suppliernameandnumber;
+	
+	@FindBy(xpath="//*[@id='advLink1']/label")
+	public WebElement advanceSearchButton;
+	
+	@FindBy(xpath="//*[@id='description']")
+	public WebElement articleDetailsRadio;
+	
+	@FindBy(xpath="//*[@id='fromDate']")
+	public WebElement fromDate;
+	
+	@FindBy(xpath="//*[@id='toDate']")
+	public WebElement toDate;
+	
+	@FindBy(xpath="(//*[@id='goButtonSample'])[1]")
+	public WebElement advanceSearchGoBtn;
+	
+	@FindBy(xpath="//*[@id='ready_to_tbl_table']/tbody")
+	public WebElement searchResult;
+	
+	@FindBy(xpath="(//*[contains(@id,'delivery_date')])[1]")
+	public WebElement deliveryDateUI;
+	
+	
+
+}

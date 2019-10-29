@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+<TCName name = "alldepartment">
+<alldept>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"A","iv_department":"ALL","iv_date":"todaysdate","iv_time":"ALL","iv_user":"ALL"}')]]>
+</alldept>
+</TCName>
+
+
+<TCName name = "ActionrequiredAlldepartment">
+<alldept>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"A","iv_department":"ALL","iv_date":"todaysdate","iv_time":"ALL","iv_user":"ALL"}')]]>
+</alldept>
+
+<alldeptam>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"A","iv_department":"ALL","iv_date":"todaysdate","iv_time":"AM","iv_user":"ALL"}')]]>
+</alldeptam>
+
+<alldeptpm>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"A","iv_department":"ALL","iv_date":"todaysdate","iv_time":"PM","iv_user":"ALL"}')]]>
+</alldeptpm>
+
+
+</TCName>
+
+
+<TCName name = "reviewonlyalldepartment">
+<alldept>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"R","iv_department":"ALL","iv_date":"todaysdate","iv_time":"ALL","iv_user":"ALL"}')]]>
+</alldept>
+
+
+<alldeptam>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"R","iv_department":"ALL","iv_date":"todaysdate","iv_time":"AM","iv_user":"ALL"}')]]>
+</alldeptam>
+
+
+
+<alldeptpm>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"R","iv_department":"ALL","iv_date":"todaysdate","iv_time":"PM","iv_user":"ALL"}')]]>
+</alldeptpm>
+
+
+
+
+
+</TCName>
+
+<TCName name = "bothalldepartment">
+
+<alldept>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"","iv_department":"ALL","iv_date":"todaysdate","iv_time":"ALL","iv_user":"ALL"}')]]>
+</alldept>
+
+
+<alldeptam>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"","iv_department":"ALL","iv_date":"todaysdate","iv_time":"AM","iv_user":"ALL"}')]]>
+</alldeptam>
+
+
+
+<alldeptpm>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser ('{"iv_sales_org":"1005","iv_reason_type":"","iv_department":"ALL","iv_date":"todaysdate","iv_time":"PM","iv_user":"ALL"}')]]>
+</alldeptpm>
+
+</TCName>
+
+
+
+<TCName name = "actionrequiredpartialdepartment">
+<alldeptboth>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"A","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"All","iv_user":"ALL"}')]]>
+</alldeptboth>
+
+<alldeptam>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"A","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"AM","iv_user":"ALL"}')]]>
+</alldeptam>
+
+<alldeptpm>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"A","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"PM","iv_user":"ALL"}')]]>
+</alldeptpm>
+
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in (departmentFromList)]]>
+</deptcode>
+</TCName>
+<TCName name = "reviewonlypartialdepartment">
+<alldeptboth>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"R","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"ALL","iv_user":"ALL"}')]]>
+</alldeptboth>
+
+
+<alldeptam>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"R","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"AM","iv_user":"ALL"}')]]>
+</alldeptam>
+
+<alldeptpm>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"R","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"PM","iv_user":"ALL"}')]]>
+</alldeptpm>
+
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in ('dept1','dept2','dept3')]]>
+</deptcode>
+</TCName>
+
+<TCName name = "bothpartialdepartment">
+<alldeptboth>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"ALL","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"ALL","iv_user":"ALL"}')]]>
+</alldeptboth>
+
+<alldeptam>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"ALL","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"AM","iv_user":"ALL"}')]]>
+</alldeptam>
+
+<alldeptpm>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"ALL","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"PM","iv_user":"ALL"}')]]>
+</alldeptpm>
+
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in ('dept1','dept2','dept3')]]>
+</deptcode>
+</TCName>
+
+<TCName name = "partialdepartmentonly">
+<alldeptboth>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"A","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"ALL","iv_user":"ALL"}')]]>
+</alldeptboth>
+
+<alldeptam>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"A","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"AM","iv_user":"ALL"}')]]>
+</alldeptam>
+
+<alldeptpm>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"A","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"PM","iv_user":"ALL"}')]]>
+</alldeptpm>
+
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in ('dept1','dept2','dept3')]]>
+</deptcode>
+
+</TCName>
+
+<TCName name = "primarydepartment">
+<alldept>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"A","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"ALL","iv_user":"ALL"}')]]>
+</alldept>
+
+<alldeptam>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"A","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"AM","iv_user":"ALL"}')]]>
+</alldeptam>
+
+<alldeptpm>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"A","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"PM","iv_user":"ALL"}')]]>
+</alldeptpm>
+
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in ("departmentsfromlist")]]>
+</deptcode>
+
+</TCName>
+
+<TCName name = "bothprimarydepartment">
+<alldept>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"ALL","iv_user":"ALL"}')]]>
+</alldept>
+
+<alldeptam>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"AM","iv_user":"ALL"}')]]>
+</alldeptam>
+
+<alldeptpm>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"PM","iv_user":"ALL"}')]]>
+</alldeptpm>
+
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in (departmentsfromlist)]]>
+</deptcode>
+
+</TCName>
+
+<TCName name = "partialdepartmentreviewonly">
+<alldeptboth>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"R","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"ALL","iv_user":"ALL"}')]]>
+</alldeptboth>
+
+<alldeptam>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"R","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"AM","iv_user":"ALL"}')]]>
+</alldeptam>
+
+<alldeptpm>
+<![CDATA[select * from sp_wow_generate_gapscan_report_for_browser('{"iv_sales_org":"1005","iv_reason_type":"R","iv_department":"departmentsfromlist","iv_date":"todaysdate","iv_time":"PM","iv_user":"ALL"}')]]>
+</alldeptpm>
+
+<deptcode>
+<![CDATA[select distinct dept from MAT_VIEW_ZWOW_ARTICLES_HIER where dept_name in ('dept1','dept2','dept3')]]>
+</deptcode>
+
+</TCName>
+
+</configuration>

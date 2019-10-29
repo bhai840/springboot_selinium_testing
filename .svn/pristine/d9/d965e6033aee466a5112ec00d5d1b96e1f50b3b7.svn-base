@@ -1,0 +1,592 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class OrderingObjects {
+	
+	
+	@FindBy(xpath="//*[@id='orders']/a")
+	public WebElement orders;
+	
+	@FindBy(xpath="//*[@id='orders']/ul/li[2]/a")
+	public WebElement orderEnquiry;
+	
+	@FindBy(xpath="//*[@id='over_due_tbl_table']")
+	public WebElement overDueTable;
+	
+	@FindBy(xpath="//*[@id='error_msg']")
+	public WebElement errorMessage;
+	
+	@FindBy(xpath="//*[@id='orderNo']")
+	public WebElement orderNoSend;
+	
+	@FindBy(xpath="//*[contains(@id,'tbl_table')]/tbody")
+	public WebElement filteredOrder; 
+	
+	@FindBy(xpath="//*[contains(@class,'goButton')]")
+	public WebElement goBtn; 
+	
+	@FindBy(xpath="//*[@id='ui-id-30']")
+	public WebElement createOrder;
+	
+	@FindBy(xpath="//*[@id='md_addActionBtn']")
+	public WebElement addArticleBtn;
+	
+	@FindBy(xpath="//*[@name='iv_article']")
+	public WebElement articleSend;
+	
+	@FindBy(xpath="//*[@name='oredrQty']")
+	public WebElement orderQty;
+	
+	@FindBy(xpath="//*[@id='searchAndAdd']")
+	public WebElement searchBtn;
+	
+	@FindBy(xpath="//*[@name='deliveryDate']")
+	public WebElement delDate;
+	
+	@FindBy(xpath="//*[@id='dialog-alert-conf']/div/div[1]")
+	public WebElement createOrderPopUp;
+	
+	@FindBy(xpath="//*[@id='no']/label")
+	public WebElement noBtn;
+	
+	public static final String previousOrder = "//*[@id='datatable']/tbody/tr[dynamic]//strong";
+	
+	@FindBy(xpath="//*[@id='datatable']/tbody/tr")
+	public List<WebElement> alreadyCreatedOrderList;
+	
+	public static final String expander = "//*[contains(@class,'expandTd expander row')]";
+	
+	public static final String deleteArticle = "(//*[contains(@id,'datatable_dynamic')])/tbody/tr/td[18]";
+	
+	//@FindBy(xpath="(//*[contains(@id,'datatable_dynamic')])/tbody/tr/td[18]")
+	//public List<WebElement> deleteList;
+	
+	@FindBy(xpath="(//*[@id='message'])[1]")
+	public WebElement deletePopUp;
+	
+	@FindBy(xpath="//*[@id='message']//following::div//label")
+	public WebElement deleteYesBtn;
+	
+	@FindBy(xpath="//*[text()='Validate']")
+	public List<WebElement> validateBtn;
+	
+	@FindBy(xpath="//*[text()='Validate']")
+	public WebElement singelValidateBtn;
+	
+	public static final String validate = "(//*[text()='Validate'])[dynamic]";
+	
+	
+	@FindBy(xpath="//*[text()='Create']")
+	public List<WebElement> createBtn;
+	
+	@FindBy(xpath="//*[text()='Create']")
+	public WebElement singelcreateBtn;
+	
+	public static final String create = "(//*[text()='Create'])[dynamic]";
+	
+	@FindBy(xpath="//*[@id='dialog-delivery-result-content']")
+	public WebElement rosterpopup;
+	
+	@FindBy(xpath="(//*[contains(@class,'VendorNoRoasterDDMsg')])[1]")
+	public WebElement rosterMessage;
+	
+	@FindBy(xpath="(//*[contains(@class,'vendorEmerDDMsg')])[1]")
+	public WebElement rosterMessageManualPreq;
+	
+	@FindBy(xpath="(//*[contains(@class,'whEmerDDMsg')])[1]")
+	public WebElement rosterMessageManualPreqDC;
+			
+	@FindBy(xpath="//*[@name='deliveryDatecheckbox']")
+	public WebElement emergencyCheckBox;
+		
+	@FindBy(xpath="//*[@value='Emergency']")
+	public WebElement emergencyRadio;
+	
+	@FindBy(xpath="//*[@id='submitDeliveryDateList']")
+	public WebElement proceedToCreateRoster;
+	
+	@FindBy(xpath="//*[@value='Available']")
+	public WebElement availableRadio;
+	
+	@FindBy(xpath="//*[@id='validRostrSeltn']")
+	public WebElement selectRoster; 
+	
+	@FindBy(xpath="//*[@class='success']")
+	public WebElement status;
+	
+//	@FindBy(xpath="//*[text()='Create']")
+//	public WebElement createBtn;
+	
+	@FindBy(xpath="//*[@id='datatable']/tbody/tr")
+	public List<WebElement> afterCreationList;
+	
+	public static final String afterCreation = "//*[@id='datatable']/tbody/tr[dynamic]//strong";
+	
+	public static final String afterCreationExp = "//*[@id='datatable']/tbody/tr[dynamic]/td[1]";
+	
+	@FindBy(xpath="//*[@id='success_msg']")
+	public WebElement successMsg;
+	
+	@FindBy(xpath="//*[contains(@id,'order_status')]")
+	public WebElement orderStatus;
+	
+	@FindBy(xpath="//*[@id='article_search_result_table']")
+	public WebElement pbdPopUp;
+	
+	public static final String pbdCheckBox = "//*[@id='article_search_result_table']/tbody/tr[1]/td[4]";
+	
+	@FindBy(xpath="//*[@id='article_search_result_table']/tbody/tr")
+	public List<WebElement> pbdList;
+	
+	@FindBy(xpath="//*[@id='article_search_result_table']/following::div/following::div//label[2]")
+	public WebElement pbdArticleAddToList;
+	
+	@FindBy(xpath="(//*[@id='error_msg']/li)")
+	public List<WebElement> errorArticleList;
+	
+	public static final String errorArticle = "(//*[@id='error_msg']/li)[dynamic]";
+	
+	@FindBy(xpath="//*[@id='dialog-delivery-result']/div/div[2]/span/label[1]")
+	public WebElement cancelCreation;
+	
+	public static final String errorArticleDelete = "//*[@data-tt-id='dynamic_value']/td[18]";
+	
+	@FindBy(xpath="//*[@id='open_order_tbl_table']/tbody/tr")
+	public List<WebElement> openOrderDetail;
+	
+	@FindBy(xpath="//*[@class='roasterDate noRoasterAvailable']")
+	public WebElement availableRosterDate;
+	
+	public static final String del = "//*[contains(@id,'dynamic')]/tbody/tr";
+
+	
+	public static final String deliveryDateDync = "//*[contains(@id,'dynamic')]/tbody/tr[value]/td[9]/input";
+	
+	public static final String articledync = "//*[contains(@id,'dynamic')]/tbody/tr[value]/td[2]";
+	
+	@FindBy(xpath="//*[@class='quickHelpWrapper']")
+	public WebElement deliverDateNotValidMessage;
+	
+	public static final String articleDetails = "//*[@id='datatable_dynamic']/tbody/tr";
+	
+	@FindBy(xpath="//*[contains(@class,'editSupplier')]")
+	public WebElement alternateVendorEdit;
+	
+	@FindBy(xpath="//*[@id='alternate_supp_tbl_table']/tbody/tr")
+	public List<WebElement> alternateVendors;
+	
+	@FindBy(xpath="//*[@id='alternate_supp_tbl_head_page']//li")
+	public List<WebElement> alternateVendorPagination;
+	
+	public static final String altPage = "(//*[@id='alternate_supp_tbl_head_page']//li)[dynamic]";
+	
+	public static final String article = "//*[@id='datatable_dynamic']/tbody/tr[value]/td[1]/span";
+	
+	public static final String artSize = "//*[@id='datatable_dynamic']/tbody/tr";
+	
+	public static final String randVendor = "//*[@id='alternate_supp_tbl_table']/tbody/tr[dynamic]";
+	
+	public static final String vendorDetails = "//*[@id='alternate_supp_tbl_table']/tbody/tr[dynamic]/td[value]";
+	
+	public static final String vendorSelect = "//*[@id='alternate_supp_tbl_table']/tbody/tr[dynamic]/td[3]/label";
+	
+	@FindBy(xpath="//*[contains(@class,'expanded')]//strong")
+	public WebElement alternateVendeorExp;
+	
+ //update
+	
+	
+	@FindBy(xpath="//*[text()='Clear Group By']")
+	public WebElement clearGroup;
+	
+	@FindBy(xpath="//*[contains(@id,'tbl_table')]/tbody/tr")
+	public List<WebElement> orderDetails;
+	
+	@FindBy(xpath="//*[@class='articleHead']/div/h2")
+	public WebElement orderNumberAppln;
+	
+	@FindBy(xpath="//*[@class='orderStatus']/strong")
+	public WebElement statusAppln;
+	
+	@FindBy(xpath="//*[@id='openTotArticle']")
+	public WebElement totalArticleAppln;
+	
+	@FindBy(xpath="//*[contains(text(),'Cartons Ordered')]/following::td")
+	public WebElement totalCartonOrderedAppln;
+	
+	@FindBy(xpath="//*[@class='articleInfoWrapper ']")
+	public WebElement orderDateSupplierDetails;
+	
+	@FindBy(xpath="//*[@id='open_item_tab_table']/tbody/tr")
+	public List<WebElement> orderTable;
+	
+	@FindBy(xpath="//*[@id='editAction']/a/label")
+	public WebElement editBtn;
+	
+	public static final String orderQtyUpdate = "(//*[contains(@id,'showQty')]/input)[dynamic]";
+	
+	@FindBy(xpath="//*[contains(@id,'showQty')]/input")
+	public List<WebElement> orderedQtyList;
+	
+	public static final String articleNumber = "//*[@id='open_item_tab_table']/tbody/tr[dynamic]/td[2]";
+	
+	public static final String plusBtn = "//*[@id='open_item_tab_table']/tbody/tr[dynamic]/td[1]";
+	
+	public static final String soo = "(//*[contains(@id,'order_item_expand')]//tr[2]//a)[dynamic]";
+	
+	public static final String sit = "(//*[contains(@id,'order_item_expand')]//tr[3]/td[2])[dynamic]";
+	
+	@FindBy(xpath="//*[@id='saveOpenOrders']//label")
+	public WebElement doneBtn;
+	
+	@FindBy(xpath="//*[@id='yes']/label")
+	public WebElement confirmYesBtn;
+	
+	@FindBy(xpath="//*[@id='dialog-alert-conf']")
+	public WebElement saveOrderPopUp;
+	
+	@FindBy(xpath="//*[@id='dialog-alert-conf']/div/div[1]")
+	public WebElement saveOrderPopUpDialogText;
+	
+	@FindBy(xpath="//*[@id='success_msg']")
+	public WebElement successfulMessage;
+	
+	@FindBy(xpath="//*[contains(@id,'order_status')]")
+	public WebElement oStatus;
+	
+	public static final String blockUpdation = "//*[contains(@id,'dynamic')][1]/td[6]/input";
+	
+	@FindBy(xpath="//*[@id='message']")
+	public WebElement warningMessage;
+	
+	@FindBy(xpath="//*[text()='Accept']")
+	public WebElement acceptHighQuantity;
+	
+	public static final String deleteArticleBtn = "(//*[@class='deleteRecord'])[dynamic]";
+	
+	@FindBy(xpath="//*[@id='dialog-alert-conf']")
+	public WebElement deletePopup;
+	
+	@FindBy(xpath="//*[@id='ok']/label")
+	public WebElement deleteOkBtn;
+	
+	@FindBy(xpath="//*[contains(@id,'add_article')]")
+	public WebElement addarticleinput;
+	
+	@FindBy(xpath="//*[contains(@id,'add_qty')]")
+	public WebElement addquantity;
+	
+	@FindBy(xpath="//*[contains(@id,'search_and_add')]/a")
+	public WebElement searchandaddBtn;
+	
+	@FindBy(xpath="//*[contains(text(),'Supplier:')]/strong")
+	public WebElement suppliernameandnumber;
+	
+	@FindBy(xpath="//*[@id='advLink1']/label")
+	public WebElement advanceSearchButton;
+	
+	@FindBy(xpath="//*[@id='description']")
+	public WebElement articleDetailsRadio;
+	
+	@FindBy(xpath="//*[@id='fromDate']")
+	public WebElement fromDate;
+	
+	@FindBy(xpath="//*[@id='toDate']")
+	public WebElement toDate;
+	
+	@FindBy(xpath="(//*[@id='goButtonSample'])[1]")
+	public WebElement advanceSearchGoBtn;
+	
+	@FindBy(xpath="//*[@id='ready_to_tbl_table']/tbody")
+	public WebElement searchResult;
+	
+	@FindBy(xpath="(//*[contains(@id,'delivery_date')])[1]")
+	public WebElement deliveryDateUI;
+	
+	//Sibi
+	
+	@FindBy(linkText ="Orders")
+	public WebElement Orders;
+		
+	//fnGetValuesFromTable
+	
+	@FindBy (xpath = "//*[@id='orderNo']")
+	public WebElement Ordernoentry;
+	
+	@FindBy(xpath = "//*[@id='orderEnq']/label")
+	public WebElement GObutton;
+	
+
+    @FindBy(xpath="//*[@id='over_due_tbl_table']/tbody/tr")
+	public List<WebElement> EnquiryTable;
+	
+	@FindBy(xpath = "//*[@id='order_no_tr_1_0']")   //*[@id="ready_to_tbl_table"]/tbody/tr
+	public WebElement ClickOnOrderNo;
+	
+	//public static final String EnquiryTable=" //*[@id='over_due_tbl_table']/tbody/tr/td[dynamic]";
+	
+	 @FindBy(xpath="//*[@id='order_status_tr_1_0']")	
+	 public WebElement Status;
+	 
+	 @FindBy(xpath="//*[@id='order_no_tr_1_0']")
+	 public WebElement OrderNO;
+	
+	 @FindBy(xpath="//*[@id='information-wrapper']/div")
+	 public WebElement AsnRequirdPopUp;
+	 
+	 @FindBy(xpath="//*[@id='commonReceiveOrder']/a/label")
+	 public WebElement ReciveOrder;
+	 
+	 @FindBy(xpath=" //*[@class='articleTitle']")
+	 public WebElement OrderNoHeader;
+	 
+	 @FindBy(xpath=" //*[@id='tempCheckFlag']")
+	 public WebElement tempCheckFlag;
+	 
+	
+	
+	 
+	// @FindBy(xpath=" ")
+	 //public WebElement ;
+	 
+	 @FindBy(xpath="//*[@id='orderContentHeader']/div[3]/p/label[1]/strong")
+	 public WebElement OrderHeaderVendorNo;
+	 
+	 @FindBy(xpath=" //*[@id='orderContentHeader']/div[3]/p/label[3]/strong")
+	 public WebElement HeaderDeliveyDate;
+	 
+	 @FindBy(xpath="//*[contains(text(), 'On Show Date:')]/strong") 
+	 public WebElement OnShowDate ; 
+	 
+	 @FindBy(xpath="//*[@id='orderContentHeader']/div[3]/p/label[5]/strong ")
+	 public WebElement Source;
+	 
+	//*[@class="articleDetails"]/table/tbody/tr
+	 
+	 @FindBy(xpath="//*[@class='articleDetails']/table/tbody/tr")
+	 public List<WebElement> OrderHeader1 ;
+	 
+	 @FindBy(xpath="//*[@id='clr_grp_link_btn_yet_to_received_item_table']/a/label ")
+	 public WebElement GroupBy;
+	
+	  @FindBy(xpath="//*[contains(text(),'Yet to Receive')] ")
+	 public WebElement YetToReceived;
+	
+	  
+	@FindBy(xpath="//*[@id='yet_to_received_item_table_table']/tbody/tr ")
+    public List<WebElement>  ItamTable ;
+	
+	@FindBy(xpath="//*[@id='commonReceiveOrder']/a/label ")
+    public WebElement ReceiveOrderOption  ;
+	
+	
+	
+	  @FindBy(xpath="//*[contains(text(),'Receive in Full')] ")
+	 public WebElement ReceiveFullButton;
+	  
+	  @FindBy(xpath="//*[contains(text(),'Receive Line-by-line')] ")
+		 public WebElement ReceiveLineButton;
+	  
+	@FindBy (xpath="//*[@id='invoice']")
+	public WebElement Invoice;
+	
+	@FindBy(xpath="//*[@id='nextbtn']/a/label")
+	public WebElement NextButton;
+	
+	@FindBy(xpath="//*[@id='recvSummaryTable']/tbody/tr ")
+    public List<WebElement>  ReceivingSummary ;
+	
+	@FindBy(xpath="//*[@id='newSessRCV']/a")
+	public WebElement NewSession;
+	
+	//*[@id="newSessRCV"]/a
+	
+	//*[@id="step-1"]/div/div[4]/div[2]/label
+	
+	
+	@FindBy(xpath="//*[@id='temperature1']")
+	public WebElement ChilledTemp;
+	
+	@FindBy(xpath="//*[@id='temperature2']")
+	public WebElement frozenTemp;
+	
+	@FindBy(xpath="//*[@id='PN']")
+	public WebElement PostNow;
+	
+	@FindBy(xpath="//*[@id='submitbtn']/a/label")
+	public WebElement SubmitButton;
+	
+	@FindBy(xpath="(//*[@id='continue']/label)[1]")
+	public WebElement continueButton; 
+	
+	@FindBy(xpath="//*[@id='success_msg']/li")
+	public WebElement SucessMsg; 
+	
+	@FindBy(xpath="//*[@id='order_detail']/div[2]/div/div[2]/table/tbody/tr/td[6] ")
+    public WebElement  ReceiveByMethod;
+	
+	@FindBy(xpath="//*[@id='order_detail']/div[2]/div/div[3]/table/tbody/tr/td[2]")
+	public WebElement ReceivedChiledTemp; 
+    
+	@FindBy(xpath="//*[@id='order_detail']/div[2]/div/div[3]/table/tbody/tr/td[4]")
+	public WebElement ReceivedFrozenTemp;
+	
+	@FindBy(xpath="//*[@id='order_detail']/div[2]/div/div[4]/table/tbody/tr/td[2]")
+	public WebElement RecivedInvoiceNo;
+    
+	@FindBy(xpath="//*[@id='order_detail']/div[2]/div/div[2]/table/tbody/tr/td[4] ")
+	public WebElement RceivedUser ;
+  
+	
+
+	@FindBy(xpath="//*[@id='order_detail']/div[2]/div/div[1]/table/tbody/tr ")
+    public List<WebElement>  ReceivedFinalSummary;
+	
+	
+	@FindBy(xpath="//*[@id='received_item_table_table']/tbody/tr ")
+    public List<WebElement>  ReceivedItemDetails;
+	
+	@FindBy(xpath="//*[@id='clr_grp_link_btn_received_item_table'] ")
+	public WebElement ClearGroup ;
+	
+	@FindBy(xpath="//*[@id='commonUpdateQty'] ")  
+	public WebElement UpdateOptionButton ;
+	
+	@FindBy(xpath="//*[@id='add_art_link_btn_updateQtyTbl'] ")
+	public WebElement AddMissing ;
+	
+	@FindBy(xpath="//*[@id='add_article_input_updateQtyTbl']")  	
+	public WebElement ArticleNo ;
+	
+	@FindBy(xpath="//*[@id='add_qty_updateQtyTbl']")
+	public WebElement ArticalQTY ;
+	
+	@FindBy(xpath="//*[@id='search_and_add_btn_updateQtyTbl']")
+	public WebElement SearchAndAdd ;
+	
+	
+	@FindBy(xpath="(//*[@id='acceptbtn']/label)[1]")
+    public WebElement NotRangedAcpt;
+	
+	@FindBy(xpath="//*[@id='information-wrapper']/div")
+	public WebElement NotRangedPopFinal;
+	
+	@FindBy(xpath=("//*[@id='errorWrapper']"))
+	public WebElement errorMseg;
+	
+	
+	@FindBy(xpath="//*[@id='showReceTotQty_tr_1_1']")
+    public List<WebElement>  receivedUnits;
+	
+	//*[@id="updateQtyTbl_table"]/tbody
+
+	@FindBy(xpath="//*[@id='updateQtyTbl_table']/tbody/tr")
+    public List<WebElement>  updatedArticleDetails;
+	
+	//*[@id="showReceiveQty_tr_1_0"]/label/input[1]
+	//*[@id="showReceiveQty_tr_1_0"]/label/input[2]
+	
+	@FindBy(xpath="(//*[@id='showReceiveQty_tr_1_0']/label/label)[1]")
+	public WebElement TotalWeightMsg;
+	
+	@FindBy(xpath="(//*[@id='showReceiveQty_tr_1_0']/label/input[2])[1]")
+	public WebElement WeightField;
+
+	@FindBy(xpath="(//*[@id='showReceiveQty_tr_1_0']/label/input)[1]")
+	public WebElement TotalQty;
+	
+	@FindBy(xpath="//*[@id='close_btn_updateQtyTbl']/a")
+	public WebElement CloseButton;
+	
+	
+	public static final String AtricleNo = "(//*[@id='updateQtyTbl_table']/tbody/tr/td[1])[dynamic]";
+	
+	public static final String ArticleRWQty = "((//*[@id='updateQtyTbl_table']/tbody/tr/td[9])[dynamic]//input)[1]";
+	
+	public static final String ArticleRWWeight = "((//*[@id='updateQtyTbl_table']/tbody/tr/td[9])[dynamic]//input)[2]";
+	
+	public static final String ArtNo ="//*[@id='updateQtyTbl_table']/tbody/tr[dynamic]/td[1]";
+	//public static final String ArtQTy= "(//*[contains(@class,'receive_qty')])[dynamic]";
+	//public static final String ArtRWWeight ="(//*[contains(@class,'receive_weight')])[dynamic]";
+	
+	
+	public static final String ArtQTy= "((//*[contains(@id,'dynamic')])[2]/td[9]//input)[1]";
+	public static final String ArtRWWeight ="((//*[contains(@id,'dynamic')])[2]/td[9]//input)[2]";
+	
+	
+	
+	
+	@FindBy(xpath="//*[@id='thead_updateQtyTbl']/tr[1]")
+	public WebElement HeaderBar;
+
+	@FindBy(xpath="//*[@id='saveupdateQty_dwn']")
+	public WebElement saveButton;
+	
+	@FindBy(xpath="//*[@id='yes']/label")
+	public WebElement YesOption;
+	
+	@FindBy(xpath="//*[@id='success-wrapper']/div/div")
+	public WebElement UpdateSuccessMsg;
+	
+	@FindBy(xpath="//*[@id='received_item_table_table']/tbody/tr")
+	public List<WebElement> ItemDetailsAfterUpd;
+	
+	
+	
+/*	Order cancellation */
+	
+	//*[@id="order_type_tr_1_0"]
+	
+	@FindBy(xpath="//*[@id='order_status_tr_1_0']")
+	public WebElement OrderStatus;
+	
+	@FindBy(xpath="//*[@id='cancelOrder']")
+	public WebElement OrderCancelOptn;
+	//*[@id="cancelOrder"]   //*[@id="commonCancelOrder"]/a/label
+	
+	
+	@FindBy(xpath="//*[@id='yes']/label")  
+	public WebElement YESOption;  
+	
+	
+	@FindBy(xpath="//*[@id='success-wrapper']/div")  
+	public WebElement SuccessMsgWarpper;
+	
+	@FindBy(xpath="	//*[@id='errorWrapper']")  
+	public WebElement ErrorMesg;
+
+	 
+	@FindBy(xpath="//*[@id='success_msg']/li")
+	public WebElement SuccessMsg;
+	
+	@FindBy(xpath="//*[@id='success-wrapper']/div/div/div[1]/a")
+	public WebElement Close;
+	
+	
+	@FindBy(xpath="//*[@id='orders']")
+	public WebElement OrderEnquiry1;
+	
+	@FindBy(xpath="//*[@id='orders']/ul/li[2]/a")    //*[@id="orders"]/ul/li[2]/a
+	public WebElement OrderEnquiry2;
+	
+	
+	//*[@id="cancelOrder"]
+	
+	@FindBy(xpath="//*[@id='commonCancelOrder']/a/label")
+	public WebElement POOrderCancel;
+	
+	@FindBy(xpath="//*[@id='mainBackBtn']")
+	public WebElement Back;
+	
+	
+ 	
+
+
+	
+	
+
+}

@@ -1,0 +1,155 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class ArticleLookUpObjects {
+	
+	public static final String departmentList="//*[@id='deptlst']/li[dynamic]/label";
+	public static final String categoyList="//*[@id='categoryLst']/li[dynamic]/label";
+	public static final String subCategoryLst="//*[@id='subCategoryLst']/li[dynamic]/label";
+	public static final String segmentLst="//*[@id='segmentLst']/li[dynamic]/label";
+	public static final String tableDesc1="//*[@id='instorePromoReportTable']/tbody/tr[contains(.,'dynamic')]";
+	public static final String tableDesc="//*[@id='instorePromoReportTable']/tbody/tr[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'dynamic')]";
+	public static final String negativeStatus="//*[@id='instorePromoReportTable']/tbody/tr/td/label[@class='negativeStatus']";
+	public static final String pageSize="//*[@id='paginationDiv1']/ul/li[dynamic]/a";
+	@FindBy(linkText ="Lookup")
+	public WebElement Lookup;
+	
+	@FindBy(xpath ="//*[@id='lookUp']/ul/li[2]/a")
+	public WebElement Article;
+	
+	@FindBy(xpath ="//*[@id='deptlst']/li")
+	public List<WebElement> deptlst;
+	
+	@FindBy(xpath ="//*[@id='categoryLst']/li")
+	public List<WebElement> catLst;
+	
+	@FindBy(xpath ="//*[@id='subCategoryLst']/li")
+	public List<WebElement> subLst;
+	
+	@FindBy(xpath ="//*[@id='segmentLst']/li")
+	public List<WebElement> segLst;
+	
+	//*[@id="0564"]
+	
+	/*@FindBy(xpath ="//*[@id='deptlst']/li[1]/label")
+	public List<WebElement> departmentList;
+	*/
+	
+	@FindBy(xpath ="//*[@id='searchBox']")
+	public WebElement searchText;
+	
+	@FindBy(xpath ="//*[@id='advLink1']/label")
+	public WebElement advancedSearch;
+	
+	@FindBy(xpath ="//*[@id='warehouse']")
+	public WebElement byWarehouse;
+	
+	@FindBy(xpath ="//*[@id='warehouseID']")
+	public WebElement warehouselist;
+	
+	@FindBy(xpath ="//*[@id='tooManysupplier's]")
+	public WebElement go;
+	
+	@FindBy(xpath ="//*[@id='warehouseID']")
+	public List<WebElement> warehouseListDropdown;
+	
+	@FindBy(xpath ="//*[@class='heirachyAction']/label[@class='actionBtn']")
+	public WebElement btnGo;
+	/*@FindBy(xpath ="(//label[text()='Go'])[4]")
+	public WebElement btnGo;*/
+	
+	@FindBy(xpath ="//*[@id='deptBtn']")
+	public WebElement deptBtn;
+	
+	@FindBy(xpath ="//*[@id='catBtn']")
+	public WebElement catBtn;
+	
+	@FindBy(xpath ="//*[@id='subCatBtn']")
+	public WebElement subCatBtn;
+	
+	@FindBy(xpath ="//*[@id='segmentBtn']/label")
+	public WebElement segmentBtn;
+
+	
+	@FindBy(xpath ="//strong[@class='searchString']")
+	public WebElement headingString;
+	
+	@FindBy(xpath ="//*[@id='searchBox']")
+	public WebElement searchBox;
+	
+	@FindBy(id ="articleGO")
+	public WebElement articleGO;
+	
+	@FindBy(id ="articleTitle")
+	public WebElement articleTitle;
+	
+	@FindBy(xpath = "//*[@id='paginationDiv1']/ul/li")
+	public List<WebElement> pagination_list;
+	
+	
+	
+	@FindBy(xpath="//*[@id='instorePromoReportTable']/tbody/tr[1]/td[1]")
+	public WebElement rowelement;
+
+	@FindBy(xpath ="//*[@id='clearDiv']/a/label")
+	public WebElement Resetsearch;
+	
+	@FindBy(xpath ="//*[@id='advLink1']/label")
+	public WebElement advSearch;
+	
+	@FindBy(xpath ="//*[@id='warehouse']")
+	public WebElement warehouse;
+	
+	@FindBy(xpath ="//*[@id='vendor']")
+	public WebElement vendor;
+	
+	@FindBy(id ="warehouseID")
+	public WebElement warehouseID;
+	
+	@FindBy(id ="vendorText")
+	public WebElement vendorText;
+	
+	@FindBy(id ="tooManysupplier")
+	public WebElement tooManysupplier;
+	
+	@FindBy(xpath ="//h4[contains(text(), 'Article not found')]")
+	public WebElement articlenotfound;
+	
+	@FindBy(xpath ="//*[@id='pageErrors']/div/div[1]/a")
+	public WebElement closeerror;
+	
+	@FindBy(xpath ="//*[@id='instoreReport_t']/div[1]/div[1]/h4/strong[1]")
+	public WebElement totalcount;
+	
+	@FindBy(id ="verifySupplier")
+	public WebElement verifySupplier;
+	
+	@FindBy(xpath ="//*[@id='deptDiv']/div[1]")
+	public WebElement waitDept;
+	
+	@FindBy(xpath ="//*[@id='ranged']")
+	public WebElement ranged;
+	
+	@FindBy(xpath ="//*[@id='instorePromoReportTable']/thead/tr/th[6]")
+	public WebElement rangedth;
+	
+	@FindBy(xpath ="//*[@id='instorePromoReportTable']/thead/tr/th[4]")
+	public WebElement promopriceth;
+	
+	@FindBy(xpath = "//*[@id='instorePromoReportTable']/tbody/tr/td[4][string-length(text()) > 1]")
+	public List<WebElement> promopriceRows;
+	
+	//xbtna
+	@FindBy(xpath ="//*[@id='advLink1']/label")
+	public WebElement advanced;
+	
+	@FindBy(xpath ="//*[@id='articleTitle']")
+	public WebElement articleNum;
+	
+	
+	
+}

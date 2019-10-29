@@ -1,0 +1,1311 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.OrderUpdationObject;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.OrderUpdationPage;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+import com.mongodb.operation.OrderBy;
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+public class OrderUpdationTest extends TestBase{
+	
+	
+	private Logger log = LogManager.getLogger(ReceivingSegmentsTest.class);
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	OrderUpdationPage objOrderUpdatePage;
+	OrderUpdationObject objOrderUpdateObject;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;			
+	List<List<Object>> result;
+	List<List<Object>> result_comp;
+	List<List<Object>> result_temp;
+	public static WebDriver driver;
+	public static XMLDataReader data;
+	
+	
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+	public static boolean isFirstTest=true;
+	
+	int count=0;		
+	int MCcount=0;
+		
+	public OrderUpdationTest(){
+		super.log=log;
+	}
+	
+	
+	//@Test
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Order Updation of SUGO STO having order type ZUBW")
+	public void OrderUpdationOfSugoSTO_ZUBW()
+	{
+
+		List<List<Object>> orderDetailsAppln = new ArrayList<List<Object>>();
+		List<List<Object>> orderDetailsAppln1 = new ArrayList<List<Object>>();
+		List<List<Object>> orderEnqDetailsAppln = new ArrayList<List<Object>>();
+		List<List<Object>> orderEnqDetailsDB = new ArrayList<List<Object>>();
+		List<List<Object>> orderArticleTable = new ArrayList<List<Object>>();
+		List<List<Object>> resultDB = new ArrayList<List<Object>>();
+		List<List<Object>> resultAppln = new ArrayList<List<Object>>();
+
+		if(rxSegmentArtpreCount2==-1)
+		{
+			MCcount =MCcount+10;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			String orderNo = data.getText("orderNumber_7051");
+			objOrderUpdateObject.orderNoSend.sendKeys(orderNo);
+			objOrderUpdateObject.goBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			try {
+				if(objOrderUpdateObject.filteredOrder.isDisplayed()){
+					orderDetailsAppln = getValuesFromTable(objOrderUpdateObject.orderDetails);
+					htmlToExtent(cName,mName,extLogger,driver,"*****ORDER DETAILS*****;;;Info");
+					htmlToExtent(cName,mName,extLogger,driver,""+orderDetailsAppln+";;;Pass");
+					objOrderUpdateObject.filteredOrder.click();
+					waitForJSandJQueryToLoad(driver);
+					verticalScroll(driver);
+					objOrderUpdateObject.clearGroup.click();
+				}
+			}catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.errorMessage.getText()+";;Fail");
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+				
+			
+			if(orderDetailsAppln.get(0).get(2).equals("OPEN") && orderDetailsAppln.get(0).get(4).equals("WAREHOUSE") && orderDetailsAppln.get(0).get(5).equals("SUGO")){
+				htmlToExtent(cName,mName,extLogger,driver,"For Order #"+orderNo+" status is Open,type is Warehouse and Source is SUGO;;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver,"Status : "+orderDetailsAppln.get(0).get(2)+",Type : "+orderDetailsAppln.get(0).get(3)+" and Source "+orderDetailsAppln.get(0).get(4)+";;;Fail");
+			}
+
+			String supplierBrowser = orderDetailsAppln.get(0).get(3).toString().trim();
+			String totalCartons = orderDetailsAppln.get(0).get(6).toString();
+			String totalPallets = orderDetailsAppln.get(0).get(7).toString();
+			String source = orderDetailsAppln.get(0).get(5).toString();
+			
+			result.clear();
+			String orderdetails = data.getText("orderdetails").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), orderdetails);
+						
+			String temp=""+orderNo+":"+result.get(0).get(3)+":"+orderDetailsAppln.get(0).get(2)+":"+orderDetailsAppln.get(0).get(3)+":"+orderDetailsAppln.get(0).get(4)+":"+orderDetailsAppln.get(0).get(5)+":"+orderDetailsAppln.get(0).get(6)+":"+"0"+":"+orderDetailsAppln.get(0).get(1)+":"+orderDetailsAppln.get(0).get(8).toString().replaceAll("\\:", "."); //Add Cutofftime
+			orderEnqDetailsAppln.addAll(StringToListCreation(temp));
+			String statusDB;
+			String supplierDB =  result.get(0).get(6).toString()+" ("+result.get(0).get(5).toString()+")";
+			String totCartons = result.get(0).get(4).toString().substring(0,result.get(0).get(4).toString().indexOf("."));
+			String dDateDB = dateFormat(result.get(0).get(2).toString().replaceAll("\\-","/"), "yyyy/MM/dd","date");
+			
+			String cutOffDB;
+			String cutOffDateDB = result.get(0).get(9).toString();
+			cutOffDateDB = dateFormat(cutOffDateDB.replaceAll("\\-","/"), "yyyy/MM/dd","date");
+			String cutOffTimeDB = result.get(0).get(10).toString();
+			String[] cutOffTime = cutOffTimeDB.split("(?<=\\G.{2})");
+			cutOffTimeDB = cutOffTime[0]+":"+cutOffTime[1]+":"+cutOffTime[2];
+			if(cutOffTimeDB.equals("00:00:00")){cutOffTimeDB = "12.00.00 AM";}else{cutOffTimeDB = dateFormat(cutOffTimeDB, "hh:mm:ss","time");}
+			if(Integer.parseInt(cutOffTime[0]) > 12){
+				cutOffDB = cutOffDateDB+" "+cutOffTimeDB.replaceAll("\\:", ".")+" PM";
+			}else{
+				cutOffDB = cutOffDateDB+" "+cutOffTimeDB.replaceAll("\\:", ".")+" AM";
+			}
+			if(result.get(0).get(8).toString().equals("O")){statusDB = "OPEN";}else{statusDB="NOT OPEN";}
+			String tempDB = ""+result.get(0).get(0)+":"+result.get(0).get(3)+":"+statusDB+":"+supplierDB+":"+"WAREHOUSE"+":"+result.get(0).get(7)+":"+totCartons+":"+"0"+":"+dDateDB+":"+cutOffDB; //Add Cutofftime
+			orderEnqDetailsDB.addAll(StringToListCreation(tempDB));
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Order Details (Total Article,Status,Supplier,Type,Source,Total Cartons,Total Pallets,Delivery Date,Cutoff Date Time) between Order Enquiry Page and DB *****;;;Info");
+			ElementContains1(cName,mName,extLogger,driver,orderEnqDetailsAppln,orderEnqDetailsDB);
+			
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Order Details (Total Article,Status,Supplier,Type,Source,Total Cartons,Total Pallets,Delivery Date,Cutoff Date Time) between Order Page(After Opening Order) and DB*****;;;Info");
+			String orderNumberAppln = objOrderUpdateObject.orderNumberAppln.getText().substring(objOrderUpdateObject.orderNumberAppln.getText().indexOf("#")+1).trim();
+			String ordertypeAppln = objOrderUpdateObject.orderNumberAppln.getText().substring(0,objOrderUpdateObject.orderNumberAppln.getText().indexOf(" ")).toUpperCase();
+			String oStatus = objOrderUpdateObject.statusAppln.getText().toUpperCase();
+			String totalArtAppln = objOrderUpdateObject.totalArticleAppln.getText();
+			String totalCartonOrderedAppln = objOrderUpdateObject.totalCartonOrderedAppln.getText();
+			
+			String[] detailsOrder = objOrderUpdateObject.orderDateSupplierDetails.getText().split("\\|");
+			String supplierAppln = detailsOrder[0].substring(detailsOrder[0].indexOf(":")+1).trim();
+			String deliveryDateAppln = detailsOrder[1].substring(detailsOrder[1].indexOf(":")+1).trim(); 
+			String cutOffAppln = detailsOrder[2].replace("Cut-off Date before Authorisation", "").trim();
+			String sourceAppln = detailsOrder[3].substring(detailsOrder[3].indexOf(":")+1).trim();
+			
+			orderEnqDetailsAppln.clear();
+			String temp1 = ""+orderNumberAppln+":"+totalArtAppln+":"+oStatus+":"+supplierAppln+":"+ordertypeAppln+":"+sourceAppln+":"+totalCartonOrderedAppln+":"+"0"+":"+deliveryDateAppln+":"+cutOffAppln.toString().replaceAll("\\:", ".");
+			orderEnqDetailsAppln.addAll(StringToListCreation(temp1));
+			ElementContains1(cName,mName,extLogger,driver,orderEnqDetailsAppln,orderEnqDetailsDB);
+			
+			orderArticleTable = getValuesFromTables(objOrderUpdateObject.orderTable);
+			removeIndex(orderArticleTable, Integer.toString(0));
+			int k=1;
+			for(int j=0;j<orderArticleTable.size();j++){
+				String[] tempOM = orderArticleTable.get(j).get(5).toString().split("\\s");
+				String om = String.format("%.03f", Float.parseFloat(tempOM[0].trim()))+" "+tempOM[1].trim();
+				String[] tempTU = orderArticleTable.get(j).get(6).toString().split("\\s");;
+				String tu = String.format("%.03f", Float.parseFloat(tempTU[0].trim()))+" "+tempTU[1].trim();
+				String[] sitsoo = objOrderUpdatePage.gettingSITSOOvalues(objOrderUpdateObject, j,k, driver).split("\\&");
+				//if(sitsoo[0]==null){sitsoo[0]="0.000";}else if(sitsoo[1]==null){sitsoo[1]="0.000";}
+				String tempAppln = orderArticleTable.get(j).get(0)+":"+orderArticleTable.get(j).get(1)+":"+orderArticleTable.get(j).get(2)+":"+String.format("%.03f", Float.parseFloat(orderArticleTable.get(j).get(3).toString()))+":"+String.format("%.03f", Float.parseFloat(orderArticleTable.get(j).get(4).toString()))+":"+om+":"+tu+":"+sitsoo[0]+":"+sitsoo[1];
+				resultAppln.addAll(StringToListCreation(tempAppln));
+				System.out.println(resultAppln);
+				k=k+2;
+			}
+			
+			String articledetails = data.getText("articledetails").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), articledetails);
+			removeMoreThanSingleSpace(result,1);
+			for(int i=0;i<result.size();i++){
+				String desc = result.get(i).get(1).toString().replace("*TEST(UEC)*","").trim();
+				String tempDB1 = ""+result.get(i).get(0)+":"+desc+":"+result.get(i).get(2)+":"+result.get(i).get(3)+":"+result.get(i).get(4)+":"+result.get(i).get(5)+" EA"+":"+String.format("%.03f",(Float.parseFloat(result.get(i).get(4).toString())*Float.parseFloat(result.get(i).get(5).toString())))+" EA"+":"+result.get(i).get(6)+":"+result.get(i).get(7);
+				resultDB.addAll(StringToListCreation(tempDB1));
+				System.out.println(resultDB);
+				
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Article Details (Number,Description,UOM,SOH,OM,Ordered Qty,Total Units,SOO,SIT) between Order Page and DB*****;;;Info");
+			ElementContains1(cName,mName,extLogger,driver,resultDB,resultAppln);
+				
+			List<List<Object>> articleList1 = articleFromDB();
+			
+			List<List<Object>>block = checkBlockText(orderNo, driver);
+			objOrderUpdatePage.blockingArticle(objOrderUpdateObject, block,articleList1,"SUGO", driver);
+			k=1;
+			//objOrderUpdatePage.updatingQuantity(objOrderUpdateObject,k, driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Checking Order Status after updating and saving the changes****;;;Info");
+			objOrderUpdatePage.checkingOrderAfterUpdate(objOrderUpdateObject,orderDetailsAppln1, orderNo,driver);
+			
+			
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(rxSegmentArtScenarios,rxSegmentArttestname,driver));
+			status.assertAll();
+		    
+		    
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Order Updation of SUGO PREQ having order type ZSW")
+	public void OrderUpdationOfSugoPREQ_ZSW()
+	{
+
+		List<List<Object>> orderDetailsAppln = new ArrayList<List<Object>>();
+		List<List<Object>> orderDetailsAppln1 = new ArrayList<List<Object>>();
+		List<List<Object>> orderEnqDetailsAppln = new ArrayList<List<Object>>();
+		List<List<Object>> orderEnqDetailsDB = new ArrayList<List<Object>>();
+		List<List<Object>> orderArticleTable = new ArrayList<List<Object>>();
+		List<List<Object>> resultDB = new ArrayList<List<Object>>();
+		List<List<Object>> resultAppln = new ArrayList<List<Object>>();
+		List<List<Object>> result12 = new ArrayList<List<Object>>();
+
+		if(rxSegmentArtpreCount2==-1)
+		{
+			MCcount =MCcount+10;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			String orderNo = data.getText("orderNumber_7051");
+			objOrderUpdateObject.orderNoSend.sendKeys(orderNo);
+			objOrderUpdateObject.goBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			try {
+				if(objOrderUpdateObject.filteredOrder.isDisplayed()){
+					orderDetailsAppln = getValuesFromTable(objOrderUpdateObject.orderDetails);
+					htmlToExtent(cName,mName,extLogger,driver,"*****ORDER DETAILS*****;;;Info");
+					htmlToExtent(cName,mName,extLogger,driver,""+orderDetailsAppln+";;;Pass");
+					objOrderUpdateObject.filteredOrder.click();
+					waitForJSandJQueryToLoad(driver);
+					verticalScroll(driver);
+					objOrderUpdateObject.clearGroup.click();
+				}
+			}catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.errorMessage.getText()+";;Fail");
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+			
+			if(orderDetailsAppln.get(0).get(2).equals("OPEN") && orderDetailsAppln.get(0).get(4).equals("VENDOR") && orderDetailsAppln.get(0).get(5).equals("SUGO")){
+				htmlToExtent(cName,mName,extLogger,driver,"For Order #"+orderNo+" status is Open,type is Vendor and Source is SUGO;;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver,"Status : "+orderDetailsAppln.get(0).get(2)+",Type : "+orderDetailsAppln.get(0).get(3)+" and Source "+orderDetailsAppln.get(0).get(4)+";;;Fail");
+			}
+			
+			String articlecount = data.getText("articlecount").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), articlecount);
+			String artCount = result.get(0).get(0).toString();
+
+			String supplierBrowser = orderDetailsAppln.get(0).get(3).toString().trim();
+			String totalCartons = orderDetailsAppln.get(0).get(6).toString();
+			String totalPallets = orderDetailsAppln.get(0).get(7).toString();
+			String source = orderDetailsAppln.get(0).get(5).toString();
+			
+			result.clear();
+			String orderdetails = data.getText("orderdetails").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), orderdetails);
+						
+			String temp=""+orderNo+":"+artCount+":"+orderDetailsAppln.get(0).get(2)+":"+orderDetailsAppln.get(0).get(3)+":"+orderDetailsAppln.get(0).get(4)+":"+orderDetailsAppln.get(0).get(5)+":"+orderDetailsAppln.get(0).get(6)+":"+"0"+":"+orderDetailsAppln.get(0).get(1)+":"+orderDetailsAppln.get(0).get(8).toString().replaceAll("\\:", "."); //Add Cutofftime
+			orderEnqDetailsAppln.addAll(StringToListCreation(temp));
+			String statusDB;
+			String supplierDB =  result.get(0).get(6).toString()+" ("+result.get(0).get(5).toString()+")";
+			String totCartons = result.get(0).get(4).toString().substring(0,result.get(0).get(4).toString().indexOf("."));
+			String dDateDB = dateFormat(result.get(0).get(2).toString().replaceAll("\\-","/"), "yyyy/MM/dd","date");
+			
+			String cutOffDB;
+			String cutOffDateDB = result.get(0).get(9).toString();
+			cutOffDateDB = dateFormat(cutOffDateDB.replaceAll("\\-","/"), "yyyy/MM/dd","date");
+			String cutOffTimeDB = result.get(0).get(10).toString();
+			String[] cutOffTime = cutOffTimeDB.split("(?<=\\G.{2})");
+			cutOffTimeDB = cutOffTime[0]+":"+cutOffTime[1]+":"+cutOffTime[2];
+			if(cutOffTimeDB.equals("00:00:00")){cutOffTimeDB = "12.00.00 AM";}else{cutOffTimeDB = dateFormat(cutOffTimeDB, "hh:mm:ss","time");}
+			if(Integer.parseInt(cutOffTime[0]) > 12){
+				cutOffDB = cutOffDateDB+" "+cutOffTimeDB.replaceAll("\\:", ".")+" PM";
+			}else{
+				cutOffDB = cutOffDateDB+" "+cutOffTimeDB.replaceAll("\\:", ".")+" AM";
+			}
+			if(result.get(0).get(8).toString().equals("O")){statusDB = "OPEN";}else{statusDB="NOT OPEN";}
+			String tempDB = ""+result.get(0).get(0)+":"+artCount+":"+statusDB+":"+supplierDB+":"+"VENDOR"+":"+result.get(0).get(7)+":"+totCartons+":"+"0"+":"+dDateDB+":"+cutOffDB; //Add Cutofftime
+			orderEnqDetailsDB.addAll(StringToListCreation(tempDB));
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Order Details (Total Article,Status,Supplier,Type,Source,Total Cartons,Total Pallets,Delivery Date,Cutoff Date Time) between Order Enquiry Page and DB *****;;;Info");
+			ElementContains1(cName,mName,extLogger,driver,orderEnqDetailsAppln,orderEnqDetailsDB);
+			
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Order Details (Total Article,Status,Supplier,Type,Source,Total Cartons,Total Pallets,Delivery Date,Cutoff Date Time) between Order Page(After Opening Order) and DB*****;;;Info");
+			String orderNumberAppln = objOrderUpdateObject.orderNumberAppln.getText().substring(objOrderUpdateObject.orderNumberAppln.getText().indexOf("#")+1).trim();
+			String ordertypeAppln = objOrderUpdateObject.orderNumberAppln.getText().substring(0,objOrderUpdateObject.orderNumberAppln.getText().indexOf(" ")).toUpperCase();
+			String oStatus = objOrderUpdateObject.statusAppln.getText().toUpperCase();
+			String totalArtAppln = objOrderUpdateObject.totalArticleAppln.getText();
+			String totalCartonOrderedAppln = objOrderUpdateObject.totalCartonOrderedAppln.getText();
+			
+			String[] detailsOrder = objOrderUpdateObject.orderDateSupplierDetails.getText().split("\\|");
+			String supplierAppln = detailsOrder[0].substring(detailsOrder[0].indexOf(":")+1).trim();
+			String deliveryDateAppln = detailsOrder[1].substring(detailsOrder[1].indexOf(":")+1).trim(); 
+			String cutOffAppln = detailsOrder[2].replace("Cut-off Date before Authorisation", "").trim();
+			String sourceAppln = detailsOrder[3].substring(detailsOrder[3].indexOf(":")+1).trim();
+			
+			orderEnqDetailsAppln.clear();
+			String temp1 = ""+orderNumberAppln+":"+totalArtAppln+":"+oStatus+":"+supplierAppln+":"+ordertypeAppln+":"+sourceAppln+":"+totalCartonOrderedAppln+":"+"0"+":"+deliveryDateAppln+":"+cutOffAppln.toString().replaceAll("\\:", ".");
+			orderEnqDetailsAppln.addAll(StringToListCreation(temp1));
+			ElementContains1(cName,mName,extLogger,driver,orderEnqDetailsAppln,orderEnqDetailsDB);
+			
+			orderArticleTable = getValuesFromTables(objOrderUpdateObject.orderTable);
+			removeIndex(orderArticleTable, Integer.toString(0));
+			int k=1;
+			for(int j=0;j<orderArticleTable.size();j++){
+				String[] tempOM = orderArticleTable.get(j).get(5).toString().split("\\s");
+				String om = String.format("%.03f", Float.parseFloat(tempOM[0].trim()))+" "+tempOM[1].trim();
+				String[] tempTU = orderArticleTable.get(j).get(6).toString().split("\\s");;
+				String tu = String.format("%.03f", Float.parseFloat(tempTU[0].trim()))+" "+tempTU[1].trim();
+				String[] sitsoo = objOrderUpdatePage.gettingSITSOOvalues(objOrderUpdateObject, j,k, driver).split("\\&");
+				//if(sitsoo[0]==null){sitsoo[0]="0.000";}else if(sitsoo[1]==null){sitsoo[1]="0.000";}
+				String tempAppln = orderArticleTable.get(j).get(0)+":"+orderArticleTable.get(j).get(1)+":"+orderArticleTable.get(j).get(2)+":"+String.format("%.03f", Float.parseFloat(orderArticleTable.get(j).get(3).toString()))+":"+String.format("%.03f", Float.parseFloat(orderArticleTable.get(j).get(4).toString()))+":"+om+":"+tu+":"+sitsoo[0]+":"+sitsoo[1];
+				resultAppln.addAll(StringToListCreation(tempAppln));
+				System.out.println(resultAppln);
+				k=k+2;
+			}
+			
+			String articledetails = data.getText("articledetails").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), articledetails);
+			removeMoreThanSingleSpace(result,1);
+			for(int i=0;i<result.size();i++){
+				String desc = result.get(i).get(1).toString().replace("*TEST(UEC)*","").trim();
+				String tempDB1 = ""+result.get(i).get(0)+":"+desc+":"+result.get(i).get(2)+":"+result.get(i).get(3)+":"+result.get(i).get(4)+":"+result.get(i).get(5)+" "+result.get(i).get(8)+":"+String.format("%.03f",(Float.parseFloat(result.get(i).get(4).toString())*Float.parseFloat(result.get(i).get(5).toString())))+" "+result.get(i).get(8)+":"+result.get(i).get(6)+":"+result.get(i).get(7);
+				resultDB.addAll(StringToListCreation(tempDB1));
+				System.out.println(resultDB);
+				
+			}
+			
+						
+			//htmlToExtent(cName,mName,extLogger,driver,"*****Checking block codes for the articles *****;;;Info");
+	
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Article Details (Number,Description,UOM,SOH,OM,Ordered Qty,Total Units,SOO,SIT) between Order Page and DB*****;;;Info");
+			ElementContains1(cName,mName,extLogger,driver,resultDB,resultAppln);
+				
+			List<List<Object>> articleList1 = articleFromDB();
+			
+			List<List<Object>>block = checkBlockText(orderNo, driver);
+			objOrderUpdatePage.blockingArticle(objOrderUpdateObject, block,articleList1,"SUGO", driver);
+			k=1;
+			//objOrderUpdatePage.updatingQuantity(objOrderUpdateObject,k, driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Checking Order Status after updating and saving the changes****;;;Info");
+			objOrderUpdatePage.checkingOrderAfterUpdate(objOrderUpdateObject,orderDetailsAppln1, orderNo,driver);
+			
+			
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(rxSegmentArtScenarios,rxSegmentArttestname,driver));
+			status.assertAll();
+		    
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Order Updation of SUGO PREQ having order type ZSP")
+	public void OrderUpdationOfSugoPREQ_ZSP()
+	{
+
+		List<List<Object>> orderDetailsAppln = new ArrayList<List<Object>>();
+		List<List<Object>> orderDetailsAppln1 = new ArrayList<List<Object>>();
+		List<List<Object>> orderEnqDetailsAppln = new ArrayList<List<Object>>();
+		List<List<Object>> orderEnqDetailsDB = new ArrayList<List<Object>>();
+		List<List<Object>> orderArticleTable = new ArrayList<List<Object>>();
+		List<List<Object>> resultDB = new ArrayList<List<Object>>();
+		List<List<Object>> resultAppln = new ArrayList<List<Object>>();
+
+		if(rxSegmentArtpreCount2==-1)
+		{
+			MCcount =MCcount+10;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			String orderNo = data.getText("orderNumber_7051");
+			objOrderUpdateObject.orderNoSend.sendKeys(orderNo);
+			objOrderUpdateObject.goBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			try {
+				if(objOrderUpdateObject.filteredOrder.isDisplayed()){
+					orderDetailsAppln = getValuesFromTable(objOrderUpdateObject.orderDetails);
+					htmlToExtent(cName,mName,extLogger,driver,"*****ORDER DETAILS*****;;;Info");
+					htmlToExtent(cName,mName,extLogger,driver,""+orderDetailsAppln+";;;Pass");
+					objOrderUpdateObject.filteredOrder.click();
+					waitForJSandJQueryToLoad(driver);
+					verticalScroll(driver);
+					objOrderUpdateObject.clearGroup.click();
+				}
+			}catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.errorMessage.getText()+";;Fail");
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+			
+			if(orderDetailsAppln.get(0).get(2).equals("OPEN") && orderDetailsAppln.get(0).get(4).equals("VENDOR") && orderDetailsAppln.get(0).get(5).equals("SUGO")){
+				htmlToExtent(cName,mName,extLogger,driver,"For Order #"+orderNo+" status is Open,type is Vendor and Source is SUGO;;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver,"Status : "+orderDetailsAppln.get(0).get(2)+",Type : "+orderDetailsAppln.get(0).get(3)+" and Source "+orderDetailsAppln.get(0).get(4)+";;;Fail");
+			}
+			
+			String articlecount = data.getText("articlecount").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), articlecount);
+			String artCount = result.get(0).get(0).toString();
+
+			String supplierBrowser = orderDetailsAppln.get(0).get(3).toString().trim();
+			String totalCartons = orderDetailsAppln.get(0).get(6).toString();
+			String totalPallets = orderDetailsAppln.get(0).get(7).toString();
+			String source = orderDetailsAppln.get(0).get(5).toString();
+			
+			result.clear();
+			String orderdetails = data.getText("orderdetails").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), orderdetails);
+						
+			String temp=""+orderNo+":"+artCount+":"+orderDetailsAppln.get(0).get(2)+":"+orderDetailsAppln.get(0).get(3)+":"+orderDetailsAppln.get(0).get(4)+":"+orderDetailsAppln.get(0).get(5)+":"+orderDetailsAppln.get(0).get(6)+":"+"0"+":"+orderDetailsAppln.get(0).get(1)+":"+orderDetailsAppln.get(0).get(8).toString().replaceAll("\\:", "."); //Add Cutofftime
+			orderEnqDetailsAppln.addAll(StringToListCreation(temp));
+			String statusDB;
+			String supplierDB =  result.get(0).get(6).toString()+" ("+result.get(0).get(5).toString()+")";
+			String totCartons = result.get(0).get(4).toString().substring(0,result.get(0).get(4).toString().indexOf("."));
+			String dDateDB = dateFormat(result.get(0).get(2).toString().replaceAll("\\-","/"), "yyyy/MM/dd","date");
+			
+			String cutOffDB;
+			String cutOffDateDB = result.get(0).get(9).toString();
+			cutOffDateDB = dateFormat(cutOffDateDB.replaceAll("\\-","/"), "yyyy/MM/dd","date");
+			String cutOffTimeDB = result.get(0).get(10).toString();
+			String[] cutOffTime = cutOffTimeDB.split("(?<=\\G.{2})");
+			cutOffTimeDB = cutOffTime[0]+":"+cutOffTime[1]+":"+cutOffTime[2];
+			if(cutOffTimeDB.equals("00:00:00")){cutOffTimeDB = "12.00.00 AM";}else{cutOffTimeDB = dateFormat(cutOffTimeDB, "hh:mm:ss","time");}
+			if(Integer.parseInt(cutOffTime[0]) > 12){
+				cutOffDB = cutOffDateDB+" "+cutOffTimeDB.replaceAll("\\:", ".")+" PM";
+			}else{
+				cutOffDB = cutOffDateDB+" "+cutOffTimeDB.replaceAll("\\:", ".")+" AM";
+			}
+			if(result.get(0).get(8).toString().equals("O")){statusDB = "OPEN";}else{statusDB="NOT OPEN";}
+			String tempDB = ""+result.get(0).get(0)+":"+artCount+":"+statusDB+":"+supplierDB+":"+"VENDOR"+":"+result.get(0).get(7)+":"+totCartons+":"+"0"+":"+dDateDB+":"+cutOffDB; //Add Cutofftime
+			orderEnqDetailsDB.addAll(StringToListCreation(tempDB));
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Order Details (Total Article,Status,Supplier,Type,Source,Total Cartons,Total Pallets,Delivery Date,Cutoff Date Time) between Order Enquiry Page and DB *****;;;Info");
+			ElementContains1(cName,mName,extLogger,driver,orderEnqDetailsAppln,orderEnqDetailsDB);
+			
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Order Details (Total Article,Status,Supplier,Type,Source,Total Cartons,Total Pallets,Delivery Date,Cutoff Date Time) between Order Page(After Opening Order) and DB*****;;;Info");
+			String orderNumberAppln = objOrderUpdateObject.orderNumberAppln.getText().substring(objOrderUpdateObject.orderNumberAppln.getText().indexOf("#")+1).trim();
+			String ordertypeAppln = objOrderUpdateObject.orderNumberAppln.getText().substring(0,objOrderUpdateObject.orderNumberAppln.getText().indexOf(" ")).toUpperCase();
+			String oStatus = objOrderUpdateObject.statusAppln.getText().toUpperCase();
+			String totalArtAppln = objOrderUpdateObject.totalArticleAppln.getText();
+			String totalCartonOrderedAppln = objOrderUpdateObject.totalCartonOrderedAppln.getText();
+			
+			String[] detailsOrder = objOrderUpdateObject.orderDateSupplierDetails.getText().split("\\|");
+			String supplierAppln = detailsOrder[0].substring(detailsOrder[0].indexOf(":")+1).trim();
+			String deliveryDateAppln = detailsOrder[1].substring(detailsOrder[1].indexOf(":")+1).trim(); 
+			String cutOffAppln = detailsOrder[2].replace("Cut-off Date before Authorisation", "").trim();
+			String sourceAppln = detailsOrder[3].substring(detailsOrder[3].indexOf(":")+1).trim();
+			
+			orderEnqDetailsAppln.clear();
+			String temp1 = ""+orderNumberAppln+":"+totalArtAppln+":"+oStatus+":"+supplierAppln+":"+ordertypeAppln+":"+sourceAppln+":"+totalCartonOrderedAppln+":"+"0"+":"+deliveryDateAppln+":"+cutOffAppln.toString().replaceAll("\\:", ".");
+			orderEnqDetailsAppln.addAll(StringToListCreation(temp1));
+			ElementContains1(cName,mName,extLogger,driver,orderEnqDetailsAppln,orderEnqDetailsDB);
+			
+			orderArticleTable = getValuesFromTables(objOrderUpdateObject.orderTable);
+			removeIndex(orderArticleTable, Integer.toString(0));
+			int k=1;
+			for(int j=0;j<orderArticleTable.size();j++){
+				String[] tempOM = orderArticleTable.get(j).get(5).toString().split("\\s");
+				String om = String.format("%.03f", Float.parseFloat(tempOM[0].trim()))+" "+tempOM[1].trim();
+				String[] tempTU = orderArticleTable.get(j).get(6).toString().split("\\s");;
+				String tu = String.format("%.03f", Float.parseFloat(tempTU[0].trim()))+" "+tempTU[1].trim();
+				String[] sitsoo = objOrderUpdatePage.gettingSITSOOvalues(objOrderUpdateObject, j,k, driver).split("\\&");
+				//if(sitsoo[0]==null){sitsoo[0]="0.000";}else if(sitsoo[1]==null){sitsoo[1]="0.000";}
+				String tempAppln = orderArticleTable.get(j).get(0)+":"+orderArticleTable.get(j).get(1)+":"+orderArticleTable.get(j).get(2)+":"+String.format("%.03f", Float.parseFloat(orderArticleTable.get(j).get(3).toString()))+":"+String.format("%.03f", Float.parseFloat(orderArticleTable.get(j).get(4).toString()))+":"+om+":"+tu+":"+sitsoo[0]+":"+sitsoo[1];
+				resultAppln.addAll(StringToListCreation(tempAppln));
+				System.out.println(resultAppln);
+				k=k+2;
+			}
+			
+			String articledetails = data.getText("articledetails").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), articledetails);
+			removeMoreThanSingleSpace(result,1);
+			for(int i=0;i<result.size();i++){
+				String desc = result.get(i).get(1).toString().replace("*TEST(UEC)*","").trim();
+				String tempDB1 = ""+result.get(i).get(0)+":"+desc+":"+result.get(i).get(2)+":"+result.get(i).get(3)+":"+result.get(i).get(4)+":"+result.get(i).get(5)+" "+result.get(i).get(8)+":"+String.format("%.03f",(Float.parseFloat(result.get(i).get(4).toString())*Float.parseFloat(result.get(i).get(5).toString())))+" "+result.get(i).get(8)+":"+result.get(i).get(6)+":"+result.get(i).get(7);
+				resultDB.addAll(StringToListCreation(tempDB1));
+				System.out.println(resultDB);
+				
+			}
+			
+			
+			
+			//htmlToExtent(cName,mName,extLogger,driver,"*****Checking block codes for the articles *****;;;Info");
+	
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Article Details (Number,Description,UOM,SOH,OM,Ordered Qty,Total Units,SOO,SIT) between Order Page and DB*****;;;Info");
+			ElementContains1(cName,mName,extLogger,driver,resultDB,resultAppln);
+		
+			List<List<Object>> articleList1 = articleFromDB();
+			
+			List<List<Object>>block = checkBlockText(orderNo, driver);
+			objOrderUpdatePage.blockingArticle(objOrderUpdateObject, block,articleList1,"SUGO", driver);
+			k=1;
+			//objOrderUpdatePage.updatingQuantity(objOrderUpdateObject,k, driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Checking Order Status after updating and saving the changes****;;;Info");
+			objOrderUpdatePage.checkingOrderAfterUpdate(objOrderUpdateObject,orderDetailsAppln1, orderNo,driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(rxSegmentArtScenarios,rxSegmentArttestname,driver));
+			status.assertAll();
+		    
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	//Manual PREQ and PO
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Order Updation of Manual PREQ of DC supplied articles having order type ZMW")
+	public void OrderUpdationOfManualPO_ZMW()
+	{
+
+		List<List<Object>> orderDetailsAppln = new ArrayList<List<Object>>();
+		List<List<Object>> orderDetailsAppln1 = new ArrayList<List<Object>>();
+		List<List<Object>> orderEnqDetailsAppln = new ArrayList<List<Object>>();
+		List<List<Object>> orderEnqDetailsDB = new ArrayList<List<Object>>();
+		List<List<Object>> orderArticleTable = new ArrayList<List<Object>>();
+		List<List<Object>> resultDB = new ArrayList<List<Object>>();
+		List<List<Object>> resultAppln = new ArrayList<List<Object>>();
+
+		if(rxSegmentArtpreCount2==-1)
+		{
+			MCcount =MCcount+10;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			String orderNo = data.getText("orderNumber_7051");
+			objOrderUpdateObject.orderNoSend.sendKeys(orderNo);
+			objOrderUpdateObject.goBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			try {
+				if(objOrderUpdateObject.filteredOrder.isDisplayed()){
+					orderDetailsAppln = getValuesFromTable(objOrderUpdateObject.orderDetails);
+					htmlToExtent(cName,mName,extLogger,driver,"*****ORDER DETAILS*****;;;Info");
+					htmlToExtent(cName,mName,extLogger,driver,""+orderDetailsAppln+";;;Pass");
+					objOrderUpdateObject.filteredOrder.click();
+					waitForJSandJQueryToLoad(driver);
+					verticalScroll(driver);
+					objOrderUpdateObject.clearGroup.click();
+				}
+			}catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.errorMessage.getText()+";;Fail");
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+				
+			
+			if(orderDetailsAppln.get(0).get(2).equals("OPEN") && orderDetailsAppln.get(0).get(4).equals("WAREHOUSE") && orderDetailsAppln.get(0).get(5).equals("STORE")){
+				htmlToExtent(cName,mName,extLogger,driver,"For Order #"+orderNo+" status is Open,type is Warehouse and Source is STORE;;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver,"Status : "+orderDetailsAppln.get(0).get(2)+",Type : "+orderDetailsAppln.get(0).get(3)+" and Source "+orderDetailsAppln.get(0).get(4)+";;;Fail");
+			}
+
+			String supplierBrowser = orderDetailsAppln.get(0).get(3).toString().trim();
+			String totalCartons = orderDetailsAppln.get(0).get(6).toString();
+			String totalPallets = orderDetailsAppln.get(0).get(7).toString();
+			String source = orderDetailsAppln.get(0).get(5).toString();
+			
+			//result.clear();
+			String orderdetails = data.getText("orderdetails").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), orderdetails);
+						
+			String temp=""+orderNo+":"+result.get(0).get(3)+":"+orderDetailsAppln.get(0).get(2)+":"+orderDetailsAppln.get(0).get(3)+":"+orderDetailsAppln.get(0).get(4)+":"+orderDetailsAppln.get(0).get(5)+":"+orderDetailsAppln.get(0).get(6)+":"+"0"+":"+orderDetailsAppln.get(0).get(1)+":"+orderDetailsAppln.get(0).get(8).toString().replaceAll("\\:", "."); //Add Cutofftime
+			orderEnqDetailsAppln.addAll(StringToListCreation(temp));
+			String statusDB;
+			String supplierDB =  result.get(0).get(6).toString()+" ("+result.get(0).get(5).toString()+")";
+			String totCartons = result.get(0).get(4).toString().substring(0,result.get(0).get(4).toString().indexOf("."));
+			String dDateDB = dateFormat(result.get(0).get(2).toString().replaceAll("\\-","/"), "yyyy/MM/dd","date");
+			
+			String cutOffDB;
+			String cutOffDateDB = result.get(0).get(9).toString();
+			cutOffDateDB = dateFormat(cutOffDateDB.replaceAll("\\-","/"), "yyyy/MM/dd","date");
+			String cutOffTimeDB = result.get(0).get(10).toString();
+			String[] cutOffTime = cutOffTimeDB.split("(?<=\\G.{2})");
+			cutOffTimeDB = cutOffTime[0]+":"+cutOffTime[1]+":"+cutOffTime[2];
+			if(cutOffTimeDB.equals("00:00:00")){cutOffTimeDB = "12.00.00 AM";}else{cutOffTimeDB = dateFormat(cutOffTimeDB, "hh:mm:ss","time");}
+		/*	if(Integer.parseInt(cutOffTime[0]) > 12){
+				cutOffDB = cutOffDateDB+" "+cutOffTimeDB.replaceAll("\\:", ".")+" PM";
+			}else{
+				cutOffDB = cutOffDateDB+" "+cutOffTimeDB.replaceAll("\\:", ".")+" AM";
+			}
+		*/	cutOffDB = cutOffDateDB+" "+cutOffTimeDB.replaceAll("\\:", ".");
+			if(result.get(0).get(8).toString().equals("O")){statusDB = "OPEN";}else{statusDB="NOT OPEN";}
+			String tempDB = ""+result.get(0).get(0)+":"+result.get(0).get(3)+":"+statusDB+":"+supplierDB+":"+"WAREHOUSE"+":"+result.get(0).get(7)+":"+totCartons+":"+"0"+":"+dDateDB+":"+cutOffDB; //Add Cutofftime
+			orderEnqDetailsDB.addAll(StringToListCreation(tempDB));
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Order Details (Total Article,Status,Supplier,Type,Source,Total Cartons,Total Pallets,Delivery Date,Cutoff Date Time) between Order Enquiry Page and DB *****;;;Info");
+			ElementContains1(cName,mName,extLogger,driver,orderEnqDetailsAppln,orderEnqDetailsDB);
+			
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Order Details (Total Article,Status,Supplier,Type,Source,Total Cartons,Total Pallets,Delivery Date,Cutoff Date Time) between Order Page(After Opening Order) and DB*****;;;Info");
+			String orderNumberAppln = objOrderUpdateObject.orderNumberAppln.getText().substring(objOrderUpdateObject.orderNumberAppln.getText().indexOf("#")+1).trim();
+			String ordertypeAppln = objOrderUpdateObject.orderNumberAppln.getText().substring(0,objOrderUpdateObject.orderNumberAppln.getText().indexOf(" ")).toUpperCase();
+			String oStatus = objOrderUpdateObject.statusAppln.getText().toUpperCase();
+			String totalArtAppln = objOrderUpdateObject.totalArticleAppln.getText();
+			String totalCartonOrderedAppln = objOrderUpdateObject.totalCartonOrderedAppln.getText();
+			
+			String[] detailsOrder = objOrderUpdateObject.orderDateSupplierDetails.getText().split("\\|");
+			String supplierAppln = detailsOrder[0].substring(detailsOrder[0].indexOf(":")+1).trim();
+			String deliveryDateAppln = detailsOrder[1].substring(detailsOrder[1].indexOf(":")+1).trim(); 
+			String cutOffAppln = detailsOrder[2].replace("Cut-off Date before Authorisation", "").trim();
+			String sourceAppln = detailsOrder[3].substring(detailsOrder[3].indexOf(":")+1).trim();
+			
+			orderEnqDetailsAppln.clear();
+			String temp1 = ""+orderNumberAppln+":"+totalArtAppln+":"+oStatus+":"+supplierAppln+":"+ordertypeAppln+":"+sourceAppln+":"+totalCartonOrderedAppln+":"+"0"+":"+deliveryDateAppln+":"+cutOffAppln.toString().replaceAll("\\:", ".");
+			orderEnqDetailsAppln.addAll(StringToListCreation(temp1));
+			ElementContains1(cName,mName,extLogger,driver,orderEnqDetailsAppln,orderEnqDetailsDB);
+			
+			orderArticleTable = getValuesFromTables(objOrderUpdateObject.orderTable);
+			removeIndex(orderArticleTable, Integer.toString(0));
+			int k=1;
+			for(int j=0;j<orderArticleTable.size();j++){
+				String[] tempOM = orderArticleTable.get(j).get(5).toString().split("\\s");
+				String om = String.format("%.03f", Float.parseFloat(tempOM[0].trim()))+" "+tempOM[1].trim();
+				String[] tempTU = orderArticleTable.get(j).get(6).toString().split("\\s");;
+				String tu = String.format("%.03f", Float.parseFloat(tempTU[0].trim()))+" "+tempTU[1].trim();
+				String[] sitsoo = objOrderUpdatePage.gettingSITSOOvalues(objOrderUpdateObject, j,k, driver).split("\\&");
+				//if(sitsoo[0]==null){sitsoo[0]="0.000";}else if(sitsoo[1]==null){sitsoo[1]="0.000";}
+				String tempAppln = orderArticleTable.get(j).get(0)+":"+orderArticleTable.get(j).get(1)+":"+orderArticleTable.get(j).get(2)+":"+String.format("%.03f", Float.parseFloat(orderArticleTable.get(j).get(3).toString()))+":"+String.format("%.03f", Float.parseFloat(orderArticleTable.get(j).get(4).toString()))+":"+om+":"+tu+":"+sitsoo[0]+":"+sitsoo[1];
+				resultAppln.addAll(StringToListCreation(tempAppln));
+				System.out.println(resultAppln);
+				k=k+2;
+			}
+			
+			String articledetails = data.getText("articledetails").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), articledetails);
+			removeMoreThanSingleSpace(result,1);
+			for(int i=0;i<result.size();i++){
+				String desc = result.get(i).get(1).toString().replace("*TEST(UEC)*","").trim();
+				String tempDB1 = ""+result.get(i).get(0)+":"+desc+":"+result.get(i).get(2)+":"+result.get(i).get(3)+":"+result.get(i).get(4)+":"+result.get(i).get(5)+" EA"+":"+String.format("%.03f",(Float.parseFloat(result.get(i).get(4).toString())*Float.parseFloat(result.get(i).get(5).toString())))+" EA"+":"+result.get(i).get(6)+":"+result.get(i).get(7);
+				resultDB.addAll(StringToListCreation(tempDB1));
+				System.out.println(resultDB);
+				
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Article Details (Number,Description,UOM,SOH,OM,Ordered Qty,Total Units,SOO,SIT) between Order Page and DB*****;;;Info");
+			ElementContains1(cName,mName,extLogger,driver,resultDB,resultAppln);
+		
+			List<List<Object>> articleList1 = articleFromDB();
+			
+			List<List<Object>>block = checkBlockText(orderNo, driver);
+			objOrderUpdatePage.blockingArticle(objOrderUpdateObject, block,articleList1,"MANUAL", driver);
+			k=1;
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Checking Order Status after updating and saving the changes****;;;Info");
+			objOrderUpdatePage.checkingOrderAfterUpdate(objOrderUpdateObject,orderDetailsAppln1, orderNo,driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(rxSegmentArtScenarios,rxSegmentArttestname,driver));
+			status.assertAll();
+		    
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Order Updation of Manual PREQ of vendor supplied articles having order type ZMW")
+	public void OrderUpdationOfManualPREQ_ZMW()
+	{
+
+		List<List<Object>> orderDetailsAppln = new ArrayList<List<Object>>();
+		List<List<Object>> orderDetailsAppln1 = new ArrayList<List<Object>>();
+		List<List<Object>> orderEnqDetailsAppln = new ArrayList<List<Object>>();
+		List<List<Object>> orderEnqDetailsDB = new ArrayList<List<Object>>();
+		List<List<Object>> orderArticleTable = new ArrayList<List<Object>>();
+		List<List<Object>> resultDB = new ArrayList<List<Object>>();
+		List<List<Object>> resultAppln = new ArrayList<List<Object>>();
+
+		if(rxSegmentArtpreCount2==-1)
+		{
+			MCcount =MCcount+10;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			String orderNo = data.getText("orderNumber_7051");
+			objOrderUpdateObject.orderNoSend.sendKeys(orderNo);
+			objOrderUpdateObject.goBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			try {
+				if(objOrderUpdateObject.filteredOrder.isDisplayed()){
+					orderDetailsAppln = getValuesFromTable(objOrderUpdateObject.orderDetails);
+					htmlToExtent(cName,mName,extLogger,driver,"*****ORDER DETAILS*****;;;Info");
+					htmlToExtent(cName,mName,extLogger,driver,""+orderDetailsAppln+";;;Pass");
+					objOrderUpdateObject.filteredOrder.click();
+					waitForJSandJQueryToLoad(driver);
+					verticalScroll(driver);
+					objOrderUpdateObject.clearGroup.click();
+				}
+			}catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.errorMessage.getText()+";;Fail");
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+				
+			
+			if(orderDetailsAppln.get(0).get(2).equals("OPEN") && orderDetailsAppln.get(0).get(4).equals("VENDOR") && orderDetailsAppln.get(0).get(5).equals("STORE")){
+				htmlToExtent(cName,mName,extLogger,driver,"For Order #"+orderNo+" status is Open,type is VENDOR and Source is STORE;;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver,"Status : "+orderDetailsAppln.get(0).get(2)+",Type : "+orderDetailsAppln.get(0).get(3)+" and Source "+orderDetailsAppln.get(0).get(4)+";;;Fail");
+			}
+
+			String articlecount = data.getText("articlecount").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), articlecount);
+			String artCount = result.get(0).get(0).toString();
+			
+			String supplierBrowser = orderDetailsAppln.get(0).get(3).toString().trim();
+			String totalCartons = orderDetailsAppln.get(0).get(6).toString();
+			String totalPallets = orderDetailsAppln.get(0).get(7).toString();
+			String source = orderDetailsAppln.get(0).get(5).toString();
+			
+			//result.clear();
+			String orderdetails = data.getText("orderdetails").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), orderdetails);
+						
+			String temp=""+orderNo+":"+artCount+":"+orderDetailsAppln.get(0).get(2)+":"+orderDetailsAppln.get(0).get(3)+":"+orderDetailsAppln.get(0).get(4)+":"+orderDetailsAppln.get(0).get(5)+":"+orderDetailsAppln.get(0).get(6)+":"+"0"+":"+orderDetailsAppln.get(0).get(1)+":"+orderDetailsAppln.get(0).get(8).toString().replaceAll("\\:", "."); //Add Cutofftime
+			orderEnqDetailsAppln.addAll(StringToListCreation(temp));
+			String statusDB;
+			String supplierDB =  result.get(0).get(6).toString()+" ("+result.get(0).get(5).toString()+")";
+			String totCartons = result.get(0).get(4).toString().substring(0,result.get(0).get(4).toString().indexOf("."));
+			String dDateDB = dateFormat(result.get(0).get(2).toString().replaceAll("\\-","/"), "yyyy/MM/dd","date");
+			
+			String cutOffDB;
+			String cutOffDateDB = result.get(0).get(9).toString();
+			cutOffDateDB = dateFormat(cutOffDateDB.replaceAll("\\-","/"), "yyyy/MM/dd","date");
+			String cutOffTimeDB = result.get(0).get(10).toString();
+			String[] cutOffTime = cutOffTimeDB.split("(?<=\\G.{2})");
+			cutOffTimeDB = cutOffTime[0]+":"+cutOffTime[1]+":"+cutOffTime[2];
+			if(cutOffTimeDB.equals("00:00:00")){cutOffTimeDB = "12.00.00 AM";}else{cutOffTimeDB = dateFormat(cutOffTimeDB, "hh:mm:ss","time");}
+			if(Integer.parseInt(cutOffTime[0]) > 12){
+				cutOffDB = cutOffDateDB+" "+cutOffTimeDB.replaceAll("\\:", ".")+" PM";
+			}else{
+				cutOffDB = cutOffDateDB+" "+cutOffTimeDB.replaceAll("\\:", ".")+" AM";
+			}
+			if(result.get(0).get(8).toString().equals("O")){statusDB = "OPEN";}else{statusDB="NOT OPEN";}
+			String tempDB = ""+result.get(0).get(0)+":"+result.get(0).get(3)+":"+statusDB+":"+supplierDB+":"+"VENDOR"+":"+result.get(0).get(7)+":"+totCartons+":"+"0"+":"+dDateDB+":"+cutOffDB; //Add Cutofftime
+			orderEnqDetailsDB.addAll(StringToListCreation(tempDB));
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Order Details (Total Article,Status,Supplier,Type,Source,Total Cartons,Total Pallets,Delivery Date,Cutoff Date Time) between Order Enquiry Page and DB *****;;;Info");
+			ElementContains1(cName,mName,extLogger,driver,orderEnqDetailsAppln,orderEnqDetailsDB);
+			
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Order Details (Total Article,Status,Supplier,Type,Source,Total Cartons,Total Pallets,Delivery Date,Cutoff Date Time) between Order Page(After Opening Order) and DB*****;;;Info");
+			String orderNumberAppln = objOrderUpdateObject.orderNumberAppln.getText().substring(objOrderUpdateObject.orderNumberAppln.getText().indexOf("#")+1).trim();
+			String ordertypeAppln = objOrderUpdateObject.orderNumberAppln.getText().substring(0,objOrderUpdateObject.orderNumberAppln.getText().indexOf(" ")).toUpperCase();
+			String oStatus = objOrderUpdateObject.statusAppln.getText().toUpperCase();
+			String totalArtAppln = objOrderUpdateObject.totalArticleAppln.getText();
+			String totalCartonOrderedAppln = objOrderUpdateObject.totalCartonOrderedAppln.getText();
+			
+			String[] detailsOrder = objOrderUpdateObject.orderDateSupplierDetails.getText().split("\\|");
+			String supplierAppln = detailsOrder[0].substring(detailsOrder[0].indexOf(":")+1).trim();
+			String deliveryDateAppln = detailsOrder[1].substring(detailsOrder[1].indexOf(":")+1).trim(); 
+			String cutOffAppln = detailsOrder[2].replace("Cut-off Date before Authorisation", "").trim();
+			String sourceAppln = detailsOrder[3].substring(detailsOrder[3].indexOf(":")+1).trim();
+			
+			orderEnqDetailsAppln.clear();
+			String temp1 = ""+orderNumberAppln+":"+totalArtAppln+":"+oStatus+":"+supplierAppln+":"+ordertypeAppln+":"+sourceAppln+":"+totalCartonOrderedAppln+":"+"0"+":"+deliveryDateAppln+":"+cutOffAppln.toString().replaceAll("\\:", ".");
+			orderEnqDetailsAppln.addAll(StringToListCreation(temp1));
+			ElementContains1(cName,mName,extLogger,driver,orderEnqDetailsAppln,orderEnqDetailsDB);
+			
+			orderArticleTable = getValuesFromTables(objOrderUpdateObject.orderTable);
+			removeIndex(orderArticleTable, Integer.toString(0));
+			int k=1;
+			for(int j=0;j<orderArticleTable.size();j++){
+				String[] tempOM = orderArticleTable.get(j).get(5).toString().split("\\s");
+				String om = String.format("%.03f", Float.parseFloat(tempOM[0].trim()))+" "+tempOM[1].trim();
+				String[] tempTU = orderArticleTable.get(j).get(6).toString().split("\\s");;
+				String tu = String.format("%.03f", Float.parseFloat(tempTU[0].trim()))+" "+tempTU[1].trim();
+				String[] sitsoo = objOrderUpdatePage.gettingSITSOOvalues(objOrderUpdateObject, j,k, driver).split("\\&");
+				//if(sitsoo[0]==null){sitsoo[0]="0.000";}else if(sitsoo[1]==null){sitsoo[1]="0.000";}
+				String tempAppln = orderArticleTable.get(j).get(0)+":"+orderArticleTable.get(j).get(1)+":"+orderArticleTable.get(j).get(2)+":"+String.format("%.03f", Float.parseFloat(orderArticleTable.get(j).get(3).toString()))+":"+String.format("%.03f", Float.parseFloat(orderArticleTable.get(j).get(4).toString()))+":"+om+":"+tu+":"+sitsoo[0]+":"+sitsoo[1];
+				resultAppln.addAll(StringToListCreation(tempAppln));
+				System.out.println(resultAppln);
+				k=k+2;
+			}
+			
+			String articledetails = data.getText("articledetails").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), articledetails);
+			removeMoreThanSingleSpace(result,1);
+			for(int i=0;i<result.size();i++){
+				String desc = result.get(i).get(1).toString().replace("*TEST(UEC)*","").trim();
+				String tempDB1 = ""+result.get(i).get(0)+":"+desc+":"+result.get(i).get(2)+":"+result.get(i).get(3)+":"+result.get(i).get(4)+":"+result.get(i).get(5)+" EA"+":"+String.format("%.03f",(Float.parseFloat(result.get(i).get(4).toString())*Float.parseFloat(result.get(i).get(5).toString())))+" EA"+":"+result.get(i).get(6)+":"+result.get(i).get(7);
+				resultDB.addAll(StringToListCreation(tempDB1));
+				System.out.println(resultDB);
+				
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Article Details (Number,Description,UOM,SOH,OM,Ordered Qty,Total Units,SOO,SIT) between Order Page and DB*****;;;Info");
+			ElementContains1(cName,mName,extLogger,driver,resultDB,resultAppln);
+		
+			List<List<Object>> articleList1 = articleFromDB();
+			
+			List<List<Object>>block = checkBlockText(orderNo, driver);
+			objOrderUpdatePage.blockingArticle(objOrderUpdateObject, block,articleList1,"MANUAL", driver);
+			k=1;
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Checking Order Status after updating and saving the changes****;;;Info");
+			objOrderUpdatePage.checkingOrderAfterUpdate(objOrderUpdateObject,orderDetailsAppln1, orderNo,driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(rxSegmentArtScenarios,rxSegmentArttestname,driver));
+			status.assertAll();
+		    
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether user is able to add article by entering article EAN during order Updation of PREQ")
+	public void OrderUpdationByAddingArticleByEAN()
+	{
+
+		List<List<Object>> orderDetailsAppln = new ArrayList<List<Object>>();
+		List<List<Object>> orderDetailsAppln1 = new ArrayList<List<Object>>();
+		List<List<Object>> orderEnqDetailsAppln = new ArrayList<List<Object>>();
+		List<List<Object>> orderEnqDetailsDB = new ArrayList<List<Object>>();
+		List<List<Object>> orderArticleTable = new ArrayList<List<Object>>();
+		List<List<Object>> resultDB = new ArrayList<List<Object>>();
+		List<List<Object>> resultAppln = new ArrayList<List<Object>>();
+
+		if(rxSegmentArtpreCount2==-1)
+		{
+			MCcount =MCcount+8;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			String orderNo = data.getText("orderNumber_7051");
+			objOrderUpdateObject.orderNoSend.sendKeys(orderNo);
+			objOrderUpdateObject.goBtn.click();
+			waitForJSandJQueryToLoad(driver);
+			
+			try {
+				if(objOrderUpdateObject.filteredOrder.isDisplayed()){
+					orderDetailsAppln = getValuesFromTable(objOrderUpdateObject.orderDetails);
+					htmlToExtent(cName,mName,extLogger,driver,"*****ORDER DETAILS*****;;;Info");
+					htmlToExtent(cName,mName,extLogger,driver,""+orderDetailsAppln+";;;Pass");
+					objOrderUpdateObject.filteredOrder.click();
+					waitForJSandJQueryToLoad(driver);
+					verticalScroll(driver);
+					objOrderUpdateObject.clearGroup.click();
+				}
+			}catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.errorMessage.getText()+";;Fail");
+				htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+				return;
+			}
+				
+			
+			if(orderDetailsAppln.get(0).get(2).equals("OPEN") && orderDetailsAppln.get(0).get(4).equals("VENDOR") && orderDetailsAppln.get(0).get(5).equals("STORE")){
+				htmlToExtent(cName,mName,extLogger,driver,"For Order #"+orderNo+" status is Open,type is VENDOR and Source is STORE;;;Pass");
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver,"Status : "+orderDetailsAppln.get(0).get(2)+",Type : "+orderDetailsAppln.get(0).get(3)+" and Source "+orderDetailsAppln.get(0).get(4)+";;;Fail");
+			}
+
+			String articlecount = data.getText("articlecount").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), articlecount);
+			String artCount = result.get(0).get(0).toString();
+			
+			String supplierBrowser = orderDetailsAppln.get(0).get(3).toString().trim();
+			String totalCartons = orderDetailsAppln.get(0).get(6).toString();
+			String totalPallets = orderDetailsAppln.get(0).get(7).toString();
+			String source = orderDetailsAppln.get(0).get(5).toString();
+			
+			//result.clear();
+			String orderdetails = data.getText("orderdetails").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), orderdetails);
+						
+			String temp=""+orderNo+":"+artCount+":"+orderDetailsAppln.get(0).get(2)+":"+orderDetailsAppln.get(0).get(3)+":"+orderDetailsAppln.get(0).get(4)+":"+orderDetailsAppln.get(0).get(5)+":"+orderDetailsAppln.get(0).get(6)+":"+"0"+":"+orderDetailsAppln.get(0).get(1)+":"+orderDetailsAppln.get(0).get(8).toString().replaceAll("\\:", "."); //Add Cutofftime
+			orderEnqDetailsAppln.addAll(StringToListCreation(temp));
+			String statusDB;
+			String supplierDB =  result.get(0).get(6).toString()+" ("+result.get(0).get(5).toString()+")";
+			String totCartons = result.get(0).get(4).toString().substring(0,result.get(0).get(4).toString().indexOf("."));
+			String dDateDB = dateFormat(result.get(0).get(2).toString().replaceAll("\\-","/"), "yyyy/MM/dd","date");
+			
+			String cutOffDB;
+			String cutOffDateDB = result.get(0).get(9).toString();
+			cutOffDateDB = dateFormat(cutOffDateDB.replaceAll("\\-","/"), "yyyy/MM/dd","date");
+			String cutOffTimeDB = result.get(0).get(10).toString();
+			String[] cutOffTime = cutOffTimeDB.split("(?<=\\G.{2})");
+			cutOffTimeDB = cutOffTime[0]+":"+cutOffTime[1]+":"+cutOffTime[2];
+			if(cutOffTimeDB.equals("00:00:00")){cutOffTimeDB = "12.00.00 AM";}else{cutOffTimeDB = dateFormat(cutOffTimeDB, "hh:mm:ss","time");}
+			if(Integer.parseInt(cutOffTime[0]) > 12){
+				cutOffDB = cutOffDateDB+" "+cutOffTimeDB.replaceAll("\\:", ".")+" PM";
+			}else{
+				cutOffDB = cutOffDateDB+" "+cutOffTimeDB.replaceAll("\\:", ".")+" AM";
+			}
+			if(result.get(0).get(8).toString().equals("O")){statusDB = "OPEN";}else{statusDB="NOT OPEN";}
+			String tempDB = ""+result.get(0).get(0)+":"+artCount+":"+statusDB+":"+supplierDB+":"+"VENDOR"+":"+result.get(0).get(7)+":"+totCartons+":"+"0"+":"+dDateDB+":"+cutOffDB; //Add Cutofftime
+			orderEnqDetailsDB.addAll(StringToListCreation(tempDB));
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Order Details (Total Article,Status,Supplier,Type,Source,Total Cartons,Total Pallets,Delivery Date,Cutoff Date Time) between Order Enquiry Page and DB *****;;;Info");
+			ElementContains1(cName,mName,extLogger,driver,orderEnqDetailsAppln,orderEnqDetailsDB);
+			
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Order Details (Total Article,Status,Supplier,Type,Source,Total Cartons,Total Pallets,Delivery Date,Cutoff Date Time) between Order Page(After Opening Order) and DB*****;;;Info");
+			String orderNumberAppln = objOrderUpdateObject.orderNumberAppln.getText().substring(objOrderUpdateObject.orderNumberAppln.getText().indexOf("#")+1).trim();
+			String ordertypeAppln = objOrderUpdateObject.orderNumberAppln.getText().substring(0,objOrderUpdateObject.orderNumberAppln.getText().indexOf(" ")).toUpperCase();
+			String oStatus = objOrderUpdateObject.statusAppln.getText().toUpperCase();
+			String totalArtAppln = objOrderUpdateObject.totalArticleAppln.getText();
+			String totalCartonOrderedAppln = objOrderUpdateObject.totalCartonOrderedAppln.getText();
+			
+			String[] detailsOrder = objOrderUpdateObject.orderDateSupplierDetails.getText().split("\\|");
+			String supplierAppln = detailsOrder[0].substring(detailsOrder[0].indexOf(":")+1).trim();
+			String deliveryDateAppln = detailsOrder[1].substring(detailsOrder[1].indexOf(":")+1).trim(); 
+			String cutOffAppln = detailsOrder[2].replace("Cut-off Date before Authorisation", "").trim();
+			String sourceAppln = detailsOrder[3].substring(detailsOrder[3].indexOf(":")+1).trim();
+			
+			orderEnqDetailsAppln.clear();
+			String temp1 = ""+orderNumberAppln+":"+totalArtAppln+":"+oStatus+":"+supplierAppln+":"+ordertypeAppln+":"+sourceAppln+":"+totalCartonOrderedAppln+":"+"0"+":"+deliveryDateAppln+":"+cutOffAppln.toString().replaceAll("\\:", ".");
+			orderEnqDetailsAppln.addAll(StringToListCreation(temp1));
+			ElementContains1(cName,mName,extLogger,driver,orderEnqDetailsAppln,orderEnqDetailsDB);
+			
+			orderArticleTable = getValuesFromTables(objOrderUpdateObject.orderTable);
+			removeIndex(orderArticleTable, Integer.toString(0));
+			int k=1;
+			for(int j=0;j<orderArticleTable.size();j++){
+				String[] tempOM = orderArticleTable.get(j).get(5).toString().split("\\s");
+				String om = String.format("%.03f", Float.parseFloat(tempOM[0].trim()))+" "+tempOM[1].trim();
+				String[] tempTU = orderArticleTable.get(j).get(6).toString().split("\\s");;
+				String tu = String.format("%.03f", Float.parseFloat(tempTU[0].trim()))+" "+tempTU[1].trim();
+				String[] sitsoo = objOrderUpdatePage.gettingSITSOOvalues(objOrderUpdateObject, j,k, driver).split("\\&");
+				//if(sitsoo[0]==null){sitsoo[0]="0.000";}else if(sitsoo[1]==null){sitsoo[1]="0.000";}
+				String tempAppln = orderArticleTable.get(j).get(0)+":"+orderArticleTable.get(j).get(1)+":"+orderArticleTable.get(j).get(2)+":"+String.format("%.03f", Float.parseFloat(orderArticleTable.get(j).get(3).toString()))+":"+String.format("%.03f", Float.parseFloat(orderArticleTable.get(j).get(4).toString()))+":"+om+":"+tu+":"+sitsoo[0]+":"+sitsoo[1];
+				resultAppln.addAll(StringToListCreation(tempAppln));
+				System.out.println(resultAppln);
+				k=k+2;
+			}
+			
+			String articledetails = data.getText("articledetails").replace("order_no", orderNo);
+			result = sql.executeQuery(getContext(), articledetails);
+			removeMoreThanSingleSpace(result,1);
+			for(int i=0;i<result.size();i++){
+				String desc = result.get(i).get(1).toString().replace("*TEST(UEC)*","").trim();
+				String tempDB1 = ""+result.get(i).get(0)+":"+desc+":"+result.get(i).get(2)+":"+result.get(i).get(3)+":"+result.get(i).get(4)+":"+result.get(i).get(5)+" EA"+":"+String.format("%.03f",(Float.parseFloat(result.get(i).get(4).toString())*Float.parseFloat(result.get(i).get(5).toString())))+" EA"+":"+result.get(i).get(6)+":"+result.get(i).get(7);
+				resultDB.addAll(StringToListCreation(tempDB1));
+				System.out.println(resultDB);
+				
+			}
+			htmlToExtent(cName,mName,extLogger,driver,"*****Comparing the Article Details (Number,Description,UOM,SOH,OM,Ordered Qty,Total Units,SOO,SIT) between Order Page and DB*****;;;Info");
+			ElementContains1(cName,mName,extLogger,driver,resultDB,resultAppln);
+		
+			List<List<Object>> articleList1 = articleFromDB();
+			
+			List<List<Object>>block = checkBlockText(orderNo, driver);
+			objOrderUpdatePage.blockingArticle(objOrderUpdateObject, block,articleList1,"MANUAL", driver);
+			k=1;
+			
+			htmlToExtent(cName,mName,extLogger,driver,"*****Checking Order Status after updating and saving the changes****;;;Info");
+			objOrderUpdatePage.checkingOrderAfterUpdate(objOrderUpdateObject,orderDetailsAppln1, orderNo,driver);
+			
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(rxSegmentArtScenarios,rxSegmentArttestname,driver));
+			status.assertAll();
+		    
+		}catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether user is able to add article by entering article EAN during order Updation of PREQ")
+	public void AdvanceSearchByArticleByEAN()
+	{
+
+		if(rxSegmentArtpreCount2==-1)
+		{
+			MCcount =MCcount+2;
+		}
+		TestStatus status = getTestStatus();
+
+		try{
+			navToOrders(status);
+			String currentDate = formatDate1(new Date());
+			objOrderUpdateObject.articleDetailsRadio.click();
+			String ean = data.getText("EAN");
+			objOrderUpdateObject.orderNoSend.sendKeys(ean);
+			
+			try{
+				objOrderUpdateObject.errorMessage.click();
+			}catch(Exception e){}
+			
+			objOrderUpdateObject.advanceSearchButton.click();
+			htmlToExtent(cName,mName,extLogger,driver,"Article #110102 with EAN #"+ean+" is searched via advance search;;;Pass");
+			String fromDate = common.AddDate(common.ConvertdateFormatddmmyy(currentDate), 0);
+			String toDate = common.AddDate(common.ConvertdateFormatddmmyy(currentDate), 5);
+			Date fDate = parseDate(fromDate, "dd/MM/yyyy");
+			Date tDate = parseDate(toDate, "dd/MM/yyyy");
+			htmlToExtent(cName,mName,extLogger,driver,"Search filter between from date "+fromDate+" and to date "+toDate+" ;;;Pass");
+			objOrderUpdateObject.toDate.sendKeys(toDate);
+			objOrderUpdateObject.fromDate.sendKeys(fromDate);
+			waitForJSandJQueryToLoad(driver);
+			objOrderUpdateObject.advanceSearchGoBtn.click();
+			try{
+				if(objOrderUpdateObject.searchResult.isDisplayed()){
+					htmlToExtent(cName,mName,extLogger,driver,"Order has been loaded for the requested search criteria;;;Pass");
+					String deliveryDateFromUI = objOrderUpdateObject.deliveryDateUI.getText();
+					Date UIDate = parseDate(deliveryDateFromUI,"dd/MM/yyyy");
+					if(UIDate.equals(tDate) || UIDate.equals(fDate)){//if(deliveryDateFromUI.compareTo(toDate) <=0 && deliveryDateFromUI.compareTo(fromDate) >= 0){
+						htmlToExtent(cName,mName,extLogger,driver,"Delivery date for the order filtered is same as given date;;;Pass");
+					}
+					else if(UIDate.after(tDate) && UIDate.before(fDate)){
+						htmlToExtent(cName,mName,extLogger,driver,"Delivery date for the order filtered is in the date range provided;;;Pass");
+					}
+					else{
+						htmlToExtent(cName,mName,extLogger,driver,"Delivery date for the order filtered is  doesnot fall under the range;;;Fail");
+					}
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver,"No Order available for search criteria;;;Fail");
+				}
+			}
+			catch(Exception e){
+				
+				
+			}
+			
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(rxSegmentArtScenarios,rxSegmentArttestname,driver));
+			status.assertAll();
+		}
+		catch(Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		
+	}
+	
+	
+	
+		public List<List<Object>> checkBlockText(String orderNo,WebDriver driver) throws SQLException{
+		
+		   List<List<Object>> blockResult = new ArrayList<List<Object>>();
+		   String blockText = data.getText("blockText").replace("order_no", orderNo);
+		   blockResult = sql.executeQuery(getContext(), blockText);
+		   System.out.println(blockResult);
+		   htmlToExtent(cName,mName,extLogger,driver,"*****Available Block Reason and corresponding articles****;;;Info");
+		   htmlToExtent(cName,mName,extLogger,driver,""+blockResult+";;;Pass");
+		   return blockResult;
+		
+	   }
+	
+	
+		
+		public String dateFormat(String dateToConvert,String dateFormat,String isDate){
+			
+			String dDate;
+			Date d1 = new Date();
+			d1 = parseDate(dateToConvert,dateFormat);
+			if(isDate.equals("date")){
+				dDate = formatDate1(d1);
+			}else{
+				dDate = formatDate(d1,dateFormat);
+			}
+			return dDate;
+		}
+		
+		public List<List<Object>> articleFromDB () throws SQLException{
+			
+			List<List<Object>> result12 = new ArrayList<List<Object>>();
+			
+			String supplier = objOrderUpdateObject.suppliernameandnumber.getText().substring(objOrderUpdateObject.suppliernameandnumber.getText().indexOf("(")+1).replace(")", "");
+			String artnumber = data.getText("article").replace("suppliername", supplier);
+			result12 = sql.executeQuery(getContext(), artnumber);
+			
+			List<List<Object>>articleList= new ArrayList<List<Object>>();
+			
+			if(result12.size()!=0){
+				int rand = ThreadLocalRandom.current().nextInt(1, result12.size());
+				String hawaArticle = result12.get(rand).get(0).toString();
+				articleList.addAll(StringToListCreation(hawaArticle));
+			}
+			
+			result12.clear();
+			String kgartnumber = data.getText("randKGarticle").replace("suppliername", supplier).replace("randFlag", "N");
+			result12 = sql.executeQuery(getContext(), kgartnumber);
+			
+			if(result12.size()!=0){
+				int rand1 = ThreadLocalRandom.current().nextInt(1, result12.size());
+				String kgArticle = result12.get(rand1).get(0).toString();
+				articleList.addAll(StringToListCreation(kgArticle));
+			}
+			
+
+			result12.clear();
+			String randartnumber = data.getText("randKGarticle").replace("suppliername", supplier).replace("randFlag", "Y");
+			result12 = sql.executeQuery(getContext(), randartnumber);
+			
+			if(result12.size()!=0){
+				int rand2 = ThreadLocalRandom.current().nextInt(1, result12.size());
+				String randArticle = result12.get(rand2).get(0).toString();
+				articleList.addAll(StringToListCreation(randArticle));
+			}
+			
+
+			//String tempArticle = hawaArticle+":"+kgArticle+":"+randArticle;
+			//articleList.addAll(StringToListCreation(tempArticle));
+			
+			return articleList;
+		}
+	
+	
+	//--------------------------------------------------------------------------------------------
+	public void navToOrders(TestStatus status) throws IOException, AWTException {
+		log.info("*****Login into Application*****");
+		htmlToExtent(cName,mName,extLogger,driver, "*****Login into Application*****;;;Pass");
+		//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		
+		if(System.getProperty("store")==null)
+		{
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(getContext().getStringProperty("store"));
+			objOrderUpdatePage = loginPage.navToOrderEnqForUpdation(getContext().getStringProperty("store"),driver);
+		}
+		else
+		{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//System.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			//articleLookUpPage = loginPage.navToArticlLookUp(store,driver);
+			objOrderUpdatePage = loginPage.navToOrderEnqForUpdation(store,driver);
+		}
+			htmlToExtent(cName,mName,extLogger,driver, "*****Navigate To Order Enquiry Page*****;;;Pass");
+			objOrderUpdatePage.toOrderEnqPage(objOrderUpdateObject,driver);
+			
+	}
+	
+	//--------------------------------------------------------------------------------------------
+
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		
+		 mName=m9.getName().toString().trim();			
+ 			if(!methodList.contains(m9.getName().toString().trim())){
+ 			methodList.add(m9.getName().toString().trim());
+ 			extLogger = extReport.startTest(m9.getName().toString().trim());
+ 			}
+		initializeTestcontext();
+		System.out.println("test1 - beforemethod");
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		}else{
+			String title = driver.getCurrentUrl();
+			if(title.contains("logginOut"))
+			{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+			}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+						WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+						scrolltoElement(home,driver);
+						home.click();
+						TimeUnit.SECONDS.sleep(5);
+						loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+						driver.navigate().refresh();
+						TimeUnit.SECONDS.sleep(5);}
+				}
+			}
+		}
+			isFirstTest=false;
+			//driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser")); 
+			setDriver(driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		orderUpdateArttestname = m9.getName().toString().trim();
+		orderUpdateArttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		objOrderUpdateObject = PageFactory.initElements(this.driver, OrderUpdationObject.class);
+		objOrderUpdatePage = PageFactory.initElements(this.driver, OrderUpdationPage.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+	}
+	
+	@BeforeClass
+	public void loadXMLFile(){				
+		System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\orderUpdation.xml");
+		customreport.createExtentReport();
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());				
+	}
+	
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitForJSandJQueryToLoad(driver);
+		System.out.println("afterclass");
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(),MCcount);
+        extReport.endTest(extLogger);
+		extReport.flush();				
+		removeDriver();
+		closeDriver(driver);
+		moduleName.put("Modules", orderUpdateArtModules);
+		waitFor(1);
+		int ArtMC=MCcount;
+		orderUpdateArtMC=""+MCcount;
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {				
+		System.out.println("AffterMethod");
+		
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				//System.out.println();
+			
+			}
+		waitFor(1);
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info"))
+		{
+			int cnt = orderUpdateArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			orderUpdateArtpreCount2++;
+		}
+		if(orderUpdateArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass"))
+		{
+			orderUpdateArtpreCount2=-1;
+		}
+		waitFor(1);
+}
+
+
+}

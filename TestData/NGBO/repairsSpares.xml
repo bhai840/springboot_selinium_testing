@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<TCName name = "createRepairCustomerOrders" >
+<articlenumber>440013</articlenumber>
+<invalidArticle>456028</invalidArticle>
+<articledesc><![CDATA[select ARTICLE_DESC from zwowc_article_master where matnr = 'articlenumber']]></articledesc>
+<articleEAN><![CDATA[select ean11 from zwowc_article_ean where matnr = 'eannumber']]></articleEAN>
+<TUNnumber>29335432024641</TUNnumber>
+<details>customername,customeraddress,1111,2222,mail@domain.com,proofofpurchase,12.51,comments,authcode,authname,faultdescription</details>
+<artDesc>select article_desc from zwowc_article_master where matnr = 'articlenumber'</artDesc>
+</TCName>
+
+<TCName name = "createRepairStoreOrders" >
+<articlenumber>440013</articlenumber>
+<invalidArticle>456028</invalidArticle>
+<articledesc><![CDATA[select ARTICLE_DESC from zwowc_article_master where matnr = 'articlenumber']]></articledesc>
+<articleEAN><![CDATA[select ean11 from zwowc_article_ean where matnr = 'eannumber']]></articleEAN>
+<TUNnumber>29335432024641</TUNnumber>
+<details>customername,customeraddress,1111,2222,mail@domain.com,proofofpurchase,12.51,comments,authcode,authname,faultdescription</details>
+<artDesc>select article_desc from zwowc_article_master where matnr = 'articlenumber'</artDesc>
+</TCName>
+
+<TCName name = "createSpareStoreOrders" >
+<articlenumber>440013</articlenumber>
+<invalidArticle>456028</invalidArticle>
+<articledesc><![CDATA[select ARTICLE_DESC from zwowc_article_master where matnr = 'articlenumber']]></articledesc>
+<articleEAN><![CDATA[select ean11 from zwowc_article_ean where matnr = 'eannumber']]></articleEAN>
+<TUNnumber>29335432024641</TUNnumber>
+<details>customername,customeraddress,1111,2222,mail@domain.com,proofofpurchase,12.51,comments,authcode,authname,faultdescription</details>
+<artDesc>select article_desc from zwowc_article_master where matnr = 'articlenumber'</artDesc>
+</TCName>
+
+<TCName name = "serviceEnquiryRepairCustomerOrder" >
+<articlenumber>440013</articlenumber>
+<invalidArticle>456028</invalidArticle>
+<articledesc><![CDATA[select ARTICLE_DESC from zwowc_article_master where matnr = 'articlenumber']]></articledesc>
+<articleEAN><![CDATA[select ean11 from zwowc_article_ean where matnr = 'eannumber']]></articleEAN>
+<TUNnumber>29335432024641</TUNnumber>
+<details>customername,customeraddress,1111,2222,mail@domain.com,proofofpurchase,12.51,comments,authcode,authname,faultdescription</details>
+<artDesc>select article_desc from zwowc_article_master where matnr = 'articlenumber'</artDesc>
+</TCName>
+
+<TCName name = "printRepairCustomerOrder" >
+<articlenumber>440013</articlenumber>
+<invalidArticle>456028</invalidArticle>
+<articledesc><![CDATA[select ARTICLE_DESC from zwowc_article_master where matnr = 'articlenumber']]></articledesc>
+<articleEAN><![CDATA[select ean11 from zwowc_article_ean where matnr = 'eannumber']]></articleEAN>
+<TUNnumber>29335432024641</TUNnumber>
+<details>customername,customeraddress,1111,2222,mail@domain.com,proofofpurchase,12.51,comments,authcode,authname,faultdescription</details>
+<artDesc>select article_desc from zwowc_article_master where matnr = 'articlenumber'</artDesc>
+</TCName>
+
+<TCName name = "printAcceptanceNoteForRepairCustomerOrder" >
+<articlenumber>440013</articlenumber>
+<invalidArticle>456028</invalidArticle>
+<articledesc><![CDATA[select ARTICLE_DESC from zwowc_article_master where matnr = 'articlenumber']]></articledesc>
+<articleEAN><![CDATA[select ean11 from zwowc_article_ean where matnr = 'eannumber']]></articleEAN>
+<TUNnumber>29335432024641</TUNnumber>
+<details>customername,customeraddress,1111,2222,mail@domain.com,proofofpurchase,12.51,comments,authcode,authname,faultdescription</details>
+<artDesc>select article_desc from zwowc_article_master where matnr = 'articlenumber'</artDesc>
+</TCName>
+
+<TCName name = "goodsDispatchAndPickUpDateForRepairCustomerOrder" >
+<articlenumber>440013</articlenumber>
+<invalidArticle>456028</invalidArticle>
+<articledesc><![CDATA[select ARTICLE_DESC from zwowc_article_master where matnr = 'articlenumber']]></articledesc>
+<articleEAN><![CDATA[select ean11 from zwowc_article_ean where matnr = 'eannumber']]></articleEAN>
+<TUNnumber>29335432024641</TUNnumber>
+<details>customername,customeraddress,1111,2222,mail@domain.com,proofofpurchase,12.51,comments,authcode,authname,faultdescription</details>
+<artDesc>select article_desc from zwowc_article_master where matnr = 'articlenumber'</artDesc>
+</TCName>
+
+
+</configuration>

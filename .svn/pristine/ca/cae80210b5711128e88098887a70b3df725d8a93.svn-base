@@ -1,0 +1,808 @@
+<h2>Methods run, sorted chronologically</h2><h3>&gt;&gt; means before, &lt;&lt; means after</h3><p/><br/><em>StoresCentral_TestSuite</em><p/><small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table border="1">
+<tr><th>Time</th><th>Delta (ms)</th><th>Suite<br>configuration</th><th>Test<br>configuration</th><th>Class<br>configuration</th><th>Groups<br>configuration</th><th>Method<br>configuration</th><th>Test<br>method</th><th>Thread</th><th>Instances</th></tr>
+<tr bgcolor="aba872">  <td>18/12/06 10:22:43</td>   <td>0</td> <td title="&gt;&gt;TestBase.onStart()[pri:0, instance:au.wow.ngbomain.tests.Sampletest@68267da0]">&gt;&gt;onStart</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>main@1019298652</td>   <td></td> </tr>
+<tr bgcolor="67c1fc">  <td>18/12/06 10:22:44</td>   <td>1035</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;Sampletest.loadXMLFile()[pri:0, instance:au.wow.ngbomain.tests.Sampletest@68267da0]">&gt;&gt;loadXMLFile</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="67c1fc">  <td>18/12/06 10:22:44</td>   <td>1285</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;Sampletest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.Sampletest@68267da0]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="67c1fc">  <td>18/12/06 10:22:49</td>   <td>5771</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="Sampletest.check()[pri:0, instance:au.wow.ngbomain.tests.Sampletest@68267da0]">check</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="67c1fc">  <td>18/12/06 10:23:52</td>   <td>69558</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;Sampletest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.Sampletest@68267da0]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="67c1fc">  <td>18/12/06 10:23:55</td>   <td>71933</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;Sampletest.tearDown()[pri:0, instance:au.wow.ngbomain.tests.Sampletest@68267da0]">&lt;&lt;tearDown</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:23:58</td>   <td>75111</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.loadXMLFile()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;loadXMLFile</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:23:58</td>   <td>75112</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.loadXMLFile()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;loadXMLFile</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:23:58</td>   <td>75112</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.loadXMLFile()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;loadXMLFile</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:23:58</td>   <td>75112</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.loadXMLFile()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;loadXMLFile</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:23:58</td>   <td>75112</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.loadXMLFile()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;loadXMLFile</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:23:58</td>   <td>75112</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.loadXMLFile()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;loadXMLFile</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:23:58</td>   <td>75221</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GapscanReportTests.loadXMLFile()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&gt;&gt;loadXMLFile</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:23:58</td>   <td>75252</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:23:58</td>   <td>75252</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:23:58</td>   <td>75252</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:23:58</td>   <td>75252</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:23:58</td>   <td>75268</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:23:58</td>   <td>75284</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:23:58</td>   <td>75299</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GapscanReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:24:01</td>   <td>78568</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.checkBWSarticle()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">checkBWSarticle</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:24:03</td>   <td>80132</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyDeletedcheckbox()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyDeletedcheckbox</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:24:05</td>   <td>82366</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="oocreporttest.category()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">category</td> 
+  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:24:06</td>   <td>82772</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsDisplay()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsDisplay</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:24:07</td>   <td>84162</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="DSCandPLUReportTests.verifyDSCReportAllDepartments()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">verifyDSCReportAllDepartments</td> 
+  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:24:07</td>   <td>84224</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceiveIBTByExceptionAcceptNR()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceiveIBTByExceptionAcceptNR</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:24:07</td>   <td>84349</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GapscanReportTests.ActionrequiredAlldepartment()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">ActionrequiredAlldepartment</td> 
+  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:24:27</td>   <td>103794</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:24:29</td>   <td>105919</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:24:30</td>   <td>107606</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:24:34</td>   <td>110669</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:24:35</td>   <td>112032</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="oocreporttest.datediscrepancy()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">datediscrepancy</td> 
+  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:24:35</td>   <td>112141</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:24:40</td>   <td>117202</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsDisplayExceptionAdjustment()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsDisplayExceptionAdjustment</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:24:41</td>   <td>118295</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:24:43</td>   <td>120235</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:24:43</td>   <td>120361</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:24:48</td>   <td>125319</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GapscanReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:24:48</td>   <td>125568</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.checkIDTandRIDT()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">checkIDTandRIDT</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:24:50</td>   <td>127395</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GapscanReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:24:50</td>   <td>127629</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:24:53</td>   <td>129702</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:24:59</td>   <td>136010</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="oocreporttest.dateselectiondiscrepancy()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">dateselectiondiscrepancy</td> 
+  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:25:03</td>   <td>140369</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceiveIBTByExceptionRejectNR()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceiveIBTByExceptionRejectNR</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:25:08</td>   <td>145466</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:25:11</td>   <td>148298</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GapscanReportTests.actionrequiredpartialdepartment()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">actionrequiredpartialdepartment</td> 
+  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:25:11</td>   <td>148516</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:25:26</td>   <td>163047</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:25:28</td>   <td>165096</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:25:31</td>   <td>168501</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsDisplaySetAdjustment()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsDisplaySetAdjustment</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:25:35</td>   <td>171818</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:25:37</td>   <td>173724</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:25:38</td>   <td>174865</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:25:38</td>   <td>175598</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:25:39</td>   <td>175756</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:25:45</td>   <td>182170</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="DSCandPLUReportTests.verifyDSCReportLitreArticle()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">verifyDSCReportLitreArticle</td> 
+  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:25:47</td>   <td>183669</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:25:47</td>   <td>183904</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="oocreporttest.multdept()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">multdept</td> 
+  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:25:51</td>   <td>188005</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GapscanReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:25:53</td>   <td>190053</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GapscanReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:25:57</td>   <td>193993</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:25:57</td>   <td>194024</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:25:58</td>   <td>194729</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceiveLineByExceptionIBT()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceiveLineByExceptionIBT</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:26:01</td>   <td>197739</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:26:02</td>   <td>199397</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyDifferentSOSMPLReport()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyDifferentSOSMPLReport</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:26:04</td>   <td>200788</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:26:04</td>   <td>201193</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:26:05</td>   <td>201775</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.checkIDTandRIDT_randomweighted()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">checkIDTandRIDT_randomweighted</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:26:06</td>   <td>203259</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:26:09</td>   <td>205807</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:26:12</td>   <td>208853</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:26:13</td>   <td>209838</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GapscanReportTests.alldepartment()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">alldepartment</td> 
+  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:26:13</td>   <td>210269</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="oocreporttest.nodepartment()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">nodepartment</td> 
+  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:26:19</td>   <td>215917</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="DSCandPLUReportTests.verifyDSCReportMeatDepartment()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">verifyDSCReportMeatDepartment</td> 
+  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:26:22</td>   <td>219275</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsHAWAAdjustment()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsHAWAAdjustment</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:26:28</td>   <td>225344</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:26:30</td>   <td>227376</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:26:30</td>   <td>227408</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:26:31</td>   <td>227908</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:26:33</td>   <td>229943</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:26:38</td>   <td>235479</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:26:39</td>   <td>236012</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="oocreporttest.nodepartmentselect()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">nodepartmentselect</td> 
+  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:26:41</td>   <td>238124</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:26:44</td>   <td>241179</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:26:45</td>   <td>241960</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GapscanReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:26:47</td>   <td>243977</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GapscanReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:26:50</td>   <td>246898</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceiveLineByExceptionIBTTempCheck()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceiveLineByExceptionIBTTempCheck</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:26:51</td>   <td>248257</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="DSCandPLUReportTests.verifyDSCReportMultipleReasonCode()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">verifyDSCReportMultipleReasonCode</td> 
+  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:26:54</td>   <td>251334</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GapscanReportTests.bothalldepartment()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">bothalldepartment</td> 
+  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:26:55</td>   <td>252038</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:26:56</td>   <td>253444</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.checkIDTandRIDT_weighted()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">checkIDTandRIDT_weighted</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:26:57</td>   <td>254085</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:26:59</td>   <td>255990</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:27:02</td>   <td>259030</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:27:03</td>   <td>260448</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="oocreporttest.primarydepartment1()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">primarydepartment1</td> 
+  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:27:21</td>   <td>278139</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsIBTCPBD()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsIBTCPBD</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:27:23</td>   <td>280080</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:27:25</td>   <td>282128</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:27:28</td>   <td>284831</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:27:31</td>   <td>288210</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:27:33</td>   <td>290235</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GapscanReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:27:33</td>   <td>290252</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:27:35</td>   <td>292272</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GapscanReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:27:36</td>   <td>292851</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:27:46</td>   <td>302737</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceiveLineByExceptions()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceiveLineByExceptions</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:27:47</td>   <td>304115</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:27:50</td>   <td>307161</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:27:52</td>   <td>308960</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="oocreporttest.segment()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">segment</td> 
+  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:27:54</td>   <td>310945</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.checkNoNodeIDforIDTandRIDT()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">checkNoNodeIDforIDTandRIDT</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:27:55</td>   <td>312273</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GapscanReportTests.bothpartialdepartment()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">bothpartialdepartment</td> 
+  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:28:09</td>   <td>325941</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:28:09</td>   <td>325957</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:28:09</td>   <td>326355</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsIBTDisplayException()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsIBTDisplayException</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:28:14</td>   <td>330660</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:28:14</td>   <td>331077</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyDifferentSOSSOHReport()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyDifferentSOSSOHReport</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:28:17</td>   <td>333682</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:28:17</td>   <td>333875</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:28:19</td>   <td>335922</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:28:24</td>   <td>341176</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="DSCandPLUReportTests.verifyDSCReportPDBArticle()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">verifyDSCReportPDBArticle</td> 
+  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:28:25</td>   <td>342238</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:28:26</td>   <td>343196</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:28:27</td>   <td>344289</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:28:34</td>   <td>350729</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="oocreporttest.subcategory()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">subcategory</td> 
+  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:28:34</td>   <td>350745</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GapscanReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:28:34</td>   <td>351229</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:28:36</td>   <td>352764</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GapscanReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:28:38</td>   <td>355170</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceiveLineByLineNewOM()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceiveLineByLineNewOM</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:28:39</td>   <td>356275</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.checkWHDelWeiRandomWeiArt()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">checkWHDelWeiRandomWeiArt</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:28:47</td>   <td>364410</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:28:50</td>   <td>367340</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:28:50</td>   <td>367466</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:28:52</td>   <td>369389</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:28:55</td>   <td>372594</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GapscanReportTests.bothprimarydepartment()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">bothprimarydepartment</td> 
+  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:28:57</td>   <td>374345</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:28:57</td>   <td>374505</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="DSCandPLUReportTests.verifyDSCReportPartialDepartment()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">verifyDSCReportPartialDepartment</td> 
+  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:28:58</td>   <td>375435</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="oocreporttest.verifyactiontodaycount()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">verifyactiontodaycount</td> 
+  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:29:00</td>   <td>377388</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:29:02</td>   <td>379325</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:29:10</td>   <td>387376</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:29:11</td>   <td>387864</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:29:13</td>   <td>389869</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:29:13</td>   <td>390623</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:29:16</td>   <td>392660</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:29:16</td>   <td>392817</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.checkWHDeliveryCPBD()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">checkWHDeliveryCPBD</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:29:19</td>   <td>396317</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsIBTHAWA()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsIBTHAWA</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:29:32</td>   <td>408879</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceiveLineByLineTempCheck()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceiveLineByLineTempCheck</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:29:33</td>   <td>410230</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:29:34</td>   <td>410985</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="oocreporttest.verifypagination()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">verifypagination</td> 
+  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:29:35</td>   <td>412001</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:29:36</td>   <td>413238</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:29:43</td>   <td>420064</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:29:43</td>   <td>420313</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="DSCandPLUReportTests.verifyPLUReportAllDepartment()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">verifyPLUReportAllDepartment</td> 
+  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:29:48</td>   <td>425471</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:29:48</td>   <td>425502</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:29:49</td>   <td>425678</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.checkWHdelivery()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">checkWHdelivery</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:29:51</td>   <td>428276</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:29:53</td>   <td>430296</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:29:54</td>   <td>431005</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyDifferentSOSSOH_MPLReport()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyDifferentSOSSOH_MPLReport</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:29:59</td>   <td>436392</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="oocreporttest.verifyprintreport()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">verifyprintreport</td> 
+  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:30:03</td>   <td>440059</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:30:03</td>   <td>440466</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:30:05</td>   <td>442099</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:30:06</td>   <td>443519</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:30:07</td>   <td>444006</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GapscanReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:30:09</td>   <td>446036</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GapscanReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:30:09</td>   <td>446208</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:30:16</td>   <td>453449</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GapscanReportTests.partialdepartmentonly()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">partialdepartmentonly</td> 
+  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:30:17</td>   <td>454274</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:30:22</td>   <td>459646</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.cpbdArticleUnreceivedOrders()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">cpbdArticleUnreceivedOrders</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:30:23</td>   <td>460080</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:30:24</td>   <td>461298</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceiveLineByLines()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceiveLineByLines</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:30:25</td>   <td>462589</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsIBTPBD()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsIBTPBD</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:30:26</td>   <td>463107</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:30:33</td>   <td>470549</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="DSCandPLUReportTests.verifyPLUReportDeletedPLU()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">verifyPLUReportDeletedPLU</td> 
+  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:30:39</td>   <td>476005</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:30:41</td>   <td>478045</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;oocreporttest.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:30:42</td>   <td>478676</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:30:47</td>   <td>484382</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="oocreporttest.verifyreportpartial()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">verifyreportpartial</td> 
+  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:30:50</td>   <td>486715</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:30:55</td>   <td>491712</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:30:55</td>   <td>492025</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GapscanReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:30:57</td>   <td>493744</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:30:57</td>   <td>494057</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GapscanReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:31:00</td>   <td>497296</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:31:03</td>   <td>500358</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:31:07</td>   <td>504057</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.cpbpArticles()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">cpbpArticles</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:31:10</td>   <td>506792</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:31:11</td>   <td>507670</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="DSCandPLUReportTests.verifyPLUReportForArticleNumber()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">verifyPLUReportForArticleNumber</td> 
+  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:31:13</td>   <td>509841</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:31:16</td>   <td>513310</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceiveVendorinExceptionByNewArt()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceiveVendorinExceptionByNewArt</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:31:16</td>   <td>513575</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GapscanReportTests.partialdepartmentreviewonly()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">partialdepartmentreviewonly</td> 
+  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:31:33</td>   <td>530223</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsIBTRandomWeighted()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsIBTRandomWeighted</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:31:48</td>   <td>544730</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:31:50</td>   <td>546766</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:31:54</td>   <td>551582</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GapscanReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:31:56</td>   <td>553630</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GapscanReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:31:57</td>   <td>554616</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:31:58</td>   <td>554900</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:31:58</td>   <td>554916</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:32:01</td>   <td>558059</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:32:03</td>   <td>560263</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyInventoryReportAdditonalCriteriaSOH()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyInventoryReportAdditonalCriteriaSOH</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:32:04</td>   <td>561106</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:32:05</td>   <td>562639</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:32:09</td>   <td>566001</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceiveVendorinLineByNewEAN()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceiveVendorinLineByNewEAN</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:32:11</td>   <td>568614</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="DSCandPLUReportTests.verifyPLUReportForArticlePLU()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">verifyPLUReportForArticlePLU</td> 
+  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:32:15</td>   <td>572081</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GapscanReportTests.primarydepartment()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">primarydepartment</td> 
+  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:32:18</td>   <td>575252</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:32:21</td>   <td>578323</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:32:23</td>   <td>580152</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.mpkAndCARArticles()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">mpkAndCARArticles</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:32:39</td>   <td>596126</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:32:40</td>   <td>597159</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsIBTWeighted()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsIBTWeighted</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:32:41</td>   <td>598160</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:32:54</td>   <td>610783</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:32:57</td>   <td>613827</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:32:58</td>   <td>615482</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:33:00</td>   <td>617436</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceivingVendorASNinExceptionMulPOtoSingleASN()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceivingVendorASNinExceptionMulPOtoSingleASN</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="f3ddb1">  <td>18/12/06 10:33:00</td>   <td>617515</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;oocreporttest.tearDown()[pri:0, instance:au.wow.ngbomain.tests.oocreporttest@2f465398]">&lt;&lt;tearDown</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-5@1442732822</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:33:04</td>   <td>620859</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="DSCandPLUReportTests.verifyPLUReportMultiDepartment()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">verifyPLUReportMultiDepartment</td> 
+  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:33:20</td>   <td>636854</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:33:20</td>   <td>636885</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:33:21</td>   <td>638213</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GapscanReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:33:23</td>   <td>640269</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GapscanReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:33:25</td>   <td>642521</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyInventoryReportMPL()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyInventoryReportMPL</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:33:26</td>   <td>643208</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:33:29</td>   <td>646243</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:33:31</td>   <td>647776</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GapscanReportTests.printreport()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">printreport</td> 
+  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:33:31</td>   <td>648260</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:33:34</td>   <td>651291</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:33:41</td>   <td>658399</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="DSCandPLUReportTests.verifyPLUReportPartialDepartment()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">verifyPLUReportPartialDepartment</td> 
+  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:33:47</td>   <td>664527</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:33:47</td>   <td>664558</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:33:47</td>   <td>664636</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsPBD()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsPBD</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:33:53</td>   <td>669925</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyInventoryReportMultiDepartment()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyInventoryReportMultiDepartment</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:33:54</td>   <td>670674</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:33:56</td>   <td>672725</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:34:01</td>   <td>678493</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GapscanReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:34:03</td>   <td>680538</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GapscanReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:34:07</td>   <td>684525</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:34:10</td>   <td>687542</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;DSCandPLUReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:34:10</td>   <td>687573</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GapscanReportTests.reviewonlyalldepartment()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">reviewonlyalldepartment</td> 
+  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:34:11</td>   <td>687730</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:34:14</td>   <td>690763</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:34:16</td>   <td>692968</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceivingVendorASNinExceptionSinglePOhavingDL()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceivingVendorASNinExceptionSinglePOhavingDL</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:34:18</td>   <td>694906</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="DSCandPLUReportTests.verifyPLUReportPrimaryDepartment()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">verifyPLUReportPrimaryDepartment</td> 
+  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:34:20</td>   <td>696806</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsRTVHAWA()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsRTVHAWA</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:34:25</td>   <td>701656</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:34:25</td>   <td>701704</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:34:29</td>   <td>706500</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:34:30</td>   <td>706736</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyInventoryReportSOH()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyInventoryReportSOH</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:34:37</td>   <td>714565</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:34:38</td>   <td>715487</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="638263">  <td>18/12/06 10:34:41</td>   <td>718518</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;DSCandPLUReportTests.tearDown()[pri:0, instance:au.wow.ngbomain.tests.DSCandPLUReportTests@6a2b953e]">&lt;&lt;tearDown</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-3@1593562712</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:34:51</td>   <td>728218</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:34:51</td>   <td>728250</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:34:56</td>   <td>733632</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifyStockAdjArt()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifyStockAdjArt</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:34:57</td>   <td>733836</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyInventoryReportSOH_MPL_AllDepartment()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyInventoryReportSOH_MPL_AllDepartment</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:34:58</td>   <td>734711</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:35:00</td>   <td>736744</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:35:19</td>   <td>755996</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceivingVendorASNinFullByPostLater()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceivingVendorASNinFullByPostLater</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:35:25</td>   <td>762296</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:35:28</td>   <td>765357</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:35:31</td>   <td>767733</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GapscanReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:35:33</td>   <td>769782</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GapscanReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:35:40</td>   <td>777114</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GapscanReportTests.reviewonlypartialdepartment()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">reviewonlypartialdepartment</td> 
+  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:35:47</td>   <td>784539</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsRTVLitreArticles()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsRTVLitreArticles</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:35:48</td>   <td>785307</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:35:50</td>   <td>787354</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:36:06</td>   <td>802685</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:36:10</td>   <td>806708</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceivingVendorASNinFullMulPOtoSingleASNOption()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceivingVendorASNinFullMulPOtoSingleASNOption</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:36:14</td>   <td>810755</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:36:17</td>   <td>813794</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GapscanReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="c285f4">  <td>18/12/06 10:36:19</td>   <td>815840</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GapscanReportTests.tearDown()[pri:0, instance:au.wow.ngbomain.tests.GapscanReportTests@313b2ea6]">&lt;&lt;tearDown</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-4@1148110726</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:36:32</td>   <td>828910</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifyStockAdjDesc()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifyStockAdjDesc</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:36:33</td>   <td>829956</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:36:33</td>   <td>829972</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:36:38</td>   <td>835300</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyInventoryReportSOH_MPL_PartialDepartment()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyInventoryReportSOH_MPL_PartialDepartment</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:36:44</td>   <td>841254</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:36:47</td>   <td>844273</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:37:01</td>   <td>858145</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:37:03</td>   <td>860195</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:37:05</td>   <td>862511</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsRTVLitreArticlesForOrderableUOM()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsRTVLitreArticlesForOrderableUOM</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:37:22</td>   <td>879182</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceivingVendorASNinFullMulPOtoSingleASNhavingDL()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceivingVendorASNinFullMulPOtoSingleASNhavingDL</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:37:25</td>   <td>881982</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:37:25</td>   <td>881997</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:37:28</td>   <td>885250</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:37:30</td>   <td>887313</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyInventoryReportSOHandMPL()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyInventoryReportSOHandMPL</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:37:36</td>   <td>893290</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:37:53</td>   <td>910021</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifyStockAdjDisplayArticles()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifyStockAdjDisplayArticles</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:38:02</td>   <td>919620</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:38:06</td>   <td>922660</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:38:11</td>   <td>928531</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:38:13</td>   <td>930578</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:38:24</td>   <td>941563</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsRTVPBD()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsRTVPBD</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:38:32</td>   <td>948804</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:38:32</td>   <td>949461</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceivingVendorASNinFullSinglePOhavingDL()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceivingVendorASNinFullSinglePOhavingDL</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:38:35</td>   <td>952633</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:38:36</td>   <td>952650</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:38:40</td>   <td>956867</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:38:41</td>   <td>957727</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyLastSoldDate()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyLastSoldDate</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:38:57</td>   <td>973968</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifyStockAdjDisplayArticlesDescription()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifyStockAdjDisplayArticlesDescription</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:39:14</td>   <td>991161</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:39:16</td>   <td>993208</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:39:20</td>   <td>996885</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:39:23</td>   <td>999916</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:39:35</td>   <td>1012614</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceivingVendorinFullByPostLater()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceivingVendorinFullByPostLater</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:39:37</td>   <td>1014505</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:39:42</td>   <td>1019005</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsRTVPBDHigherUOM()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsRTVPBDHigherUOM</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:39:44</td>   <td>1020880</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:39:44</td>   <td>1020897</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:39:45</td>   <td>1022585</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:39:49</td>   <td>1026215</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyPBDUOM()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyPBDUOM</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:40:03</td>   <td>1039970</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifyStockAdjDisplayArticlesEAN()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifyStockAdjDisplayArticlesEAN</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:40:05</td>   <td>1042641</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:40:08</td>   <td>1044690</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:40:16</td>   <td>1053019</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:40:16</td>   <td>1053050</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:40:21</td>   <td>1058116</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyPrintReportwithSeasonalActivity()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyPrintReportwithSeasonalActivity</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:40:27</td>   <td>1063808</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceivingVirtualDCOrderByException()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceivingVirtualDCOrderByException</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:40:38</td>   <td>1075560</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:40:41</td>   <td>1078590</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:40:45</td>   <td>1081753</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:40:53</td>   <td>1089792</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:40:56</td>   <td>1092886</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:40:58</td>   <td>1094935</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:41:00</td>   <td>1097234</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsRWT()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsRWT</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:41:10</td>   <td>1106753</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifyStockAdjEAN()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifyStockAdjEAN</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:41:17</td>   <td>1114131</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceivingWHSellableinException()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceivingWHSellableinException</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:41:21</td>   <td>1118397</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:41:24</td>   <td>1121451</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:41:27</td>   <td>1123749</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:41:31</td>   <td>1127829</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsRWTAdjustment()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsRWTAdjustment</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:41:35</td>   <td>1131795</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:41:38</td>   <td>1134720</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:41:38</td>   <td>1134737</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:41:38</td>   <td>1134815</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:41:40</td>   <td>1136830</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifyStockAdjLinkedArticles()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifyStockAdjLinkedArticles</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:41:40</td>   <td>1136861</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;ReceivingOrderTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:41:43</td>   <td>1139829</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifyPrintReportwithoutSeasonalActivity()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifyPrintReportwithoutSeasonalActivity</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:41:49</td>   <td>1145986</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="ReceivingOrderTests.ReceivingWareHouseinFullByPostLater()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">ReceivingWareHouseinFullByPostLater</td> 
+  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:42:01</td>   <td>1157925</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:42:04</td>   <td>1160957</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:42:20</td>   <td>1177111</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:42:21</td>   <td>1178533</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:42:22</td>   <td>1178925</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsSales()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsSales</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="ee9faa">  <td>18/12/06 10:42:22</td>   <td>1179175</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;ReceivingOrderTests.tearDown()[pri:0, instance:au.wow.ngbomain.tests.ReceivingOrderTests@2638011]">&lt;&lt;tearDown</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-2@1052985</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:42:29</td>   <td>1186588</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:42:42</td>   <td>1199014</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:42:45</td>   <td>1202048</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:42:46</td>   <td>1203566</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifyStockAdjLinkedArticlesDescription()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifyStockAdjLinkedArticlesDescription</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:42:51</td>   <td>1208392</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsSalesHAWA()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsSalesHAWA</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:43:12</td>   <td>1229029</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:43:15</td>   <td>1232048</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:43:21</td>   <td>1238110</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsSalesSetAdjustmentforKG()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsSalesSetAdjustmentforKG</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:43:21</td>   <td>1238156</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:43:29</td>   <td>1246195</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:43:39</td>   <td>1256634</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:43:40</td>   <td>1256650</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:43:45</td>   <td>1262041</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifySITSOO()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifySITSOO</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:43:46</td>   <td>1263275</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifyStockAdjLinkedArticlesEAN()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifyStockAdjLinkedArticlesEAN</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:43:50</td>   <td>1266996</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:43:53</td>   <td>1270058</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;GoodsMovementTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:44:11</td>   <td>1287870</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="GoodsMovementTests.VerifyGoodsSalesWeighted()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">VerifyGoodsSalesWeighted</td> 
+  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:44:29</td>   <td>1306337</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:44:30</td>   <td>1306807</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="cbb882">  <td>18/12/06 10:44:32</td>   <td>1309401</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;GoodsMovementTests.tearDown()[pri:0, instance:au.wow.ngbomain.tests.GoodsMovementTests@a1cdc6d]">&lt;&lt;tearDown</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-1@1268846192</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:44:38</td>   <td>1314862</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:44:54</td>   <td>1331568</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifyStockAdjLinkedArticlesPLU()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifyStockAdjLinkedArticlesPLU</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:45:25</td>   <td>1362628</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:45:34</td>   <td>1370679</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:45:34</td>   <td>1371522</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:45:34</td>   <td>1371553</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:45:39</td>   <td>1376599</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifySohDays()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifySohDays</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:45:51</td>   <td>1387791</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifyStockAdjPLU()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifyStockAdjPLU</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:46:08</td>   <td>1405451</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:46:16</td>   <td>1413499</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:46:21</td>   <td>1418558</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifyStockAdjRandomWeighedArticles()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifyStockAdjRandomWeighedArticles</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:46:57</td>   <td>1454551</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:47:05</td>   <td>1462625</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:47:13</td>   <td>1470124</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:47:13</td>   <td>1470141</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;InventoryReportTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:47:18</td>   <td>1475430</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="InventoryReportTests.verifySohValue()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">verifySohValue</td> 
+  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:47:22</td>   <td>1479467</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifyStockAdjWeighedArticles()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifyStockAdjWeighedArticles</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:47:48</td>   <td>1505239</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:47:56</td>   <td>1513302</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:48:13</td>   <td>1530306</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifylookupDisplayArticles()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifylookupDisplayArticles</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:48:40</td>   <td>1557446</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:48:48</td>   <td>1565494</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:48:53</td>   <td>1570540</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifylookupLinkedArticles()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifylookupLinkedArticles</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:49:09</td>   <td>1585739</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="be83e4">  <td>18/12/06 10:49:09</td>   <td>1585756</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;InventoryReportTests.tearDown()[pri:0, instance:au.wow.ngbomain.tests.InventoryReportTests@623a8092]">&lt;&lt;tearDown</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-7@980839180</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:49:18</td>   <td>1594817</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:49:26</td>   <td>1602881</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:49:31</td>   <td>1607930</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifylookupRandomWeightArticles()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifylookupRandomWeightArticles</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:49:51</td>   <td>1628279</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:49:59</td>   <td>1636322</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:50:04</td>   <td>1641390</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.verifylookupWeightArticles()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">verifylookupWeightArticles</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:50:24</td>   <td>1661537</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:50:32</td>   <td>1669588</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&gt;&gt;StockAdjustmentTests.setUp(java.lang.reflect.Method, org.testng.ITestContext)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&gt;&gt;setUp</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:50:38</td>   <td>1674923</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="StockAdjustmentTests.wareHouseemptyORDERlist()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">wareHouseemptyORDERlist</td> 
+  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:51:09</td>   <td>1705941</td> <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.flushReports(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;flushReports</td> 
+<td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="bd7b6a">  <td>18/12/06 10:51:17</td>   <td>1713962</td> <td>&nbsp;</td><td>&nbsp;</td><td title="&lt;&lt;StockAdjustmentTests.tearDown()[pri:0, instance:au.wow.ngbomain.tests.StockAdjustmentTests@548e6d58]">&lt;&lt;tearDown</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>pool-2-thread-6@1659623817</td>   <td></td> </tr>
+<tr bgcolor="aba872">  <td>18/12/06 10:51:25</td>   <td>1722253</td> <td title="&lt;&lt;TestBase.flushReports1()[pri:0, instance:au.wow.ngbomain.tests.Sampletest@68267da0]">&lt;&lt;flushReports1</td> 
+<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>  <td>main@1019298652</td>   <td></td> </tr>
+</table>

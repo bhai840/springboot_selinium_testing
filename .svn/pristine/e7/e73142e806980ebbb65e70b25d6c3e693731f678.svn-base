@@ -1,0 +1,280 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class PromotionEndTypeObjects {
+	
+	@FindBy(xpath="//*[@id='price']/a")
+	public WebElement pricingTab;
+	
+	@FindBy(xpath="//*[@id='price']/ul/li[1]/a")
+	public WebElement promotions;
+	
+	@FindBy(xpath="//*[@id='price']/ul/li[1]/ul/li[1]/a")	
+	public WebElement promoEndType;
+	
+	@FindBy(xpath="//*[@id='price']/ul/li[1]/ul/li[2]/a")
+	public WebElement promoManagemnt;
+	
+	@FindBy(xpath="//*[@id='admin']/a")
+	public WebElement adminTab;
+	
+	@FindBy(xpath="//*[@id='admin']/ul/li[2]/a")
+	public WebElement appSettings;
+	
+	@FindBy(xpath="(//*[contains(text(),'Smkt')])[1]")
+	public WebElement wowSMKT;
+	
+	@FindBy(xpath="(//*[contains(text(),'IT ADMIN')])[2]")
+	public WebElement itadminRole;
+	
+	@FindBy(xpath="(//*[contains(text(),'Pricing Menu')])[2]")
+	public WebElement pricingMenu_appSetting;
+	
+	@FindBy(xpath="//*[@id='row-AC_PET']/td[1]/input")
+	public WebElement promoEndTypeCheckBox;
+	
+	@FindBy(xpath="(//*[@class='all-store-checkbox allCheckBox'])[64]")
+	public WebElement includeStoreAll;
+	
+	@FindBy(xpath="//*[@id='row-AC_PET']/td[7]/label/a/label")
+	public WebElement excludeStore;
+	
+	@FindBy(xpath="//*[contains(@class,'addBtn excludeStoreLabel addRow')]")
+	public WebElement addExcludeStore; 
+	
+	@FindBy(xpath="(//*[@id='endDate-1']/label)[64]") ////*[contains(@class,'includeStoreLabel addRow')]")
+	public WebElement addStoreAppSetting;
+	
+	@FindBy(xpath="//*[@id='articleForm']/div/div[1]/input")
+	public WebElement sendStore;
+	
+	@FindBy(xpath="//*[@id='addActionBtn']/label")
+	public WebElement addStoreRow;
+	
+	@FindBy(xpath="//*[contains(@class,'verifyStore')]")
+	public WebElement verifyStore;
+	
+	@FindBy(xpath="//*[@id='createOrderButton']/a/label")
+	public WebElement saveStorebtn;
+	
+	@FindBy(xpath="(//*[@class='ContentTable'])[2]")
+	public WebElement storeNameAdded;
+	
+	@FindBy(xpath="(//*[@id='save']/label)[23]")
+	public WebElement saveAppSetting;
+	
+	@FindBy(xpath="(//*[@id='okBtn'])[1]")
+	public WebElement okAppSetting;
+	
+	@FindBy(xpath="(//*[contains(text(),'Promotions End Type')])[1]")
+	public WebElement promoEndTypePage;
+	
+	@FindBy(xpath="//*[@id='promotionWeek']")
+	public WebElement promotionWeekDropDown;
+	
+	@FindBy(xpath="//*[@id='departmentName']")
+	public WebElement departmentDropDown;
+	
+	@FindBy(xpath="//*[@id='promotionWeek']/option")
+	public List<WebElement> promotionWeekDropDownList; 
+	
+	public static final String promoWeekDropDownValues = "//*[@id='promotionWeek']/option[dynamic]";
+	
+	@FindBy(xpath="//*[@id='departmentName']/option")
+	public List<WebElement> departmentDropDownList;
+	
+	public static final String deptDropDownValues = "//*[@id='departmentName']/option[dynamic]";
+	
+	@FindBy(xpath="//*[@id='next']")
+	public WebElement loadArticleBtn;
+	
+	@FindBy(xpath="//*[@id='errorWrapper']/div")
+	public WebElement errorMessage;
+	
+	@FindBy(xpath="//*[@id='error_msg']/li")
+	public WebElement errorText;
+	
+	@FindBy(xpath="//*[@id='departmentName']/option[1]")
+	public WebElement deptClear;
+	
+	@FindBy(xpath="//*[@id='promotionWeek']/option[1]")
+	public WebElement promoWeekClear;
+	
+	@FindBy(xpath="//*[@id='promotionWeek']/option[3]")
+	public WebElement twoWeeksOut;
+	
+	@FindBy(xpath="//*[@id='departmentName']/option[6]")
+	public WebElement deptGeneralMerch;
+	
+	@FindBy(xpath="//*[@class='wizardTitle']")
+	public WebElement titlePromoEndPage;
+	
+	@FindBy(xpath="(//*[@data_key='displayType'])[3]")
+	public WebElement displayTypeAppln;
+	
+	@FindBy(xpath="//*[@class='moreNumber']")
+	public WebElement moreArticles;
+	
+	@FindBy(xpath="//*[@data_key='promoEndTypeList']/label")
+	public WebElement articleDetails;
+	
+	@FindBy(xpath="//*[@id='endTypeCss']/table/tbody/tr")
+	public List<WebElement> secondaryArticleDetails;
+	
+	@FindBy(xpath="(//*[@data_key='end_type'])[1]")
+	public WebElement endtypeTab;
+	
+	@FindBy(xpath="(//*[@data_key='end_type'])[3]") // (//*[@data_key='end_type'])[3]/descendant::select/descendant::option
+	public WebElement endTypeDropDown;
+	
+	@FindBy(xpath="//*[@id='thead_promo_Subtable_']/tr[1]/th[2]")
+	public WebElement descriptionHeader;
+	
+	@FindBy(xpath="//*[@class='subHeader']")
+	public WebElement promotionHeader;
+	
+	@FindBy(xpath="(//*[@data_key='end_type'])[3]/descendant::select/descendant::option")//*[contains(@class,'endTypeDropDown')]/option")
+	public List<WebElement> endTypeDropDownOptions;
+	
+	public static final String endTypeDropDownSelection = "(//*[@data_key='end_type'])[3]/descendant::select/descendant::option[dynamic]";
+	
+	@FindBy(xpath="//*[@id='endTypeSave']")
+	public WebElement endTypeSave;
+	
+	@FindBy(xpath="//*[@id='prev']/span")
+	public WebElement backBtn;
+	
+	//@FindBy(xpath="//*[@id='alertBox']")
+	@FindBy(xpath="//*[@class='popupData popupTitle']")
+	public WebElement discardPopUp;
+	
+	//@FindBy(xpath="//*[@class='actionBtn yesBtn']")
+	@FindBy(xpath="//*[@id='yes' and @class='popupActions']")
+	public WebElement discardYesBtn;
+
+	//@FindBy(xpath="//*[@class='actionBtn noBtn']")
+	@FindBy(xpath="//*[@id='no' and @class='popupActions']")
+	public WebElement discardBackBtn;
+	
+	//Another functionality
+	@FindBy(xpath="//*[@id='stockManage']/a")
+	public WebElement stockManagement;
+	
+	@FindBy(xpath="//*[contains(text(),'Stocktake')]")
+	public WebElement stockTake;
+	
+	@FindBy(xpath="//*[@class='tableTitle']/h4/strong")
+	public WebElement stockTakePage;
+	
+	//Promotion Management
+	@FindBy(xpath="//*[@id='promotionWeek']/option[3]")
+	public WebElement promoMngemntWeekSelect;
+	
+	@FindBy(xpath="//*[@id='articleNo']")
+	public WebElement promoMngemntArticleNo;
+	
+	@FindBy(xpath="//*[@id='next']")
+	public WebElement promoMngemntLoadArticle;
+	
+	@FindBy(xpath="//*[@title='Store Display']")
+	public WebElement promoMngemntDisplay;
+	
+	@FindBy(xpath="//*[@title='Store Build']")
+	public WebElement promoMngemntBuild;
+	
+	@FindBy(xpath="//*[contains(@class,'defaultExpanded')]")
+	public WebElement promoMngemntArticleandDesc;
+	
+	@FindBy(xpath="//*[contains(@class,'line-item')]/td[@title='Display']")
+	public WebElement promoMngemntDispType; 
+	
+	@FindBy(xpath="//*[@id='0']/td[4]")
+	public WebElement promoMngemntPromoPrice;
+	
+	@FindBy(xpath="//*[@id='0']/td[5]")
+	public WebElement promoMngemntSavings;
+	
+	@FindBy(xpath="//*[@class='actionBtn saveBtn']")
+	public WebElement promoMngemntSaveAndNext; 
+	
+	//Audit Trail
+	@FindBy(xpath="//*[contains(text(),'Audit Trail')]")
+	public WebElement auditTrail;
+	
+	@FindBy(xpath="//*[@id='article']")
+	public WebElement auditTrailArticleSearch;
+	
+	@FindBy(xpath="//*[contains(text(),'Generate') and @class='actionBtn']")
+	public WebElement generateBtn;
+
+	@FindBy(xpath="(//*[@class='appended dateRecords'])[1]/td[4]")
+	public WebElement auditOldDisplay;
+	
+	@FindBy(xpath="(//*[@class='appended dateRecords'])[1]/td[5]")
+	public WebElement auditNewDisplay;
+	
+	@FindBy(xpath="(//*[@class='appended dateRecords'])[1]/td[6]")
+	public WebElement auditOldBuild;
+	
+	@FindBy(xpath="(//*[@class='appended dateRecords'])[1]/td[7]")
+	public WebElement auditNewBuild;
+	
+	//Other screen
+	@FindBy(xpath="//*[contains(text(),'Select Criteria')]")
+	public WebElement prevScreen;
+	
+	
+	//Srivinith
+	@FindBy(xpath="//*[@id='promotionWeek']/option[2]")
+	public WebElement currentWeek;
+
+	@FindBy(xpath="//*[@id='message']")
+	public WebElement messageValidation;
+
+	@FindBy(xpath="//*[@id='no']/label")
+	public WebElement messagePopupBoxYesButton;
+
+	@FindBy(xpath="//*[@id='success_msg']/li")
+	public WebElement successfullySavedMessage;
+
+	@FindBy(xpath="(//*[@class='all-store-checkbox allCheckBox'])[65]")
+	public WebElement includeStoreAllPromoManagement;
+
+	@FindBy(xpath="(//*[@id='endDate-1']/label/a/label)[64]")
+	public WebElement addStoreAppSettingPromoEndType;
+
+	@FindBy(xpath="//*[@id='promotionWeek']/option[5]")
+	public WebElement threeWeeksOut;
+
+	@FindBy(xpath="//*[@id='departmentName']/option[7]")
+	public WebElement deptGroceries;
+
+	@FindBy(xpath="//*[@id='displayType_tr_1_0']")
+	public WebElement displayType;
+
+	@FindBy(xpath="//*[@id='promoEndTypeList_tr_1_0']/label/a")
+	public WebElement showAllArticles;
+
+	@FindBy(xpath="//*[@id='promoEndTypeList_tr_1_0']/label")
+	public WebElement articleNumber;
+
+	@FindBy(xpath="(//*[@id='newBuildQty_tr_1_2'])[1]")
+	public WebElement buildQtyEndType;
+
+	@FindBy(xpath="((//*[@id='om_tr_1_0'])[1])")
+	public WebElement omValueEndType;
+
+	@FindBy(xpath="//*[@id='departmentInPromotions']/option[7]")
+	public WebElement deptPromoMagtDropDownGroceries;
+
+	@FindBy(xpath="//*[@id='3-default']")
+	public WebElement buildQtyPromoMagt;
+
+
+	
+	
+}

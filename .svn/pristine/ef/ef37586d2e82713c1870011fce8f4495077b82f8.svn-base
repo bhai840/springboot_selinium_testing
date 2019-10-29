@@ -1,0 +1,196 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class InventoryReportObjects {
+	
+	public static final String departmentName="//*[@id='depDropDwnList']/li[dynamic]/label";
+	
+	public static final String departmentCheckBox="//*[@id='depDropDwnList']/li[dynamic]/input";
+	
+	public static final String departmentListMulti="//*[@id='deptlst']/li[dynamic]/label";
+	
+	public static final String categoryList="//*[@id='categoryLst']/li[dynamic]/label";
+	
+	public static final String subCategoryList="//*[@id='subCategoryLst']/li[dynamic]/label";
+	
+	public static final String segmentList="//*[@id='segmentLst']/li[dynamic]/label";
+	
+	public static final String deparmentchkBox="//*[@id='deptlst']/li[dynamic]/input";
+	
+	public static final String categoryChkBox="//*[@id='categoryLst']/li[dynamic]/input";
+	
+	public static final String subCategoryChkBox="//*[@id='subCategoryLst']/li[dynamic]/input";
+	
+	public static final String segmentChkBox="//*[@id='segmentLst']/li[dynamic]/input";
+	
+	public static final String invPageNo="//*[@id='Report_Inventory_Table_head_page']/ul/li[dynamic]";
+	
+	public static final String warehouse = "//*[@id='warehouseID']/option[dynamic]";
+	
+	public static final String seasonal_activity = "//*[@id='ui-id-7']/li[dynamic]";
+	
+	public static final String article_id = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[1]";
+	
+	public static final String article_soh = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[5]";
+	
+	public static final String article_date = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[11]";
+	
+	public static final String SIT = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[7]";
+	
+	public static final String SOO = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[8]";
+	
+	public static final String OM = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[4]";
+	
+	public static final String UOM = "//*[@id='Report_Inventory_Table_table']/tbody/tr[dynamic]/td[3]";
+
+	@FindBy(linkText ="Reports")
+	public WebElement report;
+	
+	@FindBy(linkText ="Stock Management")
+	public WebElement stockManagement;
+	
+	@FindBy(linkText ="Inventory Report")
+	public WebElement inventoryReport;	
+	
+	@FindBy(xpath ="(//*[@id='all'])")	
+	public WebElement sohCheckBox;
+	
+	@FindBy(id ="standard")
+	public WebElement mplCheckBox;
+	
+	@FindBy(linkText ="Generate Report")
+	public WebElement generateReportBtn;
+
+	@FindBy(id ="deptDropDwnLabel")
+	public WebElement invDeptDropDown;
+	
+	@FindBy(id ="allDeptChkBox")
+	public WebElement invAllDeptChkBox;
+	
+	@FindBy(xpath ="//*[@id='depDropDwnList']/li")
+	public List<WebElement> departmentList;
+	
+	@FindBy(id ="ssa")
+	public WebElement sosAll;
+	
+	@FindBy(id ="allDeptChkBox")
+	public WebElement optionSelectAll;
+	
+	@FindBy(id ="depH")
+	public WebElement multiDeptChkBox;
+	
+	@FindBy(xpath ="//*[@id='deptlst']/li")
+	public List<WebElement> department;
+	
+	@FindBy(xpath ="//*[@id='categoryLst']/li")
+	public List<WebElement> category;
+	
+	@FindBy(xpath ="//*[@id='subCategoryLst']/li")
+	public List<WebElement> subCategory;
+	
+	@FindBy(xpath ="//*[@id='segmentLst']/li")
+	public List<WebElement> segment;
+	
+	@FindBy(id ="catSelectAll")
+	public WebElement categoryAll;
+	
+	@FindBy(id ="sCatSelectAll")
+	public WebElement subCategoryAll;
+
+	@FindBy(linkText ="Next")
+	public WebElement invReportNextBtn;
+	
+	@FindBy(id ="Report_Inventory_Table_table")
+	public List<WebElement> invTable;
+	
+	@FindBy(xpath ="//*[@id='printReport']/label")
+	public WebElement printBtn;
+	
+	@FindBy(xpath ="//*[@id='addParameter']/div/div/span[1]/select")
+	public WebElement filterSelectFirst;
+	
+	@FindBy(xpath ="//*[@id='addParameter']/div/div/span[2]/select")
+	public WebElement filterRangeFirst;
+	
+	@FindBy(xpath ="//*[@id='addParameter']/div/div/span[3]/input")
+	public WebElement inputValueFirst;
+	
+	@FindBy(xpath ="//*[@id='addParameter']/div[2]/div/span[1]/select")
+	public WebElement filterSelectSecond;
+	
+	@FindBy(xpath ="//*[@id='addParameter']/div[2]/div/span[2]/select")
+	public WebElement filterRangeSecond;
+	
+	@FindBy(xpath ="//*[@id='addParameter']/div[2]/div/span[3]/input")
+	public WebElement inputValueSecond;
+	
+	@FindBy(xpath ="(//*[@class='addRow'])[1]")
+	public WebElement addRowLink;
+	
+	@FindBy(id ="newSoh_tr_1_0")
+	public WebElement sohValue;
+	
+	@FindBy(xpath ="//*[@id='ui-accordion-accordion-header-0']/span")
+	public WebElement expandInvCriteria;
+	
+	@FindBy(xpath ="//*[@id='thead_Report_Inventory_Table']/tr/th[5]")
+	public WebElement sohHeader;
+	
+	@FindBy(xpath ="//*[@id='nonSoldArt']")
+	public WebElement sohDays;
+	
+
+	@FindBy(xpath ="//*[@id='ssa']")
+	public WebElement allSOS;
+	
+	@FindBy(xpath ="//*[@id='ssm']")
+	public WebElement warehouse_SOS;
+	
+	@FindBy(xpath ="//*[@id='sss']")
+	public WebElement vendor_SOS;
+	
+	@FindBy(xpath ="//*[@id='inventoryReportForm']/div/div[3]/span/input")
+	public WebElement seasonalActivity;
+	
+	@FindBy(xpath ="//*[@id='printReport']/label/a")
+	public WebElement printButton;
+	
+	@FindBy(xpath ="//*[@id='inventoryReportForm']/div/div[3]/span/a/span[1]")
+	public WebElement seasonalActivityList;
+	
+	@FindBy(xpath ="//*[@id='success-wrapper']/div/div")
+	public WebElement noRecordWarning;
+	
+	@FindBy(xpath ="//*[@class='pageStatusTitle']/a")
+	public WebElement warningclose;
+
+	@FindBy(xpath ="//*[@id='Report_Inventory_Table_table']/tbody/tr")
+	public List<WebElement> sizeofReport;
+	
+	@FindBy(xpath ="//*[@id='del']")
+	public WebElement DeletedCheck;
+	
+	@FindBy(xpath ="//*[@id='onp']")
+	public WebElement OnPromotionCheck;
+	
+	@FindBy(xpath ="//*[@id='pb']")
+	public WebElement PBDCheck;
+	
+	@FindBy(xpath ="//*[@id='pi']")
+	public WebElement NonPICheck;
+	
+	@FindBy(xpath ="//*[@id='Report_Inventory_Table_head']/div[1]/h4/strong")
+	public WebElement article_count;
+	
+	@FindBy(xpath ="//*[@id='thead_Report_Inventory_Table']/tr/th[1]")
+	public WebElement article_sort;
+	
+	@FindBy(xpath ="//*[@id='ui-id-7']/li")
+	public List<WebElement> seasonalActivityDropdownBoxSize;
+	
+	
+}

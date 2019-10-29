@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+<TCName name="VerifyGoodsSalesHAWA">
+<HAWA><![CDATA[
+SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR and C.matnr  in (select matnr from ZWOWC_ARTICLE_LISTING where alc_status<>'DA') AND A.MTART ='HAWA' AND B.PERPETUAL_FLAG ='Y' AND B.SOURCE_OF_SUPPLY <>'A' and A.PBD_ind<>'Y']]></HAWA>
+<Mock><![CDATA[
+INSERT INTO "SAAP"."ZWOWO_INTRA_DAY_SALES" ("ARTICLE","SALES_UOM","TRADING_DATE","TRADING_HOUR","BASE_UOM","QTY_SALES_UOM","QTY_BASE_UOM","SOH_RAND_WGHT_UOM","SOH_RAND_WGHT")
+VALUES('Random','EA','TodayDate','22','EA',21,21,NULL,0.000);
+commit;]]></Mock>
+<Trigger><![CDATA[trigger event ev_process_intr_day_sales;]]></Trigger>
+<Records><![CDATA[select * from local_wow_soh_LOG  where MATNR in ('Random') AND CHANGED_DATE > 'Date' ORDER BY CHANGED_TIMESTAMP DESC]]></Records>
+
+<MatnrDetails><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH, A.NEW_SOH
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and A.ADJ_TYPE='SALES' ORDER BY A.CHANGED_TIMESTAMP desc]]></MatnrDetails>
+<DETAILS><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'Date' and adj_type='SALES' order by CHANGED_TIMESTAMP desc]]></DETAILS>
+</TCName>
+
+<TCName name="VerifyGoodsSalesWeighted">
+<Weighted><![CDATA[
+SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR and C.matnr  in (select matnr from ZWOWC_ARTICLE_LISTING where alc_status<>'DA')  and A.Weighted_ind ='Y' and A.Random_weight_flg<>'Y' AND B.PERPETUAL_FLAG ='Y' AND B.SOURCE_OF_SUPPLY <>'A' and A.PBD_ind<>'Y']]></Weighted>
+<Mock><![CDATA[
+INSERT INTO "SAAP"."ZWOWO_INTRA_DAY_SALES" ("ARTICLE","SALES_UOM","TRADING_DATE","TRADING_HOUR","BASE_UOM","QTY_SALES_UOM","QTY_BASE_UOM","SOH_RAND_WGHT_UOM","SOH_RAND_WGHT")
+VALUES('Random','EA','TodayDate','22','EA',21,21,NULL,0.000);
+commit;]]></Mock>
+<Trigger><![CDATA[trigger event ev_process_intr_day_sales;]]></Trigger>
+<MatnrDetails><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH, A.NEW_SOH
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and A.ADJ_TYPE='SALES' ORDER BY A.CHANGED_TIMESTAMP desc]]></MatnrDetails>
+<DETAILS><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'Date' and adj_type='SALES' order by CHANGED_TIMESTAMP desc]]></DETAILS>
+</TCName>
+
+<TCName name="VerifyGoodsRWT">
+<RandomWeighted><![CDATA[
+SELECT DISTINCT B.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR and C.matnr  in (select matnr from ZWOWC_ARTICLE_LISTING where alc_status<>'DA') and B.Random_weight_flg='Y' and A.Weighted_ind<>'Y,N' AND B.PERPETUAL_FLAG ='Y' AND B.SOURCE_OF_SUPPLY <>'A' and A.PBD_ind<>'Y']]></RandomWeighted>
+<Mock><![CDATA[
+INSERT INTO "SAAP"."ZWOWO_INTRA_DAY_SALES" ("ARTICLE","SALES_UOM","TRADING_DATE","TRADING_HOUR","BASE_UOM","QTY_SALES_UOM","QTY_BASE_UOM","SOH_RAND_WGHT_UOM","SOH_RAND_WGHT")
+VALUES('Random','EA','TodayDate','22','EA',21,21,NULL,0.000);
+commit;]]></Mock>
+<Trigger><![CDATA[trigger event ev_process_intr_day_sales;]]></Trigger>
+<DETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH,A.CURRENT_SOH_PI, A.NEW_SOH,A.NEW_SOH_PI
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and A.ADJ_TYPE='SALES' ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+</TCName>
+
+
+<TCName name="VerifyGoodsPBD">
+<PBD><![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR and C.matnr  in (select matnr from ZWOWC_ARTICLE_LISTING where alc_status<>'DA') and A.PBD_ind='Y'  AND B.PERPETUAL_FLAG ='Y' AND B.SOURCE_OF_SUPPLY <>'A' AND A.MATNR NOT IN (SELECT PLU_CODE FROM SAAP.ZWOWC_ARTICLE_MASTER)]]></PBD>
+<Mock><![CDATA[
+INSERT INTO "SAAP"."ZWOWO_INTRA_DAY_SALES" ("ARTICLE","SALES_UOM","TRADING_DATE","TRADING_HOUR","BASE_UOM","QTY_SALES_UOM","QTY_BASE_UOM","SOH_RAND_WGHT_UOM","SOH_RAND_WGHT")
+VALUES('Random','EA','TodayDate','22','EA',21,21,NULL,0.000);
+commit;]]></Mock>
+<Trigger><![CDATA[trigger event ev_process_intr_day_sales;]]></Trigger>
+<DETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH, A.NEW_SOH
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and A.ADJ_TYPE='SALES' ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+</TCName>
+
+<TCName name="VerifyGoodsSales">
+<DETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH, A.NEW_SOH,A.ADJ_QTY
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('337153') AND A.CHANGED_DATE >= 'FILTERDATE' ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<CHILDDETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH, A.NEW_SOH
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('Child') AND A.CHANGED_DATE >= 'FILTERDATE' ORDER BY A.CHANGED_TIMESTAMP desc]]></CHILDDETAILS>
+<CHILD><![CDATA[select CHILD_ARTICLE,child_article_qty from ZWOWC_ARTICLE_CHILD where matnr='PARENT']]></CHILD>
+<CHILDQTY><![CDATA[select child_article_qty from ZWOWC_ARTICLE_CHILD where matnr='PARENT']]></CHILDQTY>
+<ChildAdjustedValue><![CDATA[select adj_type,adj_qty,changed_timestamp  from LOCAL_WOW_SOH_LOG where matnr = 'Child' AND CHANGED_DATE >= 'FILTERDATE' and adj_type='SALES' ORDER BY CHANGED_TIMESTAMP desc ]]></ChildAdjustedValue>
+<Numerator><![CDATA[select numerator,denominator from ZWOWC_ARTICLE_UOM where matnr='PARENT']]></Numerator>
+
+<InsertData><![CDATA[
+INSERT INTO "SAAP"."ZWOWO_INTRA_DAY_SALES" ("ARTICLE","SALES_UOM","TRADING_DATE","TRADING_HOUR","BASE_UOM","QTY_SALES_UOM","QTY_BASE_UOM","SOH_RAND_WGHT_UOM","SOH_RAND_WGHT",
+"LastUpdatedAtPlantTS","CHANGE_TIME") VALUES('337153','YLD','20181123',hour(Current Timestamp),'YLD',56.000,0.000,NULL,0.000,CURRENT TIMESTAMP,CURRENT TIMESTAMP)]]></InsertData>
+
+</TCName>
+
+<TCName name="VerifyGoodsDisplay">
+<DETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH, A.NEW_SOH,A.ADJ_QTY
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('406570') AND A.CHANGED_DATE >= 'FILTERDATE' ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<CHILDDETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH, A.NEW_SOH
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('Child') AND A.CHANGED_DATE >= 'FILTERDATE' ORDER BY A.CHANGED_TIMESTAMP desc]]></CHILDDETAILS>
+<CHILD><![CDATA[select CHILD_ARTICLE,child_article_qty from ZWOWC_ARTICLE_CHILD where matnr='PARENT']]></CHILD>
+<CHILDQTY><![CDATA[select child_article_qty from ZWOWC_ARTICLE_CHILD where matnr='PARENT']]></CHILDQTY>
+<ChildAdjustedValue><![CDATA[select adj_type,adj_qty,changed_timestamp  from LOCAL_WOW_SOH_LOG where matnr = 'Child' AND CHANGED_DATE >= 'FILTERDATE' and adj_type='SALES' ORDER BY CHANGED_TIMESTAMP desc ]]></ChildAdjustedValue>
+<Numerator><![CDATA[select numerator,denominator from ZWOWC_ARTICLE_UOM where matnr='PARENT']]></Numerator>
+
+<InsertData><![CDATA[INSERT INTO "SAAP"."ZWOWO_INTRA_DAY_SALES" ("ARTICLE","SALES_UOM","TRADING_DATE","TRADING_HOUR","BASE_UOM","QTY_SALES_UOM","QTY_BASE_UOM","SOH_RAND_WGHT_UOM","SOH_RAND_WGHT",
+"LastUpdatedAtPlantTS","CHANGE_TIME") VALUES('337153','YLD','20171123',hour(Current Timestamp),'YLD',56.000,0.000,NULL,0.000,CURRENT TIMESTAMP,CURRENT TIMESTAMP)]]></InsertData>
+
+</TCName>
+
+<TCName name="VerifyGoodsHAWAAdjustment">
+<HAWA><![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR and C.matnr  in (select matnr from ZWOWC_ARTICLE_LISTING where alc_status<>'DA') AND A.MTART ='HAWA' AND B.PERPETUAL_FLAG ='Y' AND B.SOURCE_OF_SUPPLY <>'A' and b.COMPLEX_PACK_BRK_BASE_QTY ='']]></HAWA>
+<DETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE'  order by CHANGED_TIMESTAMP desc  ]]></Compare>
+
+</TCName>
+
+<TCName name="VerifyGoodsRWTAdjustment">
+<RWT><![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR  and C.matnr  in (select matnr from ZWOWC_ARTICLE_LISTING where alc_status<>'DA') AND B.RANDOM_WEIGHT_FLG ='Y' AND B.PERPETUAL_FLAG ='Y' AND B.SOURCE_OF_SUPPLY <>'A']]></RWT>
+<DETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and adj_type='SDJ' and adj_user <>'System' ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select  matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted,
+current_soh_pi,new_soh_pi,case when sign(adj_qty_pi*sign) = -1 then cast(adj_qty_pi*sign as nvarchar(20)) else '+'||(adj_qty_pi*sign) end case as Adjusted_pi
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE' and adj_type='SDJ' and adj_user <>'System' order by CHANGED_TIMESTAMP desc ]]></Compare>
+</TCName>
+
+<TCName name="VerifyGoodsSalesSetAdjustmentforKG">
+<BakerySalesSet><![CDATA[select A.matnr,count(A.child_article),B.MTART, D.MEINS from zwowc_article_child A 
+JOIN zwowc_article_master B 
+ON A.matnr=B.matnr 
+AND B.sales_set_flag='Y' AND B.MTART='ZPRD'
+JOIN ZWOWC_ARTICLE_LISTING C
+ON B.MATNR=C.MATNR
+JOIN ZWOWC_ARTICLE_UOM D
+ON C.MATNR = D.MATNR and D.matnr  in (select matnr from ZWOWC_ARTICLE_LISTING where alc_status<>'DA') AND D.MEINS ='KG'
+group by A.matnr, B.MTART, D.MEINS]]></BakerySalesSet>
+<DETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH, A.NEW_SOH,A.ADJ_QTY
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE'  order by CHANGED_TIMESTAMP desc  ]]></Compare>
+<CHILD><![CDATA[select CHILD_ARTICLE,child_article_qty from ZWOWC_ARTICLE_CHILD where matnr='Random']]></CHILD>
+<CHILDDETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH, A.NEW_SOH,A.ADJ_QTY
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('Child') AND A.CHANGED_DATE >= 'FILTERDATE' and A.ADJ_QTY>0 ORDER BY A.CHANGED_TIMESTAMP desc]]></CHILDDETAILS>
+<Numerator><![CDATA[select numerator,denominator from ZWOWC_ARTICLE_UOM where matnr='Random']]></Numerator>
+<CHILDQTY><![CDATA[select child_article_qty from ZWOWC_ARTICLE_CHILD where child_article='Child' and matnr='Random']]></CHILDQTY>
+<ChildAdjustedValue><![CDATA[select adj_type,adj_qty,changed_timestamp  from LOCAL_WOW_SOH_LOG where matnr = 'Child' AND CHANGED_DATE >= 'FILTERDATE' and adj_qty>0  ORDER BY CHANGED_TIMESTAMP desc ]]></ChildAdjustedValue>
+</TCName>
+
+<TCName name="VerifyGoodsSalesSetAdjustmentforEA">
+<BakerySalesSet><![CDATA[select A.matnr,count(A.child_article),B.MTART, D.MEINS from zwowc_article_child A 
+JOIN zwowc_article_master B 
+ON A.matnr=B.matnr 
+AND B.sales_set_flag='Y' AND B.MTART='ZPRD'
+JOIN ZWOWC_ARTICLE_LISTING C
+ON B.MATNR=C.MATNR
+JOIN ZWOWC_ARTICLE_UOM D
+ON C.MATNR = D.MATNR  and D.matnr  in (select matnr from ZWOWC_ARTICLE_LISTING where alc_status<>'DA') AND D.MEINS ='EA'
+group by A.matnr, B.MTART, D.MEINS]]></BakerySalesSet>
+<DETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH, A.NEW_SOH,A.ADJ_QTY
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE'  order by CHANGED_TIMESTAMP desc  ]]></Compare>
+<CHILD><![CDATA[select CHILD_ARTICLE,child_article_qty from ZWOWC_ARTICLE_CHILD where matnr='Random']]></CHILD>
+<CHILDDETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH, A.NEW_SOH,A.ADJ_QTY
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('Child') AND A.CHANGED_DATE >= 'FILTERDATE' and A.ADJ_QTY>0 ORDER BY A.CHANGED_TIMESTAMP desc]]></CHILDDETAILS>
+<Numerator><![CDATA[select numerator,denominator from ZWOWC_ARTICLE_UOM where matnr='Random']]></Numerator>
+<CHILDQTY><![CDATA[select child_article_qty from ZWOWC_ARTICLE_CHILD where child_article='Child' and matnr='Random']]></CHILDQTY>
+<ChildAdjustedValue><![CDATA[select adj_type,adj_qty,changed_timestamp  from LOCAL_WOW_SOH_LOG where matnr = 'Child' AND CHANGED_DATE >= 'FILTERDATE' and adj_qty>0  ORDER BY CHANGED_TIMESTAMP desc ]]></ChildAdjustedValue>
+</TCName>
+
+<TCName name="VerifyGoodsDisplaySetAdjustment">
+<DisplaySalesSet><![CDATA[select matnr from SAAP.ZWOWC_ARTICLE_LISTING where matnr in (SELECT matnr FROM SAAP.ZWOWC_ARTICLE_MASTER where DISPLAY_ITEM_IND = 'Y' and matnr  in (select matnr from ZWOWC_ARTICLE_LISTING where alc_status<>'DA') )]]></DisplaySalesSet>
+
+<DETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH, A.NEW_SOH,A.ADJ_QTY
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE' and adj_type='SDJ' and adj_user <>'System' order by CHANGED_TIMESTAMP desc  ]]></Compare>
+<CHILD><![CDATA[select CHILD_ARTICLE,child_article_qty from ZWOWC_ARTICLE_CHILD where matnr='Random']]></CHILD>
+<CHILDDETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH,A.CURRENT_SOH, A.NEW_SOH,A.ADJ_QTY
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B where A.MATNR = B.MATNR AND A.MATNR in ('Child') AND A.CHANGED_DATE >= 'FILTERDATE' and A.ADJ_QTY>0 ORDER BY A.CHANGED_TIMESTAMP desc]]></CHILDDETAILS>
+<CHILDQTY><![CDATA[select child_article_qty from ZWOWC_ARTICLE_CHILD where child_article='Child' and matnr='Random']]></CHILDQTY>
+<ChildAdjustedValue><![CDATA[select adj_type,adj_qty,changed_timestamp  from LOCAL_WOW_SOH_LOG where matnr = 'Child' AND CHANGED_DATE >= 'FILTERDATE' and adj_qty>0  ORDER BY CHANGED_TIMESTAMP desc ]]></ChildAdjustedValue>
+</TCName>
+
+
+<TCName name="VerifyGoodsDisplayExceptionAdjustment">
+<DisplayException><![CDATA[SELECT DISTINCT A.MATNR  
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR  and C.matnr  in (select matnr from ZWOWC_ARTICLE_LISTING where alc_status<>'DA') AND A.DISPLAY_ITEM_IND ='Y' AND B.PERPETUAL_FLAG ='Y' AND B.COMPLEX_PACK_BRK_ARTICLE ='' AND A.MATNR NOT IN (SELECT PLU_CODE FROM SAAP.ZWOWC_ARTICLE_MASTER)]]></DisplayException>
+<DETAILS><![CDATA[select  A.MATNR,B.ARTICLE_DESC,A.MEINH
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and adj_type='SDJ' and adj_user <>'System' ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE' and adj_type='SDJ' and adj_user <>'System' order by CHANGED_TIMESTAMP desc  ]]></Compare>
+</TCName>
+
+
+<TCName name="VerifyGoodsIBTHAWA">
+<HAWA><![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status<>'DA' and a.TEMPERATURE_IND='03' AND A.MTART ='HAWA' AND d.PERPETUAL_FLAG ='Y'  and d.RANDOM_WEIGHT_FLG='N' AND d.SOURCE_OF_SUPPLY <>'A' and a.matnr not like '6%']]></HAWA>
+
+<DETAILS><![CDATA[
+select  A.MATNR,B.ARTICLE_DESC,A.MEINH,(A.adj_type+A.ref_no) as Reasoncode,
+substr(reasoncode ,1, 3)||' '||'order '||substr(reasoncode,6) AS Reasoncode_Modified,A.CURRENT_SOH, A.NEW_SOH,(A.ADJ_QTY*A.Sign) as AdjustedValue
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and adj_type='IBTCR' and adj_user <>'System'  ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE' and adj_type='IBTCR' and adj_user <>'System' order by CHANGED_TIMESTAMP desc ]]></Compare>
+</TCName>
+
+<TCName name="VerifyGoodsIBTPBD">
+<PBD><![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status<>'DA' AND A.MTART ='HAWA' AND d.PERPETUAL_FLAG ='Y' AND d.SOURCE_OF_SUPPLY <>'A' and a.PBD_IND='Y' and a.matnr not like '6%']]></PBD>
+<DETAILS><![CDATA[
+select  A.MATNR,B.ARTICLE_DESC,A.MEINH,(A.adj_type+A.ref_no) as Reasoncode,
+substr(reasoncode ,1, 3)||' '||'order '||substr(reasoncode,6) AS Reasoncode_Modified,A.CURRENT_SOH, A.NEW_SOH,(A.ADJ_QTY*A.Sign) as AdjustedValue
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and adj_type='IBTCR' and adj_user <>'System'  ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE' and adj_type='IBTCR' and adj_user <>'System' order by CHANGED_TIMESTAMP desc ]]></Compare>
+</TCName>
+
+<TCName name="VerifyGoodsIBTWeighted">
+
+<WEIGHTED><![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR and C.matnr  in (select matnr from ZWOWC_ARTICLE_LISTING where alc_status<>'DA')  AND A.WEIGHTED_IND ='Y' AND B.PERPETUAL_FLAG ='Y' AND B.SOURCE_OF_SUPPLY <>'A' and a.matnr not like '6%']]></WEIGHTED>
+<DETAILS><![CDATA[
+select  A.MATNR,B.ARTICLE_DESC,A.MEINH,(A.adj_type+A.ref_no) as Reasoncode,
+substr(reasoncode ,1, 3)||' '||'order '||substr(reasoncode,6) AS Reasoncode_Modified,A.CURRENT_SOH, A.NEW_SOH,(A.ADJ_QTY*A.sign) as Adjusted
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and adj_type='IBTCR' and adj_user <>'System'  ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE' and adj_type='IBTCR' and adj_user <>'System' order by CHANGED_TIMESTAMP desc ]]></Compare>
+</TCName>
+
+<TCName name="VerifyGoodsIBTDisplayException">
+<DisplayException><![CDATA[SELECT DISTINCT A.MATNR  
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR and C.matnr  in (select matnr from ZWOWC_ARTICLE_LISTING where alc_status<>'DA') AND A.DISPLAY_ITEM_IND ='Y' AND B.PERPETUAL_FLAG ='Y' AND B.COMPLEX_PACK_BRK_ARTICLE ='' AND A.MATNR NOT IN (SELECT PLU_CODE FROM SAAP.ZWOWC_ARTICLE_MASTER) and a.matnr not like '6%']]></DisplayException>
+<DETAILS><![CDATA[
+select  A.MATNR,B.ARTICLE_DESC,A.MEINH,(A.adj_type+A.ref_no) as Reasoncode,
+substr(reasoncode ,1, 3)||' '||'order '||substr(reasoncode,6) AS Reasoncode_Modified,A.CURRENT_SOH, A.NEW_SOH,(A.ADJ_QTY*A.sign) as Adjusted
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and adj_type='IBTCR' and adj_user <>'System'  ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE' and adj_type='IBTCR' and adj_user <>'System' order by CHANGED_TIMESTAMP desc ]]></Compare>
+</TCName>
+
+<TCName name="VerifyGoodsIBTRandomWeighted">
+<RWT><![CDATA[SELECT A.MATNR FROM ZWOWC_ARTICLE_LISTING A, ZWOWC_ARTICLE_MASTER B 
+WHERE A.MATNR = B.MATNR 
+AND A.PERPETUAL_FLAG = 'Y'
+AND B.TEMPERATURE_IND ='03'
+AND A.ALC_STATUS IN ('RA','NA')
+AND A.RANDOM_WEIGHT_FLG = 'Y' and a.matnr not like '6%']]></RWT>
+
+<DETAILS><![CDATA[
+select  A.MATNR,B.ARTICLE_DESC,A.MEINH,(A.adj_type+A.ref_no) as Reasoncode,
+substr(reasoncode ,1, 3)||' '||'order '||substr(reasoncode,6) AS Reasoncode_Modified
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('RANDOM') AND A.CHANGED_DATE >= 'FILTERDATE' and adj_type='IBTCR' and adj_user <>'System'  ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select  matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted,
+current_soh_pi,new_soh_pi,case when sign(adj_qty_pi*sign) = -1 then cast(adj_qty_pi*sign as nvarchar(20)) else '+'||(adj_qty_pi*sign) end case as Adjusted_pi
+from LOCAL_WOW_SOH_LOG where matnr='RANDOM'  and changed_date >= 'FILTERDATE' and adj_type='IBTCR' and adj_user <>'System' order by CHANGED_TIMESTAMP desc  ]]></Compare>
+</TCName>
+
+<TCName name="VerifyGoodsIBTCPBD">
+<CPBD><![CDATA[
+SELECT DISTINCT A.MATNR, B.ARTICLE_OM,B.COMPLEX_PACK_BRK_ARTICLE,E.STORE_SOH, A.MTART, C.DEPT_NAME, C.CAT_NAME, C.SUB_CAT_NAME, C.SEG_NAME, A.PBD_IND, A.DISPLAY_ITEM_IND, B.RANDOM_WEIGHT_FLG, A.WEIGHTED_IND
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, saap.LOCAL_WOW_SOH E
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND A.MATNR=E.ARTICLE AND E.STORE_SOH >0 AND B.COMPLEX_PACK_BRK_ARTICLE <>'' AND B.ARTICLE_OM>20  and a.matnr not like '6%' and a.matnr not like '4%'  and a.matnr not like '2%' --and a.matnr not like '9%'
+ORDER BY B.COMPLEX_PACK_BRK_ARTICLE ASC ]]></CPBD>
+<DETAILS><![CDATA[
+select  A.MATNR,B.ARTICLE_DESC,A.MEINH,(A.adj_type+A.ref_no) as Reasoncode,
+substr(reasoncode ,1, 3)||' '||'order '||substr(reasoncode,6) AS Reasoncode_Modified,A.CURRENT_SOH, A.NEW_SOH,(A.ADJ_QTY*A.Sign) as AdjustedValue
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and adj_type='IBTCR' and adj_user <>'System'  ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE' and adj_type='IBTCR' and adj_user <>'System' order by CHANGED_TIMESTAMP desc ]]></Compare>
+</TCName>
+
+
+<TCName name="VerifyGoodsRTVHAWA">
+<HAWA><![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and a.mtart='HAWA' and  a.PBD_IND<>'Y' and d.alc_status<>'DA' and d.perpetual_flag='Y' and d.COMPLEX_PACK_BRK_BASE_QTY ='' and d.lifnr  in (select lifnr from ZWOWC_VENDOR_master where land1_name ='Australia')]]></HAWA>
+<DETAILS><![CDATA[
+select  A.MATNR,B.ARTICLE_DESC,A.MEINH,(A.adj_type+A.ref_no) as Reasoncode,
+substr(reasoncode ,1, 3)||'/Claim '||substr(reasoncode,4) AS Reasoncode_Modified,A.CURRENT_SOH, A.NEW_SOH,(A.ADJ_QTY*A.Sign) as AdjustedValue
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and adj_type='RTV' and adj_user <>'System'  ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE' and adj_type='RTV' and adj_user <>'System' order by CHANGED_TIMESTAMP desc ]]></Compare>
+</TCName>
+
+<TCName name="VerifyGoodsRTVPBD">
+<PBD><![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and  a.PBD_IND = 'Y' and d.alc_status<>'DA' and d.perpetual_flag='Y'
+and d.COMPLEX_PACK_BRK_BASE_QTY ='' and d.lifnr in (select lifnr from ZWOWC_VENDOR_master where land1_name ='Australia')]]></PBD>
+<PreviousPBD><![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e 
+where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr and d.alc_status<>'DA' and a.TEMPERATURE_IND='03' AND A.MTART ='HAWA' AND d.PERPETUAL_FLAG ='Y' AND d.SOURCE_OF_SUPPLY <>'A' and a.PBD_IND='Y']]></PreviousPBD>
+<DETAILS><![CDATA[
+select  A.MATNR,B.ARTICLE_DESC,A.MEINH,(A.adj_type+A.ref_no) as Reasoncode,
+substr(reasoncode ,1, 3)||'/Claim '||substr(reasoncode,4) AS Reasoncode_Modified,A.CURRENT_SOH, A.NEW_SOH,(A.ADJ_QTY*A.Sign) as AdjustedValue
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and adj_type='RTV' and adj_user <>'System'  ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE' and adj_type='RTV' and adj_user <>'System' order by CHANGED_TIMESTAMP desc ]]></Compare>
+</TCName>
+
+<TCName name="VerifyGoodsRTVPBDHigherUOM">
+<PBD><![CDATA[SELECT DISTINCT A.MATNR FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR and C.matnr  in (select matnr from ZWOWC_ARTICLE_LISTING where alc_status<>'DA') and A.PBD_ind='Y'  AND B.PERPETUAL_FLAG ='Y' AND B.SOURCE_OF_SUPPLY <>'A' 
+AND A.MATNR NOT IN (SELECT PLU_CODE FROM SAAP.ZWOWC_ARTICLE_MASTER)  and b.lifnr  in (select lifnr from ZWOWC_VENDOR_master where land1_name ='Australia') ]]></PBD>
+<DETAILS><![CDATA[
+select  A.MATNR,B.ARTICLE_DESC,A.MEINH,(A.adj_type+A.ref_no) as Reasoncode,
+substr(reasoncode ,1, 3)||'/Claim '||substr(reasoncode,4) AS Reasoncode_Modified,A.CURRENT_SOH, A.NEW_SOH,(A.ADJ_QTY*A.Sign) as AdjustedValue
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and adj_type='RTV' and adj_user <>'System'  ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE' and adj_type='RTV' and adj_user <>'System' order by CHANGED_TIMESTAMP desc ]]></Compare>
+<ArticleOM><![CDATA[select article_om from ZWOWC_ARTICLE_LISTING where matnr='Random']]></ArticleOM>
+</TCName>
+
+<TCName name="VerifyGoodsRTVLitreArticles">
+<Litre><![CDATA[
+select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr  and  b.meinh='L' and  a.PBD_IND<>'Y' and d.alc_status<>'DA' and d.perpetual_flag='Y' and d.lifnr  in (select lifnr from ZWOWC_VENDOR_master where land1_name ='Australia') ]]></Litre>
+<DETAILS><![CDATA[
+select  A.MATNR,B.ARTICLE_DESC,A.MEINH,(A.adj_type+A.ref_no) as Reasoncode,
+substr(reasoncode ,1, 3)||'/Claim '||substr(reasoncode,4) AS Reasoncode_Modified,A.CURRENT_SOH, A.NEW_SOH,(A.ADJ_QTY*A.Sign) as AdjustedValue
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and adj_type='RTV' and adj_user <>'System'  ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE' and adj_type='RTV' and adj_user <>'System' order by CHANGED_TIMESTAMP desc ]]></Compare>
+</TCName>
+
+<TCName name="VerifyGoodsRTVLitreArticlesForOrderableUOM">
+<OrderableUOMLitre><![CDATA[select distinct a.matnr from saap.zwowc_article_master a,saap.zwowc_article_uom b,saap.zwowc_article_ean c,saap.zwowc_article_listing d,saap.zwowc_ARTICLE_HIER_XREF e where a.matnr=b.matnr and b.matnr=c.matnr and c.matnr=d.matnr and d.matnr=e.matnr  and  b.meinh='L' and d.article_om >1 and  a.PBD_IND<>'Y' and d.alc_status<>'DA' and d.perpetual_flag='Y' and d.lifnr  in (select lifnr from ZWOWC_VENDOR_master where land1_name ='Australia') ]]></OrderableUOMLitre>
+<DETAILS><![CDATA[
+select  A.MATNR,B.ARTICLE_DESC,A.MEINH,(A.adj_type+A.ref_no) as Reasoncode,
+substr(reasoncode ,1, 3)||'/Claim '||substr(reasoncode,4) AS Reasoncode_Modified,A.CURRENT_SOH, A.NEW_SOH,(A.ADJ_QTY*A.Sign) as AdjustedValue
+from local_wow_soh_LOG A, SAAP.ZWOWC_ARTICLE_MASTER B  
+where A.MATNR = B.MATNR AND A.MATNR in ('Random') AND A.CHANGED_DATE >= 'FILTERDATE' and adj_type='RTV' and adj_user <>'System'  ORDER BY A.CHANGED_TIMESTAMP desc]]></DETAILS>
+<Compare><![CDATA[select   matnr,current_soh,new_soh,case when sign(adj_qty*sign) = -1 then cast(adj_qty*sign as nvarchar(20)) else '+'||(adj_qty*sign) end case as Adjusted
+from LOCAL_WOW_SOH_LOG where matnr='Random'  and changed_date >= 'FILTERDATE' and adj_type='RTV' and adj_user <>'System' order by CHANGED_TIMESTAMP desc ]]></Compare>
+<ArticleOM><![CDATA[select article_om from ZWOWC_ARTICLE_LISTING where matnr='Random']]></ArticleOM>
+</TCName>
+
+</configuration>
+

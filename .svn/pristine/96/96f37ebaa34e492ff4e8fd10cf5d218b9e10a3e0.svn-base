@@ -1,0 +1,375 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class InstoreDisplayPromoObjects {
+	
+	@FindBy(xpath="//*[@id='price']/a")
+	public WebElement Pricing;
+	
+	@FindBy(xpath ="//*[@id='price']/ul/li[2]/a") 
+	public WebElement InstorePromotions;
+	
+	@FindBy(xpath ="//*[@id='price']/ul/li[2]/ul/li[1]/a")  
+	public WebElement displayPromotions;
+
+
+	@FindBy(xpath="//*[@id='article']")
+	public WebElement article;
+	
+	@FindBy(xpath="//*[@id='message']")
+	public WebElement errMsg;
+	
+	@FindBy(xpath="//*[@id='ok']/label")
+	public WebElement ok;
+	
+	//strt
+	
+	@FindBy(xpath="//*[@id='errorWrapper']/div/div[2]/h4")
+	public WebElement errortag;
+	
+	@FindBy(xpath="(//*[@class='editNumCell demandEdit textbox textboxDefaultText'])[1]")
+	public WebElement demandQty1;
+	
+	@FindBy(xpath="(//*[@class='editNumCell textbox textboxDefaultText'])[1]")
+	public WebElement displayQty1;
+	
+	@FindBy(xpath="(//*[@class='editNumCell textbox textboxDefaultText'])[2]")
+	public WebElement buildQty1;
+	
+	@FindBy(xpath="//*[@class='centerValue columnDivider expanded']/input")
+	public WebElement buildQtynew;
+	
+	@FindBy(xpath="//*[@id='message']/ol/li[1]")
+	public WebElement validateErrorsNew;
+	
+	@FindBy(xpath="//*[@id='message']/ol/li[2]")
+	public WebElement validateErrorsError2;
+	
+	@FindBy(xpath="//*[@id='validateErrors']/li[1]")
+	public WebElement errortag1;
+	
+	@FindBy(xpath="//*[@id='validateErrors']/li[2]")
+	public WebElement errortag2;
+	
+	@FindBy(xpath="//*[@id='backBtn']")
+	public WebElement backButton;
+	
+	@FindBy(xpath="//*[@id='nobtn']/label")
+	public WebElement no;
+	
+	@FindBy(xpath="//*[@id='errorMsg']")
+	public WebElement nodata;
+	
+	@FindBy(xpath="//*[@id='warningList']/li")
+	public WebElement errormsg;
+	
+	@FindBy(xpath="//*[@id='warningWrapper']/div/div[1]/h4")
+	public List<WebElement> closeErrorList;
+	
+	@FindBy(xpath="//*[@id='warningWrapper']/div/div[1]/a")
+	public WebElement closeError;
+	
+	@FindBy(xpath="(//*[@class='close'])[2]")
+	public WebElement closeerr;
+	
+	@FindBy(xpath="(//*[@class='popupData popupTitle']/h4)[2]")
+	public WebElement alreadyExistArt;
+	
+	@FindBy(xpath="//*[@id='addanyway']")
+	public WebElement addanyway;
+	
+	@FindBy(xpath="(//*[@class='popupData popupTitle']/h4)[2]")
+	public List<WebElement> alreadyExistArtList;
+	
+	@FindBy(xpath="//*[@id='PublishButton']/a/label")
+	public WebElement create;
+	
+	@FindBy(xpath="//*[@id='start']")  
+	public WebElement startDate;
+	
+	@FindBy(xpath="//*[@id='startDate-0']") 
+	public WebElement startDatepast;
+	
+	@FindBy(xpath="//*[@id='searchRow-0']")
+	public WebElement searchFirstRow;
+		
+	@FindBy(xpath="//*[@id='end']")  
+	public WebElement endDate;
+	
+	@FindBy(xpath="//*[@id='endDate-0']")  
+	public WebElement endDatepast;
+	
+	@FindBy(xpath="//*[@id='endSearch']")  
+	public WebElement searchendDatepast;
+	
+	@FindBy(xpath="//*[@id='searchAndAdd']")
+	public WebElement searchAndAdd;
+	
+	@FindBy(xpath="//*[@id='beforePublishBtn']/label")  
+	public WebElement proceedtocreate;
+	
+	@FindBy(xpath="(//*[@id='per'])[1]")
+	public WebElement percentfirst;
+	
+	@FindBy(xpath="//*[@id='validateButton']/a/label")
+	public WebElement validateButton;
+	@FindBy(xpath="//*[@id='promoArticleListSearchPast']/tr[1]/td/strong")  
+	public WebElement Firstarticlepast; 
+	
+	@FindBy(xpath="( //*[@class='deleteRecord'])")
+	public WebElement deletedraft;
+		
+	public static final String deletedraftdynamic="(//*[@class='deleteRecord'])[dynamic]";
+	
+	@FindBy(xpath="( //*[@class='deleteRecord'])")
+	public List<WebElement> deletedraftAll;
+	
+	public static final String dynamicpercent="(//*[@id='per'])[dynamic]";
+	
+	@FindBy(xpath="//*[@id='per']")
+	public List<WebElement> dynpercent;
+	
+	public static final String dynamicpercentvalue="(//*[@class='centerValue expanded']/input)[dynamic]";
+	
+	@FindBy(xpath="(//*[@class='centerValue expanded']/input)")
+	public WebElement pervalue;
+	
+	@FindBy(xpath="//*[@id='per']")  
+	public WebElement percent;
+		
+	@FindBy(xpath="//*[@id='ok']/label")
+	public List<WebElement> deleteok;
+	
+	@FindBy(name = "username")
+	public WebElement txtUserName;
+	
+	@FindBy(name = "password")
+	public WebElement txtPassword;
+		
+	@FindBy(xpath = "/html/body/div[2]/div/div[1]/a")
+	public WebElement close;
+	
+	@FindBy(xpath="//*[@id='filterOpenSearch']")  
+	public WebElement filter;
+	
+	@FindBy(xpath="//*[@id='filterOpenSearchPast']/label") 
+	public WebElement filterpast;
+	
+	@FindBy(xpath="//*[@id='promoListSearch']/thead/tr[3]/td[2]/input") 
+	public WebElement FilterUOM;
+	
+	@FindBy(xpath="//*[@id='promoListSearch']/thead/tr[3]/td[7]/input")
+	public WebElement FilterUOMstatus;
+	
+	@FindBy(xpath="//*[@id='promoListSearchPast']/thead/tr[3]/td[2]/input") 
+	public WebElement FilterUOMpast;
+	
+	@FindBy(xpath="//*[@id='promoListSearchPast']/thead/tr[3]/td[7]/input")
+	public WebElement FilterUOMstatuspast;
+	
+	@FindBy(xpath="//*[@id='searchRow-7']/td[3]")
+	public WebElement EA;
+	
+	@FindBy(xpath="//*[@id='promoArticleListSearch']]")
+	public WebElement Promotionlisttable;
+	
+	@FindBy(xpath="//*[@id='searchRow-7']/td[10]")
+	public WebElement Active;
+	
+	@FindBy(xpath="//*[@id='promoArticleListSearch']")
+	public WebElement Table;
+	
+	@FindBy(xpath="//*[@value='allDrafts']")
+	public WebElement Alldrafts;
+	
+	@FindBy(xpath="//*[@class='promolistcheckbox']")
+	public WebElement Dcheckbox;
+	
+	@FindBy(xpath="//*[@class='articleNo headH']")
+	public WebElement Alldraftarticles;
+	
+	@FindBy(xpath="//*[@id='start-448166_EA']")
+	public WebElement Alldraftstartdate;
+	
+	@FindBy(xpath="//*[@id='start-448166_EA']")
+	public WebElement Alldraftenddate;
+	
+	@FindBy(xpath="//*[@id='startDate-0']")
+	public WebElement StartDate;
+	
+	@FindBy(xpath="//*[@id='endDate-0']")
+	public WebElement EndDate;
+	
+	@FindBy(xpath="//*[@id='searchRow-0']/td[8]")  
+	public WebElement StandardPrice;
+	
+	@FindBy(xpath="//*[@id='searchRow-0']/td[9]")
+	public WebElement PromoPrice;
+	
+	@FindBy(xpath="//*[@id='searchPastRow-0']/td[8]")  
+	public WebElement StandardPricepast;
+	
+	@FindBy(xpath="//*[@id='searchPastRow-0']/td[9]")
+	public WebElement PromoPricepast;
+	
+	@FindBy(xpath="//*[@id='searchRow-0']/td[10]")  
+	public WebElement UOMstatus;
+	
+	@FindBy(xpath="//*[@id='searchPastRow-0']/td[10]")  
+	public WebElement UOMstatuspast;
+	
+	@FindBy(xpath="//*[@id='searchRow-0']/td[3]")
+	public WebElement UOM;
+	
+	@FindBy(xpath="//*[@id='searchPastRow-0']/td[3]")
+	public WebElement UOMpast;
+	
+	@FindBy(xpath="(//*[@class='deleteRecord'])[1]")
+	public WebElement deleteRecord1;	
+	
+	@FindBy(xpath="//*[@id='ok']/label")
+	public WebElement conformdeleteRecord;
+	
+	@FindBy(xpath="//*[@id='deactivateRecord-0']")
+	public WebElement deactivatefirst;
+	
+	@FindBy(xpath="//*[@id='ok']/label")
+	public WebElement conformDeactivate;
+		
+	@FindBy(xpath="//*[@id='searchRow-0']/td[11]/label")
+	public WebElement Deactivated;
+	
+	@FindBy(xpath="//*[@id='MR']")
+	public WebElement Pastpromotions;
+	
+	@FindBy(xpath="//*[@id='advancedSearch']")
+	public WebElement Searchpastpromotions;
+	
+	@FindBy(xpath="//*[@id='articleSearch']")  
+	public WebElement articlepast;
+	
+	@FindBy(xpath="//*[@id='searchAndAddPast']")  
+	public WebElement pastsearch;
+	
+	@FindBy(xpath="/html/body/div[9]/div[1]/button")  
+	public WebElement SecurityQusClose;
+	
+	@FindBy(xpath="//*[@class='articleNo headH']")  
+	public WebElement ArticleNumber;
+	
+	@FindBy(xpath="//*[@id='signIn']")  
+	public WebElement signIn;
+	
+	@FindBy(xpath="//*[@id='submitQuery']/div/div[3]/label")  
+	public WebElement ClickOutside;
+	
+	@FindBy(xpath="//*[@id='pastSearchArea']")  
+	public WebElement ClickOutside1;
+	
+	@FindBy(xpath="//*[@id='promolistcheckboxall']")  
+	public WebElement Checkboxall;
+	
+	@FindBy(xpath="//*[@id='deleteRecordBtn-456130_EA']")  
+	public WebElement DeleteButton;
+	
+	@FindBy(xpath="//*[@id='articleSearchTbody']/tr[2]/td[4]/input")
+	public WebElement PBDarticleOne;
+	
+	@FindBy(xpath="(//*[@id='uom'])[1]")
+	public WebElement PBDarticleOneuom;
+	
+	@FindBy(xpath="//*[@id='articleSearchTbody']/tr[3]/td[4]/input")  
+	public WebElement PBDarticleTwo;
+	
+	@FindBy(xpath="(//*[@id='uom'])[2]")
+	public WebElement PBDarticleTwouom;
+	
+	@FindBy(xpath="//*[@id='articleSearchTbody']/tr[4]/td[4]/input")  
+	public WebElement PBDarticleThree;
+	
+	@FindBy(xpath="(//*[@id='uom'])[3]")
+	public WebElement PBDarticleThreeuom;
+	
+	@FindBy(xpath="//*[@id='addtolist']")  
+	public WebElement PBDaddTolist;
+	
+	@FindBy(xpath="//*[@id='articleSearchTbody']/tr[1]/th[4]")  
+	public WebElement SelectPBD;
+	
+	@FindBy(xpath="//*[@id='filterOpen']/label")  
+	public WebElement FilterIcon;
+	
+	@FindBy(xpath="//*[@id='searchRow-0']/td[1]/span/a")  
+	public WebElement Expand;
+	
+	@FindBy(xpath="//*[@id='expandAll_active']")  
+	public WebElement ExpandAll;
+	
+	@FindBy(xpath="//*[@id='promoArticleListSearch']/tr[3]/td/table/tbody/tr/td/label")  
+	public WebElement SalesHistory;
+	
+	@FindBy(xpath="//*[@id='validateErrors']/li")  
+	public WebElement MaxpercentError;
+	
+	@FindBy(xpath="(//*[@id='errorMsg'])[2]")  
+	public WebElement PastsearchErrorMessage;
+	
+	@FindBy(xpath="//*[@id='promoArticleList']/tr[2]/th[5]")  
+	public WebElement clickOnNew;
+	
+	@FindBy(xpath="//*[@class='editNumCell textbox textboxDefaultText']")  
+	public WebElement NewPromoPrice;
+	
+	@FindBy(xpath="//*[@id='promoListSearchPast']/thead/tr[1]/th[7]")  
+	public WebElement ClickOnStatus;
+	
+	/*------
+	 * -----------------------------------------------------------------------------------------------
+	 * */
+	
+	@FindBy(xpath = "//*[contains(@class,'errorField tooltip')]")
+	public WebElement errorMsg;
+	
+	@FindBy(xpath="//*[@id='message']")
+	public WebElement messageBox;
+	
+	@FindBy(xpath="(//*[@id='per'])")
+	public List<WebElement> per;
+	
+	public static final String perDynamic ="(//*[@id='per'])[dynamic]" ;
+	
+	public static final String percentDynamic = ("(//*[@class='centerValue expanded']/input)[dynamic]");
+	
+	@FindBy(xpath="//*[@class='centerValue expanded']/input")
+	public List<WebElement> perv;
+	
+	@FindBy(xpath="//*[@id='filterOpen']/label")
+	public WebElement filterInd;
+	//en
+	
+	@FindBy(xpath="//*[@class='failed']")
+	public WebElement failedPromo;
+	
+	@FindBy(xpath="//*[@id='articleSearchTbody']/tr")
+	public List<WebElement> articlelist;
+	
+	public static final String articledyn = "//*[@id='articleSearchTbody']/tr[dynamic]/td[value]";
+	
+	@FindBy(xpath="(//span[.='Select Articles'])[3]")
+	public WebElement pbdArticlePopUp;
+	
+	public static final String pbdPop = "(//span[.='Select Articles'])[dynamic]";
+	
+	@FindBy(xpath="(//span[.='Select Articles'])")
+	public List<WebElement> pbdArticlePopUpList;
+	
+	@FindBy(xpath="//*[@id='addtolist']")
+	public WebElement addtolist;
+	
+	
+	
+}

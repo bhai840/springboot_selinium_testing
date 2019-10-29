@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+<TCName name = "nonreplenArticle_Disp">
+<nonrepleArticles>
+<![CDATA[SELECT DISTINCT A.MATNR 
+FROM SAAP.ZWOWC_ARTICLE_MASTER A, SAAP.ZWOWC_ARTICLE_LISTING B, SAAP.ZWOWC_ART_LIST_DEPARTMENT C, SAAP.ZWOWC_ARTICLE_UOM D, SAAP.ZWOWC_ARTICLE_EAN E
+WHERE A.MATNR = B.MATNR AND B.MATNR = C.MATNR AND C.MATNR = D.MATNR AND D.MATNR = E.MATNR  AND B.AUTOSTOCKR_IND <> 'Y'
+]]>
+</nonrepleArticles>
+<deleteQuery>
+<![CDATA[delete from  ZWOWC_PROMO_ITM]]>
+</deleteQuery>
+</TCName>
+
+
+<TCName name = "createPromoForFreshAndNonFreshFood_Disp">
+<FreshFoodart>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG='Y' and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in freshfood)]]>
+</FreshFoodart>
+</TCName>
+
+<TCName name = "createinstoreDisplayPBD_Disp">
+<pbdarticles>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='Y'
+and master.FRESH_FOOD_FLAG!='Y' and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in nonfreshfood)]]>
+</pbdarticles>
+</TCName>
+
+<TCName name = "verifyExceedLimits_Disp">
+<artcicleOM_ValueasOne>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG!='Y' and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in nonfreshfood)]]>
+</artcicleOM_ValueasOne>
+
+<artcicleOM_ValueasTwo>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG!='Y' and list.AUTOSTOCKR_IND='Y' 
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in nonfreshfood)]]>
+</artcicleOM_ValueasTwo>
+</TCName>
+
+<TCName name = "MaxDurationErrFF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG='Y' and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in freshfood) ]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationSMFF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG='Y' and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in freshfood) ]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationDMFF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG='Y' and list.AUTOSTOCKR_IND='Y' 
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in freshfood)]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationOSFF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG='Y'  and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in freshfood)]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationOAFF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG='Y'  and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in freshfood)]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationTMFF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG='Y'  and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in freshfood) ]]>
+</article>
+</TCName>
+
+
+<TCName name = "MaxDurationSTFF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG='Y' 
+and list.alc_status not in ('EC','ES') and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in freshfood)]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationCAFF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG='Y'  
+and list.alc_status not in ('EC','ES')  and list.AUTOSTOCKR_IND='Y' 
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in freshfood)]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationDMNF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master
+where list.matnr=master.MATNR
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG!='Y' 
+and list.alc_status not in ('EC','ES')   and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in nonfreshfood)]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationSMNF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master
+where list.matnr=master.MATNR
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG!='Y' 
+and list.alc_status not in ('EC','ES')  and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in nonfreshfood) ]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationTMNF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG!='Y' 
+and list.alc_status not in ('EC','ES')   and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in nonfreshfood)]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationOANF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG!='Y'  
+and list.alc_status not in ('EC','ES')  and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in nonfreshfood) ]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationOSNF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG!='Y' 
+and list.alc_status not in ('EC','ES')   and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in nonfreshfood) ]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationSTNF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG!='Y' 
+and list.alc_status not in ('EC','ES')   and list.AUTOSTOCKR_IND='Y' 
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in nonfreshfood)]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationCANF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG!='Y'  
+and list.alc_status not in ('EC','ES')  and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in nonfreshfood)]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationBRNF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG!='Y' 
+and list.alc_status not in ('EC','ES')   and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in nonfreshfood)]]>
+</article>
+</TCName>
+
+<TCName name = "MaxDurationErrNF_Disp">
+<article>
+<![CDATA[select distinct master.matnr,master.online_desc,ean.EAN11
+from saap.ZWOWC_ARTICLE_LISTING list,saap.zwowc_article_master master,saap.ZWOWC_ARTICLE_HIER_XREF hier,saap.ZWOWC_ARTICLE_EAN ean
+where list.matnr=master.MATNR
+and master.matnr=hier.matnr
+and master.matnr=ean.matnr
+and master.PBD_IND='N'
+and master.FRESH_FOOD_FLAG!='Y' 
+and list.alc_status not in ('EC','ES')   and list.AUTOSTOCKR_IND='Y'
+and master.matnr in (select matnr from saap.MAT_VIEW_ZWOW_ARTICLES_HIER where dept in nonfreshfood)]]>
+</article>
+</TCName>
+
+<TCName name = "BlockedProcurement_Disp">
+<article>
+<![CDATA[SELECT MATNR,ALC_STATUS,PS_ARTICLE_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR IN (SELECT MATNR FROM ZWOWC_ARTICLE_MASTER WHERE PBD_IND = 'N') AND 
+(PS_ARTICLE_STATUS = '02') AND ALC_STATUS NOT IN ('EC','ES')  AND AUTOSTOCKR_IND = 'Y' ORDER BY ALC_STATUS DESC]]>
+</article>
+</TCName>
+
+<TCName name = "ESArticles_Disp">
+<article>
+<![CDATA[SELECT * FROM ZWOWC_ARTICLE_MASTER WHERE MATNR IN (SELECT MATNR FROM ZWOWC_ARTICLE_LISTING WHERE ALC_STATUS = 'ES') AND PBD_IND = 'N']]>
+</article>
+</TCName>
+
+<TCName name = "ProductRecallArticles_Disp">
+<article>
+<![CDATA[SELECT MATNR,ALC_STATUS,PS_ARTICLE_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR IN (SELECT MATNR FROM ZWOWC_ARTICLE_MASTER WHERE PBD_IND = 'N') AND 
+(PS_ARTICLE_STATUS = '08') AND ALC_STATUS NOT IN ('RA','DA','NA') ORDER BY ALC_STATUS DESC]]>
+</article>
+</TCName>
+
+<TCName name = "ECArticles_Disp">
+<article>
+<![CDATA[SELECT * FROM ZWOWC_ARTICLE_MASTER WHERE MATNR IN (SELECT MATNR FROM ZWOWC_ARTICLE_LISTING WHERE ALC_STATUS = 'EC') AND PBD_IND = 'N']]>
+</article>
+</TCName>
+
+<TCName name = "ReadyForArchiving_Disp">
+<article>
+<![CDATA[SELECT MATNR,ALC_STATUS,PS_ARTICLE_STATUS FROM ZWOWC_ARTICLE_LISTING WHERE MATNR IN (SELECT MATNR FROM ZWOWC_ARTICLE_MASTER WHERE PBD_IND = 'N' ) AND PS_ARTICLE_STATUS = 'ZA' AND ALC_STATUS NOT IN ('RA','DA','NA')]]>
+</article>
+</TCName>
+
+</configuration>

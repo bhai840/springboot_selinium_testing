@@ -1,0 +1,856 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.InventoryReportObjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.InventoryReportPage;
+import au.wow.ngbomain.pages.WoWLoginPage;
+//import au.wow.ngbomain.tests.StockAdjustmentTests.RunCondition;
+
+
+
+
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+public class InventoryReportTests extends TestBase{
+	
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+    int count=0;		
+	int MCcount=0;
+	public static WebDriver driver;
+	public static XMLDataReader data;
+	public static boolean isFirstTest=true;
+
+	private Logger log = LogManager.getLogger(InventoryReportTests.class);
+	TestStatus status;
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	InventoryReportObjects objInvReport;
+	InventoryReportPage objInvReportPage;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;
+	
+	
+	public InventoryReportTests(){
+		super.log=log;
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Inventory Report with SOH and Primary deparment Criteria")
+	public void verifyInventoryReportSOH()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		List<List<Object>> results;
+		List<String> deptNameList = new ArrayList<String>();
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOH(objInvReport,driver);
+
+			String storeNo= System.getProperty("store");
+			String userId= getContext().getStringProperty("usernameR");
+
+			//String primaryDepartment_sql = data.getText("primaryDepartment").replace("user_id", userId).replace("store_num", storeNo);
+			String primaryDepartment_sql = data.getText("primaryDepartment").replace("user_id", userId);
+
+			results = sql.executeQuery(getContext(), primaryDepartment_sql);
+
+			for (Iterator<List<Object>> it = results.iterator(); it.hasNext();) {
+				List<Object> elem = it.next(); 
+				deptNameList.add(elem.get(0).toString());
+
+			}
+
+			objInvReportPage.fnverifyInvReportPrimaryDepartment(objInvReport,deptNameList,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Inventory Report with MPL and Primary deparment Criteria")
+	public void verifyInventoryReportMPL() //throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		List<List<Object>> results;
+		List<String> deptNameList = new ArrayList<String>();
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportMPL(objInvReport,driver);
+
+			String storeNo= System.getProperty("store");
+			String userId= getContext().getStringProperty("usernameR");
+
+			//String primaryDepartment_sql = data.getText("primaryDepartment").replace("user_id", userId).replace("store_num", storeNo);
+			String primaryDepartment_sql = data.getText("primaryDepartment").replace("user_id", userId);
+
+			results = sql.executeQuery(getContext(), primaryDepartment_sql);
+
+			for (Iterator<List<Object>> it = results.iterator(); it.hasNext();) {
+				List<Object> elem = it.next(); 
+				deptNameList.add(elem.get(0).toString());
+
+			}
+
+			objInvReportPage.fnverifyInvReportPrimaryDepartment(objInvReport,deptNameList,driver);
+
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Inventory Report with SOH & MPL and Primary deparment Criteria")
+	public void verifyInventoryReportSOHandMPL() //throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		List<List<Object>> results;
+		List<String> deptNameList = new ArrayList<String>();
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOHandMPL(objInvReport,driver);
+
+			String storeNo= System.getProperty("store");
+			String userId= getContext().getStringProperty("usernameR");
+
+			//String primaryDepartment_sql = data.getText("primaryDepartment").replace("user_id", userId).replace("store_num", storeNo);
+			String primaryDepartment_sql = data.getText("primaryDepartment").replace("user_id", userId);
+
+			results = sql.executeQuery(getContext(), primaryDepartment_sql);
+
+			for (Iterator<List<Object>> it = results.iterator(); it.hasNext();) {
+				List<Object> elem = it.next(); 
+				deptNameList.add(elem.get(0).toString());
+
+			}
+
+			objInvReportPage.fnverifyInvReportPrimaryDepartment(objInvReport,deptNameList,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Inventory Report with SOH & MPL and partial deparment Criteria")
+	public void verifyInventoryReportSOH_MPL_PartialDepartment()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOHandMPL(objInvReport,driver);
+
+			objInvReportPage.fnChoosePartialDepartmentInvReport(objInvReport,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();	
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Inventory Report with SOH & MPL and all deparment Criteria")
+	public void verifyInventoryReportSOH_MPL_AllDepartment() //throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOHandMPL(objInvReport,driver);
+
+			objInvReportPage.fnChoosAllDepartmentInvReport(objInvReport,driver);
+
+			objInvReportPage.fnverifyInventoryReportPagination(objInvReport,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Inventory Report with SOH & MPL and multi deparment Criteria")
+	public void verifyInventoryReportMultiDepartment()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		List<List<Object>> results = null;
+		List<Object> randomRecord = new ArrayList<Object>();
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOHandMPL(objInvReport,driver);
+			String multiDepartment_sql = data.getText("multiDepartment");
+			results = sql.executeQuery(getContext(), multiDepartment_sql);
+
+			if(results.size()>0)
+			{
+				int num = common.RandomFromDB(results);
+				//system.out.println("Db values"+ num);
+				randomRecord = results.get(num);
+				objInvReportPage.fnverifyInventoryReportMultiDepartment(objInvReport,randomRecord,driver);
+			}
+			else{
+				htmlToExtent(cName,mName,extLogger,driver, "The Department Category Sub-category Segment are not available in DB;;;Pass");}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verifying Inventory Report with SOH & MPL and Additional criteria SOH")
+	public void verifyInventoryReportAdditonalCriteriaSOH()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		List<List<Object>> results = null;
+		List<Object> randomRecord = new ArrayList<Object>();
+
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			String minValue = data.getText("LessThan");
+			String maxValue = data.getText("GreaterThan");
+
+			objInvReportPage.fnSelectInvReportSOHandMPL(objInvReport,driver);
+
+			objInvReportPage.fnChooseGroceryDepartmentInvReport(objInvReport,driver);
+
+			objInvReportPage.fnChooseAdditionalCriteriaSOH(objInvReport,minValue,maxValue,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();	
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether user is able to enter only till 28 days")
+	public void verifySohDays() //throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOH(objInvReport,driver);
+			objInvReportPage.fnverifySohDays(objInvReport,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether SOH value is displayed in proper format")
+	public void verifySohValue() //throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		List<List<Object>> results = null;
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOH(objInvReport,driver);
+			objInvReportPage.fnverticalscroll(objInvReport,driver);
+			click(objInvReport.generateReportBtn);
+			waitForJSandJQueryToLoad(driver);;
+			htmlToExtent(cName,mName,extLogger,driver, "Inventory report generated successfully ;;;Pass");
+			int sizeofReport = objInvReport.sizeofReport.size();
+			int min=2, max;
+			max = sizeofReport;				
+			int randomNo=generateRandomNumber(min, max);
+			WebElement element = driver.findElement(By.xpath("//*[@id='Report_Inventory_Table_table']/tbody/tr["+randomNo+"]/td[1]"));
+			//WebElement element =  prepareWebElementWithDynamicXpathWithInt(objInvReport.article_id,randomNo);
+			String article =element.getText();
+
+			int article_id = Integer.parseInt(article);
+			String sohquery = data.getText("sohValue").replace("article_id", article);		
+			results= sql.executeQuery(getContext(), sohquery);
+			String soh = results.get(0).get(0).toString();
+			objInvReportPage.fnverifySohValue(objInvReport,soh,randomNo,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether SIT, SOO and days on hand are displayed correctly")
+	public void verifySITSOO() //throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		List<List<Object>> results = null;
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOH(objInvReport,driver);
+			objInvReportPage.fnverticalscroll(objInvReport,driver);
+			click(objInvReport.generateReportBtn);
+			waitForJSandJQueryToLoad(driver);;
+			htmlToExtent(cName,mName,extLogger,driver, "Inventory report generated successfully ;;;Pass");
+			int sizeofReport = objInvReport.sizeofReport.size();
+			int min=2, max;
+			max = sizeofReport;				
+			int randomNo=generateRandomNumber(min, max);
+			WebElement element = driver.findElement(By.xpath("//*[@id='Report_Inventory_Table_table']/tbody/tr["+randomNo+"]/td[1]"));
+			//WebElement element =  prepareWebElementWithDynamicXpathWithInt(objInvReport.article_id,randomNo);
+			String article =element.getText();
+
+			int article_id = Integer.parseInt(article);
+			String SIT = null ,SOO = null ,om = null;
+			String SITSOOquery = data.getText("SITSOO").replace("article_id", article);		
+			results= sql.executeQuery(getContext(), SITSOOquery);
+			if(results.size() != 0)
+			{
+				SIT = results.get(0).get(1).toString();
+
+				SOO = results.get(0).get(2).toString();
+			}
+			String OMquery =  data.getText("OM").replace("article_id", article);
+			results= sql.executeQuery(getContext(), OMquery);
+			if(results.size() != 0)
+			{
+				om = results.get(0).get(0).toString();
+			}
+			if(SIT != null && SOO != null && om != null)
+			{
+				objInvReportPage.fnverifySITSOO(objInvReport,SIT,SOO,om,randomNo,driver);
+			}
+			else
+
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No data returned from DB ;;;Pass");	
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether date format value is displayed correctly")
+	public void verifyLastSoldDate() //throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+1;}
+
+		List<List<Object>> results = null;
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOH(objInvReport,driver);
+			//objInvReportPage.fnverifySohDays(objInvReport,driver);
+			objInvReportPage.fnverticalscroll(objInvReport,driver);
+			click(objInvReport.generateReportBtn);
+			waitForJSandJQueryToLoad(driver);;
+			htmlToExtent(cName,mName,extLogger,driver, "Inventory report generated successfully ;;;Pass");
+			int sizeofReport = objInvReport.sizeofReport.size();
+			int min=2, max;
+			max = sizeofReport;				
+			int randomNo=generateRandomNumber(min, max);
+			WebElement element = driver.findElement(By.xpath("//*[@id='Report_Inventory_Table_table']/tbody/tr["+randomNo+"]/td[1]"));
+			//WebElement element =  prepareWebElementWithDynamicXpathWithInt(objInvReport.article_id,randomNo);
+			String article =element.getText();
+			WebElement element1 = driver.findElement(By.xpath("//*[@id='Report_Inventory_Table_table']/tbody/tr["+randomNo+"]/td[3]"));
+			String article_uom = element1.getText();
+			int article_id = Integer.parseInt(article);
+			String dateformatquery = data.getText("dateformat").replace("article_id", article).replace("uom", article_uom);		
+			results= sql.executeQuery(getContext(), dateformatquery);
+			if (results.size()>0)
+			{
+				String date = results.get(0).get(0).toString();
+				objInvReportPage.fnverifyLastSoldDate(objInvReport,date,randomNo,driver);
+			}
+
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "The article does not have a last sold date;;;Pass");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();	
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether user is able to generate SOH report for different source of supply")
+	public void verifyDifferentSOSSOHReport()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOH(objInvReport,driver);
+			objInvReportPage.fnverifyDifferentSOS(objInvReport,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();	
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether user is able to generate MPL report for different source of supply")
+	public void verifyDifferentSOSMPLReport()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportMPL(objInvReport,driver);
+			objInvReportPage.fnverifyDifferentSOS(objInvReport,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether user is able to generate SOH & MPL report for different source of supply")
+	public void verifyDifferentSOSSOH_MPLReport() //throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+2;}
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOHandMPL(objInvReport,driver);
+			objInvReportPage.fnverifyDifferentSOS(objInvReport,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether user is able to print report without giving seasonal activity")
+	public void verifyPrintReportwithoutSeasonalActivity() //throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOH(objInvReport,driver);
+			objInvReportPage.fnSeasonalActivity(objInvReport,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether user is able to print report by giving seasonal activity")
+	public void verifyPrintReportwithSeasonalActivity() //throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOH(objInvReport,driver);
+			objInvReportPage.fnChooseSeasonalActivity(objInvReport,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether user can select Deleted, on Promotion and Non PI Articles")
+	public void verifyDeletedcheckbox()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		List<List<Object>> results = null;
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOH(objInvReport,driver);
+			objInvReportPage.fnChooseGroceryDepartmentInvReport(objInvReport,driver);		
+			String deletedquery = data.getText("Deletedcount");		
+			results= sql.executeQuery(getContext(), deletedquery);
+			String Dcount = results.get(0).get(0).toString();
+			objInvReportPage.fnverifyDeletedCheck(objInvReport,Dcount,driver);	
+
+			// On Promotion
+			objInvReportPage.fnSelectInvReportSOH(objInvReport,driver);
+			objInvReportPage.fnChooseGroceryDepartmentInvReport(objInvReport,driver);
+			String onpromotionquery = data.getText("OnPromotioncount");
+			results = sql.executeQuery(getContext(), onpromotionquery);
+			String Onpromotioncount = results.get(0).get(0).toString();
+			objInvReportPage.fnverifyOnPromotionCheck(objInvReport,Onpromotioncount,driver);
+
+			// Non Perpetual
+			objInvReportPage.fnSelectInvReportSOH(objInvReport,driver);
+			objInvReportPage.fnChooseGroceryDepartmentInvReport(objInvReport,driver);
+			String PIquery = data.getText("PIcount");
+			results = sql.executeQuery(getContext(), PIquery);
+			String PIcount = results.get(0).get(0).toString();
+			objInvReportPage.fnverifyPICheck(objInvReport,PIcount,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify whether PBD articles are getting displayed with 3 UOM")
+	public void verifyPBDUOM()//throws IOException, AWTException, SQLException, NumberFormatException, ParseException
+	{
+		if(InventoryArtpreCount2==-1){
+			MCcount=MCcount+1;}
+		List<List<Object>> results = null;
+		TestStatus status = getTestStatus();
+		try{
+			navToInventoryReport(status);
+			objInvReportPage.fnSelectInvReportSOH(objInvReport,driver);
+			String article = objInvReportPage.fnchooseLiquorDepartment(objInvReport,driver);
+			String PBD_count = null;
+			String PBDquery = data.getText("PBDcount").replace("article_id", article);
+			results = sql.executeQuery(getContext(), PBDquery);
+			if (results.size() != 0)
+			{
+				PBD_count = results.get(0).get(0).toString();
+			}
+			if(PBD_count != null)
+			{
+				objInvReportPage.fnPBDcheck(objInvReport, PBD_count, article,driver);
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "No data returned from DB ;;;Pass");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(InventoryArtScenarios, InventoryArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+	public void navToInventoryReport(TestStatus status) throws IOException, AWTException {
+		log.info("---------------Login into Application--------------------");
+		htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+		////Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+		loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+		if(System.getProperty("store")==null){
+			StoreNo = getContext().getStringProperty("store");
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+			////Report_AddStep("testcase", "Login with the Store : " + getContext().getStringProperty("store"),"","", "Pass");
+			objInvReportPage = loginPage.navToInventoryReport(getContext().getStringProperty("store"),driver);
+		}else{
+			storeprop.getStoreDetails(System.getProperty("store"));
+			//system.out.println(store);
+			StoreNo = store;
+			htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + store+";;;Pass");
+			////Report_AddStep("testcase", "Login with the Store : " + store,"","", "Pass");
+			objInvReportPage = loginPage.navToInventoryReport(store,driver);
+		}
+
+		log.info("-------------Navigate to Inventory Report Page------------");
+		htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to Inventory Report  Page---------------------;;;Pass");
+		////Report_AddStep("testcase", "----------------Navigate to Inventory Report  Page---------------------","","", "Pass");
+		objInvReportPage.clickOnInventoryReport(objInvReport,driver);
+		
+	}
+	
+	/*@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m,ITestContext testcontext  ITest annotation, Constructor testConstructor) throws IOException{	
+		
+		initializeTestcontext();
+				
+		RunCondition annotation = m.getAnnotation(RunCondition.class);
+	       if (annotation != null) {
+	           int[] admissibleValues = annotation.envVar();
+	           for (int val : admissibleValues) {
+	               if (getContext().getStringProperty("store").equals(val)) {
+	                   // if environmental variable matches one of admissible values then do not skip
+	                   throw new SkipException("skip because of RunCondition");
+	               }
+	           }
+	       }
+
+		//system.out.println("test1 - beforemethod");
+		log.info("Loading Testdata for the test case: " + m.getName().toString());
+		data.getTCNameFromChildren(m.getName().toString().trim());
+		driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser"));
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		moduledesc = m.getName().toString().trim();
+		dtmoduledesc = m.getAnnotation(Test.class).description();
+		testcasesttime = new Date();
+		objInvReport = PageFactory.initElements(this.driver, InventoryReportObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+
+
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy_hmmss");
+		String formattedDate = sdf.format(date);
+		//system.out.println(formattedDate); // 12/01/2011 4:48:16 PM
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String formattedDate1 = dateFormat.format(date);
+		//system.out.println(formattedDate1); // 12/01/2011 4:48:16 PM
+		String dat = formattedDate1;
+		Report_Header("testcase", reportPath , moduledesc, dat);
+		
+	}
+	
+	@BeforeClass(alwaysRun=true)
+	public void loadXMLFile(){
+		//initializeTestcontext();
+		//system.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\inventoryReport.xml");
+		customreport.createExtentReport();
+	}*/
+
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		
+        mName=m9.getName().toString().trim();			
+		if(!methodList.contains(m9.getName().toString().trim())){
+		methodList.add(m9.getName().toString().trim());
+		extLogger = extReport.startTest(m9.getName().toString().trim());
+		}
+		initializeTestcontext();
+		System.out.println("test1 - beforemethod");
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+		}else{
+			String title = driver.getCurrentUrl();
+			if(title.contains("logginOut"))
+			{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+			}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+						WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+						scrolltoElement(home,driver);
+						home.click();
+						TimeUnit.SECONDS.sleep(5);
+						loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+						driver.navigate().refresh();
+						TimeUnit.SECONDS.sleep(5);}
+				}
+			}
+		}
+			isFirstTest=false;
+		
+		//driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser")); setDriver(driver);
+			setDriver(driver);
+			testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		InventoryArttestname = m9.getName().toString().trim();
+		InventoryArttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		objInvReport = PageFactory.initElements(this.driver, InventoryReportObjects.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(this.driver, BasePage.class);
+		common = PageFactory.initElements(this.driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(this.driver, StoreProperties.class);
+		
+		/*Date ppStartdat1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		String formattedDatepp = dateFormat.format(ppStartdat1);
+		//system.out.println(formattedDatepp); // 12/01/2011 4:48:16 PM
+		InventoryArtStartdat = formattedDatepp;*/
+
+	}
+	
+	@BeforeClass
+	public void loadXMLFile(){	
+		System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\inventoryReport.xml");
+		customreport.createExtentReport();
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+	}
+	
+	
+	
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		System.out.println("afterclass");
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(), MCcount);
+		//system.out.println(extentList);
+		//system.out.println(methodList);
+        extReport.endTest(extLogger);
+		extReport.flush();
+		removeDriver();
+		closeDriver(driver);
+		moduleName.put("Modules", InventoryArtModules);
+		int invArtM=MCcount;
+		InventoryArtMC=""+invArtM;
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+		
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+				//system.out.println();
+			
+			}
+
+		System.out.println("AffterMethod");
+		/*Date ppMEndDate1 = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		InventoryArtMEndDate = dateFormat.format(ppMEndDate1);
+		//system.out.println(InventoryArtMEndDate); // 12/01/2011 4:48:16 PM
+		String EnhancedArtTime = InventoryArttestdesc +";"+ InventoryArtStartdat +";" + InventoryArtMEndDate;
+
+		InventoryArtTime.put(InventoryArttestname, EnhancedArtTime);
+		////Report_AddStep("testcase", "Running Completed Status","","", getResultStatusName(result.getStatus()));
+		waitFor(4);*/
+		//closeDriver(driver);
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")){
+			int cnt = InventoryArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			InventoryArtpreCount2++;
+		}
+		/*waitFor(1);
+		if((getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")) && InventoryArtpreCount2!=reCount){
+			waitFor(1);
+			InventoryArtTime.removeAll(InventoryArttestname);
+			waitFor(1);
+			InventoryArtScenarios.removeAll(InventoryArttestname);
+		}
+		waitFor(1);*/
+		if(InventoryArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+			InventoryArtpreCount2=-1;
+		}
+		
+	}
+	
+	}
+	
+  

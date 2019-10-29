@@ -1,0 +1,229 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class RoutineObjects {
+	
+	@FindBy(xpath ="//*[@id='reports']/a")
+	public WebElement reports;
+	
+	@FindBy(xpath ="//*[@class='reportBtmBrdr AC_RPSM subMenu']/a")
+	public WebElement stockmgmt;
+	
+	@FindBy(xpath ="//*[@class='reportBtmBrdr first-search  AC_RPOS first-search']/a")
+	public WebElement overstockreport;
+	
+	@FindBy(xpath ="//*[@id='standard']")
+	public WebElement daily;
+	
+	@FindBy(xpath ="//*[@id='dateSelectOptions']")
+	public WebElement DateSelection;
+	
+	@FindBy(xpath ="//*[@id='dateSelectOptions']/option[1]")
+	public WebElement DateSelectionFirst;
+	
+	@FindBy(xpath ="//*[@id='ds']")
+	public WebElement dropdownselect;
+	
+	@FindBy(xpath ="//*[@id='dropdownDoneBtn']/a")
+	public WebElement Done;
+	
+	@FindBy(xpath ="//*[@id='generateReport']")
+	public WebElement GenerateReport;
+	
+	@FindBy(xpath ="//*[@id='45']")
+	public WebElement BakeHouse;
+	
+	@FindBy(xpath ="//*[@id='dateRadio']/input[2]")
+	public WebElement clicksecond;
+	
+	
+	@FindBy(xpath ="//*[@id='dateSelectOptions']")
+	public List<WebElement> dateselectradio;
+	
+	
+	
+	
+	public static final String reasontypesdyn = "//*[@id='typeRadio']/input[dynamic]";
+	
+	public static final String datetypesdyn = "//*[@id='dateRadio']/input[dynamic]";
+
+	public static final String clickinnerDD="//*[@id='hierDrp']/li[dynamic]/label[1]";
+	
+	public static final String dateselectionoption = "//*[@id='dateSelectOptions']/option[dynamic]";
+	//*[@id="success-wrapper"]/div/div/div[1]/a
+	
+	
+	
+	@FindBy(xpath ="//*[@id='success_msg']/li")
+	public WebElement msgtext;
+	
+	
+	@FindBy(xpath ="//*[@id='success-wrapper']/div/div")
+	public List<WebElement> msg;
+	
+	@FindBy(xpath ="//*[@id='success-wrapper']/div/div")
+	public WebElement msg1;
+	
+	@FindBy(xpath ="//*[@id='dateRadio']/input")
+	public List<WebElement> dateradio;
+	
+	@FindBy(xpath ="(//*[@class='close'])[5]")
+	public WebElement close;
+	
+	@FindBy(xpath ="//*[@id='ui-accordion-accordion-header-0']")
+	public WebElement generateoverstockreport;
+	
+	@FindBy(xpath ="//*[@id='hierDrp']/li")//Xpath for total depts present
+	public List<WebElement> innerDD;
+	
+	
+//##rajsh //table[@id='Overstock_Daily_Weekly_table']//tbody//tr
+	@FindBy(xpath ="//table[@id='Overstock_Daily_Weekly_table']//tbody")
+	public List<WebElement> records;
+	
+	@FindBy(xpath ="//table[@id='Overstock_Daily_Weekly_table']//tbody")
+	public List<WebElement> recordspartial;
+	
+	@FindBy(xpath ="//table[@id='Overstock_Daily_Weekly_table']//tbody")
+	public List<WebElement> recordslastweek;
+	
+	@FindBy(xpath ="//table[@id='Overstock_Daily_Weekly_table']//tbody")
+	public List<WebElement> recordslastweekpartial;
+	
+	@FindBy(xpath ="//*[@id='all']")
+	public WebElement Weekly;
+	
+	
+	@FindBy(xpath ="//*[@id='currentWeekRadio']")
+	public WebElement CurrentWeek;
+	
+	
+	@FindBy(xpath ="//*[@id='lastWeekRadio']")
+	public WebElement lastweek;
+	
+	
+	@FindBy(xpath ="//*[@id='printReportWeekly']")
+	public WebElement print;
+	
+	@FindBy(xpath ="//*[@id='error_msg']/li")
+	public WebElement nodept;
+	
+	@FindBy(xpath ="//*[@id='hierDrp']/li[1]/label")//Xpath for alldept
+	public WebElement alldept;
+	
+	@FindBy(xpath ="//*[@id='allDeptChkBox']")
+	public WebElement AllDeptCheckbox;
+	
+	public static final String partialdeptselectiondynamic = "//*[@id='hierDrp']/li[dynamic]/label";
+	
+	@FindBy(xpath ="//*[@id='Overstock_Daily_Report_table']/tbody/tr")
+	public List<WebElement> DailyReportTable;
+	
+	
+	//*[@id="Overstock_Daily_Report_table"]
+	
+	
+	public static final String partialcheckboxselectiondynamic = "//*[@id='hierDrp']/li[dynamic]/input";
+	//public static final String matnr="//*[@id='Overstock_Daily_Report_table']/tbody/tr/td[1]";
+	
+
+	@FindBy(xpath ="//*[@id='Overstock_Daily_Weekly_table']/tbody/tr")
+	public List<WebElement> AllValuesFromTable;
+	
+	@FindBy(xpath ="//*[@id='Overstock_Daily_Weekly_table']/tbody/tr[1]")
+	public List<WebElement> firstvalue;
+	
+	@FindBy(xpath ="//*[@id='Overstock_Daily_Weekly_table']/tbody/tr[2]")
+	public List<WebElement> secondvalue;
+	
+	
+	@FindBy(xpath ="//*[@id='Overstock_Daily_Report_head_page']/ul/li")
+	public List<WebElement> check2;
+	
+	public static final String chec="//*[@id='Overstock_Daily_Report_head_page']/ul/li[dynamic]";
+	//pagination
+	
+	
+			public static final String articleDetails="//*[text()='dynamic']/following::td";
+			
+			
+			//Xpath for alldept
+	@FindBy(xpath ="//*[@id='Overstock_Daily_Report_head_page']/ul/li[2]/a")
+	public WebElement firstpage;
+	
+	@FindBy(xpath ="//*[@id='Overstock_Daily_Report_table']/tbody/tr/td[1]")
+	public List<WebElement> matnrvalues;
+
+	
+	@FindBy(xpath ="//*[@id='Overstock_Daily_Report_foot_page']")
+	public List<WebElement> paginationsize;
+	
+	
+	
+	//Srivinith
+	
+	@FindBy(xpath ="//*[@id='dateRadio']/input[1]")
+	public WebElement currentWeekRadioButton;
+
+	@FindBy(xpath ="//*[@id='weeklyRpLbl']")
+	public WebElement SDate;
+	
+	@FindBy(xpath ="//*[@id='dateRadio']/input[2]")
+	public WebElement lastWeekRadioButton;
+	
+	@FindBy(xpath ="//*[@data_key='reason_desc']")
+	public List<WebElement> listSizeFromPage;
+	
+	@FindBy(xpath ="//*[@id='standard']")
+	public WebElement dailyRadioButton;
+	
+	@FindBy(xpath ="//*[@data_key='article_number']")
+	public List<WebElement> listSizeFromPageDaily;
+	
+	@FindBy(xpath ="//*[@id='Overstock_Daily_Report_head_page']")
+	public List<WebElement> listSizePageSize;
+	
+	@FindBy(xpath ="//*[@id='Overstock_Daily_Report_head_page']/ul/li")
+	public List<WebElement> lastPage;
+
+	@FindBy(xpath ="//*[@id='Overstock_Daily_Report_table']/tbody/tr[2]")
+	public List<WebElement> firstvalueDaily;
+	
+	@FindBy(xpath ="(//*[@type='checkbox'])")
+	public List<WebElement> checkBoxSize;
+	
+	@FindBy(xpath ="//*[@id='printReportDaily']")
+	public WebElement printButton;
+	
+	@FindBy(xpath ="//*[@id='printReportWeekly']")
+	public WebElement printButtonWeekly;
+	
+	public static final String lastPageClick = "(//*[@id='Overstock_Daily_Report_head_page']/ul/li)[dynamic]";
+	
+	public static final String partialdeptselectiondynamic2 = "//*[@id='depDropDwnList']/div/li[dynamic]"; 
+	
+	public static final String partialdeptselectiondynamic1 = "(//*[@type='checkbox'])[dynamic]"; 
+	
+	public static final String randomDateSelection = "//*[@id='dateSelectOptions']/option[dynamic]"; 
+	
+	
+}
+
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
+	
+	
+	
+

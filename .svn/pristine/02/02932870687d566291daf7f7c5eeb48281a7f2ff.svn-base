@@ -1,0 +1,66 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+public class LtoLocObj {
+
+
+	@FindBy(xpath ="//*[@id='stockManage']/a")
+	public WebElement stockmanagement;
+	
+	@FindBy(xpath ="//*[@id='stockManage']/ul/li[1]/a")
+	public WebElement ltomanagement;
+	
+	@FindBy(xpath ="//*[@id='thead_lto_locations']/tr/th[7]/label/input")
+	public WebElement selectall;
+	
+	@FindBy(xpath ="//*[@id='printButton']")
+	public WebElement print;
+	
+	@FindBy(xpath ="//*[@id='yes']/label")
+	public WebElement printyes;
+	
+	//*[@id="addUser"]/a/label
+	
+	@FindBy(xpath ="//*[@id='addUser']/a/label")
+	public WebElement addloc;
+	
+	
+	@FindBy(xpath ="//*[@id='ltoFixtureType']")
+	public WebElement fixture;
+	
+	@FindBy(xpath ="//*[@id='ltoFixtureType']/option[2]")
+	public WebElement bog;
+	
+	
+	@FindBy(xpath ="//*[@id='ltoAisleDetails']/input[1]")
+	public WebElement aisle;
+	
+	@FindBy(xpath ="//*[@id='ltoSaveAndAdd']/a")
+	public WebElement save;
+	
+	@FindBy(xpath ="//*[@id='success-wrapper']/div/div/div[1]/a")
+	public WebElement closemsg;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}

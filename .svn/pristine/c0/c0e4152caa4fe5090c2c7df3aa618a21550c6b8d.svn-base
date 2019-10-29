@@ -1,0 +1,345 @@
+package au.wow.ngbomain.pages;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.WebElement;
+
+import com.relevantcodes.extentreports.ExtentTest;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.OrderUpdationObject;
+import au.wow.ngbomain.objects.ReceivingSegmentObjects;
+import au.wow.ngbomain.tests.OrderUpdationTest;
+import au.wow.ngbomain.tests.ReceivingOrderTests;
+import au.wow.ngbomain.tests.ReceivingSegmentsTest;
+
+public class OrderUpdationPage extends BasePage{
+	
+	CommonFunctions common = PageFactory.initElements(OrderUpdationTest.driver, CommonFunctions.class);
+	private Logger log = LogManager.getLogger(OrderUpdationTest.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	public static XMLDataReader data;
+
+	ExtentTest extLogger=OrderUpdationTest.extLogger;
+	String cName= OrderUpdationTest.cName;
+	String mName=OrderUpdationTest.mName;
+    WebDriver driver= OrderUpdationTest.driver;
+    public String returnedString;
+    public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+    
+    List<List<Object>> artInitialQuantity = new ArrayList<List<Object>>();
+    
+    
+    public void toOrderEnqPage(OrderUpdationObject objOrderUpdateObject,WebDriver driver) throws AWTException{
+		//waitForJSandJQueryToLoad(driver);; 
+		waitFor(5);
+		Point coordinates = objOrderUpdateObject.orders.getLocation();
+		Robot robot = new Robot();
+		robot.mouseMove(coordinates.getX(),coordinates.getY()+100);
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(objOrderUpdateObject.orders).click().build().perform();	
+		waitFor(5);
+		
+		Point coordinates2 = objOrderUpdateObject.orderEnquiry.getLocation();
+		Robot robo1t = new Robot();
+		robo1t.mouseMove(coordinates2.getX(),coordinates2.getY()+100);
+		
+	
+		action.moveToElement(objOrderUpdateObject.orderEnquiry).click().build().perform();
+		waitFor(5);
+		
+		waitForJSandJQueryToLoad(driver);
+		
+	}
+    
+    public void updatingQuantity(OrderUpdationObject objOrderUpdateObject,int k,WebDriver driver) throws AWTException{
+    
+    	//objOrderUpdateObject.editBtn.click();
+    	verticalScroll(driver);
+    	for(int i=1;i<=objOrderUpdateObject.orderedQtyList.size();i++){
+    		WebElement orderedQty = prepareWebElementWithDynamicXpathWithInt(objOrderUpdateObject.orderQty, i, driver);
+    		WebElement artnumber = prepareWebElementWithDynamicXpathWithInt(objOrderUpdateObject.articleNumber, k, driver);
+    		String initialQty = orderedQty.getAttribute("value");
+    		String temp = artnumber+":"+initialQty;
+    		artInitialQuantity.addAll(StringToListCreation(temp));
+    		orderedQty.clear();
+    		int rand = ThreadLocalRandom.current().nextInt(5, 15)+1;
+    		int sendQty;
+    		if(i%2==0){
+    			sendQty = Integer.parseInt(initialQty) + rand;
+    		}
+    		else{
+    			if(rand >= Integer.parseInt(initialQty)){
+    				rand = 1;
+    			}
+    			sendQty = Integer.parseInt(initialQty) - rand;
+    		}
+    		htmlToExtent(cName,mName,extLogger,driver,"Updating Quantity for #"+artnumber.getText()+" article from "+initialQty+" to "+sendQty+";;;Pass");
+    		orderedQty.sendKeys(Integer.toString(sendQty));
+    		k=k+2;
+    	}
+    	objOrderUpdateObject.doneBtn.click();
+    	
+    	try{
+    		waitForElement(objOrderUpdateObject.saveOrderPopUp, driver);
+			if(objOrderUpdateObject.saveOrderPopUp.isDisplayed()){
+				htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.saveOrderPopUpDialogText.getText()+";;;Pass");
+				objOrderUpdateObject.confirmYesBtn.click();
+			}
+		}catch(Exception e){
+			htmlToExtent(cName,mName,extLogger,driver,"Confirmation popup is not displayed after changing order quantity and clicking done button;;;Fail");
+		}
+		waitForJSandJQueryToLoad(driver);
+		try{
+			if(objOrderUpdateObject.successfulMessage.isDisplayed()){
+				htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.successfulMessage.getText()+";;;Pass");
+				objOrderUpdateObject.successfulMessage.click();
+			}	
+		}catch(Exception e){
+			htmlToExtent(cName,mName,extLogger,driver,"Success Message is not displayed after updating order;;;Fail");
+		}
+    }
+    
+    public String gettingSITSOOvalues(OrderUpdationObject objOrderUpdateObject,int j,int k,WebDriver driver){
+    	
+    	WebElement plusBtn = prepareWebElementWithDynamicXpathWithInt(objOrderUpdateObject.plusBtn, k, driver);
+		plusBtn.click();
+		WebElement soo = prepareWebElementWithDynamicXpathWithInt(objOrderUpdateObject.soo, j+1, driver);
+		WebElement sit = prepareWebElementWithDynamicXpathWithInt(objOrderUpdateObject.sit, j+1, driver);
+		String soo1 = String.format("%.03f",Float.parseFloat(soo.getText()));
+		String sit1 = sit.getText();
+		if(sit1.isEmpty()){sit1 = "0.000";}else{sit1 = String.format("%.03f",Float.parseFloat(sit.getText()));}
+		plusBtn.click();
+		return soo1+"&"+sit1;
+		
+    }
+    
+    
+   public void checkingOrderAfterUpdate(OrderUpdationObject objOrderUpdateObject,List<List<Object>> orderDetailsAppln1,String orderNo,WebDriver driver) throws AWTException{
+	   
+	   	toOrderEnqPage(objOrderUpdateObject, driver);
+		objOrderUpdateObject.orderNoSend.sendKeys(orderNo);
+		objOrderUpdateObject.goBtn.click();
+		waitForJSandJQueryToLoad(driver);
+		
+		try {
+			if(objOrderUpdateObject.filteredOrder.isDisplayed()){
+				String status = objOrderUpdateObject.oStatus.getText().trim();
+				//orderDetailsAppln1 = getValuesFromTable(objOrderUpdateObject.orderDetails);
+				if(status.equalsIgnoreCase("Submitted")){
+					htmlToExtent(cName,mName,extLogger,driver,"Order is in submitted status after updating and saving the order;;;Pass");
+				}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Order is NOT in submitted status after updating and saving the order;;;Fail");
+				}
+			}
+		}catch(Exception e){
+				System.out.println("CatchBlock");
+		}
+   }
+   
+   public void blockingArticle(OrderUpdationObject objOrderUpdateObject,List<List<Object>> blockText,List<List<Object>> articleAddList,String orderType,WebDriver driver) {
+	   
+   		objOrderUpdateObject.editBtn.click();
+   		deletingArticle(objOrderUpdateObject,orderType, driver);
+   		htmlToExtent(cName,mName,extLogger,driver,"*****Updating the Quantity of the article*****;;;Info");
+   		for(int i=0;i<blockText.size();i++){
+		   String blockArticleNumber = blockText.get(i).get(0).toString();
+		   String blockArticleReason = "null";
+		   if(blockText.get(i).get(1).equals(null)){blockArticleReason = "null";  } else{blockArticleReason = blockText.get(i).get(1).toString();}
+				   if(blockArticleReason.contains("LAY")){
+					   if(blockArticleReason.equals("ULAYBLCK")){
+						   htmlToExtent(cName,mName,extLogger,driver,"*****Article #"+blockArticleNumber+" is blocked with reason code as "+blockArticleReason+"*****;;;Info");
+						   WebElement blockOrderQty = prepareWebElementWithDynamicXpathWithString(objOrderUpdateObject.blockUpdation, blockArticleNumber, driver);
+						   String initial = blockOrderQty.getAttribute("value");
+						   blockOrderQty.clear();
+						   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)-1));
+						   htmlToExtent(cName,mName,extLogger,driver,"Decreasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)-1)+";;;Pass");
+						   objOrderUpdateObject.doneBtn.click();
+						   try{
+							   objOrderUpdateObject.errorMessage.isDisplayed();
+								htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.errorMessage.getText()+";;;Pass");
+								objOrderUpdateObject.errorMessage.click();
+						   }catch(Exception e){
+							   htmlToExtent(cName,mName,extLogger,driver,"No error message displayed when underlay block article quantity is decreased;;;Fail");
+						   }
+						   htmlToExtent(cName,mName,extLogger,driver,"Increasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)+3)+";;;Pass");
+						   blockOrderQty.clear();
+						   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)+3));						   
+					   }
+					   else if(blockArticleReason.equals("OLAYBLCK")){
+						   htmlToExtent(cName,mName,extLogger,driver,"*****Article #"+blockArticleNumber+" is blocked with reason code as "+blockArticleReason+"*****;;;Info");
+						   WebElement blockOrderQty = prepareWebElementWithDynamicXpathWithString(objOrderUpdateObject.blockUpdation, blockArticleNumber, driver);
+						   String initial = blockOrderQty.getAttribute("value");
+						   blockOrderQty.clear();
+						   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)+1));
+						   htmlToExtent(cName,mName,extLogger,driver,"Increasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)+1)+";;;Pass");
+						   objOrderUpdateObject.doneBtn.click();
+						   try{
+							   objOrderUpdateObject.errorMessage.isDisplayed();
+								htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.errorMessage.getText()+";;;Pass");
+								objOrderUpdateObject.errorMessage.click();
+						   }catch(Exception e){
+							   htmlToExtent(cName,mName,extLogger,driver,"No error message displayed when overlay block article quantity is increased;;;Fail");
+						   }
+						   htmlToExtent(cName,mName,extLogger,driver,"Decreasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)-2)+";;;Pass");
+						   blockOrderQty.clear();
+						   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)-2));
+					   }
+				   }
+				   else if(blockArticleReason.contains("ITEM")||blockArticleReason.contains("DC")||blockArticleReason.contains("SHARED")){
+					   htmlToExtent(cName,mName,extLogger,driver,"*****Article #"+blockArticleNumber+" is blocked with reason code as "+blockArticleReason+"*****;;;Info");
+					   WebElement blockOrderQty = prepareWebElementWithDynamicXpathWithString(objOrderUpdateObject.blockUpdation, blockArticleNumber, driver);
+					   String initial = blockOrderQty.getAttribute("value");
+					   blockOrderQty.clear();
+					   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)-1));
+					   htmlToExtent(cName,mName,extLogger,driver,"Decreasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)-1)+";;;Pass");
+					   objOrderUpdateObject.doneBtn.click();
+					   try{
+						   objOrderUpdateObject.errorMessage.isDisplayed();
+							htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.errorMessage.getText()+";;;Pass");
+							objOrderUpdateObject.errorMessage.click();
+					   }catch(Exception e){
+						   htmlToExtent(cName,mName,extLogger,driver,"No error message displayed when underlay block article quantity is decreased;;;Fail");
+					   }
+					   htmlToExtent(cName,mName,extLogger,driver,"Increasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)+3)+";;;Pass");
+					   blockOrderQty.clear();
+					   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)+3));	
+					   objOrderUpdateObject.doneBtn.click();
+					   try{
+						   objOrderUpdateObject.errorMessage.isDisplayed();
+							htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.errorMessage.getText()+";;;Pass");
+							objOrderUpdateObject.errorMessage.click();
+					   }catch(Exception e){
+						   htmlToExtent(cName,mName,extLogger,driver,"No error message displayed when underlay block article quantity is decreased;;;Fail");
+					   }
+					   blockOrderQty.clear();
+					   htmlToExtent(cName,mName,extLogger,driver,"Updating Order Quantity same as initial Quantity "+initial+" for article #"+blockArticleNumber+" with block reason as "+blockArticleReason+";;;Pass");
+					   blockOrderQty.sendKeys(initial);	
+				   }
+				   else {
+					   htmlToExtent(cName,mName,extLogger,driver,"*****Article #"+blockArticleNumber+" does not have any block reason*****;;;Info");
+					   WebElement blockOrderQty = prepareWebElementWithDynamicXpathWithString(objOrderUpdateObject.blockUpdation, blockArticleNumber, driver);
+					   String initial = blockOrderQty.getAttribute("value");
+					   blockOrderQty.clear();
+					   if(i%2==0){
+						   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)+6));
+					   }else{
+						   if(Integer.parseInt(initial)>3){
+							   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)-3));
+						   }else{
+							   blockOrderQty.sendKeys(Integer.toString(Integer.parseInt(initial)-1));
+						   }
+					   }
+					   htmlToExtent(cName,mName,extLogger,driver,"Increasing Order Quantity from "+initial+" to "+(Integer.parseInt(initial)+6)+";;;Pass");
+				   }
+			   }
+   		
+   		for(int i=0;i<articleAddList.size();i++){
+   			addingarticle(objOrderUpdateObject, articleAddList.get(i).get(0).toString(), driver);
+   		}
+   		
+   		objOrderUpdateObject.doneBtn.click();   		
+   		try{
+   			waitForElement(objOrderUpdateObject.warningMessage, driver);
+   			objOrderUpdateObject.acceptHighQuantity.click();
+   		}catch(Exception e){
+   			objOrderUpdateObject.confirmYesBtn.click();
+   		}
+   		waitFor(2);
+   		waitForJSandJQueryToLoad(driver);
+   		try{objOrderUpdateObject.confirmYesBtn.click();}catch(Exception e){}  			
+   		waitForJSandJQueryToLoad(driver);
+   		try{
+   			if(objOrderUpdateObject.errorMessage.isDisplayed()){
+   			htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.errorMessage.getText()+";;;Fail");	
+   			}
+   		}
+   		catch(Exception e){ 
+   			if (objOrderUpdateObject.successfulMessage.isDisplayed()){
+   				htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.successfulMessage.getText()+";;;Pass");	
+   			}
+   			else{
+   				htmlToExtent(cName,mName,extLogger,driver,"No Success message after updating and saving the order;;;Fail");	
+   			}
+   		}
+   }
+   
+   public void deletingArticle(OrderUpdationObject objOrderUpdateObject,String orderType,WebDriver driver) {
+	   
+	   int randnum;
+	   WebElement deleteBtn,articlenumber;
+	   if(objOrderUpdateObject.orderTable.size()==2){
+		   randnum = 1;
+		   deleteBtn = prepareWebElementWithDynamicXpathWithInt(objOrderUpdateObject.deleteArticleBtn, randnum, driver);
+		   articlenumber = prepareWebElementWithDynamicXpathWithInt(objOrderUpdateObject.articleNumber, randnum, driver);   
+	   }else{randnum = ThreadLocalRandom.current().nextInt(1, (objOrderUpdateObject.orderTable.size()/2));
+	   //int randnum = 2;
+	   		deleteBtn = prepareWebElementWithDynamicXpathWithInt(objOrderUpdateObject.deleteArticleBtn, randnum, driver);
+	   		articlenumber = prepareWebElementWithDynamicXpathWithInt(objOrderUpdateObject.articleNumber, randnum+1, driver);
+	   }
+	   htmlToExtent(cName,mName,extLogger,driver,"Deleting article #"+articlenumber.getText()+" by clicking on delete button;;;Pass");
+	   deleteBtn.click();
+	   
+	   if(orderType.equalsIgnoreCase("Sugo")){
+		   try{
+			   waitForElement(objOrderUpdateObject.deletePopup, driver);
+		   	   htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.warningMessage.getText()+";;;Pass");
+		   	   objOrderUpdateObject.deleteOkBtn.click();
+		   }catch(Exception e){
+			   htmlToExtent(cName,mName,extLogger,driver,"No Warning message displayed when deleting an article;;;Fail");	
+		   }
+	   }
+	   else if(orderType.equalsIgnoreCase("Manual")){
+		   //Delete Func for Manual PO and PREQ
+		   try{
+			   waitForElement(objOrderUpdateObject.deletePopup, driver);
+		   	   htmlToExtent(cName,mName,extLogger,driver,""+objOrderUpdateObject.warningMessage.getText()+";;;Fail");
+		   	   objOrderUpdateObject.deleteOkBtn.click();
+		   }catch(Exception e){
+			   htmlToExtent(cName,mName,extLogger,driver,"No Warning message displayed when deleting an article;;;Pass");	
+		   }
+	   }
+   }
+   
+   public void addingarticle(OrderUpdationObject objOrderUpdateObject,String articlenumber,WebDriver driver) {
+	   
+	  // for(int i=0;i<4;i++){
+		   List<List<Object>> orderDetails = getValuesFromTables(objOrderUpdateObject.orderDetails);
+		   //int randnum = ThreadLocalRandom.current().nextInt(1, articlenumber.size())+1;
+		   if(!orderDetails.contains(articlenumber)){
+			   objOrderUpdateObject.addarticleinput.sendKeys(articlenumber);
+			   objOrderUpdateObject.addquantity.clear();
+			   int rand = ThreadLocalRandom.current().nextInt(4, 14)+1;
+			   objOrderUpdateObject.addquantity.sendKeys(Integer.toString(rand));
+			   objOrderUpdateObject.searchandaddBtn.click();
+			   try{
+				   if(objOrderUpdateObject.errorMessage.isDisplayed()){
+					   objOrderUpdateObject.errorMessage.click();
+				   }
+			   }catch(Exception e){
+				   htmlToExtent(cName,mName,extLogger,driver,"Adding article #"+articlenumber+" of quantity "+rand+" to the order;;;Pass");
+				   
+			   }
+		   }
+	   }
+ //  }
+}
+   		
+   		
+   	

@@ -1,0 +1,417 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class AdjustmentLogReportObjects{
+
+	@FindBy(xpath="//*[@id='reports']/a")
+	public WebElement Reports;
+	
+	@FindBy(xpath ="(//a[contains (text(), 'Stock Management')])[1]")
+	public WebElement Stockmanagement;
+	
+	@FindBy(xpath ="//*[@id='reports']/ul/li[10]/ul/li[13]/a")
+	public WebElement AdjLogreports;
+	
+	@FindBy(xpath ="//*[@id='generateReport']/a")
+	public WebElement Generatereportsbtn;
+	
+	@FindBy(xpath ="//*[@id='all']")
+	public WebElement SOHradiobtn;
+	
+	@FindBy(xpath ="//*[@id='depHier']")
+	public WebElement DeptRadiobtn;
+	
+	@FindBy(xpath ="//*[@id='artList']")
+	public WebElement Specifyarticleradiobtn;
+	
+	@FindBy(xpath="//*[@id='article_search_result_table']/tbody/tr/td[3]/input")
+	public List<WebElement> pludialogList;
+	
+	public static final String dialogBoxchkbox = "//*[@id='article_search_result_table']/tbody/tr[dynamic]/td[3]/input";
+	
+	@FindBy(xpath ="//*[@id='reasonDropDwnLabel']")
+	public WebElement reasoncodedd1;
+	
+	@FindBy(xpath ="//*[@id='pus']")
+	public WebElement Userdd;
+	
+	@FindBy(xpath="//*[@id='us']")
+	public WebElement userddselect;
+	
+	@FindBy(xpath ="//*[@id='allUserChckBox']")
+	public WebElement AllusersCB;
+	
+	@FindBy(xpath="(//*[@class='userDrpDwnChkBx'])[1]")
+	public WebElement firstuser1;
+	
+	@FindBy(xpath ="//*[@id='userdropdownDoneBtn']/a")
+	public WebElement Donebtn;
+	
+	
+	
+	
+	@FindBy(xpath="//*[@id='backBtn']")
+	public WebElement backbtn;
+	
+	@FindBy(xpath="//h2[contains (text(), 'Welcome To Store Central')]")
+	public WebElement homepageheading;
+	
+	@FindBy(xpath="(//*[@class='selectOptions filter'])[1]")
+	public WebElement selectfilter;
+	
+	@FindBy(xpath="(//*[@class='selectOptions filter'])[1]")
+	public List<WebElement> selectionfilter;
+	
+	@FindBy(xpath="(//*[@class='selectOptions criteria'])[1]")
+	public WebElement selectoptions;
+	
+	public static final String seltFilter="(//*[@class='selectOptions filter'])[dynamic]";
+	public static final String Options="(//*[@class='selectOptions criteria'])[dynamic]";
+	public static final String Value="(//*[@class='textbox numberBox valueCrit'])[dynamic]";
+	
+	
+	@FindBy(xpath ="//*[@id='searchBaiscBox']")
+	public WebElement articlesearch;
+	
+	@FindBy(xpath ="(//*[@class='ui-menu-item'])[4]")
+	public WebElement descselect;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_head_page']/ul/li")
+	public List<WebElement> pageList;
+	
+	public static final String pageno= "//*[@id='Report_Stk_Adj_head_page']/ul/li[dynamic]";
+	
+	@FindBy(linkText ="Next")
+	public WebElement invReportNextBtn;
+	 
+	@FindBy(xpath ="(//*[@class='page-link'])[7]")
+	public WebElement Pagelink;
+	
+	@FindBy(xpath ="//*[@id='Report_Stk_Adj_table']/tbody/tr[2]/td[1]")
+	public WebElement firstpagearticle;
+	
+	@FindBy(xpath ="//*[@id='Report_Stk_Adj_table']/tbody/tr[2]/td[1]")
+	public WebElement secondpageaarticle;
+	
+	@FindBy(xpath ="//*[@id='Report_Stk_Adj_table']/tbody/tr[2]/td[1]")
+	public WebElement thirdpageaarticle;
+	
+	@FindBy(xpath ="(//a[contains (text(), 'Next')])[2]")
+	public WebElement nextbtn;
+	
+	@FindBy(xpath="//*[@id='dateFrom']")
+	public WebElement fromdate;
+	
+	@FindBy(xpath ="//*[@id='reports']/a")
+	public WebElement reports;
+	
+	@FindBy(xpath="//*[@id='dateTo']")
+	public WebElement enddate;
+	
+	@FindBy(xpath="//*[@class='close']")
+	public WebElement errorclosebtn;
+	
+	
+	@FindBy(xpath="//*[@id='pds']")
+	public WebElement Deptdropdown;
+	
+	@FindBy(xpath="//*[@id='allDeptChkBox']")
+	public WebElement AlldeptCB;
+	
+	@FindBy(xpath="//*[@id='dropdownDoneBtn']/a")
+	public WebElement Deptdonebtn;
+	
+	@FindBy(xpath="//*[@id='allReasonChckBox']")
+	public WebElement AllreasonCB;
+	
+	@FindBy(xpath="//*[@id='reasondropdownDoneBtn']")
+	public WebElement reasondonebtn;
+	
+	@FindBy(xpath ="//*[@id='pas']")
+	public List<WebElement> reasoncode;
+	
+
+	
+	
+	
+	@FindBy(xpath ="//*[@id='ds']")
+	public WebElement dropdownselect;	
+	
+	@FindBy(xpath="//*[@id='hierDrp']/li")
+	public List<WebElement> listDept;
+	
+	@FindBy(xpath ="//*[@id='hierDrp']/li")//Xpath for total depts present
+	public List<WebElement> innerDD;
+	
+	public static final String clickinnerDD="//*[@id='hierDrp']/li[dynamic]/label[1]";//xpath for total depts present
+	
+	public static final String partialdeptselectiondynamic = "//*[@id='hierDrp']/li[dynamic]/label";
+	
+	public static final String partialcheckboxselectiondynamic = "//*[@id='hierDrp']/li[dynamic]/input";
+	
+	
+	
+	@FindBy(xpath="//*[@id='reasonDropDwnList']/div/li/input")
+	public List<WebElement> listreason;	
+	
+	@FindBy(xpath ="//*[@id='pas']")
+	public WebElement reasoncodedd;
+	
+    public static final String partialreasonselectiondynamic = "//*[@id='reasonDropDwnList']/div/li[dynamic]/label";
+	
+	public static final String partialreasoncheckboxselectiondynamic = "//*[@id='reasonDropDwnList']/div/li[dynamic]/input";
+	
+	
+	@FindBy(xpath="//*[@id='userDropDwnList']/div/li/input")
+	public List<WebElement> listuser;
+	
+	@FindBy(xpath="//*[@id='us']")
+	public WebElement userdd;
+	
+	public static final String partialuserselectiondynamic = "//*[@id='userDropDwnList']/div/li[dynamic]/label";
+	
+	public static final String partialusercheckboxselectiondynamic = "//*[@id='userDropDwnList']/div/li[dynamic]/input";
+	 
+	@FindBy(xpath="//*[@id='reasonDropDwnList']/div/li[11]/input")
+	public WebElement trialreason; 
+	
+	@FindBy(xpath="//*[@id='userDropDwnList']/div/li[7]/input")
+	public WebElement trialuser;
+	
+	@FindBy(xpath="(//*[@id='searchBaiscBoxList']/li/label[2])[1]")
+	public WebElement Closearticle;
+	
+	@FindBy(xpath="//*[@id='closeLink']/a")
+	public WebElement Closelink;
+	
+	@FindBy(css=".ui-corner-top")
+	public WebElement openhead;
+	
+	@FindBy(css=".ui-accordion-icons.ui-corner-all")
+	public WebElement closedhead;
+	
+	@FindBy(css=".ui-accordion-header-icon")
+	public WebElement plusicon;
+	
+	
+	@FindBy(xpath="//*[@id='dialog-mulipleArticles']")
+	public WebElement dialogmultiplearticle;
+	
+	@FindBy(xpath="(//*[@class='lastColumn centerValue header']/input)[1]")
+	public WebElement firstarticlePLU;
+	
+	@FindBy(xpath="//*[@id='addtolist']")
+	public WebElement AddtoListbtn;
+	
+	
+	@FindBy(xpath="//*[@class='parameter parameterRow clearfix ']/span[1]/select[1]")
+	public WebElement additionalcriteriadd11;
+	
+	@FindBy(xpath="//*[@class='parameter parameterRow clearfix ']/span[1]/select[1]")
+	public List<String> additionalcriterialist;
+	
+	@FindBy(xpath="//*[@class='parameter parameterRow clearfix ']/span[2]/select[1]")
+	public WebElement additionalcriteriadd12;
+	
+	@FindBy(xpath="(//*[@class='parameter parameterRow clearfix'])[1]/span[1]/select[1]")
+	public WebElement additionalcriteriadd21;
+	
+	@FindBy(xpath="(//*[@class='parameter parameterRow clearfix'])[1]/span[2]/select[1]")
+	public WebElement additionalcriteriadd22;
+	
+	@FindBy(xpath="//*[@class='addRow']")
+	public WebElement addmore;
+	
+	@FindBy(xpath="//li[contains (text(), 'Maximum number of allowed')]")
+	public WebElement addmorewarning;
+	
+	@FindBy(xpath="//*[@class='close']")
+	public WebElement warningclose;
+	
+	@FindBy(xpath="(//*[@class='hideRow'])[1]")
+	public WebElement removefilter;
+	
+	@FindBy(xpath="(//*[@class='hideRow'])[4]")
+	public WebElement Deletedfilter;
+	
+	
+	@FindBy(xpath="(//*[@class='textbox numberBox valueCrit'])[1]")
+	public WebElement additionalvalue;
+	
+	@FindBy(xpath="(//*[@class='textbox numberBox valueCrit'])[2]")
+	public WebElement additionalvalue2;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_table']")
+	public List<WebElement> Reportstable;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_table']")
+	public WebElement Reporttable;
+	
+	
+	@FindBy(xpath="//*[@class='table_title']")
+	public WebElement Tabletitle;
+	
+	@FindBy(xpath="//*[@id='clr_grp_link_btn_Report_Stk_Adj']")
+	public WebElement cleargroup;
+	
+	@FindBy(xpath="//*[@class='formWrapper']")
+	public WebElement groupbytext;
+	
+	@FindBy(xpath="//*[@class='group']")
+	public WebElement groupby;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_article_no__grp_radio']")
+	public WebElement articleradiobtn;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_reason_desc__grp_radio']")
+	public WebElement reasonradiobtn;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_user_name__grp_radio']")
+	public WebElement userradiobtn;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_adj_date__grp_radio']")
+	public WebElement dateradiobtn;
+	
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_table']/tbody/tr")
+	public List<WebElement> table;
+	
+	@FindBy(xpath="(//*[@id='Report_Stk_Adj_table']/tbody/tr/td)[1]")
+	public WebElement valueinfo;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_table']/tbody/tr[2]/td[1]")
+	public WebElement firstart;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_table']/tbody/tr[2]/td[3]")
+	public WebElement firstreason;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_table']/tbody/tr[2]/td[5]")
+	public WebElement firstuser;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_table']/tbody/tr[2]/td[4]")
+	public WebElement firstdate;
+	
+	public static final String firstrowelements = "//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]/td[value]";
+	public static final String secondrowelements = "//*[@id='Report_Stk_Adj_table']/tbody/tr[3]/td[dynamic]";
+	public static final String totalValueAdj = "//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]";	
+	public static final String totalvalues = "//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]/td[10]";
+	
+	@FindBy(xpath="(//*[@class=' actionrows header'])[1]")
+	public WebElement beforesort;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_table']/tbody/tr")
+	public List<WebElement> reportlist;
+	
+	public static final String articleno_sort="//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]/td[1]";
+	public static final String articledesc_sort="//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]/td[2]";
+	public static final String reasoncode_sort="//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]/td[3]";
+	public static final String date_sort="//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]/td[4]";
+	public static final String user_sort="//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]/td[5]";
+	public static final String prevSOH_sort="//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]/td[6]";
+	public static final String newSOH_sort="//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]/td[7]";
+	public static final String qtyadj_sort="//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]/td[8]";
+	public static final String sellprice_sort="//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]/td[9]";
+	public static final String stockvalue_sort="//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]/td[10]";
+	public static final String addinfo_sort="//*[@id='Report_Stk_Adj_table']/tbody/tr[dynamic]/td[11]";
+	
+	
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_head_page']/ul/li")
+	public List<WebElement> Pagination;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_head_page']/ul/li")
+	public WebElement Page;
+	
+	public static final String pagination="//*[@id='Report_Stk_Adj_head_page']/ul/li[dynamic]";
+	
+	public static final String page_no="//*[@id='Report_Stk_Adj_head_page']/ul/li[dynamic]";
+	
+	@FindBy(xpath="//*[@id='standard']")
+	public WebElement MPLradiobtn;
+	
+	@FindBy(xpath="//*[@id='depH']")
+	public WebElement selectdept;
+	
+	@FindBy(id="deptSelectAll")
+	public WebElement deptSelect;
+	
+	@FindBy(xpath="//*[@id='deptlst']/li/input")
+	public List<WebElement> muldeptist;
+	//*[@id='deptlst']/li/label
+	
+	@FindBy(xpath ="//*[@id='deptlst']/li")
+	public List<WebElement> department;
+	
+	@FindBy(xpath ="//*[@id='categoryLst']/li")
+	public List<WebElement> category;
+	
+	@FindBy(xpath ="//*[@id='subCategoryLst']/li")
+	public List<WebElement> subCategory;
+	
+	@FindBy(xpath ="//*[@id='segmentLst']/li")
+	public List<WebElement> segment;
+	
+	@FindBy(id ="catSelectAll")
+	public WebElement categoryAll;
+	
+	@FindBy(id ="sCatSelectAll")
+	public WebElement subCategoryAll;
+	
+	@FindBy(xpath ="//*[@id='segSelectAll']")
+	public WebElement segmentselect;
+	
+	@FindBy(xpath ="//*[@id='segmentLst']/li")
+	public List<WebElement> segmentsize;
+	
+	public static final String multipledeptselect="//*[@id='deptlst']/li[dynamic]/input[1]";
+	
+	
+	public static final String multiplecategselect="//*[@id='categoryLst']/li[dynamic]/input";
+	
+	public static final String multiplesubcategselect="//*[@id='subCategoryLst']/li[dynamic]/input";
+	
+	public static final String multiplesegmentselect="//*[@id='segmentLst']/li[dynamic]/input";
+	
+	public static final String multipledeptdevselect="//*[@id='deptDiv']/div[2]/ul/li[dynamic]/input";	
+	
+	public static final String departmentName="//*[@id='depDropDwnList']/li[dynamic]/label";
+	
+	public static final String departmentCheckBox="//*[@id='depDropDwnList']/li[dynamic]/input";
+	
+	public static final String departmentListMulti="//*[@id='deptlst']/li[dynamic]/label";
+	
+	public static final String categoryList="//*[@id='categoryLst']/li[dynamic]/label";
+	
+	public static final String subCategoryList="//*[@id='subCategoryLst']/li[dynamic]/label";
+	
+	public static final String segmentList="//*[@id='segmentLst']/li[dynamic]/label";
+	
+	public static final String deparmentchkBox="//*[@id='deptlst']/li[dynamic]/input";
+	
+	public static final String categoryChkBox="//*[@id='categoryLst']/li[dynamic]/input";
+	
+	public static final String subCategoryChkBox="//*[@id='subCategoryLst']/li[dynamic]/input";
+	
+	public static final String segmentChkBox="//*[@id='segmentLst']/li[dynamic]/input";
+	
+	
+	@FindBy(xpath="//*[@id='facings']")
+	public WebElement facingsRadiobtn;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_table']/tbody/tr/td")
+	public List<WebElement>  columnsize;
+	
+	@FindBy(xpath="(//*[@class='valueInfo'])[2]")
+	public WebElement secondValueInfo;
+	
+	@FindBy(xpath="//*[@id='Report_Stk_Adj_table']/tbody/tr/td[1]")
+	public List<WebElement> overallRowSize;
+	
+	public static final String column="//*[@id='Report_Stk_Adj_table']/thead/tr/th[dynamic]";
+	
+
+}

@@ -1,0 +1,477 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class ReceivingObjects {
+	
+
+	@FindBy(xpath = "//*[@id='pageHeightID']/div[3]/div[2]/input")
+	public WebElement enterusername;
+	
+	@FindBy(xpath = "//*[@id='pageHeightID']/div[3]/div[3]/input")
+	public WebElement enterpassword;
+	
+	@FindBy(xpath = "//*[@id='orders']/a")
+	public WebElement Orderstab;
+	
+	@FindBy (xpath = "//*[@id='orders']/ul/li[2]/a")
+	public WebElement OrdersEnquirytab;
+	
+	@FindBy (xpath = "//*[@id='orderNo']")
+	public WebElement Ordernoentry;
+	
+	@FindBy (xpath = "//*[@id='number']")
+	public WebElement OrderNoselect;
+	
+	@FindBy(xpath = "//*[@id='description']")
+	public WebElement ArticleNoselect;
+	
+	@FindBy(xpath = "//*[@id='orderEnq']/label")
+	public WebElement GObutton;
+	
+	@FindBy(linkText ="Orders")
+	public WebElement Orders;
+	
+	@FindBy(xpath ="//*[@id='orders']/ul/li[2]/a")
+	public WebElement orderEnquiry;
+
+	@FindBy(xpath="//*[@id='orderNo']")
+	public WebElement OrderLookup;
+		
+		
+	@FindBy(xpath ="//*[@id='orderEnq']/label")
+	public WebElement ClickGo;
+	
+	@FindBy(xpath ="//*[@id='order_no_tr_1_0']")
+	public WebElement ClickOnOrder;
+	
+	@FindBy(xpath ="//*[@id='commonReceiveOrder']")
+	public WebElement ClickReceiveOrder;
+	
+	@FindBy(xpath ="//*[@id='invoice']")
+	public WebElement EnterInvoice;
+		
+	@FindBy(xpath ="//*[@id='nextbtn']")
+	public WebElement ClickNextStep;
+	
+	
+	@FindBy(xpath ="//*[@class='confirmCheck']")
+	public List<WebElement> TickConfirm;
+	
+	//*[@id="nextbtn"]/a/label
+	
+	@FindBy(xpath ="//*[@id='nextbtn']/a/label")
+	public WebElement NextBtn;
+	
+	@FindBy(xpath="//*[@id='submitbtn']/a/label")
+	public WebElement SubmitReceiving;
+	
+
+	@FindBy(xpath="//*[@id='ui-id-20']")
+	public WebElement SessionPopup;
+	
+	
+	@FindBy(xpath="//*[@id='resumeSessRCV']/a")
+	public WebElement ResumeSession;
+	
+	
+	@FindBy(xpath="//*[@id='MM']")
+	public WebElement ReceiveInFull;
+	
+	
+	//--------Abhi-----
+	
+	@FindBy(xpath="//*[@id='newSessRCV']/a")
+	public WebElement NwSession;
+	
+	@FindBy(xpath="//*[@id='recvSummaryTable']/tbody/tr[1]/td[2]")
+	public WebElement RecvBy1;
+	
+	@FindBy(xpath="//*[contains(text(),'Receive Method')]/following::label[contains(text(),'Yes')]")
+	public List<WebElement> RecConfirmation1;
+	
+	@FindBy(xpath="//*[contains(text(),'Receive Method')]/following::label[contains(text(),'Yes')]")
+	public WebElement RecConfirmation;
+	
+	@FindBy(xpath="//*[@id='recvSummaryTable']/tbody/tr[2]/td[2]")
+	public WebElement TotAtOdr;
+	
+	@FindBy(xpath="//*[@id='recvSummaryTable']/tbody/tr[3]/td[2]")
+	public WebElement TotAtRcv;
+	
+	@FindBy(xpath="//*[@id='recvSummaryTable']/tbody/tr[2]/td[4]")
+	public WebElement TotCrtOdr;
+	
+	@FindBy(xpath="//*[@id='recvSummaryTable']/tbody/tr[3]/td[4]/label")
+	public WebElement TotCrtRec;
+	
+	@FindBy(xpath="//*[@id='yet_to_received_item_table_table']/tbody")
+	public List<WebElement> ArtcleDet;
+	
+	public static final String getArtNum="//*[@id='yet_to_received_item_table_table']/tbody/tr[dynamic]/td[1]";
+	public static final String getOmNum="//*[@id='yet_to_received_item_table_table']/tbody/tr[dynamic]/td[4]";
+	public static final String getOrdQty="//*[@id='yet_to_received_item_table_table']/tbody/tr[dynamic]/td[5]";
+	public static final String getTotUnt="//*[@id='yet_to_received_item_table_table']/tbody/tr[dynamic]/td[6]";//*[@id="yet_to_received_item_table_table"]
+	
+	@FindBy(xpath="//*[@id='orderContentHeader']/div[3]/p/label[1]/strong")
+	public WebElement RecStore;
+	//*[@id="orderContentHeader"]/div[3]/p/label[1]/strong
+	@FindBy(xpath="//*[@id='orderContentHeader']/div[3]/p/label[3]/strong")
+	public WebElement SendStore;
+	
+	@FindBy(xpath="//*[@id='orderContentHeader']/div[3]/p/label[5]/strong")//*[@id='orderContentHeader']/div[3]/p/label[7]/strong
+	public WebElement Deliverydate;
+	
+	@FindBy(xpath="//*[@id='orderContentHeader']/div[3]/p/label[7]/strong")
+	public WebElement Source;
+	
+	@FindBy(xpath="//*[@id='MF']")
+	public WebElement Receivebyexception;
+	
+	@FindBy(xpath="//*[@id='RM']")//*[@id="MF"]
+	public WebElement Receivelinebyline;
+
+	@FindBy(xpath="//*[@id='recvArticleTable']/tbody")//*[@id="recvArticleTable"]/tbody/tr[1]/td[1]
+	public List<WebElement> ArtNo;
+	
+	
+	
+	public static final String srctablevalue="//*[@id='yet_to_received_item_table_table']/tbody/tr[dynamic]/td[value]";
+	public static final String srctablevaluedispart="//*[@id='yet_to_received_item_table_table']/tbody/tr[dynamic]/td[value]/a";
+	@FindBy(xpath="//*[@id='componentTable_table']/tbody/tr")
+	public List<WebElement> dispart;
+	@FindBy(xpath="//*[@id='dialog-com-CmpntArticlesDisplay']/div/div[2]/span/label")
+	public WebElement dispartpopup;
+	@FindBy(xpath="//*[@id='dialog-com-CmpntArticles']/div/div[2]/span/label")//*[@id="dialog-com-CmpntArticlesDisplay"]/div/div[2]/span/label
+	public WebElement dispartpopup1;
+	@FindBy(xpath="//*[@id='dialog-com-CmpntArticlesDisplay']/div/div[2]/span/label")//*[@id="dialog-com-CmpntArticlesDisplay"]/div/div[2]/span/label
+	public WebElement dispartpopup2;
+	@FindBy(xpath="//*[@id='dialog-com-CmpntArticlesDisplay']/div/div[2]/span/label")//*[@id="dialog-com-CmpntArticlesDisplay"]/div/div[2]/span/label
+	public WebElement dispartpopup3;
+	
+	public static final String tablevalue="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[value]";
+	public static final String tablevalue1="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[value]/strong";
+	public static final String tablevalue2="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[value]/input";
+	public static final String tablevalue3="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[value]/label";
+	public static final String tablevalue4="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[value]/input[2]";
+	public static final String tablevalue5="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[value]/a";
+	
+	public static final String tablevaluedispaart1="//*[@id='cmpnt_order_tbl_table']/tbody/tr[dynamic]/td[value]/input";
+	public static final String tablevaluedispaart="//*[@id='cmpnt_order_tbl_table']/tbody/tr[dynamic]/td[value]";
+	
+	public static final String tablevaluediscp="//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[value]";
+	public static final String tablevaluediscp1="//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[value]/input";
+	public static final String tablevaluediscp2="//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[value]/label";
+	
+	
+	public static final String tablevalueReceived="//*[@id='received_item_table_table']/tbody/tr[dynamic]/td[value]";
+	public static final String tablevalueReceived1="//*[@id='received_item_table_table']/tbody/tr[dynamic]/td[value]/a";
+	public static final String tablevalueReceivedDispart="//*[@id='componentTable_table']/tbody/tr[dynamic]/td[value]";
+	
+	@FindBy(xpath="//*[@id='received_item_table_table']/tbody/tr")
+	public List<WebElement> receiveTable;
+	
+	@FindBy(xpath="//*[@id='componentTable_table']/tbody/tr")
+	public List<WebElement> receiveDispartTable;
+	
+	public static final String getArtNmb="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[1]";
+	
+	public static final String getOmNmb="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[4]";
+	public static final String getOdrQty="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[9]";
+	public static final String getTolQty="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[10]";
+	public static final String getDcpQty="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[11]";
+	public static final String getDcpTolQty="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[12]";
+	public static final String getRecQty1="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[13]/input";
+	public static final String getRecTotQty="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[14]";
+	public static final String getNwOM1="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[15]";
+	public static final String entrNwOM="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[15]/input";
+	public static final String CheckboxClick="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[17]/input";
+	public static final String RandomWeight="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[13]/label";
+	public static final String RandomWeightVal="//*[@id='recvArticleTable']/tbody/tr[dynamic]/td[13]/input[2]";
+	
+
+	@FindBy(xpath="//*[@id='orderContentHeader']/div[3]")
+	public WebElement HeaderVal;
+	
+	
+	@FindBy(xpath="//*[@id='recvSummaryTable']/tbody/tr")
+	public List<WebElement> receiceTable;//*[@id="fully_rece_tbl_table"]
+	
+	@FindBy(xpath="//*[@id='invoiceDetails']/table/tbody/tr")//*[@id="recvSummaryTable"]
+	public List<WebElement> receiceSummaryTable;
+	//*[@id="invoiceDetails"]/table/tbody/tr
+
+
+	
+	@FindBy(xpath="//*[@id='recvArticleTable']/tbody/tr[1]/td[15]/input")//*[@id="packOMEdit-1"]/input
+	public WebElement NOm;
+
+	@FindBy(xpath="//*[@id='recvArticleTable']/tbody/tr[2]/td[15]/input")//*[@id="packOMEdit-1"]
+	public WebElement NOm1;
+	
+	@FindBy(xpath="	//*[@id='step-1']/div/div[4]/div[2]")
+	public WebElement TempChillcheck ;
+	//*[@id="step-1"]/div/div[4]/div[2]
+	
+	@FindBy(xpath="//*[@id='temperature1']")
+	public WebElement EnterChlTemp;//*[@id="temperature1"]
+	
+	@FindBy(xpath="	//*[@id='step-1']/div/div[4]/div[3]")
+	public WebElement TempFrzncheck ;
+	
+	@FindBy(xpath="//*[@id='temperature2']")
+	public WebElement EnterFrzTemp;
+	
+	@FindBy(xpath="//*[@id='recvArticleTable']/tbody/tr[1]/td[9]")
+	public WebElement OdrQy4;
+	@FindBy(xpath="//*[@id='recvArticleTable']/tbody/tr[2]/td[9]")
+	
+	public WebElement OdrQy3;
+	@FindBy(xpath="//*[@id='receivedEdit-828131']/input[1]")
+	public WebElement rcvQy1;
+	@FindBy(xpath="//*[@id='receivedEdit-828133']/input[1]")//*[@id="receivedEdit-828133"]/input[1]
+	public WebElement rcvQy2;
+	
+	
+	@FindBy(xpath="//*[@id='discrepancyHdr']")
+	public WebElement Discpncy ;
+	
+	public static final String getArtNmb1="//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[1]";
+	public static final String OdrQnty1="//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[4]";
+	public static final String OdrToQnty1="//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[5]";
+	public static final String DcpQnty1="//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[6]";
+	public static final String DcpToQnty1="//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[7]";
+	public static final String RcvdQty1="//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[8]";
+	public static final String RcvdToQty1="//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[9]";
+	public static final String Diffrence="//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[10]";
+	public static final String Reason="//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[11]";
+	public static final String Chkbx="//*[@id='discrepancyTable']/tbody/tr[dynamic]/td[12]/input";
+	
+	
+	@FindBy(xpath="//*[@class='articleDetails']tbody/tr")
+	public List<WebElement> articleDetailTable1;
+	
+	@FindBy(xpath="//*[@class='articleContentInner']/div/table/tbody/tr")
+	public List<WebElement> articleDetailTable12;
+	
+	@FindBy(xpath="//*[@id='fully_rece_tbl_table']/tbody/tr")
+	public List<WebElement> searchedArtDetFullyReceived;//*[@id="fully_rece_tbl_table"
+
+	@FindBy(xpath="//*[@id='over_due_tbl_table']/tbody/tr")
+	public List<WebElement> searchedArtDetOverDue;
+	@FindBy(xpath="//*[@id='order_detail']/div[2]/div/div/table/tbody/tr")
+	public List<WebElement> orderTable1;
+	@FindBy(xpath="//*[@id='yet_to_received_item_table_table']/tbody/tr")
+	public List<WebElement> orderTable2;
+	@FindBy(xpath="//*[@id='recvArticleTable']/tbody/tr")
+	public List<WebElement> receiveArticleTable;
+	@FindBy(xpath="//*[@id='cmpnt_order_tbl_table']/tbody/tr")
+	public List<WebElement> dispArticleTable;
+
+	@FindBy(xpath="	//*[@id='discrepancyTable']/tbody/tr")
+	public List<WebElement> discrpArticleTable;
+	@FindBy(xpath="//*[@id='discrepancyTable']/tbody/tr")
+	public List<WebElement> discrepancyArticleTable;
+	@FindBy(xpath="//*[@id='ui-id-36']")
+	public WebElement RecMetPopup1;
+	@FindBy(xpath="//*[@id='ui-id-37']")
+	public WebElement RecMetPopup;
+	@FindBy(xpath="	//*[@id='yes']/label")
+	public WebElement clickYes;
+			
+	@FindBy(xpath="//*[@id='order-head']/following::div[1]/preceding::table[1]/tbody/tr")
+	public List<WebElement> searchedArtDet;
+	
+	@FindBy(xpath="//*[@id='discDetails']/tbody/tr[2]")
+	public List<WebElement> disDet;
+	
+	@FindBy(xpath="//*[@id='continue']/label")
+	public WebElement ConfPopUp ;
+	@FindBy(xpath="//*[@id='success_msg']/li")
+	public WebElement SuccessMsg ;
+	@FindBy(xpath="//*[@id='success-wrapper']/div/div/div[1]/a")
+	public WebElement CloseMsg ;
+	@FindBy(xpath="//*[@id='received_item_table_table']/tbody/tr")
+	public List<WebElement> receivedItemTable;
+	@FindBy(xpath="	//*[@id='clr_grp_link_btn_received_item_table']/a")
+	public WebElement clearbyRcvdArt;
+
+	
+	
+	
+	
+	
+/*	@FindBy(xpath="")
+	public WebElement ;*/
+	
+	
+	
+	//-------abhi--------
+	
+	
+	@FindBy(xpath="//*[@id='ui-id-33']")
+	public WebElement ClickSegment;
+	
+	@FindBy(xpath="//*[@class='actionBtn AC_ROD receiveSegment']")
+	public WebElement ReceiveSegment;
+	
+	@FindBy(xpath="//*[contains(text(),'Receive Segment')]")
+	public WebElement RecSeg;
+	
+	//*[@id="8184432-8179738_010"]/label
+	
+	@FindBy(xpath="//*[@id='temperature1']")
+	public WebElement ChillTemp;
+	
+	@FindBy(xpath="//*[@id='did']")
+	public WebElement DocketID;
+	
+	@FindBy(xpath="//*[@id='car']")
+	public WebElement CarrierID;
+	
+	@FindBy(xpath="//*[@id='typeSelect']")
+	public WebElement UldSelect;
+	
+	
+	@FindBy(xpath="//*[@id='req']")
+	public WebElement UldRecQty;
+	
+	@FindBy(xpath="//*[@id='ret']")
+	public WebElement UldRetQty;
+	
+	@FindBy(xpath="//*[@id='addULD']")
+	public WebElement AddUld;
+	
+	@FindBy(xpath="//*[@id='order_no_tr_1_0']")
+	public WebElement ChckOrd;
+	
+	@FindBy(xpath="//*[@id='delivery_date_tr_1_0']")
+	public WebElement ChckDeldate;
+	
+	@FindBy(xpath="//*[@id='order_status_tr_1_0']")
+	public WebElement Chckstatus;
+	
+	@FindBy(xpath="//*[@id='supplier_name_tr_1_0']")
+	public WebElement Chcksupplier;
+	
+	@FindBy(xpath="//*[@id='order_type_tr_1_0']")
+	public WebElement Chckordtype;
+	
+	@FindBy(xpath="//*[@id='total_cartons_tr_1_0']")
+	public WebElement ChckTotCartons;
+	
+	@FindBy(xpath="//*[@id='total_pallets_tr_1_0']")
+	public WebElement ChckTotPallet;
+	
+	@FindBy(xpath="//*[@id='source_tr_1_0']")
+	public WebElement ChckSource;
+	
+	
+	
+	@FindBy(xpath="(//*[@id='orderStatus'])[2]")
+	public WebElement Chcksta;
+	
+	@FindBy(xpath="//*[@id='orderContentHeader']/div[1]/h2")
+	public WebElement ChckOrdNo;
+	
+	@FindBy(xpath="//*[@id='orderContentHeader']/div[3]/p/label[1]/strong")
+	public WebElement Chcksuphdr;
+	
+	@FindBy(xpath="//*[@id='orderContentHeader']/div[3]/p/label[3]/strong")
+	public WebElement Chckdelhdr;
+	
+	@FindBy(xpath="//*[@id='orderContentHeader']/div[3]/p/label[7]/strong")
+	public WebElement ChckCreatedByhdr;
+	
+	@FindBy(xpath="//*[@id='orderContentHeader']/div[3]/p/label[9]/strong")
+	public WebElement ChckOnshwdate;
+	
+	@FindBy(xpath="//*[@id='order_detail']/div[2]/div/div/table/tbody/tr[1]/td[2]")
+	public WebElement getPaltcnt;
+	
+	@FindBy(xpath="//*[@id='order_detail']/div[2]/div/div/table/tbody/tr[1]/td[4]")
+	public WebElement getArtcount;
+	
+	@FindBy(xpath="//*[@id='order_detail']/div[2]/div/div/table/tbody/tr[2]/td[2]")
+	public WebElement Dispqty;
+	
+	@FindBy(xpath="//*[@id='order_detail']/div[2]/div/div/table/tbody/tr[2]/td[4]")
+	public WebElement Gettotalqty;
+	
+	@FindBy(xpath="//*[@id='order_detail']/div[2]/div/div/table/tbody/tr[3]/td[2]")
+	public WebElement Dispwgt;
+	
+	@FindBy(xpath="//*[@id='order_detail']/div[2]/div/div/table/tbody/tr[3]/td[4]")
+	public WebElement ChckSealnumb;
+	
+	@FindBy(xpath="//*[@id='order_detail']/div[3]/div[1]/div/h4")
+	public WebElement GetListofArt;
+	
+	@FindBy(xpath="//*[@id='ui-id-32']")
+	public WebElement yetTorcv;
+	
+	@FindBy(xpath="//*[@id='clr_grp_link_btn_yet_to_received_item_table']/a")
+	public WebElement Clrgrpby;
+	
+	@FindBy(xpath="//*[@id='yet_to_received_item_table_table']/tbody/tr")
+	public List<WebElement> Artsize;
+	
+		
+	public static final String getArt1 = "//*[@id='yet_to_received_item_table_table']/tbody/tr[dynamic]/td[1]";
+	public static final String getOM ="//*[@id='yet_to_received_item_table_table']/tbody/tr[dynamic]/td[4]";
+	public static final String getQty = "//*[@id='yet_to_received_item_table_table']/tbody/tr[dynamic]/td[5]";
+	public static final String getTotQty = "//*[@id='yet_to_received_item_table_table']/tbody/tr[dynamic]/td[6]";
+	
+/*
+	@FindBy(xpath="")
+	public WebElement ;
+	
+	
+
+	@FindBy(xpath="")
+	public WebElement ;
+	
+	
+
+	@FindBy(xpath="")
+	public WebElement ;
+	
+	
+
+	@FindBy(xpath="")
+	public WebElement ;
+	
+	
+
+	@FindBy(xpath="")
+	public WebElement ;
+	
+	
+
+	@FindBy(xpath="")
+	public WebElement ;
+	
+	
+
+	@FindBy(xpath="")
+	public WebElement ;
+	
+	
+
+	@FindBy(xpath="")
+	public WebElement ;
+	
+	
+
+	@FindBy(xpath="")
+	public WebElement ;
+	
+	*/
+	
+	
+
+
+}

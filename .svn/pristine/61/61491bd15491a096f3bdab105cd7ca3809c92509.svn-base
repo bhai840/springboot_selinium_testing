@@ -1,0 +1,1064 @@
+package au.wow.ngbomain.pages;
+
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.SendKeysAction;
+import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.support.PageFactory;
+
+import com.relevantcodes.extentreports.ExtentTest;
+import com.sybase.jdbc3.jdbc.Convert;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbomain.objects.DSCandPLUReportObjects;
+import au.wow.ngbomain.objects.InventoryReportObjects;
+import au.wow.ngbomain.tests.AdjustmentLogReportTests;
+import au.wow.ngbomain.tests.InventoryReportTests;
+
+public class InventoryReportPage extends BasePage{
+	
+	WebDriver driver =InventoryReportTests.driver;
+    public void setDriver(WebDriver driver){
+		this.driver=driver;
+	}
+	ExtentTest extLogger=InventoryReportTests.extLogger;
+	String cName= InventoryReportTests.cName;
+	String mName=InventoryReportTests.mName;
+
+
+	public void clickOnInventoryReport(InventoryReportObjects objInvReport,WebDriver driver) throws AWTException{
+		//driver.navigate().to("http://ngbo-acpt.gss.woolworths.com.au/StoreCentral/1005/inventoryReport/loadInventoryReport.htm");
+		//waitForJSandJQueryToLoad(driver);;
+		waitForJSandJQueryToLoad(driver);;
+		waitFor(1);
+		Point coordinates = objInvReport.report.getLocation();
+		Robot robot = new Robot();
+		//.mouseMove(coordinates.getX(),coordinates.getY()+100);
+		
+		Actions action = new Actions(driver);
+		action.moveToElement(objInvReport.report).click().build().perform();	
+		waitFor(1);
+		
+		Actions action1 = new Actions(driver);
+		action1.moveToElement(objInvReport.stockManagement).click().build().perform();	
+		waitFor(1);
+				
+		Actions action2 = new Actions(driver);
+		action2.moveToElement(objInvReport.inventoryReport).click().build().perform();
+		waitFor(1);
+		robot.mouseMove(5,5);
+
+	}
+
+	public void fnSelectInvReportSOH(InventoryReportObjects objInvReport, WebDriver driver) throws IOException {
+		
+		//select soh check box
+		if(!isSelected(objInvReport.sohCheckBox))
+		{
+			objInvReport.sohCheckBox.click();
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The SOH option is selected;;;Pass");
+			////Report_AddStep("testcase","The SOH option is selected ","" ,"" , "Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "The SOH option is selected;;;Pass");
+			////Report_AddStep("testcase","The SOH option is selected ","" ,"" , "Pass");
+		}
+	
+		//unselect mpl check box
+		if(isSelected(objInvReport.mplCheckBox))
+		{
+			click(objInvReport.mplCheckBox);
+			htmlToExtent(cName,mName,extLogger,driver, "The MPL option is not selected;;;Pass");
+			////Report_AddStep("testcase","The MPL option is not selected ","" ,"" , "Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "The MPL option is not selected;;;Pass");
+			////Report_AddStep("testcase","The MPL option is not selected ","" ,"" , "Pass");
+		}
+		
+			
+	}
+	
+	public void fnSelectInvReportMPL(InventoryReportObjects objInvReport, WebDriver driver) throws IOException {
+		
+		//unselect soh check box
+		if(isSelected(objInvReport.sohCheckBox))
+		{
+			click(objInvReport.sohCheckBox);
+			htmlToExtent(cName,mName,extLogger,driver, "The SOH option is not selected;;;Pass");
+			////Report_AddStep("testcase","The SOH option is not selected ","" ,"" , "Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "The SOH option is not selected;;;Pass");
+			////Report_AddStep("testcase","The SOH option is not selected ","" ,"" , "Pass");
+		}
+		
+		//select mpl check box
+		if(!isSelected(objInvReport.mplCheckBox))
+		{
+			click(objInvReport.mplCheckBox);
+			htmlToExtent(cName,mName,extLogger,driver, "The MPL option is selected;;;Pass");
+			////Report_AddStep("testcase","The MPL option is selected ","" ,"" , "Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "The MPL option is selected;;;Pass");
+			////Report_AddStep("testcase","The MPL option is selected ","" ,"" , "Pass");
+		}
+			
+		
+	}
+
+public void fnSelectInvReportSOHandMPL(InventoryReportObjects objInvReport, WebDriver driver) throws IOException {
+	
+	//select soh check box
+	if(!isSelected(objInvReport.sohCheckBox))
+	{
+		click(objInvReport.sohCheckBox);
+		htmlToExtent(cName,mName,extLogger,driver, "The SOH option is selected;;;Pass");
+		////Report_AddStep("testcase","The SOH option is selected ","" ,"" , "Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "The SOH option is selected;;;Pass");
+		////Report_AddStep("testcase","The SOH option is selected ","" ,"" , "Pass");
+	}
+	
+	//select mpl check box
+	if(!isSelected(objInvReport.mplCheckBox))
+	{
+		click(objInvReport.mplCheckBox);
+		htmlToExtent(cName,mName,extLogger,driver, "The MPL option is selected;;;Pass");
+		////Report_AddStep("testcase","The MPL option is selected ","" ,"" , "Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "The MPL option is selected;;;Pass");
+		//Report_AddStep("testcase","The MPL option is selected ","" ,"" , "Pass");
+	}
+		
+	
+}
+
+	public void fnverifyInvReportPrimaryDepartment(InventoryReportObjects objInvReport, List<String> deptNameListDB, WebDriver driver) throws IOException {
+		List<String> deptNameListApp = new ArrayList<String>();
+		
+		click(objInvReport.invDeptDropDown);
+		waitForJSandJQueryToLoad(driver);;
+		
+		int deptsize=objInvReport.departmentList.size();
+		for(int i=2;i<deptsize;i++)
+		{
+			WebElement deptCheckbox =  prepareWebElementWithDynamicXpathWithInt(objInvReport.departmentCheckBox,i,driver);
+			
+			Coordinates coordinate = ((Locatable)deptCheckbox).getCoordinates(); 
+			coordinate.onPage(); 
+			coordinate.inViewPort();
+			
+			
+			if(isSelected(deptCheckbox))
+			{
+				WebElement element =  prepareWebElementWithDynamicXpathWithInt(objInvReport.departmentName,i,driver);
+				String dptName = element.getText().trim();
+				deptNameListApp.add(dptName);
+			}
+			
+		}
+		
+		Collections.sort(deptNameListDB);
+		Collections.sort(deptNameListApp);
+		
+		htmlToExtent(cName,mName,extLogger,driver, "The Primary department in Database : "+deptNameListDB+";;;Pass");
+		////Report_AddStep("testcase","The Primary department in Database : "+deptNameListDB,"" ,"" , "PASS");
+		
+		htmlToExtent(cName,mName,extLogger,driver, "The Primary department Selected in application : "+deptNameListApp+";;;Pass");
+		////Report_AddStep("testcase","The Primary department Selected in application : "+deptNameListApp,"" ,"" , "PASS");
+		
+		if(deptNameListDB.equals(deptNameListApp))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "The Primary departments are selected properly;;;Pass");
+			////Report_AddStep("testcase","The Primary departments are selected properly","" ,"" , "PASS");
+			click(objInvReport.invDeptDropDown);
+			verticalScroll(driver);
+			click(objInvReport.generateReportBtn);
+			waitForJSandJQueryToLoad(driver);;
+				
+			htmlToExtent(cName,mName,extLogger,driver, "The Inventory report is generated successfully for the primary department ;;;Pass");
+			////Report_AddStep("testcase","The Inventory report is generated successfully for the primary department ","" ,"" , "Pass");
+			
+		}
+		else
+			htmlToExtent(cName,mName,extLogger,driver, "The Primary departments are not selected properly ;;;Fail");
+			////Report_AddStep("testcase","The Primary departments are not selected properly : ","" ,"" , "Fail");
+		
+		
+	}
+	
+	public void fnChoosePartialDepartmentInvReport(InventoryReportObjects objInvReport, WebDriver driver) throws IOException
+	{
+		int max = objInvReport.departmentList.size()-1;
+		//system.out.println("The no of elements is "+max);
+		int min=2;
+		List<Integer> randomNumbers = new ArrayList<Integer>();
+		
+		click(objInvReport.invDeptDropDown);
+		waitForJSandJQueryToLoad(driver);;
+		
+		if(isSelected(objInvReport.optionSelectAll))
+		{
+		click(objInvReport.optionSelectAll);
+		waitForJSandJQueryToLoad(driver);;
+		}
+		else
+		{
+		 //To select the checkbox
+		 click(objInvReport.optionSelectAll);
+		 waitForJSandJQueryToLoad(driver);;
+		 
+		//To deselect the SelectAll checkbox
+		click(objInvReport.optionSelectAll);
+		waitForJSandJQueryToLoad(driver);;
+		}
+		
+		waitFor(3);
+
+		//generate some 3 random numbers and Choose any 3 departments,
+		
+		randomNumbers=generateMultiplRandomNumber(min, max, 3);
+		
+		for(int i=0;i<3;i++)
+		{
+			WebElement element =  prepareWebElementWithDynamicXpathWithInt(objInvReport.departmentName,randomNumbers.get(i),driver);
+			String dptName = element.getText().trim();
+		
+			Coordinates coordinate = ((Locatable)element).getCoordinates(); 
+			coordinate.onPage(); 
+			coordinate.inViewPort();
+			
+			WebElement deptCheckbox =  prepareWebElementWithDynamicXpathWithInt(objInvReport.departmentCheckBox,randomNumbers.get(i),driver);
+			click(deptCheckbox);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The department Selected is : "+dptName+" ;;;Pass");
+			////Report_AddStep("testcase","The department Selected is : "+dptName,"" ,"" , "PASS");
+		
+		}
+		
+		
+		click(objInvReport.invDeptDropDown);
+		waitForJSandJQueryToLoad(driver);;
+		
+		//select mpl check box
+		if(!isSelected(objInvReport.sosAll))
+		{
+			click(objInvReport.sosAll);
+			htmlToExtent(cName,mName,extLogger,driver, "The Source of supply Option 'All' is selected ;;;Pass");
+			////Report_AddStep("testcase","The Source of supply Option 'All' is selected ","" ,"" , "Pass");
+			
+		}
+        verticalScroll(driver);
+		click(objInvReport.generateReportBtn);
+		waitForJSandJQueryToLoad(driver);;
+		
+		htmlToExtent(cName,mName,extLogger,driver, "The Inventory report is generated successfully for the Partial department ;;;Pass");
+		////Report_AddStep("testcase","The Inventory report is generated successfully for the Partial department ","" ,"" , "Pass");
+
+		//VerifyPrintButton
+		click(objInvReport.printBtn);
+		waitForJSandJQueryToLoad(driver);;
+		
+		htmlToExtent(cName,mName,extLogger,driver, "The Print pdf is generated successfully ;;;Pass");
+		////Report_AddStep("testcase","The Print pdf is generated successfully","" ,"" , "PASS");
+		
+		waitFor(3);
+		driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL + "w");	
+		
+		htmlToExtent(cName,mName,extLogger,driver, "The Print pdf is closed successfully ;;;Pass");
+		////Report_AddStep("testcase","The Print pdf is closed successfully","" ,"" , "PASS");
+
+  }
+	
+	
+	public void fnChoosAllDepartmentInvReport(InventoryReportObjects objInvReport, WebDriver driver) throws IOException
+	{
+			
+		click(objInvReport.invDeptDropDown);
+		waitForJSandJQueryToLoad(driver);;
+		
+		if(!isSelected(objInvReport.optionSelectAll))
+		{
+		click(objInvReport.optionSelectAll);
+		waitForJSandJQueryToLoad(driver);;
+		htmlToExtent(cName,mName,extLogger,driver, "All departments is selected in dropdown list ;;;Pass");
+		////Report_AddStep("testcase","All departments is selected in dropdown list ","" ,"" , "Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "All departments is selected in dropdown list ;;;Pass");
+			////Report_AddStep("testcase","All departments is selected in dropdown list ","" ,"" , "Pass");	
+		}
+		
+		waitFor(3);
+
+		//generate some 3 random numbers and Choose any 3 departments,
+		
+		
+		click(objInvReport.invDeptDropDown);
+		waitForJSandJQueryToLoad(driver);;
+		
+		//select mpl check box
+		if(!isSelected(objInvReport.sosAll))
+		{
+			click(objInvReport.sosAll);
+			htmlToExtent(cName,mName,extLogger,driver, "The Source of supply Option 'All' is selected ;;;Pass");
+			////Report_AddStep("testcase","The Source of supply Option 'All' is selected ","" ,"" , "Pass");
+			
+		}
+        verticalScroll(driver);
+		click(objInvReport.generateReportBtn);
+		waitForJSandJQueryToLoad(driver);;
+			
+		htmlToExtent(cName,mName,extLogger,driver, "The Inventory report is generated successfully for the All department ;;;Pass");
+		////Report_AddStep("testcase","The Inventory report is generated successfully for the All department ","" ,"" , "Pass");
+
+	
+  }
+	
+	public void fnverifyInventoryReportMultiDepartment(InventoryReportObjects objInvReport, List<Object> randomRecord, WebDriver driver) throws IOException
+	{
+
+	String dept_name = randomRecord.get(0).toString();
+	String cat_name = randomRecord.get(1).toString();
+	String subcat_name = randomRecord.get(2).toString();
+	//String subcat_name = randomRecord.get(0).toString();
+	
+	click(objInvReport.invDeptDropDown);
+	waitForJSandJQueryToLoad(driver);;
+	
+	if(isSelected(objInvReport.optionSelectAll))
+	{
+	click(objInvReport.optionSelectAll);
+	waitForJSandJQueryToLoad(driver);;
+	
+	click(objInvReport.invDeptDropDown);
+	}
+	else
+	{
+		click(objInvReport.optionSelectAll);
+		waitForJSandJQueryToLoad(driver);;
+		
+		click(objInvReport.optionSelectAll);
+		waitForJSandJQueryToLoad(driver);;
+		
+		click(objInvReport.invDeptDropDown);
+	}
+	click(objInvReport.multiDeptChkBox);
+	htmlToExtent(cName,mName,extLogger,driver, "Multi department option is choosen ;;;Pass");
+	////Report_AddStep("testcase","Multi department option is choosen","" ,"" , "Pass");
+	waitFor(3);
+
+	int deptsize=objInvReport.department.size();
+	for(int i=1;i<=deptsize;i++)
+	{
+		WebElement element = prepareWebElementWithDynamicXpathWithInt(objInvReport.departmentListMulti,i,driver);
+		String dept_name_appl = element.getText();
+		if(dept_name.equals(dept_name_appl))
+		{
+			verticalinternalscroll(element,driver);
+			WebElement element1 = prepareWebElementWithDynamicXpathWithInt(objInvReport.deparmentchkBox,i,driver);
+			element1.click();
+			htmlToExtent(cName,mName,extLogger,driver, "Department is selected with a random value: " +dept_name_appl+" ;;;Pass");
+			////Report_AddStep("testcase","Department is selected with a random value: " +dept_name_appl,"" ,"" , "Pass");
+			break;
+		}
+	}
+	int catsize=objInvReport.category.size();
+	click(objInvReport.categoryAll);
+	for(int i=1;i<=catsize;i++)
+	{
+		WebElement element = prepareWebElementWithDynamicXpathWithInt(objInvReport.categoryList,i,driver);
+		String cat_name_appl = element.getText();
+		if(cat_name.equals(cat_name_appl))
+		{
+			verticalinternalscroll(element,driver);
+			WebElement element1 = prepareWebElementWithDynamicXpathWithInt(objInvReport.categoryChkBox,i,driver);
+			element1.click();
+			htmlToExtent(cName,mName,extLogger,driver, "Category is selected with a random value: " +cat_name_appl+" ;;;Pass");
+			////Report_AddStep("testcase","Category is selected with a random value: " +cat_name_appl,"" ,"" , "Pass");
+			break;
+		}
+	}
+	int subcatsize=objInvReport.subCategory.size();
+	click(objInvReport.subCategoryAll);
+	for(int i=2;i<=subcatsize;i++)
+	{
+		WebElement element = prepareWebElementWithDynamicXpathWithInt(objInvReport.subCategoryList,i,driver);
+		String subcat_name_appl = element.getText();
+		
+		if(subcat_name.equals(subcat_name_appl))
+		{
+			verticalinternalscroll(element,driver);
+			WebElement element1 = prepareWebElementWithDynamicXpathWithInt(objInvReport.subCategoryChkBox,i,driver);
+			element1.click();
+			htmlToExtent(cName,mName,extLogger,driver, "SubCategory is selected with a random value: " +subcat_name_appl+" ;;;Pass");
+			////Report_AddStep("testcase","SubCategory is selected with a random value: " +subcat_name_appl,"" ,"" , "Pass");
+			break;
+		}
+	}
+	
+	htmlToExtent(cName,mName,extLogger,driver, "All segments are selected ;;;Pass");
+	////Report_AddStep("testcase","All segments are selected ","" ,"" , "Pass");
+	verticalScroll(driver);
+	click(objInvReport.generateReportBtn);
+	waitForJSandJQueryToLoad(driver);;
+	
+	
+	htmlToExtent(cName,mName,extLogger,driver, "Inventory report is generated Successfully ;;;Pass");
+	////Report_AddStep("testcase","Inventory report is generated Successfully ","" ,"" , "Pass");
+		
+	}
+	
+	public void fnverifyInventoryReportPagination(InventoryReportObjects objInvReport, WebDriver driver) throws IOException
+	{
+		int min=3, max=7;
+				
+		int randomNo=generateRandomNumber(min, max);
+		WebElement element =  prepareWebElementWithDynamicXpathWithInt(objInvReport.invPageNo,randomNo,driver);
+		String pageNo =element.getText();
+		click(element);
+		waitForJSandJQueryToLoad(driver);;
+		
+		if(objInvReport.invTable.size()!=0)
+		   htmlToExtent(cName,mName,extLogger,driver, "Inventory Report is Navigated Successfully to the Page No : "+pageNo+" ;;;Pass");
+	       ////Report_AddStep("testcase","Inventory Report is Navigated Successfully to the Page No : "+pageNo,"" ,"" , "Pass");
+		
+		click(objInvReport.invReportNextBtn);
+		waitForJSandJQueryToLoad(driver);;
+		if(objInvReport.invTable.size()!=0)
+		{
+			   int nextPageNo=Integer.parseInt(pageNo)+1;
+			   htmlToExtent(cName,mName,extLogger,driver, "Inventory Report is Navigated Successfully to the Next Page No : "+nextPageNo+" ;;;Pass");
+		       ////Report_AddStep("testcase","Inventory Report is Navigated Successfully to the Next Page No : "+nextPageNo,"" ,"" , "Pass");
+		}
+		
+	
+	
+	}
+	
+
+	public void fnChooseGroceryDepartmentInvReport(InventoryReportObjects objInvReport, WebDriver driver) throws IOException
+	{
+		int max = objInvReport.departmentList.size()-1;
+		//system.out.println("The no of elements is "+max);
+				
+		click(objInvReport.invDeptDropDown);
+		waitForJSandJQueryToLoad(driver);;
+		
+		if(isSelected(objInvReport.optionSelectAll))
+		{
+		click(objInvReport.optionSelectAll);
+		waitForJSandJQueryToLoad(driver);;
+		}
+		else
+		{
+		 //To select the checkbox
+		 click(objInvReport.optionSelectAll);
+		 waitForJSandJQueryToLoad(driver);;
+		 
+		//To deselect the SelectAll checkbox
+		click(objInvReport.optionSelectAll);
+		waitForJSandJQueryToLoad(driver);;
+		}
+		for(int i=2;i<max;i++)
+		{
+			WebElement element =  prepareWebElementWithDynamicXpathWithInt(objInvReport.departmentName,i,driver);
+			String dptName = element.getText().trim();
+		
+			Coordinates coordinate = ((Locatable)element).getCoordinates(); 
+			coordinate.onPage(); 
+			coordinate.inViewPort();
+			
+			if(dptName.equals("GROCERIES"))
+			{
+			
+			WebElement deptCheckbox =  prepareWebElementWithDynamicXpathWithInt(objInvReport.departmentCheckBox,i,driver);
+			click(deptCheckbox);
+			
+			 htmlToExtent(cName,mName,extLogger,driver, "The department Selected is : "+dptName+" ;;;Pass");
+			////Report_AddStep("testcase","The department Selected is : "+dptName,"" ,"" , "PASS");
+			break;
+			}
+		
+		}
+		
+		
+		click(objInvReport.invDeptDropDown);
+		waitForJSandJQueryToLoad(driver);;
+		
+		//select mpl check box
+		if(!isSelected(objInvReport.sosAll))
+		{
+			click(objInvReport.sosAll);
+			
+			htmlToExtent(cName,mName,extLogger,driver, "The Source of supply Option 'All' is selected ;;;Pass");
+			////Report_AddStep("testcase","The Source of supply Option 'All' is selected ","" ,"" , "Pass");
+			
+		}
+	}
+	
+	public String fnchooseLiquorDepartment (InventoryReportObjects objInvReport, WebDriver driver) throws IOException
+	
+	{
+		String dept_name = "LIQUOR";
+		String cat_name = "SPIRITS RTD";
+		click(objInvReport.multiDeptChkBox);
+		htmlToExtent(cName,mName,extLogger,driver, "Multi department option is choosen ;;;Pass");
+		waitFor(3);
+
+		int deptsize=objInvReport.department.size();
+		for(int i=1;i<=deptsize;i++)
+		{
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(objInvReport.departmentListMulti,i,driver);
+			String dept_name_appl = element.getText();
+			if(dept_name.equals(dept_name_appl))
+			{
+				verticalinternalscroll(element,driver);
+				WebElement element1 = prepareWebElementWithDynamicXpathWithInt(objInvReport.deparmentchkBox,i,driver);
+				element1.click();
+				htmlToExtent(cName,mName,extLogger,driver, "LIQUOR Department is selected " +dept_name_appl+" ;;;Pass");
+				////Report_AddStep("testcase","Department is selected with a random value: " +dept_name_appl,"" ,"" , "Pass");
+				break;
+			}
+		}
+		int catsize=objInvReport.category.size();
+		click(objInvReport.categoryAll);
+		for(int i=1;i<=catsize;i++)
+		{
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(objInvReport.categoryList,i,driver);
+			String cat_name_appl = element.getText();
+			if(cat_name.equals(cat_name_appl))
+			{
+				verticalinternalscroll(element,driver);
+				WebElement element1 = prepareWebElementWithDynamicXpathWithInt(objInvReport.categoryChkBox,i,driver);
+				element1.click();
+				htmlToExtent(cName,mName,extLogger,driver, "SPIRITS RTD category is selected " +cat_name_appl+" ;;;Pass");
+				////Report_AddStep("testcase","Category is selected with a random value: " +cat_name_appl,"" ,"" , "Pass");
+				break;
+			}
+		}
+		
+		verticalScroll(driver);
+		click(objInvReport.generateReportBtn);
+		waitForJSandJQueryToLoad(driver);;
+		htmlToExtent(cName,mName,extLogger,driver, "Inventory report is generated Successfully ;;;Pass");
+		click(objInvReport.article_sort);
+		
+		waitForJSandJQueryToLoad(driver);;
+		WebElement element = prepareWebElementWithDynamicXpathWithInt(objInvReport.article_id,2,driver);
+		String article_id = element.getText();
+		return article_id;
+		
+	}
+	public void fnPBDcheck (InventoryReportObjects objInvReport, String PBD_count, String article, WebDriver driver) throws IOException
+	{
+		int count = Integer.parseInt(PBD_count);
+		int count_appl =0 ;
+		for ( int i =1; i<=count+1;i++)
+		{
+			WebElement element = prepareWebElementWithDynamicXpathWithInt(objInvReport.article_id,i,driver);
+			String article_id = element.getText();
+			if(article_id.equals(article))
+			{
+				count_appl++;
+			}
+		}
+		
+		if (count == count_appl)
+		{
+			htmlToExtent(cName,mName,extLogger,driver, " PBD article has been displayed in "+PBD_count+" UOM ;;;Pass");
+		}
+		
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, " PBD article has not been displayed properly ;;;Fail");
+		}
+	}
+
+	public void fnChooseAdditionalCriteriaSOH(InventoryReportObjects objInvReport, String lessThanValue, String greaterThanValue, WebDriver driver) throws IOException {
+		
+		// Only Less than SOH criteria selected
+		selectByVisibleText(objInvReport.filterSelectFirst, "SOH");
+		htmlToExtent(cName,mName,extLogger,driver, "Additonal Criteria 'SOH' is selected ;;;Pass");
+		////Report_AddStep("testcase","Additonal Criteria 'SOH' is selected","" ,"" , "Pass");
+		
+		selectByVisibleText(objInvReport.filterRangeFirst, "Less than");
+		htmlToExtent(cName,mName,extLogger,driver, "Range 'Less than' is selected ;;;Pass");
+		////Report_AddStep("testcase","Range 'Less than' is selected","" ,"" , "Pass");
+		
+		enterText(objInvReport.inputValueFirst, lessThanValue,driver);
+		htmlToExtent(cName,mName,extLogger,driver, "Less then value given is : "+lessThanValue+" ;;;Pass");
+		////Report_AddStep("testcase","Less then value given is : "+lessThanValue,"" ,"" , "Pass");
+		
+		waitFor(1);
+		verticalScroll(driver);
+		click(objInvReport.generateReportBtn);
+		waitForJSandJQueryToLoad(driver);;
+		
+		htmlToExtent(cName,mName,extLogger,driver, "Inventory report is generated Successfully ;;;Pass");
+		////Report_AddStep("testcase","Inventory report is generated Successfully ","" ,"" , "Pass");
+		
+		String appSoh = objInvReport.sohValue.getText().trim();
+		
+		int minCriteria = Integer.parseInt(lessThanValue);
+		int appValue = Integer.parseInt(appSoh);
+		
+		if(appValue<minCriteria)
+			htmlToExtent(cName,mName,extLogger,driver, "The SOH value of the article : "+appSoh+" is lesser than minimum criteria: "+minCriteria+" ;;;Pass");
+			////Report_AddStep("testcase","The SOH value of the article : "+appSoh+" is lesser than minimum criteria: "+minCriteria,"" ,"" , "Pass");
+		else
+			htmlToExtent(cName,mName,extLogger,driver, "The SOH value of the article : "+appSoh+" is not lesser than minimum criteria: "+minCriteria+" ;;;Pass");
+			////Report_AddStep("testcase","The SOH value of the article : "+appSoh+" is not lesser than minimum criteria: "+minCriteria,"" ,"" , "Pass");
+		
+		waitFor(3);
+		click(objInvReport.expandInvCriteria);
+		waitFor(2);
+		// Only greater than SOH criteria selected
+		selectByVisibleText(objInvReport.filterSelectFirst, "SOH");
+		htmlToExtent(cName,mName,extLogger,driver, "Additonal Criteria 'SOH' is selected ;;;Pass");
+		
+	//	//Report_AddStep("testcase","Additonal Criteria 'SOH' is selected","" ,"" , "Pass");
+		
+		selectByVisibleText(objInvReport.filterRangeFirst, "Greater than");
+		htmlToExtent(cName,mName,extLogger,driver, "Range 'Greater than' is selected ;;;Pass");
+		
+		////Report_AddStep("testcase","Range 'Greater thann' is selected","" ,"" , "Pass");
+		
+		enterText(objInvReport.inputValueFirst, greaterThanValue,driver);
+		htmlToExtent(cName,mName,extLogger,driver, "Greater than value given is : "+greaterThanValue+" ;;;Pass");
+		
+		////Report_AddStep("testcase","Greater than value given is : "+greaterThanValue,"" ,"" , "Pass");
+		
+		waitFor(1);
+		verticalScroll(driver);
+		click(objInvReport.generateReportBtn);
+		waitForJSandJQueryToLoad(driver);;
+		
+		htmlToExtent(cName,mName,extLogger,driver, "Inventory report is generated Successfully ;;;Pass");
+		////Report_AddStep("testcase","Inventory report is generated Successfully ","" ,"" , "Pass");
+		
+		click(objInvReport.sohHeader);
+		waitForJSandJQueryToLoad(driver);;
+		
+		
+		String appSoh1 = objInvReport.sohValue.getText().trim();
+		
+		int maxCriteria = Integer.parseInt(greaterThanValue);
+		int appValue1 = Integer.parseInt(appSoh1);
+		
+		if(appValue1>maxCriteria)
+			htmlToExtent(cName,mName,extLogger,driver, "The SOH value of the article : "+appSoh1+" is  greater than maximum criteria: "+maxCriteria+" ;;;Pass");
+			////Report_AddStep("testcase","The SOH value of the article : "+appSoh1+" is greater than maximum criteria: "+maxCriteria,"" ,"" , "Pass");
+		else
+			htmlToExtent(cName,mName,extLogger,driver, "The SOH value of the article : "+appSoh1+" is not greater than maximum criteria: "+maxCriteria+" ;;;Pass");
+			////Report_AddStep("testcase","The SOH value of the article : "+appSoh1+" is not greater than maximum criteria: "+maxCriteria,"" ,"" , "Pass");
+		
+		
+		click(objInvReport.expandInvCriteria);
+		waitFor(3);
+		objInvReport.addRowLink.click();
+		
+		// Both lesser than and greater than value is given
+		selectByVisibleText(objInvReport.filterSelectSecond, "SOH");
+		htmlToExtent(cName,mName,extLogger,driver, "Additonal Criteria 'SOH' is selected ;;;Pass");
+		////Report_AddStep("testcase","Additonal Criteria 'SOH' is selected","" ,"" , "Pass");
+		
+		selectByVisibleText(objInvReport.filterRangeSecond, "Less than");
+		htmlToExtent(cName,mName,extLogger,driver, "Range 'Less than' is selected ;;;Pass");
+		////Report_AddStep("testcase","Range 'Less than' is selected","" ,"" , "Pass");
+		
+		enterText(objInvReport.inputValueSecond,lessThanValue,driver);
+		htmlToExtent(cName,mName,extLogger,driver, "Less then value given is : "+lessThanValue+" ;;;Pass");
+		////Report_AddStep("testcase","Less then value given is : "+lessThanValue,"" ,"" , "Pass");
+		
+		waitFor(1);
+		verticalScroll(driver);
+		click(objInvReport.generateReportBtn);
+		waitForJSandJQueryToLoad(driver);;
+		
+		htmlToExtent(cName,mName,extLogger,driver, "Inventory report is generated Successfully ;;;Pass");
+		////Report_AddStep("testcase","Inventory report is generated Successfully ","" ,"" , "Pass");
+		
+		click(objInvReport.sohHeader);
+		waitForJSandJQueryToLoad(driver);;
+		
+		
+	/*	String appSoh1 = objInvReport.sohValue.getText().trim();
+		
+		int maxCriteria = Integer.parseInt(greaterThanValue);
+		int appValue1 = Integer.parseInt(appSoh1);
+		
+		if(appValue1>maxCriteria)
+			//Report_AddStep("testcase","The SOH value of the article : "+appSoh1+" is greater than maximum criteria: "+maxCriteria,"" ,"" , "Pass");
+		else
+			//Report_AddStep("testcase","The SOH value of the article : "+appSoh1+" is not greater than maximum criteria: "+maxCriteria,"" ,"" , "Pass");
+		*/
+		
+		
+	}
+
+	public void fnverifySohDays(InventoryReportObjects objInvReport, WebDriver driver)
+	{
+		Random r =new Random ();
+		int max = 28;
+		int days = r.nextInt(max)+1;
+		objInvReport.sohDays.sendKeys(String.valueOf(days));
+		htmlToExtent(cName,mName,extLogger,driver, "SOH value less than 28 ;;;Pass");
+		waitFor(1);
+		verticalScroll(driver);
+		click(objInvReport.generateReportBtn);
+		waitForJSandJQueryToLoad(driver);;
+		htmlToExtent(cName,mName,extLogger,driver, "Inventory report generated successfully ;;;Pass");
+	} 
+	public void fnverifyDifferentSOS (InventoryReportObjects objInvReport, WebDriver driver) throws AWTException
+	{
+		 
+		    waitForJSandJQueryToLoad(driver);;
+		    click(objInvReport.allSOS);
+		    waitForJSandJQueryToLoad(driver);;
+			htmlToExtent(cName,mName,extLogger,driver, "User has selected source of supply as all ;;;Pass");
+			waitFor(1);
+			verticalScroll(driver);
+			click(objInvReport.generateReportBtn);	
+			waitForJSandJQueryToLoad(driver);;
+			htmlToExtent(cName,mName,extLogger,driver, "Inventory report generated successfully ;;;Pass");
+		    clickOnInventoryReport(objInvReport,driver);
+		    waitForJSandJQueryToLoad(driver);;
+		    
+		    
+	        objInvReport.warehouse_SOS.click();
+	        int min=2, max=26;			
+			int randomNo=generateRandomNumber(min, max);
+			WebElement element =  prepareWebElementWithDynamicXpathWithInt(objInvReport.warehouse,randomNo,driver);
+			String warehouse_name =element.getText();
+			click(element);
+			waitForJSandJQueryToLoad(driver);;
+	    	htmlToExtent(cName,mName,extLogger,driver, "User has selected source of supply as warehouse : "+warehouse_name+";;;Pass");
+			waitFor(1);
+			verticalScroll(driver);
+			click(objInvReport.generateReportBtn);
+			waitForJSandJQueryToLoad(driver);;
+			htmlToExtent(cName,mName,extLogger,driver, "Inventory report generated successfully ;;;Pass");	
+			clickOnInventoryReport(objInvReport,driver);
+		    waitForJSandJQueryToLoad(driver);;
+		    
+	        objInvReport.vendor_SOS.click();
+	        waitForJSandJQueryToLoad(driver);;
+			htmlToExtent(cName,mName,extLogger,driver, "User has selected source of supply as vendor ;;;Pass");
+			waitFor(1);
+			verticalScroll(driver);
+			click(objInvReport.generateReportBtn);
+			waitForJSandJQueryToLoad(driver);;
+			htmlToExtent(cName,mName,extLogger,driver, "Inventory report generated successfully ;;;Pass");
+	   
+	
+	}
+
+	public void fnSeasonalActivity(InventoryReportObjects objInvReport, WebDriver driver)
+	{
+		if(isSelected(objInvReport.seasonalActivity))
+		{
+			click(objInvReport.seasonalActivity);
+		}
+		
+			htmlToExtent(cName,mName,extLogger,driver, "The Seasonal Activity option is not selected;;;Pass");
+			////Report_AddStep("testcase","The MPL option is not selected ","" ,"" , "Pass");
+			waitFor(1);
+			verticalScroll(driver);
+			click(objInvReport.generateReportBtn);	
+			waitForJSandJQueryToLoad(driver);;
+			htmlToExtent(cName,mName,extLogger,driver, "Inventory report generated successfully;;;Pass");
+		    click(objInvReport.printButton);
+		    waitForJSandJQueryToLoad(driver);;
+		    htmlToExtent(cName,mName,extLogger,driver, "Inventory report printed successfully ;;;Pass");
+	}
+	public void fnChooseSeasonalActivity(InventoryReportObjects objInvReport, WebDriver driver)
+	{
+		
+		    click(objInvReport.seasonalActivityList);
+			int min=1, max=objInvReport.seasonalActivityDropdownBoxSize.size();			
+			int randomNo=generateRandomNumber(min, max);
+			if(randomNo == 1)
+			{
+//			click(objInvReport.seasonalActivityList);
+			waitForJSandJQueryToLoad(driver);;
+			WebElement element =  prepareWebElementWithDynamicXpathWithInt(objInvReport.seasonal_activity,randomNo,driver);
+			String seasonal_activity =element.getText();
+			verticalinternalscroll(element,driver);
+			waitForJSandJQueryToLoad(driver);;
+			click(element);
+			waitForJSandJQueryToLoad(driver);;
+	    	htmlToExtent(cName,mName,extLogger,driver, "User has selected seasonal activity as : "+seasonal_activity+" ;;;Pass");
+			waitFor(1);
+			}
+			
+			verticalScroll(driver);
+			click(objInvReport.generateReportBtn);
+			waitForJSandJQueryToLoad(driver);;
+			try
+			{
+			if (objInvReport.noRecordWarning.isDisplayed())
+			{
+				verticalScroll(driver);
+			   objInvReport.warningclose.click();
+			   htmlToExtent(cName,mName,extLogger,driver, "No records to display in inventory report;;;Pass");
+			}
+			}
+			catch ( Exception e)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Inventory report generated successfully;;;Pass");
+			    click(objInvReport.printButton);
+			    waitForJSandJQueryToLoad(driver);;
+			    htmlToExtent(cName,mName,extLogger,driver, "Inventory report printed successfully ;;;Pass");
+				
+			}	
+			
+			
+			
+		
+	}
+	public void fnverticalscroll(InventoryReportObjects objInvReport, WebDriver driver)
+	{
+		verticalScroll(driver);
+	}
+	 
+	public void fnverifySohValue(InventoryReportObjects objInvReport, String soh, int randomno, WebDriver driver)
+	{
+		
+		WebElement element =  prepareWebElementWithDynamicXpathWithInt(objInvReport.article_soh,randomno,driver);
+		String article_soh =element.getText();
+		Double article_soh_app =  Double.parseDouble(article_soh);
+		Double article_soh_db = Double.parseDouble(soh);
+		htmlToExtent(cName,mName,extLogger,driver, "SOH in application "+article_soh_app+";;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver, "SOH in DB "+soh+";;;Pass");
+		if((article_soh_app-article_soh_db) == 0)
+		{
+			
+			htmlToExtent(cName,mName,extLogger,driver, "SOH matches correctly;;;Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "SOH does not match correctly;;;Fail");
+		}
+	} 
+	public void fnverifyLastSoldDate(InventoryReportObjects objInvReport, String date, int randomno, WebDriver driver)
+	{
+		
+		WebElement element =  prepareWebElementWithDynamicXpathWithInt(objInvReport.article_date,randomno,driver);
+		String article_date_app =element.getText();		
+		htmlToExtent(cName,mName,extLogger,driver, "Date in application "+article_date_app+";;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver, "Date in DB "+date+";;;Pass");
+		if(article_date_app.equals(date))
+		{
+			
+			htmlToExtent(cName,mName,extLogger,driver, "Date matches correctly;;;Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Date does not match correctly;;;Fail");
+		}
+	} 
+	public void fnverifySITSOO(InventoryReportObjects objInvReport, String SIT,String SOO,String om, int randomno, WebDriver driver)
+	{
+		
+		WebElement element =  prepareWebElementWithDynamicXpathWithInt(objInvReport.SIT,randomno,driver);
+		String SIT_app =element.getText();
+		htmlToExtent(cName,mName,extLogger,driver, "SIT in application "+SIT_app+";;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver, "SIT in DB "+SIT+";;;Pass");
+		if(SIT_app.equals(SIT))
+		{
+			
+			htmlToExtent(cName,mName,extLogger,driver, "SIT matches correctly;;;Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "SIT does not match correctly;;;Fail");
+		}
+		WebElement element1 =  prepareWebElementWithDynamicXpathWithInt(objInvReport.SOO,randomno,driver);
+		String SOO_app = element1.getText();
+		htmlToExtent(cName,mName,extLogger,driver, "SOO in application "+SOO_app+";;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver, "SOO in DB "+SOO+";;;Pass");
+		if(SOO_app.equals(SOO))
+		{
+			
+			htmlToExtent(cName,mName,extLogger,driver, "SOO matches correctly;;;Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "SOO does not match correctly;;;Fail");
+		}
+		WebElement element2 =  prepareWebElementWithDynamicXpathWithInt(objInvReport.OM,randomno,driver);
+		String om_app = element2.getText();
+		Double om_app1 = Double.parseDouble(om_app);
+		Double om_db1= Double.parseDouble(om);
+		htmlToExtent(cName,mName,extLogger,driver, "OM in application "+om_app+";;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver, "OM in DB "+om+";;;Pass");
+		if(om_app1-om_db1==0)
+		{
+			
+			htmlToExtent(cName,mName,extLogger,driver, "OM matches correctly;;;Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "OM does not match correctly;;;Fail");
+		}
+	}
+	
+	public void fnverifyDeletedCheck(InventoryReportObjects objInvReport,String Dcount, WebDriver driver) throws AWTException
+	{
+		if (!isSelected(objInvReport.DeletedCheck))
+		{
+			click(objInvReport.DeletedCheck);
+			
+		}
+		
+		if (isSelected(objInvReport.OnPromotionCheck))
+		{
+			click(objInvReport.OnPromotionCheck);
+		}
+		if (isSelected(objInvReport.PBDCheck))
+		{
+			click(objInvReport.PBDCheck);
+		}
+		if (isSelected(objInvReport.NonPICheck))
+		{
+			click(objInvReport.NonPICheck);
+		}
+		verticalScroll(driver);
+		click(objInvReport.generateReportBtn);
+		waitForJSandJQueryToLoad(driver);;
+		htmlToExtent(cName,mName,extLogger,driver, "Inventory report generated successfully ;;;Pass");
+		String Dcountapp = objInvReport.article_count.getText();
+		htmlToExtent(cName,mName,extLogger,driver, "Total Deleted articles in application "+Dcountapp+";;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver, "Total Deleted articles in DB "+Dcount+";;;Pass");
+		if (Dcountapp.equals(Dcount))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Deleted Article count matches ;;;Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Deleted Article count does not match ;;;Fail");
+		}
+		 clickOnInventoryReport(objInvReport,driver);
+		 waitForJSandJQueryToLoad(driver);;
+	
+	}
+	public void fnverifyOnPromotionCheck(InventoryReportObjects objInvReport,String Onpromocount, WebDriver driver) throws AWTException
+	{
+		if (!isSelected(objInvReport.OnPromotionCheck))
+		{
+			click(objInvReport.OnPromotionCheck);
+			
+		}
+		
+		if (isSelected(objInvReport.DeletedCheck))
+		{
+			click(objInvReport.DeletedCheck);
+		}
+		if (isSelected(objInvReport.PBDCheck))
+		{
+			click(objInvReport.PBDCheck);
+		}
+		if (isSelected(objInvReport.NonPICheck))
+		{
+			click(objInvReport.NonPICheck);
+		}
+		verticalScroll(driver);
+		click(objInvReport.generateReportBtn);
+		waitForJSandJQueryToLoad(driver);;
+		htmlToExtent(cName,mName,extLogger,driver, "Inventory report generated successfully ;;;Pass");
+		String Onpromo_app = objInvReport.article_count.getText();
+		htmlToExtent(cName,mName,extLogger,driver, "Total On Promotion articles in application "+Onpromo_app+";;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver, "Total On Promotion articles in DB "+Onpromocount+";;;Pass");
+		if (Onpromo_app.equals(Onpromocount))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "On Promotion Article count matches ;;;Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "On Promotion Article count does not match ;;;Fail");
+		}
+		 clickOnInventoryReport(objInvReport,driver);
+		 waitForJSandJQueryToLoad(driver);;
+	
+	}
+	public void fnverifyPICheck(InventoryReportObjects objInvReport,String PIcount, WebDriver driver) throws AWTException
+	{
+		if (!isSelected(objInvReport.NonPICheck))
+		{
+			click(objInvReport.NonPICheck);
+			
+		}
+		
+		if (isSelected(objInvReport.DeletedCheck))
+		{
+			click(objInvReport.DeletedCheck);
+		}
+		if (isSelected(objInvReport.PBDCheck))
+		{
+			click(objInvReport.PBDCheck);
+		}
+		if (isSelected(objInvReport.OnPromotionCheck))
+		{
+			click(objInvReport.OnPromotionCheck);
+		}
+		verticalScroll(driver);
+		click(objInvReport.generateReportBtn);
+		waitForJSandJQueryToLoad(driver);;
+		htmlToExtent(cName,mName,extLogger,driver, "Inventory report generated successfully ;;;Pass");
+		String PI_app = objInvReport.article_count.getText();
+		htmlToExtent(cName,mName,extLogger,driver, "Total NON PI articles in application "+PI_app+";;;Pass");
+		htmlToExtent(cName,mName,extLogger,driver, "Total NON PI articles in DB "+PIcount+";;;Pass");
+		if (PI_app.equals(PIcount))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "NON PI Article count matches ;;;Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "NON PI Article count does not match ;;;Fail");
+		}
+	}
+}

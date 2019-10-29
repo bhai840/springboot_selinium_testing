@@ -1,0 +1,93 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class LTOAddOrEditObjects {
+	
+	
+	@FindBy(xpath ="//*[contains(text(),'Add LTO Location')]")
+	public static WebElement addLTO;
+	
+	@FindBy(xpath ="//*[@id='stockManage']/a")
+	public static WebElement stMgmt ;
+	
+	@FindBy(xpath ="//*[contains(text(),'LTO Management')]")
+	public static WebElement LTO ;
+	
+	@FindBy(xpath ="//*[@id='ltoFixtureType']")
+	public static WebElement selectFixture;
+	
+	@FindBy(xpath ="//*[contains(text(),'Save & Add')]")
+	public static WebElement saveAndAdd;
+	
+	@FindBy(xpath ="//*[contains(text(),'Chiller')]")
+	public static WebElement BWSdropDown;
+	
+	@FindBy(xpath ="//*[@id='success_msg']/li")
+	public static WebElement message;
+	
+	@FindBy(xpath ="//*[@id='ltoCatDrpDwnActiveIdDept']")
+	public static WebElement BWSDept;
+	
+	@FindBy(xpath ="//*[@id='ltoSelectDone']/a")
+	public static WebElement deptDoneButton;
+	
+	@FindBy(xpath ="//*[@id='9530']")
+	public static WebElement BWSdeptValue;
+	
+	@FindBy(xpath ="//*[@id='ltoCatDrpDwnActiveIdSubCate']")
+	public static WebElement BWStoredept;
+	
+	@FindBy(xpath ="//*[@id='2051390']")
+	public static List<WebElement> BWStoredeptValue;
+	
+	@FindBy(xpath ="//*[contains(@class,'page-link next')]")
+	public static List<WebElement> next;	
+	 
+	@FindBy(xpath ="//*[@class='ltoBarcode' and @type='checkbox']")
+	public static List<WebElement> checkBoxList;
+	
+	@FindBy(xpath ="//*[contains(@class,'success')]")
+	public static List<WebElement> inUsestatus;
+	
+	@FindBy(xpath ="//*[contains(@class,'deactive')]")
+	public static List<WebElement> notinUsestatus;
+	
+	@FindBy(xpath ="//*[@data_key='lto_status']")
+	public static List<WebElement> headerStatus;
+	
+	@FindBy(xpath ="//*[@id='ui-id-16']")
+	public static WebElement printHeader;
+	public static String PrintHeaderValue="print Barcode Confirmation";
+	
+	@FindBy(xpath ="//*[@id='no']/label")
+	public static WebElement printNo;
+	
+	@FindBy(xpath ="//*[@id='yes']/label")
+	public static WebElement printYes;
+	
+	@FindBy(xpath ="//*[@id='printButton']")
+	public static WebElement printButton;
+		
+	@FindBy(xpath ="//*[@class='editRecord AC_LAEL']")
+	public static List<WebElement> editButton;
+	
+	@FindBy(xpath ="//*[@id='active1']")
+	public static WebElement deleteButton;
+	
+	@FindBy(xpath ="//*[@id='saveLTOChanges']/label")
+	public static WebElement editSaveButton;
+	
+	@FindBy(xpath ="//*[@class=' header' and @data_key='new_location_name']")
+	public static List<WebElement> firstLocName;
+	
+	@FindBy(xpath ="//*[@id='ltoFixtureTypeInDialog']")
+	public static WebElement fixtureDropDown;
+
+	@FindBy(xpath ="//*[contains(@class,'success') or contains(@class,'deactivate')]")
+	public static WebElement status;
+	
+}

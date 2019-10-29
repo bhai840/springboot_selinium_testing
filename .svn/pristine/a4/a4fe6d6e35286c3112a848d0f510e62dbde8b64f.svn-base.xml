@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<TCName name = "verifyInventoryReportSOH">
+<primaryDepartment>
+<![CDATA[select distinct dept_name from saap.USR_PRIMARY_DEPTS where usr_id='user_id' and site='NONE']]>
+</primaryDepartment>
+</TCName>
+<TCName name = "verifyInventoryReportMPL">
+<primaryDepartment>
+<![CDATA[select distinct dept_name from saap.USR_PRIMARY_DEPTS where usr_id='user_id' and site='NONE']]>
+</primaryDepartment>
+</TCName>
+<TCName name = "verifyInventoryReportSOHandMPL">
+<primaryDepartment>
+<![CDATA[select distinct dept_name from saap.USR_PRIMARY_DEPTS where usr_id='user_id' and site='NONE']]>
+</primaryDepartment>
+</TCName>
+<TCName name = "verifyInventoryReportMultiDepartment">
+<multiDepartment>
+<![CDATA[Select DISTINCT dept_name, cat_name, sub_cat_name, seg_name from saap.ZWOWC_ART_LIST_DEPARTMENT]]>
+</multiDepartment>
+</TCName>
+<TCName name = "verifyInventoryReportAdditonalCriteriaSOH">
+<LessThan>500</LessThan>
+<GreaterThan>100</GreaterThan>
+</TCName>
+<TCName name = "verifySohValue">
+<sohValue>
+<![CDATA[select STORE_SOH  from LOCAL_WOW_SOH where article = 'article_id']]>
+</sohValue>
+</TCName>
+<TCName name = "verifyLastSoldDate">
+<dateformat>
+<![CDATA[(select dateformat(SAAP.ZWOWO_INTRA_DAY_SALES.TRADING_DATE,'DD/MM/YYYY') as last_sold_date,SALES_UOM from zwowo_intra_day_sales where article = 'article_id' and SALES_UOM = 'uom') order by last_sold_date desc]]>
+</dateformat>
+</TCName>
+<TCName name = "verifySITSOO">
+<SITSOO>
+<![CDATA[select b.matnr,convert(int,b.SIT) as SIT,convert(int,b.SOO) AS soo from saap.ZWOWC_ARTICLE_LISTING a , saap.LOCAL_WOW_STOCK_INFO b 
+where a.matnr=b.MATNR and b.matnr = 'article_id']]>
+</SITSOO>
+<weekDay>
+<![CDATA[set datefirst 1;
+select DATEPART(dw,getdate()) as weekday]]>
+</weekDay>
+<getDOHart>
+<![CDATA[select sub.matnr, sub.days_on_hand
+from (
+select a.matnr, round(fn_wow_get_days_on_hand(a.matnr,'wday'),3) as days_on_hand
+from saap.zwowc_article_listing a
+join saap.mat_view_zwow_articles_hier b on (a.matnr=b.matnr)
+where a.alc_status in ('RA','NA')
+and b.dept='05'
+)sub
+where sub.days_on_hand <> 0
+;]]>
+</getDOHart>
+<OM>
+<![CDATA[select article_om from ZWOWC_ARTICLE_LISTING where matnr = 'article_id']]>
+</OM>
+</TCName>
+<TCName name = "verifyDeletedcheckbox">
+<Deletedcount>
+<![CDATA[select count(1) from (select 
+tt1.matnr AS Article, 
+tt1.article_desc AS Description, 
+tt1.meinh AS UOM,
+tt1.om AS OM, 
+tt1.soh,    
+--tt1.mpl,
+--tt1.sc As Capacity, 
+tt1.doh As Days_On_Hand,
+stock.sit, 
+stock.soo,  
+fn_wow_get_std_sell_price(tt1.matnr,tt1.meinh) Sell_Price,
+tt1.inv_value As Inventory_Sales_Value, 
+dateformat(tt1.last_sold_date,'YYYY-MM-DD') AS last_sold_date
+from 
+    (select 
+    tt.matnr, 
+    tt.meinh,
+    tt.article_desc, 
+    tt.pack_size,
+    tt.om, 
+    tt.pbd_ind, 
+    tt.perpetual_flag, 
+    tt.dept_name, 
+    tt.cat_name, 
+    tt.sub_cat_name,
+    tt.seg_name, 
+    tt.del_ind, 
+    tt.promo_flag, 
+    case when hist.fiftnwk_avg_day1 + CASE UPPER(dayname(TODAY())) WHEN 'MONDAY' THEN '1' WHEN 'TUESDAY' THEN '2' WHEN 'WEDNESDAY' 	THEN '3'WHEN 'THURSDAY' THEN '4' WHEN 'FRIDAY' THEN '5'WHEN 'SATURDAY' THEN '6' WHEN 'SUNDAY' THEN '7' END CASE > 0
+        then coalesce((soh.store_soh/nullif(tt.pack_size,0)),0)/hist.fiftnwk_avg_day1 + CASE UPPER(dayname(TODAY())) WHEN 'MONDAY' THEN '1' WHEN 'TUESDAY' THEN '2' WHEN 'WEDNESDAY' 	THEN '3'WHEN 'THURSDAY' THEN '4' WHEN 'FRIDAY' THEN '5'WHEN 'SATURDAY' THEN '6' WHEN 'SUNDAY' THEN '7' END CASE
+        else null
+    end case as doh, 
+    case when tt.cpbd_flag='Y' then fn_wow_get_article_soh(tt.matnr)
+         when tt.item_linkage_ind='Y' then fn_wow_get_article_soh(tt.matnr)
+         else soh.store_soh
+    end case as article_soh,
+    case when article_soh < 0 then 
+            case when (tt.pbd_ind='Y' or tt.cpbd_flag='Y') 
+                    then cast((ceil(article_soh/nullif(tt.pack_size,0))) as numeric)
+                 else article_soh
+            end case
+         when article_soh > 0 then 
+            case when (tt.pbd_ind='Y' or tt.cpbd_flag='Y') 
+                    then floor(article_soh/nullif(tt.pack_size,0))
+                 else article_soh
+            end case
+         else article_soh
+    end case as soh,
+    fn_wow_get_mpl_by_matnr(tt.matnr,tt.meinh) AS MPL,
+    fn_wow_get_sc_by_matnr(tt.matnr,tt.meinh) AS sc,
+    fn_wow_get_facing_by_matnr(tt.matnr,tt.meinh) AS FACING,
+    (soh.store_soh/nullif(tt.pack_size,0)) * fn_wow_get_std_sell_price_derived(tt.matnr,tt.meinh) as inv_value,
+    case
+        when sales.trading_date is not null then dateformat(sales.trading_date,'YYYYMMDD')
+        when hist.fiftnwk_avg_day7 is not null then dateformat(hist.week_start_date+6,'YYYYMMDD')
+        when hist.fiftnwk_avg_day6 is not null then dateformat(hist.week_start_date+5,'YYYYMMDD')
+        when hist.fiftnwk_avg_day5 is not null then dateformat(hist.week_start_date+4,'YYYYMMDD')
+        when hist.fiftnwk_avg_day4 is not null then dateformat(hist.week_start_date+3,'YYYYMMDD')
+        when hist.fiftnwk_avg_day3 is not null then dateformat(hist.week_start_date+2,'YYYYMMDD')
+        when hist.fiftnwk_avg_day2 is not null then dateformat(hist.week_start_date+1,'YYYYMMDD')
+        when hist.fiftnwk_avg_day1 is not null then dateformat(hist.week_start_date,'YYYYMMDD')
+    end case as last_sold_date
+    FROM 
+        (select 
+        zal.matnr, 
+        zau.meinh, 
+        zam.article_desc, 
+        case when (isnumeric(zal.complex_pack_brk_article)=1) then zal.complex_pack_brk_base_qty else zau.pack_size end case as pack_size, 
+        ouom.pack_size/nullif(zau.pack_size,0) as om,
+        zam.pbd_ind, 
+        zal.perpetual_flag, 
+        hier.dept_name, 
+        hier.cat_name, 
+        hier.sub_cat_name, 
+        hier.seg_name,
+        case zal.alc_status when 'DA' then 'Y' else 'N' end case as del_ind,
+        if abp.matnr is not null then 'Y' else 'N' end if as promo_flag,
+        case when (isnumeric(zal.complex_pack_brk_article)=1) then 'Y' else 'N' end case as cpbd_flag,
+        zam.item_linkage_ind
+        from zwowc_article_listing zal
+        join zwowc_article_master zam on (zal.matnr=zam.matnr)
+        join zwowc_article_uom zau on (zal.matnr=zau.matnr and zau.base_uom_ind='Y')
+        join mat_view_order_uom ouom on (zal.matnr=ouom.matnr)
+        join mat_view_zwow_articles_hier hier on (zal.matnr=hier.matnr)
+        left join mat_view_zwow_article_best_promo abp on (zal.matnr=abp.matnr and zau.meinh=abp.meinh)
+        where 1 = 1
+        --and zal.source_of_supply = '2'
+        --and zam.season_code = 'AUSD' --and zam.season_year = ''
+          --and zal.alc_status not in ('ES','DA')-- for del_in ='N'
+        and zal.alc_status <> 'ES' -- for del_in ='Y'
+          and zal.perpetual_flag = 'Y' --Perpetual Flag = 'N'
+        --and zal.lifnr='3902'
+          and zam.pbd_ind <> 'Y'
+        and abp.matnr is null--FOR promo ='N'
+        )tt
+    join local_wow_soh soh on (tt.matnr=soh.article)
+    left join 
+        (SELECT article, base_uom, sales_unit as sale_uom, week_start_date, fiftnwk_avg_day1,
+        fiftnwk_avg_day2, fiftnwk_avg_day3, fiftnwk_avg_day4, fiftnwk_avg_day5,
+        fiftnwk_avg_day6, fiftnwk_avg_day7, wkly_ttl_sales
+        FROM (
+            SELECT ZSH.ARTICLE, ZSH.BASE_UOM, ZSH.SALES_UNIT, ZSH.WEEK_START_DATE,
+            ZSH.SALES_QTY_DAY1, ZSH.PROMO_IND_DAY1, ZSH.FIFTNWK_AVG_DAY1,
+            ZSH.SALES_QTY_DAY2, ZSH.PROMO_IND_DAY2, ZSH.FIFTNWK_AVG_DAY2,
+            ZSH.SALES_QTY_DAY3, ZSH.PROMO_IND_DAY3, ZSH.FIFTNWK_AVG_DAY3,
+            ZSH.SALES_QTY_DAY4, ZSH.PROMO_IND_DAY4, ZSH.FIFTNWK_AVG_DAY4,
+            ZSH.SALES_QTY_DAY5, ZSH.PROMO_IND_DAY5, ZSH.FIFTNWK_AVG_DAY5,
+            ZSH.SALES_QTY_DAY6, ZSH.PROMO_IND_DAY6, ZSH.FIFTNWK_AVG_DAY6,
+            ZSH.SALES_QTY_DAY7, ZSH.PROMO_IND_DAY7, ZSH.FIFTNWK_AVG_DAY7,
+            ZSH.WKLY_TTL_SALES,
+            RANK() OVER(PARTITION BY ZSH.ARTICLE, ZSH.SALES_UNIT ORDER BY ZSH.WEEK_START_DATE DESC) RANK_1
+            FROM ZWOWO_SALES_HISTORY ZSH
+        ) a
+        WHERE RANK_1=1) hist on (tt.matnr=hist.article and tt.meinh=hist.sale_uom)
+    left join (
+        select article, sales_uom, max(trading_date) trading_date
+        from zwowo_intra_day_sales zids
+        group by article, sales_uom
+    ) sales on (tt.matnr=sales.article)
+    where 1 = 1 
+    --and coalesce(soh,0) > 25
+    --and doh > 21
+    --and mpl > 16
+    --and sc > 14
+    --and facing < 10
+    --and inv_value > 22
+    )tt1
+left join local_wow_stock_info stock on (stock.matnr=tt1.matnr)
+JOIN  mat_view_zwow_articles_hier hier on (tt1.matnr = hier.matnr)
+where 1 = 1 
+and hier.dept_name IN ('GROCERIES'
+)
+--and hier.cat_name IN ()
+--and hier.sub_cat_name IN ()
+--and hier.seg_name IN ()
+--and (tt1.last_sold_date < dateformat(today() - /*lv_day_no*/20,'YYYYMMDD'))
+
+order by tt1.soh desc, tt1.promo_flag desc, cast(tt1.matnr as numeric(18)) asc) tt_count]]>
+</Deletedcount>
+<OnPromotioncount>
+<![CDATA[select count(1) from (select 
+tt1.matnr AS Article, 
+tt1.article_desc AS Description, 
+tt1.meinh AS UOM,
+tt1.om AS OM, 
+tt1.soh,    
+--tt1.mpl,
+--tt1.sc As Capacity, 
+tt1.doh As Days_On_Hand,
+stock.sit, 
+stock.soo,  
+fn_wow_get_std_sell_price(tt1.matnr,tt1.meinh) Sell_Price,
+tt1.inv_value As Inventory_Sales_Value, 
+dateformat(tt1.last_sold_date,'YYYY-MM-DD') AS last_sold_date
+from 
+    (select 
+    tt.matnr, 
+    tt.meinh,
+    tt.article_desc, 
+    tt.pack_size,
+    tt.om, 
+    tt.pbd_ind, 
+    tt.perpetual_flag, 
+    tt.dept_name, 
+    tt.cat_name, 
+    tt.sub_cat_name,
+    tt.seg_name, 
+    tt.del_ind, 
+    tt.promo_flag, 
+    case when hist.fiftnwk_avg_day1 + CASE UPPER(dayname(TODAY())) WHEN 'MONDAY' THEN '1' WHEN 'TUESDAY' THEN '2' WHEN 'WEDNESDAY' 	THEN '3'WHEN 'THURSDAY' THEN '4' WHEN 'FRIDAY' THEN '5'WHEN 'SATURDAY' THEN '6' WHEN 'SUNDAY' THEN '7' END CASE > 0
+        then coalesce((soh.store_soh/nullif(tt.pack_size,0)),0)/hist.fiftnwk_avg_day1 + CASE UPPER(dayname(TODAY())) WHEN 'MONDAY' THEN '1' WHEN 'TUESDAY' THEN '2' WHEN 'WEDNESDAY' 	THEN '3'WHEN 'THURSDAY' THEN '4' WHEN 'FRIDAY' THEN '5'WHEN 'SATURDAY' THEN '6' WHEN 'SUNDAY' THEN '7' END CASE
+        else null
+    end case as doh, 
+    case when tt.cpbd_flag='Y' then fn_wow_get_article_soh(tt.matnr)
+         when tt.item_linkage_ind='Y' then fn_wow_get_article_soh(tt.matnr)
+         else soh.store_soh
+    end case as article_soh,
+    case when article_soh < 0 then 
+            case when (tt.pbd_ind='Y' or tt.cpbd_flag='Y') 
+                    then cast((ceil(article_soh/nullif(tt.pack_size,0))) as numeric)
+                 else article_soh
+            end case
+         when article_soh > 0 then 
+            case when (tt.pbd_ind='Y' or tt.cpbd_flag='Y') 
+                    then floor(article_soh/nullif(tt.pack_size,0))
+                 else article_soh
+            end case
+         else article_soh
+    end case as soh,
+    fn_wow_get_mpl_by_matnr(tt.matnr,tt.meinh) AS MPL,
+    fn_wow_get_sc_by_matnr(tt.matnr,tt.meinh) AS sc,
+    fn_wow_get_facing_by_matnr(tt.matnr,tt.meinh) AS FACING,
+    (soh.store_soh/nullif(tt.pack_size,0)) * fn_wow_get_std_sell_price_derived(tt.matnr,tt.meinh) as inv_value,
+    case
+        when sales.trading_date is not null then dateformat(sales.trading_date,'YYYYMMDD')
+        when hist.fiftnwk_avg_day7 is not null then dateformat(hist.week_start_date+6,'YYYYMMDD')
+        when hist.fiftnwk_avg_day6 is not null then dateformat(hist.week_start_date+5,'YYYYMMDD')
+        when hist.fiftnwk_avg_day5 is not null then dateformat(hist.week_start_date+4,'YYYYMMDD')
+        when hist.fiftnwk_avg_day4 is not null then dateformat(hist.week_start_date+3,'YYYYMMDD')
+        when hist.fiftnwk_avg_day3 is not null then dateformat(hist.week_start_date+2,'YYYYMMDD')
+        when hist.fiftnwk_avg_day2 is not null then dateformat(hist.week_start_date+1,'YYYYMMDD')
+        when hist.fiftnwk_avg_day1 is not null then dateformat(hist.week_start_date,'YYYYMMDD')
+    end case as last_sold_date
+    FROM 
+        (select 
+        zal.matnr, 
+        zau.meinh, 
+        zam.article_desc, 
+        case when (isnumeric(zal.complex_pack_brk_article)=1) then zal.complex_pack_brk_base_qty else zau.pack_size end case as pack_size, 
+        ouom.pack_size/nullif(zau.pack_size,0) as om,
+        zam.pbd_ind, 
+        zal.perpetual_flag, 
+        hier.dept_name, 
+        hier.cat_name, 
+        hier.sub_cat_name, 
+        hier.seg_name,
+        case zal.alc_status when 'DA' then 'Y' else 'N' end case as del_ind,
+        if abp.matnr is not null then 'Y' else 'N' end if as promo_flag,
+        case when (isnumeric(zal.complex_pack_brk_article)=1) then 'Y' else 'N' end case as cpbd_flag,
+        zam.item_linkage_ind
+        from zwowc_article_listing zal
+        join zwowc_article_master zam on (zal.matnr=zam.matnr)
+        join zwowc_article_uom zau on (zal.matnr=zau.matnr and zau.base_uom_ind='Y')
+        join mat_view_order_uom ouom on (zal.matnr=ouom.matnr)
+        join mat_view_zwow_articles_hier hier on (zal.matnr=hier.matnr)
+        left join mat_view_zwow_article_best_promo abp on (zal.matnr=abp.matnr and zau.meinh=abp.meinh)
+        where 1 = 1
+        --and zal.source_of_supply = '2'
+        --and zam.season_code = 'AUSD' --and zam.season_year = ''
+         and zal.alc_status not in ('ES','DA')-- for del_in ='N'
+        --and zal.alc_status <> 'ES' -- for del_in ='Y'
+          and zal.perpetual_flag = 'Y' --Perpetual Flag = 'N'
+        --and zal.lifnr='3902'
+          and zam.pbd_ind <> 'Y'
+        --and abp.matnr is null--FOR promo ='N'
+        )tt
+    join local_wow_soh soh on (tt.matnr=soh.article)
+    left join 
+        (SELECT article, base_uom, sales_unit as sale_uom, week_start_date, fiftnwk_avg_day1,
+        fiftnwk_avg_day2, fiftnwk_avg_day3, fiftnwk_avg_day4, fiftnwk_avg_day5,
+        fiftnwk_avg_day6, fiftnwk_avg_day7, wkly_ttl_sales
+        FROM (
+            SELECT ZSH.ARTICLE, ZSH.BASE_UOM, ZSH.SALES_UNIT, ZSH.WEEK_START_DATE,
+            ZSH.SALES_QTY_DAY1, ZSH.PROMO_IND_DAY1, ZSH.FIFTNWK_AVG_DAY1,
+            ZSH.SALES_QTY_DAY2, ZSH.PROMO_IND_DAY2, ZSH.FIFTNWK_AVG_DAY2,
+            ZSH.SALES_QTY_DAY3, ZSH.PROMO_IND_DAY3, ZSH.FIFTNWK_AVG_DAY3,
+            ZSH.SALES_QTY_DAY4, ZSH.PROMO_IND_DAY4, ZSH.FIFTNWK_AVG_DAY4,
+            ZSH.SALES_QTY_DAY5, ZSH.PROMO_IND_DAY5, ZSH.FIFTNWK_AVG_DAY5,
+            ZSH.SALES_QTY_DAY6, ZSH.PROMO_IND_DAY6, ZSH.FIFTNWK_AVG_DAY6,
+            ZSH.SALES_QTY_DAY7, ZSH.PROMO_IND_DAY7, ZSH.FIFTNWK_AVG_DAY7,
+            ZSH.WKLY_TTL_SALES,
+            RANK() OVER(PARTITION BY ZSH.ARTICLE, ZSH.SALES_UNIT ORDER BY ZSH.WEEK_START_DATE DESC) RANK_1
+            FROM ZWOWO_SALES_HISTORY ZSH
+        ) a
+        WHERE RANK_1=1) hist on (tt.matnr=hist.article and tt.meinh=hist.sale_uom)
+    left join (
+        select article, sales_uom, max(trading_date) trading_date
+        from zwowo_intra_day_sales zids
+        group by article, sales_uom
+    ) sales on (tt.matnr=sales.article)
+    where 1 = 1 
+    --and coalesce(soh,0) > 25
+    --and doh > 21
+    --and mpl > 16
+    --and sc > 14
+    --and facing < 10
+    --and inv_value > 22
+    )tt1
+left join local_wow_stock_info stock on (stock.matnr=tt1.matnr)
+JOIN  mat_view_zwow_articles_hier hier on (tt1.matnr = hier.matnr)
+where 1 = 1 
+and hier.dept_name IN ('GROCERIES'
+)
+--and hier.cat_name IN ()
+--and hier.sub_cat_name IN ()
+--and hier.seg_name IN ()
+--and (tt1.last_sold_date < dateformat(today() - /*lv_day_no*/20,'YYYYMMDD'))
+
+order by tt1.soh desc, tt1.promo_flag desc, cast(tt1.matnr as numeric(18)) asc) tt_count]]>
+</OnPromotioncount>
+<PIcount>
+<![CDATA[select count(1) from (select 
+tt1.matnr AS Article, 
+tt1.article_desc AS Description, 
+tt1.meinh AS UOM,
+tt1.om AS OM, 
+tt1.soh,    
+--tt1.mpl,
+--tt1.sc As Capacity, 
+tt1.doh As Days_On_Hand,
+stock.sit, 
+stock.soo,  
+fn_wow_get_std_sell_price(tt1.matnr,tt1.meinh) Sell_Price,
+tt1.inv_value As Inventory_Sales_Value, 
+dateformat(tt1.last_sold_date,'YYYY-MM-DD') AS last_sold_date
+from 
+    (select 
+    tt.matnr, 
+    tt.meinh,
+    tt.article_desc, 
+    tt.pack_size,
+    tt.om, 
+    tt.pbd_ind, 
+    tt.perpetual_flag, 
+    tt.dept_name, 
+    tt.cat_name, 
+    tt.sub_cat_name,
+    tt.seg_name, 
+    tt.del_ind, 
+    tt.promo_flag, 
+    case when hist.fiftnwk_avg_day1 + CASE UPPER(dayname(TODAY())) WHEN 'MONDAY' THEN '1' WHEN 'TUESDAY' THEN '2' WHEN 'WEDNESDAY' 	THEN '3'WHEN 'THURSDAY' THEN '4' WHEN 'FRIDAY' THEN '5'WHEN 'SATURDAY' THEN '6' WHEN 'SUNDAY' THEN '7' END CASE > 0
+        then coalesce((soh.store_soh/nullif(tt.pack_size,0)),0)/hist.fiftnwk_avg_day1 + CASE UPPER(dayname(TODAY())) WHEN 'MONDAY' THEN '1' WHEN 'TUESDAY' THEN '2' WHEN 'WEDNESDAY' 	THEN '3'WHEN 'THURSDAY' THEN '4' WHEN 'FRIDAY' THEN '5'WHEN 'SATURDAY' THEN '6' WHEN 'SUNDAY' THEN '7' END CASE
+        else null
+    end case as doh, 
+    case when tt.cpbd_flag='Y' then fn_wow_get_article_soh(tt.matnr)
+         when tt.item_linkage_ind='Y' then fn_wow_get_article_soh(tt.matnr)
+         else soh.store_soh
+    end case as article_soh,
+    case when article_soh < 0 then 
+            case when (tt.pbd_ind='Y' or tt.cpbd_flag='Y') 
+                    then cast((ceil(article_soh/nullif(tt.pack_size,0))) as numeric)
+                 else article_soh
+            end case
+         when article_soh > 0 then 
+            case when (tt.pbd_ind='Y' or tt.cpbd_flag='Y') 
+                    then floor(article_soh/nullif(tt.pack_size,0))
+                 else article_soh
+            end case
+         else article_soh
+    end case as soh,
+    fn_wow_get_mpl_by_matnr(tt.matnr,tt.meinh) AS MPL,
+    fn_wow_get_sc_by_matnr(tt.matnr,tt.meinh) AS sc,
+    fn_wow_get_facing_by_matnr(tt.matnr,tt.meinh) AS FACING,
+    (soh.store_soh/nullif(tt.pack_size,0)) * fn_wow_get_std_sell_price_derived(tt.matnr,tt.meinh) as inv_value,
+    case
+        when sales.trading_date is not null then dateformat(sales.trading_date,'YYYYMMDD')
+        when hist.fiftnwk_avg_day7 is not null then dateformat(hist.week_start_date+6,'YYYYMMDD')
+        when hist.fiftnwk_avg_day6 is not null then dateformat(hist.week_start_date+5,'YYYYMMDD')
+        when hist.fiftnwk_avg_day5 is not null then dateformat(hist.week_start_date+4,'YYYYMMDD')
+        when hist.fiftnwk_avg_day4 is not null then dateformat(hist.week_start_date+3,'YYYYMMDD')
+        when hist.fiftnwk_avg_day3 is not null then dateformat(hist.week_start_date+2,'YYYYMMDD')
+        when hist.fiftnwk_avg_day2 is not null then dateformat(hist.week_start_date+1,'YYYYMMDD')
+        when hist.fiftnwk_avg_day1 is not null then dateformat(hist.week_start_date,'YYYYMMDD')
+    end case as last_sold_date
+    FROM 
+        (select 
+        zal.matnr, 
+        zau.meinh, 
+        zam.article_desc, 
+        case when (isnumeric(zal.complex_pack_brk_article)=1) then zal.complex_pack_brk_base_qty else zau.pack_size end case as pack_size, 
+        ouom.pack_size/nullif(zau.pack_size,0) as om,
+        zam.pbd_ind, 
+        zal.perpetual_flag, 
+        hier.dept_name, 
+        hier.cat_name, 
+        hier.sub_cat_name, 
+        hier.seg_name,
+        case zal.alc_status when 'DA' then 'Y' else 'N' end case as del_ind,
+        if abp.matnr is not null then 'Y' else 'N' end if as promo_flag,
+        case when (isnumeric(zal.complex_pack_brk_article)=1) then 'Y' else 'N' end case as cpbd_flag,
+        zam.item_linkage_ind
+        from zwowc_article_listing zal
+        join zwowc_article_master zam on (zal.matnr=zam.matnr)
+        join zwowc_article_uom zau on (zal.matnr=zau.matnr and zau.base_uom_ind='Y')
+        join mat_view_order_uom ouom on (zal.matnr=ouom.matnr)
+        join mat_view_zwow_articles_hier hier on (zal.matnr=hier.matnr)
+        left join mat_view_zwow_article_best_promo abp on (zal.matnr=abp.matnr and zau.meinh=abp.meinh)
+        where 1 = 1
+        --and zal.source_of_supply = '2'
+        --and zam.season_code = 'AUSD' --and zam.season_year = ''
+         and zal.alc_status not in ('ES','DA')-- for del_in ='N'
+        --and zal.alc_status <> 'ES' -- for del_in ='Y'
+          --and zal.perpetual_flag = 'Y' --Perpetual Flag = 'N'
+        --and zal.lifnr='3902'
+          and zam.pbd_ind <> 'Y'
+        and abp.matnr is null--FOR promo ='N'
+        )tt
+    join local_wow_soh soh on (tt.matnr=soh.article)
+    left join 
+        (SELECT article, base_uom, sales_unit as sale_uom, week_start_date, fiftnwk_avg_day1,
+        fiftnwk_avg_day2, fiftnwk_avg_day3, fiftnwk_avg_day4, fiftnwk_avg_day5,
+        fiftnwk_avg_day6, fiftnwk_avg_day7, wkly_ttl_sales
+        FROM (
+            SELECT ZSH.ARTICLE, ZSH.BASE_UOM, ZSH.SALES_UNIT, ZSH.WEEK_START_DATE,
+            ZSH.SALES_QTY_DAY1, ZSH.PROMO_IND_DAY1, ZSH.FIFTNWK_AVG_DAY1,
+            ZSH.SALES_QTY_DAY2, ZSH.PROMO_IND_DAY2, ZSH.FIFTNWK_AVG_DAY2,
+            ZSH.SALES_QTY_DAY3, ZSH.PROMO_IND_DAY3, ZSH.FIFTNWK_AVG_DAY3,
+            ZSH.SALES_QTY_DAY4, ZSH.PROMO_IND_DAY4, ZSH.FIFTNWK_AVG_DAY4,
+            ZSH.SALES_QTY_DAY5, ZSH.PROMO_IND_DAY5, ZSH.FIFTNWK_AVG_DAY5,
+            ZSH.SALES_QTY_DAY6, ZSH.PROMO_IND_DAY6, ZSH.FIFTNWK_AVG_DAY6,
+            ZSH.SALES_QTY_DAY7, ZSH.PROMO_IND_DAY7, ZSH.FIFTNWK_AVG_DAY7,
+            ZSH.WKLY_TTL_SALES,
+            RANK() OVER(PARTITION BY ZSH.ARTICLE, ZSH.SALES_UNIT ORDER BY ZSH.WEEK_START_DATE DESC) RANK_1
+            FROM ZWOWO_SALES_HISTORY ZSH
+        ) a
+        WHERE RANK_1=1) hist on (tt.matnr=hist.article and tt.meinh=hist.sale_uom)
+    left join (
+        select article, sales_uom, max(trading_date) trading_date
+        from zwowo_intra_day_sales zids
+        group by article, sales_uom
+    ) sales on (tt.matnr=sales.article)
+    where 1 = 1 
+    --and coalesce(soh,0) > 25
+    --and doh > 21
+    --and mpl > 16
+    --and sc > 14
+    --and facing < 10
+    --and inv_value > 22
+    )tt1
+left join local_wow_stock_info stock on (stock.matnr=tt1.matnr)
+JOIN  mat_view_zwow_articles_hier hier on (tt1.matnr = hier.matnr)
+where 1 = 1 
+and hier.dept_name IN ('GROCERIES'
+)
+--and hier.cat_name IN ()
+--and hier.sub_cat_name IN ()
+--and hier.seg_name IN ()
+--and (tt1.last_sold_date < dateformat(today() - /*lv_day_no*/20,'YYYYMMDD'))
+
+order by tt1.soh desc, tt1.promo_flag desc, cast(tt1.matnr as numeric(18)) asc) tt_count]]>
+</PIcount>
+</TCName>
+<TCName name = "verifyPBDUOM">
+<PBDcount>
+<![CDATA[select count(*) from ZWOWC_ARTICLE_UOM where matnr = 'article_id';]]>
+</PBDcount>
+</TCName>
+</configuration>

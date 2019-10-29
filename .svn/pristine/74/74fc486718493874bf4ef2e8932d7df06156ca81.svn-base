@@ -1,0 +1,254 @@
+package au.wow.ngbomain.objects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class GapscanReportObjects {
+	
+	@FindBy(xpath ="//*[@id='reports']/a")
+	public WebElement reports;
+	
+	@FindBy(xpath ="//*[@id='reports']/ul/li[10]/a")
+	public WebElement stockmgmt;
+	
+	@FindBy(xpath ="//*[@class='reportBtmBrdr first-search  AC_RPGS first-search']/a")
+	public WebElement gapscanrep;
+	
+	@FindBy(xpath ="//*[@id='both']")
+	public WebElement bothreason;
+	
+	@FindBy(xpath ="//*[@id='dateFrom']")
+	public WebElement date;
+	
+	/*@FindBy(xpath ="//*[@id='ui-datepicker-div']/table/tbody/tr[3]/td[4]/a")
+	public WebElement dateselect;*/
+	
+	@FindBy(xpath ="//*[@id='ampm']")
+	public WebElement time;
+	
+	@FindBy(xpath ="//*[@id='ds']")
+	public WebElement dept_dropdown;
+	//*[@id="dropdownDoneBtn"]/a
+	
+	@FindBy(xpath ="//*[@id='dropdownDoneBtn']/a")
+	public WebElement done;
+	//*[@id="printReportNew"]/label/a
+	
+	@FindBy(xpath ="//*[@id='printReportNew']/label/a")
+	public WebElement printrep;
+	
+	
+	
+	@FindBy(xpath ="//*[@id='allDeptChkBox']")
+	public WebElement alldept;
+	
+	@FindBy(xpath ="//*[@id='success_msg']/li")
+	public WebElement msgtext;
+	
+	@FindBy(xpath ="//*[@id='success-wrapper']/div/div")
+	public List<WebElement> msg;
+	
+	//*[@id="success-wrapper"]/div/div/div[1]/a-->close
+	
+	@FindBy(xpath ="//*[@class='close']")
+	public WebElement close;
+	
+	@FindBy(xpath ="//*[@class='close']")
+	public List<WebElement> close2;
+	
+
+	@FindBy(xpath ="//*[@class='close']")
+	public WebElement close1;
+	
+
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanactionReq_table']")
+	public List<WebElement> table;
+	
+	
+	@FindBy(xpath ="//*[@id='us']")
+	public WebElement edropdown;
+	//*[@id="allEmpchkBox"]
+	
+	@FindBy(xpath ="//*[@id='allEmpchkBox']")
+	public WebElement allemployees;
+	
+	@FindBy(xpath ="//*[@id='dropdownDoneBtn1']/a")
+	public WebElement edone;
+	
+	
+	
+	
+	
+	
+	@FindBy(xpath ="//*[@id='generateReport']")
+	public WebElement generatereport;
+	
+	
+	@FindBy(xpath ="//*[@id='success_msg']/li")
+	public WebElement norecords;
+	//
+	
+	@FindBy(xpath ="//*[@id='reasonTypeRadio']/input")
+	public List<WebElement> reasontypelist;
+	
+	@FindBy(xpath ="//*[@id='timeRadio']/input")
+	public List<WebElement> timelist;
+	
+	
+	//public static final String reasontypesdyn = "//*[@name='reportTypeOptions']/input[dynamic]";
+	
+	public static final String reasontypesdyn = "//*[@id='reasonTypeRadio']/input[dynamic]";
+	
+	public static final String timedynamic = "//*[@id='timeRadio']/input[dynamic]";
+
+	
+	@FindBy(xpath ="//*[@for='store']")
+	public WebElement chummadate;
+
+
+	
+	@FindBy(xpath ="//*[@id='mainTabs']/ul/li")
+	public List<WebElement> tabsize;
+	
+	public static final String tabsdynamic = "//*[@id='mainTabs']/ul/li[dynamic]";//dynamically choosing Action required and Review only tab
+	
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanactionReq_head_page']/ul/li")
+	public List<WebElement> pagination;//Xpath for Prev,1,2,next
+	
+	public static final String paginationdynamic="//*[@id='Report_GapScanactionReq_head_page']/ul/li[dynamic]";
+	
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanactionReq_table']/tbody/tr")
+	public List<WebElement> tablecontents;//validation of table contents
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanactionReq_table']/tbody/tr[2]")
+	public List<WebElement> tablecontents1;
+	
+	
+	
+	@FindBy(xpath ="//*[@id='depDropDwnList']/div/li")
+	
+	public List<WebElement> gapscandeptlist;//validation of table contents
+	
+	
+	public static final String partialdeptselectiondynamic="//*[@id='depDropDwnList']/div/li[dynamic]";
+	public static final String partialdeptselectiondynamic1="(//*[@type='checkbox'])[dynamic]";
+	
+	public static final String partialemployeeselectiondynamic="//*[@id='empChkBox']/div/li[dynamic]";
+	
+	public static final String clickinnerDD="//*[@id='hierDrp']/li[dynamic]/label[1]";
+	
+	@FindBy(xpath ="//*[@id='ui-accordion-accordion-header-0']")
+	public WebElement generategapscanreport;
+	
+	
+	
+	@FindBy(xpath ="//*[@id='backBtn']")
+	public WebElement backbutton;
+	
+	
+	@FindBy(xpath ="//*[@id='hierDrp']/li")
+	public List <WebElement> innerDD;
+	
+	
+	@FindBy(xpath ="//*[@id='empChkBox']/div/li")
+	public List <WebElement> employeesize;
+	
+	
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanactionReq_table']/tbody/tr[2]")
+	public List <WebElement> firstvalue;
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanrevOnly_table']/tbody/tr[2]")
+	public List <WebElement> firstvaluerevOnly;
+	
+	//##@FindBy(xpath ="//*[@id='Report_GapScanrevOnly_table']/tbody/tr[2]")
+	public List <WebElement> firstvalueboth;
+	
+	
+	//*[@id="Report_GapScanrevOnly_table"]/tbody/tr[2]
+	//*[@id='Report_GapScanactionReq_table']/tbody/tr[2]
+	@FindBy(xpath ="//*[@id='Report_GapScanrevOnly_table']/tbody/tr[2]")
+	public List <WebElement> thirdvalue;
+	
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanrevOnly_table']/tbody/tr[2]")
+	public List <WebElement> reviewonlyfirstvalue;
+	
+	@FindBy(xpath ="//li[contains(text(),'Review Only')]")
+	public WebElement norecordsreviewonly;
+	
+	
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanactionReq_table']/tbody/tr")
+	public List <WebElement> listsize;
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanrevOnly_table']/tbody/tr")
+	public List <WebElement> listsizerevonly;
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanactionReq_head_page']/ul/li[9]")
+	public WebElement lastPage;
+	
+	@FindBy(xpath ="//*[@data_key='article_number']")
+	public List <WebElement> listsizeinpage;
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanactionReq_head_page']")
+	public List <WebElement> lastPagesize;
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanrevOnly_head_page']")
+	public List <WebElement> lastPagesizereviewonly;
+	
+	@FindBy(xpath ="//*[@id='printReportNew']")
+	public WebElement printButton;
+	
+	@FindBy(xpath ="//*[@id='printReportNew']")
+	public List <WebElement> printButton1;
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanrevOnly_head_page']/ul/li[3]")
+	public List <WebElement> lastPageReview;
+	
+	@FindBy(xpath ="//*[@id='Report_GapScanrevOnly_head_page']/ul/li[3]")
+	public WebElement lastPageReviewButton;
+	
+	public static final String lastPage1 = "(//*[@class='page-link'])[dynamic]";
+	
+	@FindBy(xpath ="(//*[@class='page-link'])")
+	public List <WebElement> lastPagesize1;
+	
+	@FindBy(xpath ="(//*[@id='actionReq'])")
+	public WebElement acationRequiredRadioButton;
+	
+	@FindBy(xpath ="(//*[@id='depDropDwnList']/div/li[1])")
+	public WebElement allDepartmentDropdown;
+	
+	@FindBy(xpath ="(//*[@id='revOnlyLink'])")
+	public WebElement reviewTab;
+	
+	@FindBy(xpath ="//*[@id='reportContent1']/div[1]/table[@id='Report_GapScanactionReq_table']/tbody/tr/td[2]")
+	public List <WebElement> lastPageSizeAction;
+	
+	@FindBy(xpath ="//*[@id='reportContent2']/div[1]/table[@id='Report_GapScanrevOnly_table']/tbody/tr/td[2]")
+	public List <WebElement> lastPageSizeReview;
+	
+	@FindBy(xpath ="(//*[@id='mainTabs-1']/div[2]/div/div[@id='Report_GapScanactionReq_head']/div[2]/ul/li)")
+	public List <WebElement> actionRequiredLastPage;
+	
+	@FindBy(xpath ="(//*[@id='mainTabs-2']/div[2]/div/div[@id='Report_GapScanrevOnly_head']/div[2]/ul/li)")
+	public List <WebElement>reviewOnlyLastPage;
+	
+	public static final String lastPageAction = "(//*[@id='mainTabs-1']/div[2]/div/div[@id='Report_GapScanactionReq_head']/div[2]/ul/li)[dynamic]";
+	
+	public static final String lastPageReviewOnly = "(//*[@id='mainTabs-2']/div[2]/div/div[@id='Report_GapScanrevOnly_head']/div[2]/ul/li)[dynamic]";
+	
+	
+	
+	
+	
+	
+	
+
+}

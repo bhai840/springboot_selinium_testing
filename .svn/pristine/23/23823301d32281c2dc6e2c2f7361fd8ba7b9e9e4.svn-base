@@ -1,0 +1,1040 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.Select;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.AdjustmentLogReportObjects;
+import au.wow.ngbomain.pages.AdjustmentLogReportPage;
+import au.wow.ngbomain.pages.CommonFunctions;
+//import au.wow.ngbomain.pages.Pack;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+
+public class AdjustmentLogReportTests extends TestBase{
+	private Logger log = LogManager.getLogger(AdjustmentLogReportTests.class);
+	SQLWrapper sql = new SQLWrapper(log);
+	WoWLoginPage loginPage;
+	BasePage BaseObj;
+	CommonFunctions common;
+	StoreProperties storeprop;
+	AdjustmentLogReportPage objAdjustmentLogReportPage;
+	AdjustmentLogReportObjects objAdjustmentLogReport;
+	int ADcount=0;
+	List<List<Object>> results;
+	List<List<Object>> results1;
+	public static XMLDataReader data;
+	public static boolean isFirstTest=true;
+	public static String mName="";
+	public static String cName ="";
+	public static ArrayList<String> methodList = new ArrayList<String>();
+	public static  ExtentTest extLogger;
+	public static ExtentReports extReport;	
+	public static boolean isExceptionCaptured=false;
+    int count=0;		
+    public static WebDriver driver;
+
+	
+	
+	public AdjustmentLogReportTests(){
+		super.log=log;
+	}
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Generate Reports for Primary Department")
+	public void pageValidation() //throws SQLException, AWTException, ParseException, IOException
+	{
+		if(AdjLogArtpreCount2==-1){
+			ADcount =ADcount+10;}
+		TestStatus status = getTestStatus();
+		try{
+			navToAdjustmentLog(status);
+			if(objAdjustmentLogReport.SOHradiobtn.isSelected())    // SOH Radio button validation
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "SOH Radio Button is selected on Page Load;;;Pass");
+				//objAdjustmentLogReport.Generatereportsbtn.click();
+			}
+			if(objAdjustmentLogReport.DeptRadiobtn.isSelected())       //Department Radio button Validation
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Department Radio Button is selected on Page Load;;;Pass");
+			}
+			objAdjustmentLogReport.Specifyarticleradiobtn.click();
+			if(objAdjustmentLogReport.Specifyarticleradiobtn.isSelected())
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Specify Article Radio Button is selected;;;Pass");
+			}
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(1);
+			objAdjustmentLogReportPage.verifyDate(objAdjustmentLogReport);
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(1);
+			verifyuserdd("All users are selected on page load", objAdjustmentLogReport);
+			verifyreasondd("Reasons users are selected on page load", objAdjustmentLogReport);
+			verifyfilter(objAdjustmentLogReport);
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(1);
+			objAdjustmentLogReportPage.pagination(objAdjustmentLogReport,driver);
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(1);
+			objAdjustmentLogReportPage.sortreporttable(objAdjustmentLogReport,driver);
+
+			if(objAdjustmentLogReport.backbtn.isDisplayed())									//Backbutton verification
+			{
+				objAdjustmentLogReport.backbtn.click();
+				waitFor(1);
+				if(objAdjustmentLogReport.homepageheading.isDisplayed())
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "On pressing Back nutton, user is able to navigate to HomePage;;;Pass");
+				}
+				else{
+					htmlToExtent(cName,mName,extLogger,driver, "Not Able to navigate to HomePage;;;Fail");
+				}
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(AdjLogArtScenarios, AdjLogArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Generate Reports for Primary Department")
+	public void reportPage() //throws SQLException, AWTException, ParseException, IOException
+	{
+		if(AdjLogArtpreCount2==-1){
+			ADcount =ADcount+14;}
+		TestStatus status = getTestStatus();
+		try{
+			navToAdjustmentLog(status);
+			closeValidation(objAdjustmentLogReport);
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(1);
+			objAdjustmentLogReportPage.verifyfilter(objAdjustmentLogReport,driver);
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(1);
+			objAdjustmentLogReportPage.additionalcriteria(objAdjustmentLogReport,driver);
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(1);
+			objAdjustmentLogReportPage.reporttableCheck(objAdjustmentLogReport,driver);
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(1);
+			objAdjustmentLogReportPage.groupBYDisCheck(objAdjustmentLogReport,driver);
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(1);
+			objAdjustmentLogReportPage.tvADJCheck(objAdjustmentLogReport,driver);
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(1);
+			articleEntryCheck(objAdjustmentLogReport);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(AdjLogArtScenarios, AdjLogArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+
+ public void articleEntryCheck(AdjustmentLogReportObjects objAdjustmentLogReport)throws IOException, SQLException {
+	 objAdjustmentLogReport.Specifyarticleradiobtn.click();
+	if(objAdjustmentLogReport.Specifyarticleradiobtn.isSelected())
+	{
+		String articlesql = data.getText("articles");
+		results = sql.executeQuery(getContext(), articlesql);
+		int num = common.RandomFromDB(results);
+		String ranArticle = results.get(num).get(0).toString();
+		objAdjustmentLogReport.articlesearch.sendKeys(ranArticle);
+		objAdjustmentLogReport.articlesearch.sendKeys(Keys.ENTER);
+		waitFor(2);
+		
+		results = sql.executeQuery(getContext(), articlesql);
+		num = common.RandomFromDB(results);
+		ranArticle = results.get(num).get(1).toString();
+		////System.out.println(ranArticle);
+		String artciledesc = ranArticle.substring(0,3);
+		////System.out.println(artciledesc);
+		objAdjustmentLogReport.articlesearch.sendKeys(artciledesc); waitFor(2);
+		objAdjustmentLogReport.descselect.click();
+		waitFor(2);
+		
+		results = sql.executeQuery(getContext(), articlesql);
+		String eanNum = objAdjustmentLogReportPage.eanNumber(objAdjustmentLogReport, results);
+		objAdjustmentLogReport.articlesearch.sendKeys(eanNum);
+		objAdjustmentLogReport.articlesearch.sendKeys(Keys.ENTER);
+		waitFor(2);
+		String tunNum = objAdjustmentLogReportPage.tUNNumber(objAdjustmentLogReport, results);
+		objAdjustmentLogReport.articlesearch.sendKeys(eanNum);
+		objAdjustmentLogReport.articlesearch.sendKeys(Keys.ENTER); waitFor(2);
+		
+		/*String articlePLU = data.getText("PLUarticles");
+		results = sql.executeQuery(getContext(), articlePLU);
+		num = common.RandomFromDB(results);
+		ranArticle = results.get(num).get(4).toString();
+		objAdjustmentLogReport.articlesearch.sendKeys(ranArticle);
+		objAdjustmentLogReport.articlesearch.sendKeys(Keys.ENTER);
+		waitFor(3);*/
+		
+		articlesql = data.getText("PLUnumbers");
+		results = sql.executeQuery(getContext(), articlesql);
+		num = common.RandomFromDB(results);
+		ranArticle = results.get(num).get(0).toString();
+		objAdjustmentLogReport.articlesearch.sendKeys(ranArticle);
+		objAdjustmentLogReport.articlesearch.sendKeys(Keys.ENTER);
+		waitFor(1);
+		if(objAdjustmentLogReport.dialogmultiplearticle.isDisplayed())
+		{
+			objAdjustmentLogReportPage.plunumber(objAdjustmentLogReport);
+		}
+		
+	}
+	}
+		
+ 
+	public void verifyuserdd(String msg, AdjustmentLogReportObjects objAdjustmentLogReport) throws IOException
+	{
+		String users = objAdjustmentLogReport.Userdd.getText();									// Users drop down validation
+		if(users.contains("All users"))									
+		{
+			htmlToExtent(cName,mName,extLogger,driver, ""+msg+";;;Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "All Users are not selected;;;Fail");
+		}
+	}
+	
+	public void verifyreasondd(String msg, AdjustmentLogReportObjects objAdjustmentLogReport) throws IOException
+	{
+		String reasons = objAdjustmentLogReport.reasoncodedd.getText();	
+		if(reasons.contains("All reasons"))                          // Reason code dropdown validation
+		{
+			htmlToExtent(cName,mName,extLogger,driver, ""+msg+";;;Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "All Reasons are not selected;;;Fail");
+		}}
+	
+	public void verifyfilter(AdjustmentLogReportObjects objAdjustmentLogReport) throws IOException
+	{
+		Select select =new Select(objAdjustmentLogReport.selectfilter);
+		WebElement firstvalue = select.getFirstSelectedOption();
+		String filteroptions = firstvalue.getText();
+		////System.out.println(filteroptions);
+		Select select1= new Select(objAdjustmentLogReport.selectoptions);
+		firstvalue = select1.getFirstSelectedOption();
+		String selectoptions = firstvalue.getText();
+		if(filteroptions.equals("Select filter"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Select filter drop down is having Select filter on Page Load;;;Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Select filter drop down is not having Select filter on Page Load;;;Pass");
+		}
+		if(selectoptions.equals("Less than"))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Select filter drop down is having less than on Page Load;;;Pass");
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Select filter drop down is not having less than on Page Load;;;Pass");
+		} 
+	}
+	
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Generate Reports for Partial Department for SOH")
+	public void reportSOH() //throws SQLException, AWTException, ParseException, IOException
+	{
+		if(AdjLogArtpreCount2==-1){
+			ADcount =ADcount+24;}
+		String ranArticle = null;
+		TestStatus status = getTestStatus();
+		try{
+			navToAdjustmentLog(status);
+			String frmdate = common.ConvertdateFormatfordb(-7);
+			String todate = common.ConvertdateFormatfordb(0);
+			//partial dept
+			htmlToExtent(cName,mName,extLogger,driver, "Combination 1: All Users, All reasons, Multiple Departments and one additional Criteria;;;Pass");
+			verifyuserdd("All users are selected", objAdjustmentLogReport);
+			verifyreasondd("All Reasons are selected", objAdjustmentLogReport);
+			List<String> selectedDept = objAdjustmentLogReportPage.PartialDepartment(objAdjustmentLogReport,driver);
+			objAdjustmentLogReportPage.additionalCriteriatrial(objAdjustmentLogReport, 1, "QTY_ADJUSTED", "LT", "5",driver);
+			objAdjustmentLogReport.Generatereportsbtn.click();
+			waitFor(3);
+			String pdept = data.getText("partialdept").replace("desc1", selectedDept.get(0)).replace("desc2", selectedDept.get(1))
+					.replace("desc3", selectedDept.get(2)).replace("frmdate", frmdate).replace("todate", todate);
+			results = sql.executeQuery(getContext(), pdept);
+			////System.out.println(results);
+			objAdjustmentLogReportPage.DBverify(objAdjustmentLogReport, results,driver);
+
+
+			//primary dept
+			htmlToExtent(cName,mName,extLogger,driver, "Combination 2: Primary Departments, Partial reasons, Partial Users;;;Pass");
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(1);
+			List<String> deptNameListApp = objAdjustmentLogReportPage.primarydepartment123(objAdjustmentLogReport,driver);
+			int deptSize =  deptNameListApp.size();
+			String[] str = {"desc1", "desc2", "desc3", "desc4", "desc5", "desc6", "desc7", "desc8", "desc9", "descten", "desceleven", "desctwelve", "descthirteen", 
+					"descfourteen", "descfifteen", "decsixteen"};
+			List<String> deptList = new ArrayList<String>();
+			deptList.addAll(Arrays.asList(str));
+			List<String> selectedReason = objAdjustmentLogReportPage.PartialReason(objAdjustmentLogReport,driver);
+			List<String> selecteduser = objAdjustmentLogReportPage.PartialUser(objAdjustmentLogReport,driver);
+			objAdjustmentLogReport.Generatereportsbtn.click(); waitFor(3);
+			waitForJSandJQueryToLoad(driver);
+			String pridept = data.getText("primarydept").replace("us1", selecteduser.get(0)).replace("us2", selecteduser.get(1)).replace("us3", selecteduser.get(2))
+					.replace("rea1", selectedReason.get(0)).replace("rea2", selectedReason.get(1)).replace("rea3", selectedReason.get(2))
+					.replace("frmdate", frmdate).replace("todate", todate);
+			for(int i =0; i<deptSize;i++){
+				pridept = pridept.replaceAll(deptList.get(i), deptNameListApp.get(i));
+			}
+			results = sql.executeQuery(getContext(), pridept);
+			objAdjustmentLogReportPage.DBverify(objAdjustmentLogReport, results,driver);
+
+
+			//all department
+			htmlToExtent(cName,mName,extLogger,driver, "Combination 3: All Departments, Single reason, Single User and additional criteria;;;Pass");
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(1);
+			objAdjustmentLogReportPage.allDEPT(objAdjustmentLogReport,driver);
+			selectedReason = objAdjustmentLogReportPage.SingleReason(objAdjustmentLogReport,driver);		
+			selecteduser = objAdjustmentLogReportPage.SingleUser(objAdjustmentLogReport,driver);
+			objAdjustmentLogReportPage.additionalCriteriatrial(objAdjustmentLogReport, 1, "QTY_ADJUSTED", "LT", "5",driver);
+			objAdjustmentLogReport.addmore.click();
+			objAdjustmentLogReportPage.additionalCriteriatrial(objAdjustmentLogReport, 2, "VALUE_ADJUSTED", "GT", "10",driver);
+			objAdjustmentLogReport.Generatereportsbtn.click();waitForJSandJQueryToLoad(driver);
+			String alldept = data.getText("alldept").replace("us1", selecteduser.get(0)).replace("rea1", selectedReason.get(0))
+					.replace("frmdate", frmdate).replace("todate", todate);
+			results = sql.executeQuery(getContext(), alldept);
+			////System.out.println(results);
+			objAdjustmentLogReportPage.DBverify(objAdjustmentLogReport, results,driver);
+
+
+			//specify one article
+			htmlToExtent(cName,mName,extLogger,driver, "Combination 4: Single Article, All reasons, All Users;;;Pass");
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(1);
+			objAdjustmentLogReport.Specifyarticleradiobtn.click();
+			if(objAdjustmentLogReport.Specifyarticleradiobtn.isSelected())
+			{
+				String articlesql = data.getText("articles");
+				results = sql.executeQuery(getContext(), articlesql);
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				objAdjustmentLogReport.articlesearch.sendKeys(ranArticle);
+				objAdjustmentLogReport.articlesearch.sendKeys(Keys.ENTER);
+				waitFor(1);
+				try{
+					if(objAdjustmentLogReport.dialogmultiplearticle.isDisplayed())
+					{
+						objAdjustmentLogReportPage.plunumber(objAdjustmentLogReport);
+					}
+				}
+				catch(WebDriverException e){
+				}	
+			}
+			htmlToExtent(cName,mName,extLogger,driver, "Entered Article is : "+ranArticle+";;;Pass");
+			verifyuserdd("All users are selected", objAdjustmentLogReport);
+			verifyreasondd("All Reasons are selected", objAdjustmentLogReport);
+			objAdjustmentLogReport.Generatereportsbtn.click(); waitFor(3);
+			waitForJSandJQueryToLoad(driver);
+			String singleart = data.getText("singlearticle").replace("art.no", ranArticle).replace("frmdate", frmdate).replace("todate", todate);
+			results = sql.executeQuery(getContext(), singleart);
+			////System.out.println(results);
+			objAdjustmentLogReportPage.DBverify(objAdjustmentLogReport, results,driver);
+
+
+			//specify more article
+			htmlToExtent(cName,mName,extLogger,driver, "Combination 5: Multiple Articles, Partial reasons, All Users;;;Pass");
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver); waitFor(2);
+			objAdjustmentLogReport.Specifyarticleradiobtn.click();
+			List<String> article = new ArrayList();
+			if(objAdjustmentLogReport.Specifyarticleradiobtn.isSelected())
+			{
+				for(int i=0;i<5;i++){
+					String articlesql = data.getText("articles");
+					results = sql.executeQuery(getContext(), articlesql);
+					int num = common.RandomFromDB(results);
+					ranArticle = results.get(num).get(0).toString();
+					objAdjustmentLogReport.articlesearch.sendKeys(ranArticle);
+					objAdjustmentLogReport.articlesearch.sendKeys(Keys.ENTER);
+					try{
+						if(objAdjustmentLogReport.dialogmultiplearticle.isDisplayed())
+						{
+							objAdjustmentLogReportPage.plunumber(objAdjustmentLogReport);
+						}
+					}
+					catch(WebDriverException e){
+					}	
+					article.add(ranArticle);
+					waitFor(1);
+				} }
+			objAdjustmentLogReport.Closearticle.click();
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver, "Entered Article are : "+article.get(0)+", "+article.get(1)+", "+article.get(2)+", "+article.get(3)+";;;Pass");
+			selectedReason = objAdjustmentLogReportPage.PartialReason(objAdjustmentLogReport,driver);
+			verifyuserdd("All users are selected", objAdjustmentLogReport);
+			objAdjustmentLogReport.Generatereportsbtn.click(); waitFor(3);
+			waitForJSandJQueryToLoad(driver);
+			String manyart = data.getText("morearticle").replace("art1.no", article.get(0)).replace("art2.no", article.get(1))
+					.replace("art3.no", article.get(2)).replace("art4.no", article.get(3)).replace("rea1", selectedReason.get(0)).replace("rea2", selectedReason.get(1))
+					.replace("rea3", selectedReason.get(2)).replace("frmdate", frmdate).replace("todate", todate);
+			results = sql.executeQuery(getContext(), manyart);
+			////System.out.println(results);
+			objAdjustmentLogReportPage.DBverify(objAdjustmentLogReport, results,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(AdjLogArtScenarios, AdjLogArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Generate Reports for multiple Department, category, sub-category and segment for SOH")
+	public void mulDeptCatSubcat() //throws SQLException, AWTException, ParseException, IOException
+	{
+		if(AdjLogArtpreCount2==-1){
+			ADcount =ADcount+5;}
+		String ranArticle = null; List<Object> randomRecord = new ArrayList<Object>(); 
+		TestStatus status = getTestStatus();
+		try{
+			navToAdjustmentLog(status);
+			String frmdate = common.ConvertdateFormatfordb(-11);
+			String todate = common.ConvertdateFormatfordb(-4);
+			String multiDepartment_sql = data.getText("multiDepartment");
+			results = sql.executeQuery(getContext(), multiDepartment_sql);
+			if(results.size()>0)
+			{
+				int num = common.RandomFromDB(results);
+				////System.out.println("Db values"+ num);
+				randomRecord = results.get(num);
+			}
+			else
+				htmlToExtent(cName,mName,extLogger,driver, "The Department Category Sub-category Segment are not available in DB;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver, "Generating Reports by selecting departments, category, SubCategory and segement for SOH;;;Pass");
+			List<String> deptlist = objAdjustmentLogReportPage.multipledeptorsubcategory1(objAdjustmentLogReport,randomRecord,driver);
+			objAdjustmentLogReport.Generatereportsbtn.click(); waitFor(1);
+			waitForJSandJQueryToLoad(driver);
+			String deptcat = data.getText("deptcat").replace("desc1", deptlist.get(0)).replace("cat1", deptlist.get(1)).replace("subcategory", deptlist.get(2))
+					.replace("seg1", deptlist.get(3)).replace("frmdate", frmdate).replace("todate", todate);
+			results = sql.executeQuery(getContext(), deptcat);
+			////System.out.println(results);
+			objAdjustmentLogReportPage.DBverify(objAdjustmentLogReport, results,driver);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(AdjLogArtScenarios, AdjLogArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+	
+	
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Generate Reports for multiple Department, category, sub-category and segment for MPLSC")
+	public void mulDeptCatSubcatMPLSC() //throws SQLException, AWTException, ParseException, IOException
+	{
+		if(AdjLogArtpreCount2==-1){
+			ADcount =ADcount+3;}
+		String ranArticle = null; List<Object> randomRecord = new ArrayList<Object>(); 
+		TestStatus status = getTestStatus();
+		try{
+			navToAdjustmentLog(status);
+			String frmdate = common.ConvertdateFormatfordb(-7);
+			String todate = common.ConvertdateFormatfordb(0);
+			objAdjustmentLogReport.MPLradiobtn.click();
+			waitFor(1);
+			String multiDepartment_sql = data.getText("multiDepartment");
+			results = sql.executeQuery(getContext(), multiDepartment_sql);
+			if(results.size()>0)
+			{
+				int num = common.RandomFromDB(results);
+				////System.out.println("Db values"+ num);
+				randomRecord = results.get(num);
+			}
+			else
+				htmlToExtent(cName,mName,extLogger,driver, "The Department Category Sub-category Segment are not available in DB;;;Pass");
+			htmlToExtent(cName,mName,extLogger,driver, "Generating Reports by selecting departments, category, SubCategory and segement for MPLSC;;;Pass");
+			List<String> deptlist = objAdjustmentLogReportPage.multipledeptorsubcategory1(objAdjustmentLogReport,randomRecord,driver);
+			objAdjustmentLogReport.Generatereportsbtn.click();
+			waitForJSandJQueryToLoad(driver);
+			try{
+				if(objAdjustmentLogReport.Reporttable.isDisplayed())
+				{
+					String article = objAdjustmentLogReport.firstart.getText();
+					String deptcatMPL = data.getText("deptcatMPL").replace("desc1", deptlist.get(0)).replace("cat1", deptlist.get(1)).replace("subcategory", deptlist.get(2))
+							.replace("seg1", deptlist.get(3)).replace("art.no", article).replace("frmdate", frmdate).replace("todate", todate);
+					results = sql.executeQuery(getContext(), deptcatMPL);
+
+					String deptcatCAT = data.getText("deptcatCAP").replace("desc1", deptlist.get(0)).replace("cat1", deptlist.get(1)).replace("subcategory", deptlist.get(2))
+							.replace("seg1", deptlist.get(3)).replace("art.no", article).replace("frmdate", frmdate).replace("todate", todate);
+					results1 = sql.executeQuery(getContext(), deptcatCAT);
+					doubleToInt1(results1, 13); doubleToInt1(results, 10);
+					removeIndex(results, "7"); removeIndex(results, "5"); removeIndex(results, "4"); replacenullToZero(results); removeExtraSpaces(results, 1);
+					removeIndex(results1, "7"); removeIndex(results1, "5"); removeIndex(results1, "4");  replacenullToZero(results1); removeExtraSpaces(results1, 1);
+					objAdjustmentLogReportPage.DBverifyMPL(objAdjustmentLogReport, results, results1,driver);
+				}}
+			catch(WebDriverException groupbycheck)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is not generated for the above combination.;;;Pass");
+			}		
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(AdjLogArtScenarios, AdjLogArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}
+		
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Generate Reports for Partial Department for SOH")
+	public void reportsMPLSC() //throws SQLException, AWTException, ParseException, IOException
+	{
+		if(AdjLogArtpreCount2==-1){
+			ADcount =ADcount+4;}
+		String ranArticle = null;
+		TestStatus status = getTestStatus();
+		try{
+			navToAdjustmentLog(status);
+			String frmdate = common.ConvertdateFormatfordb(-7);
+			String todate = common.ConvertdateFormatfordb(0);
+			//primary dept
+			htmlToExtent(cName,mName,extLogger,driver, "Combination 1: Primary Departments, Partial Users;;;Pass");
+			objAdjustmentLogReport.MPLradiobtn.click();
+			waitFor(2);
+			List<String> deptNameListApp = objAdjustmentLogReportPage.primarydepartment123(objAdjustmentLogReport,driver);
+			int deptSize =  deptNameListApp.size();
+			String[] str = {"desc1", "desc2", "desc3", "desc4", "desc5", "desc6", "desc7", "desc8", "desc9", "descten", "desceleven", "desctwelve", "descthirteen", 
+					"descfourteen", "descfifteen", "decsixteen"};
+			List<String> deptList = new ArrayList<String>();
+			deptList.addAll(Arrays.asList(str));
+			List<String> selecteduser = objAdjustmentLogReportPage.PartialUser(objAdjustmentLogReport,driver);
+			objAdjustmentLogReport.Generatereportsbtn.click();
+			waitFor(1);
+			try
+			{
+				if(objAdjustmentLogReport.Reporttable.isDisplayed())
+				{
+					String article = objAdjustmentLogReport.firstart.getText();
+					String prideptMPL = data.getText("primarydeptMPL").replace("us1", selecteduser.get(0)).replace("us2", selecteduser.get(1))
+							.replace("us3", selecteduser.get(2)).replace("frmdate", frmdate).replace("todate", todate).replace("art.no", article);
+					for(int i =0; i<deptSize;i++){
+						prideptMPL = prideptMPL.replaceAll(deptList.get(i), deptNameListApp.get(i));
+					}
+					results = sql.executeQuery(getContext(), prideptMPL);
+
+					prideptMPL = data.getText("primarydeptCAP").replace("us1", selecteduser.get(0)).replace("us2", selecteduser.get(1))
+							.replace("us3", selecteduser.get(2)).replace("frmdate", frmdate).replace("todate", todate).replace("art.no", article);
+					for(int i =0; i<deptSize;i++){
+						prideptMPL = prideptMPL.replaceAll(deptList.get(i), deptNameListApp.get(i));
+					}
+
+					results1 =  sql.executeQuery(getContext(), prideptMPL);
+					doubleToInt1(results1, 13); doubleToInt1(results, 10);
+					removeIndex(results, "7"); removeIndex(results, "5"); removeIndex(results, "4"); replacenullToZero(results); removeExtraSpaces(results, 1);
+					removeIndex(results1, "7"); removeIndex(results1, "5"); removeIndex(results1, "4");  replacenullToZero(results1); removeExtraSpaces(results1, 1);
+					objAdjustmentLogReportPage.DBverifyMPL(objAdjustmentLogReport, results, results1,driver);
+				}}
+			catch(WebDriverException groupbycheck)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is not generated for the above combination.;;;Pass");
+				objAdjustmentLogReport.errorclosebtn.click();
+			}
+
+
+			//multiple dept
+			htmlToExtent(cName,mName,extLogger,driver, "Combination 2: Multiple Departments, All Users and additional criteria;;;Pass");
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver);
+			waitFor(2);
+			objAdjustmentLogReport.MPLradiobtn.click();
+			waitFor(1);
+			List<String> selectedDept = objAdjustmentLogReportPage.PartialDepartment(objAdjustmentLogReport,driver);
+			objAdjustmentLogReportPage.additionalCriteriatrial(objAdjustmentLogReport, 1, "MPL", "LT", "10",driver);
+			htmlToExtent(cName,mName,extLogger,driver, "Additional Criteria selected: MPL less than 10;;;Pass");
+			objAdjustmentLogReport.Generatereportsbtn.click();
+			waitFor(1);
+			try
+			{
+				if(objAdjustmentLogReport.Reporttable.isDisplayed())
+				{
+					String article = objAdjustmentLogReport.firstart.getText();
+					String muldeptMPL = data.getText("multipledeptMPL").replace("desc1", selectedDept.get(0)).replace("desc2", selectedDept.get(1)).replace("desc3", selectedDept.get(2))
+							.replace("frmdate", frmdate).replace("todate", todate).replace("art.no", article);
+					results = sql.executeQuery(getContext(), muldeptMPL);
+					muldeptMPL = data.getText("multipledeptCAP").replace("desc1", selectedDept.get(0)).replace("desc2", selectedDept.get(1)).replace("desc3", selectedDept.get(2))
+							.replace("frmdate", frmdate).replace("todate", todate).replace("art.no", article);
+					results1 =  sql.executeQuery(getContext(), muldeptMPL);
+					doubleToInt1(results1, 13); doubleToInt1(results, 10);
+					removeIndex(results, "7"); removeIndex(results, "5"); removeIndex(results, "4"); replacenullToZero(results); removeExtraSpaces(results, 1);
+					removeIndex(results1, "7"); removeIndex(results1, "5"); removeIndex(results1, "4");  replacenullToZero(results1); removeExtraSpaces(results1, 1);
+					objAdjustmentLogReportPage.DBverifyMPL(objAdjustmentLogReport, results, results1,driver);
+				}}
+			catch(WebDriverException groupbycheck)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is not generated for the above combination.;;;Pass");
+				objAdjustmentLogReport.errorclosebtn.click();
+			}
+
+
+			//all dept
+			htmlToExtent(cName,mName,extLogger,driver, "Combination 3: All Departments, Single Users and additional criteria;;;Pass");
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver);
+			waitFor(2);
+			objAdjustmentLogReport.MPLradiobtn.click();
+			waitFor(1);
+			objAdjustmentLogReportPage.allDEPTMPL(objAdjustmentLogReport, "MPL", "LT", "10",driver);
+			htmlToExtent(cName,mName,extLogger,driver, "Additional Criteria selected: MPL less than 10, CAP less than 8;;;Pass");
+			selecteduser = objAdjustmentLogReportPage.SingleUser(objAdjustmentLogReport,driver);
+			objAdjustmentLogReport.Generatereportsbtn.click();
+			waitForJSandJQueryToLoad(driver);
+			try{
+				if(objAdjustmentLogReport.Reporttable.isDisplayed())
+				{
+					String article = objAdjustmentLogReport.firstart.getText();
+					String allMPL = data.getText("alldeptMPL").replace("frmdate", frmdate).replace("todate", todate).replace("art.no", article)
+							.replace("us1", selecteduser.get(0));
+					results = sql.executeQuery(getContext(), allMPL);
+					allMPL = data.getText("alldeptCAP").replace("us1", selecteduser.get(0)).replace("art.no", article)
+							.replace("frmdate", frmdate).replace("todate", todate);
+					results1 =  sql.executeQuery(getContext(), allMPL);
+					doubleToInt1(results1, 13); doubleToInt1(results, 10);
+					removeIndex(results, "7"); removeIndex(results, "5"); removeIndex(results, "4"); replacenullToZero(results); removeExtraSpaces(results, 1);
+					removeIndex(results1, "7"); removeIndex(results1, "5"); removeIndex(results1, "4");  replacenullToZero(results1); removeExtraSpaces(results1, 1);
+					objAdjustmentLogReportPage.DBverifyMPL(objAdjustmentLogReport, results, results1,driver);
+				}}
+			catch(WebDriverException groupbycheck)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is not generated for the above combination.;;;Pass");
+				objAdjustmentLogReport.errorclosebtn.click();
+			}
+
+
+			//Specify one article
+			htmlToExtent(cName,mName,extLogger,driver, "Combination 4: Single Article, All Users and additional criteria;;;Pass");
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver);
+			waitFor(2);
+			objAdjustmentLogReport.MPLradiobtn.click(); waitFor(1);
+			objAdjustmentLogReport.Specifyarticleradiobtn.click();
+			if(objAdjustmentLogReport.Specifyarticleradiobtn.isSelected())
+			{
+				String articlesql = data.getText("articles");
+				results = sql.executeQuery(getContext(), articlesql);
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				objAdjustmentLogReport.articlesearch.sendKeys(ranArticle);
+				objAdjustmentLogReport.articlesearch.sendKeys(Keys.ENTER);
+				waitFor(1);
+				try{
+					if(objAdjustmentLogReport.dialogmultiplearticle.isDisplayed())
+					{
+						objAdjustmentLogReportPage.plunumber(objAdjustmentLogReport);
+					}
+				}
+				catch(WebDriverException e){
+				}	
+			}	
+			htmlToExtent(cName,mName,extLogger,driver, "Entered Article is : "+ranArticle+";;;Pass");
+			objAdjustmentLogReportPage.selectallUsers(objAdjustmentLogReport);
+			objAdjustmentLogReport.Generatereportsbtn.click();
+			waitForJSandJQueryToLoad(driver);
+			try{
+				if(objAdjustmentLogReport.Reporttable.isDisplayed())
+				{
+					String singleartMPL = data.getText("singleartMPL").replace("art.no", ranArticle).replace("frmdate", frmdate).replace("todate", todate);
+					results = sql.executeQuery(getContext(), singleartMPL);
+					singleartMPL = data.getText("singleartCAP").replace("art.no", ranArticle).replace("frmdate", frmdate).replace("todate", todate);
+					results1 = sql.executeQuery(getContext(), singleartMPL);
+					doubleToInt1(results1, 13); doubleToInt1(results, 10);
+					removeIndex(results, "7"); removeIndex(results, "5"); removeIndex(results, "4"); replacenullToZero(results); removeExtraSpaces(results, 1);
+					removeIndex(results1, "7"); removeIndex(results1, "5"); removeIndex(results1, "4");  replacenullToZero(results1); removeExtraSpaces(results1, 1);
+					objAdjustmentLogReportPage.DBverifyMPL(objAdjustmentLogReport, results, results1,driver);
+				}}
+			catch(WebDriverException groupbycheck)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is not generated for the above combination.;;;Pass");
+				objAdjustmentLogReport.errorclosebtn.click();
+			}
+
+
+			//Specify more article
+			htmlToExtent(cName,mName,extLogger,driver, "Combination 4: Multiple Article, All Users and additional criteria;;;Pass");
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver);
+			waitFor(2);
+			objAdjustmentLogReport.MPLradiobtn.click(); waitFor(1);
+			objAdjustmentLogReport.Specifyarticleradiobtn.click();
+			List<String> article = new ArrayList();
+			if(objAdjustmentLogReport.Specifyarticleradiobtn.isSelected())
+			{
+				for(int i=0;i<5;i++){
+					String articlesql = data.getText("articles");
+					results = sql.executeQuery(getContext(), articlesql);
+					int num = common.RandomFromDB(results);
+					ranArticle = results.get(num).get(0).toString();
+					objAdjustmentLogReport.articlesearch.sendKeys(ranArticle);
+					objAdjustmentLogReport.articlesearch.sendKeys(Keys.ENTER);
+					try{
+						if(objAdjustmentLogReport.dialogmultiplearticle.isDisplayed())
+						{
+							objAdjustmentLogReportPage.plunumber(objAdjustmentLogReport);
+						}
+					}
+					catch(WebDriverException e){
+					}	
+					article.add(ranArticle);
+					waitFor(1);
+				}
+			}
+			objAdjustmentLogReport.Closearticle.click();
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver, "Entered Article are : "+article.get(0)+", "+article.get(1)+", "+article.get(2)+", "+article.get(3)+";;;Pass");
+			objAdjustmentLogReportPage.selectallUsers(objAdjustmentLogReport);
+			objAdjustmentLogReport.Generatereportsbtn.click();
+			waitForJSandJQueryToLoad(driver);
+			try{
+				if(objAdjustmentLogReport.Reporttable.isDisplayed())
+				{
+					String multipleArtMPL = data.getText("multipleArtMPL").replace("art1.no", ranArticle).replace("art2.no", article.get(1))
+							.replace("art3.no", article.get(2)).replace("art4.no", article.get(3)).replace("frmdate", frmdate).replace("todate", todate);
+					results = sql.executeQuery(getContext(), multipleArtMPL);
+					multipleArtMPL = data.getText("multipleArtCAP").replace("art1.no", ranArticle).replace("art2.no", article.get(1))
+							.replace("art3.no", article.get(2)).replace("art4.no", article.get(3)).replace("frmdate", frmdate).replace("todate", todate);
+					results1 = sql.executeQuery(getContext(), multipleArtMPL);
+					doubleToInt1(results1, 13); doubleToInt1(results, 10);
+					removeIndex(results, "7"); removeIndex(results, "5"); removeIndex(results, "4"); replacenullToZero(results); removeExtraSpaces(results, 1);
+					removeIndex(results1, "7"); removeIndex(results1, "5"); removeIndex(results1, "4");  replacenullToZero(results1); removeExtraSpaces(results1, 1);
+					objAdjustmentLogReportPage.DBverifyMPL(objAdjustmentLogReport, results, results1,driver);
+				}}
+			catch(WebDriverException groupbycheck)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is not generated for the above combination.;;;Pass");
+				objAdjustmentLogReport.errorclosebtn.click();
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(AdjLogArtScenarios, AdjLogArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();
+	}	
+		
+	@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Generate Reports for Facings  BigW")
+	public void reportFacing() //throws SQLException, AWTException, ParseException, IOException
+	{
+
+		if(AdjLogArtpreCount2==-1){
+			ADcount =ADcount+5;}
+		String ranArticle = null;
+		List<Object> randomRecord = new ArrayList<Object>();		
+		TestStatus status = getTestStatus();
+		try{
+			navToFacing(status);
+			String frmdate = common.ConvertdateFormatfordb(-7);
+			String todate = common.ConvertdateFormatfordb(0);
+			objAdjustmentLogReport.facingsRadiobtn.click();
+			/*objAdjustmentLogReport.dropdownselect.click();
+		click(objAdjustmentLogReport.AlldeptCB);
+		waitForJSandJQueryToLoad(driver);
+		objAdjustmentLogReport.Deptdonebtn.click();*/
+			String multiDepartment_sql = data.getText("multiDepartment");
+			results = sql.executeQueryStore(getContext(), multiDepartment_sql, getContext().getStringProperty("BigWstore"));
+
+			if(results.size()>0)
+			{
+				int num = common.RandomFromDB(results);
+				////System.out.println("Db values"+ num);
+				randomRecord = results.get(num);
+			}
+			else
+				htmlToExtent(cName,mName,extLogger,driver, "The Department Category Sub-category Segment are not available in DB;;;Pass");
+			List<String> deptlist = objAdjustmentLogReportPage.multipledeptorsubcategory1(objAdjustmentLogReport,randomRecord,driver);
+			objAdjustmentLogReport.Generatereportsbtn.click();
+			waitForJSandJQueryToLoad(driver);
+			try{
+				if(objAdjustmentLogReport.Reporttable.isDisplayed())
+				{
+					String deptcatFAC = data.getText("deptcatFacing").replace("desc1", deptlist.get(0)).replace("cat1", deptlist.get(1)).replace("subcategory", deptlist.get(2))
+							.replace("seg1", deptlist.get(3)).replace("frmdate", frmdate).replace("todate", todate);
+					results = sql.executeQueryStore(getContext(), deptcatFAC, getContext().getStringProperty("BigWstore"));
+					removeExtraSpaces(results, 1); doubleToInt1(results, 5); doubleToInt1(results, 6);
+					////System.out.println(results);
+					objAdjustmentLogReportPage.DBverifyFacing(objAdjustmentLogReport, results,driver);
+				}}
+			catch(WebDriverException groupbycheck)
+			{
+				htmlToExtent(cName,mName,extLogger,driver, "Report is not generated for the above combination.;;;Pass");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(AdjLogArtScenarios, AdjLogArttestname,driver));
+		}
+		catch (Exception e){
+			isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);
+			htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+		}
+		status.assertAll();	
+	}
+	
+	
+	public void confirmation(AdjustmentLogReportObjects objAdjustmentLogReport, List<List<Object>> results) throws IOException
+	{
+		if((results.size()!=0)&&(objAdjustmentLogReport.Reporttable.isDisplayed()))
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Validating DB value with UI values;;;Pass");
+			objAdjustmentLogReportPage.DBverify(objAdjustmentLogReport, results,driver);
+		}
+		else
+		{
+			htmlToExtent(cName,mName,extLogger,driver, "Sorry, no records found;;;Pass");
+			objAdjustmentLogReport.errorclosebtn.click();
+		}
+	}
+	
+	public void closeValidation(AdjustmentLogReportObjects objAdjustmentLogReport) throws SQLException, AWTException, ParseException, IOException
+	{
+	
+	objAdjustmentLogReport.Generatereportsbtn.click();
+	waitForJSandJQueryToLoad(driver);
+	waitFor(3);
+	
+	if(objAdjustmentLogReport.closedhead.isDisplayed())
+	{
+		////System.out.println("displayed");
+		htmlToExtent(cName,mName,extLogger,driver, "Selection criteria is closed on generating reports;;;Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "Selection criteria is not closed on generating reports;;;Fail");
+	}
+	objAdjustmentLogReport.plusicon.click();
+	
+	if(objAdjustmentLogReport.openhead.isDisplayed())
+	{
+		////System.out.println("displayed");
+		htmlToExtent(cName,mName,extLogger,driver, "Selection criteria is opened on clicking plus icon;;;Pass");
+	}
+	else
+	{
+		htmlToExtent(cName,mName,extLogger,driver, "Selection criteria is not closed onclicking plus icon;;;Fail");
+	}
+	waitFor(1);
+	objAdjustmentLogReport.Closelink.click();
+	waitFor(1);
+	if(objAdjustmentLogReport.closedhead.isDisplayed())
+	{
+		////System.out.println("displayed");
+		htmlToExtent(cName,mName,extLogger,driver, "Selection criteria is closed on clicking close button;;;Pass");
+	}
+	}	
+	
+	
+	
+		public void navToAdjustmentLog(TestStatus status) throws IOException, AWTException {
+			log.info("---------------Login into Application--------------------");
+			htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+			
+			loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+			if(System.getProperty("store")==null){
+				StoreNo = getContext().getStringProperty("store");
+				htmlToExtent(cName,mName,extLogger,driver,"Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+				objAdjustmentLogReportPage = loginPage.navToAdjustmentLog(getContext().getStringProperty("store"),driver);
+			}else{
+				storeprop.getStoreDetails(System.getProperty("store"));
+				////System.out.println(store);
+				StoreNo = store;
+				htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+				
+				objAdjustmentLogReportPage = loginPage.navToAdjustmentLog(store,driver);
+			}
+				
+			log.info("-------------Navigate to Article Look Up Page------------");
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to Article Look Up Page--------------------;;;Pass");
+			
+			objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver);
+		waitFor(1);
+		}
+		
+		
+		public void navToFacing(TestStatus status) throws IOException, AWTException {
+			{
+				log.info("---------------Login into Application--------------------");
+				htmlToExtent(cName,mName,extLogger,driver, "---------------Login into Application--------------------;;;Pass");
+				loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+				storeprop.getStoreDetails(getContext().getStringProperty("BigWstore"));
+				StoreNo = getContext().getStringProperty("BigWstore");					
+				htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : ;"+ StoreNo+";;Pass");
+				objAdjustmentLogReportPage = loginPage.navToAdjustmentLog(StoreNo,driver);
+				log.info("-------------Navigate to Stock Adjustment Page------------");
+				objAdjustmentLogReportPage.clickOnAdjusmentLogReport(objAdjustmentLogReport,driver);
+				waitFor(1);
+			}
+			
+			/*loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+			if(System.getProperty("BigWstore")==null){
+				StoreNo = getContext().getStringProperty("BigWstore");
+				
+				objAdjustmentLogReportPage = loginPage.navToAdjustmentLog(getContext().getStringProperty("BigWstore"));
+			}else{
+				storeprop.getStoreDetails(System.getProperty("BigWstore"));
+				////System.out.println(store,driver);
+				StoreNo = store;
+				htmlToExtent(cName,mName,extLogger,driver, "Login with the Store : " + getContext().getStringProperty("BigWstore")+";;;Pass");
+				
+				objAdjustmentLogReportPage = loginPage.navToAdjustmentLog(store,driver);
+			}
+				
+			log.info("-------------Navigate to Article Look Up Page------------");
+			htmlToExtent(cName,mName,extLogger,driver, "----------------Navigate to Article Look Up Page--------------------;;;Pass");
+			*/
+			
+		}
+		
+		
+	
+	@BeforeMethod(alwaysRun=true)
+	public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException{	
+		waitFor(2);
+		System.out.println("test1 - beforemethod");
+		 mName=m9.getName().toString().trim();			
+			if(!methodList.contains(m9.getName().toString().trim())){
+			methodList.add(m9.getName().toString().trim());
+			extLogger = extReport.startTest(m9.getName().toString().trim());
+			}
+			initializeTestcontext();
+		log.info("Loading Testdata for the test case: " + m9.getName().toString());
+		data.getTCNameFromChildren(m9.getName().toString().trim());
+		if(isFirstTest){
+			driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+			}else{
+				String title = driver.getCurrentUrl();
+				if(title.contains("logginOut"))
+				{
+					driver.navigate().refresh();
+					TimeUnit.SECONDS.sleep(5);
+				}else if(title.contains("home")){
+					driver.navigate().refresh();
+					TimeUnit.SECONDS.sleep(5);
+				}else{
+				driver.navigate().refresh();
+				TimeUnit.SECONDS.sleep(5);
+				if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+				{
+					if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+					WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+					scrolltoElement(home,driver);
+					home.click();
+					TimeUnit.SECONDS.sleep(5);
+					loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+					driver.navigate().refresh();
+					TimeUnit.SECONDS.sleep(5);}
+				}
+				}
+			}
+			isFirstTest=false;
+		
+		//driver =createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser"));
+		setDriver(driver);
+		testcontext.setAttribute("WebDriver", driver);
+		testcontext.setAttribute("Customreports", this.customreport);
+		customreport.startTest(m9.getName().toString());
+		initializeTestStatus();
+		reportPath = new File(getContext().getStringProperty("reportPath"));
+		AdjLogArttestname = m9.getName().toString().trim();
+		AdjLogArttestdesc = m9.getAnnotation(Test.class).description();
+		htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+		
+		objAdjustmentLogReport= PageFactory.initElements(this.driver, AdjustmentLogReportObjects.class);
+		objAdjustmentLogReportPage= PageFactory.initElements(this.driver, AdjustmentLogReportPage.class);
+		//objInStoreDisplayPromotionsObjects = PageFactory.initElements(this.driver, InStoreDisplayPromotionsObjects.class);
+		BaseObj = PageFactory.initElements(driver, BasePage.class);
+		common = PageFactory.initElements(driver, CommonFunctions.class);
+		storeprop = PageFactory.initElements(driver, StoreProperties.class);
+	}
+	
+	@BeforeClass
+	public void loadXMLFile(){	
+		//initializeTestcontext();
+		System.out.println("test1 - Beforeclass");
+		data = new XMLDataReader(log);
+		customreport=new CustomExtentReports();
+		log.info("Loading data for the class: " );
+		data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\AdjLogReport.xml");
+		customreport.createExtentReport();
+		cName=this.getClass().getSimpleName();
+		reportPath = new File(TestContext.getStringProperty("reportPath"));			
+		extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+		classList.add(this.getClass().getSimpleName());
+	}
+	
+	
+	
+	@AfterClass(alwaysRun=true)
+	public void tearDown() throws IOException, ParseException{
+		waitFor(1);
+		System.out.println("afterclass");
+		sceCtMap.put(cName+"_totalCt", methodList.size());
+		sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+		sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+		tcCt.put(this.getClass().getSimpleName().toString(),ADcount);
+        extReport.endTest(extLogger);
+		extReport.flush();
+		removeDriver();
+		closeDriver(driver);
+		moduleName.put("Modules", AdjLogArtModules);
+		waitFor(1);
+		int ADArtM=ADcount;
+		AdjLogArtMC=""+ADArtM;
+	}
+
+	@AfterMethod(alwaysRun=true)
+	protected void flushReports(ITestResult result9, Method m9) throws IOException, ParseException {
+		System.out.println("AffterMethod");
+		waitFor(1);
+		
+		extReport.endTest(extLogger);
+		extReport.flush();
+		try{
+			if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+				htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+				result9.removeAttribute("isFail");
+			}}catch(Exception e ){
+			}
+		customreport.getExtentReport().endTest(customreport.getExtentTest());
+		customreport.getExtentReport().flush();
+		waitFor(1);
+		if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")){
+			int cnt = AdjLogArtpreCount2+1;
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+			AdjLogArtpreCount2++;
+		}
+		if(AdjLogArtpreCount2==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+			AdjLogArtpreCount2=-1;
+		}
+		waitFor(1);		
+	}
+}

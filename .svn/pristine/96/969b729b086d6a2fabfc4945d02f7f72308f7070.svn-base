@@ -1,0 +1,1865 @@
+package au.wow.ngbomain.tests;
+
+import java.awt.AWTException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import au.wow.ngbo.utils.BasePage;
+import au.wow.ngbo.utils.CustomExtentReports;
+import au.wow.ngbo.utils.SQLWrapper;
+import au.wow.ngbo.utils.TestBase;
+import au.wow.ngbo.utils.TestContext;
+import au.wow.ngbo.utils.TestStatus;
+import au.wow.ngbo.utils.XMLDataReader;
+import au.wow.ngbomain.objects.ArticleDetailsObjects;
+import au.wow.ngbomain.objects.ArticleLookUpObjects;
+import au.wow.ngbomain.objects.EnhancedArticleLookUpObjects;
+import au.wow.ngbomain.pages.CommonFunctions;
+import au.wow.ngbomain.pages.EnhancedArticleLookUpPage1;
+//import au.wow.ngbomain.pages.Pack;
+import au.wow.ngbomain.pages.WoWLoginPage;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+
+public class EnhancedArticleLookUpTests1 extends TestBase{
+
+	
+	//Declare and initialize the logger, status, sql and page objects
+		private Logger log = LogManager.getLogger(EnhancedArticleLookUpTests.class);
+		
+		
+		public static String mName="";
+		public static String cName ="";
+		public static ArrayList<String> methodList = new ArrayList<String>();
+		public static ExtentTest extLogger;
+		public static ExtentReports extReport;	
+		public static boolean isExceptionCaptured=false;
+		public static XMLDataReader data;	
+		public static WebDriver driver;
+		public static boolean isFirstTest=true;
+		public static String StoreNo;
+
+		//public HashMap<String, Integer> extMap = new HashMap<String, Integer>();
+		int recount=0;
+		List<List<Object>> results;
+		List<List<Object>> results2;
+		List<List<Object>> results1;
+		List<List<Object>> results3;
+		List<List<Object>> results_temp;
+		TestStatus status;
+		SQLWrapper sql = new SQLWrapper(log);
+		WoWLoginPage loginPage;
+		EnhancedArticleLookUpPage1 objEnhancedarticleLookUpPage;
+		EnhancedArticleLookUpObjects objEnhancedArticleLookup;
+		BasePage BaseObj;
+		CommonFunctions common;
+		StoreProperties storeprop;
+
+		List<List<Object>> expirydate_data;
+		List<List<Object>> MPLSCval;
+		List<List<Object>> MPLSCval1;
+		int nv1,nv;
+		String[] eaval;
+		String[] ca1val;
+		String[] carval;
+		String[] mpkval;
+		int count=0;
+		String cigArticle;
+		String article_normal;
+		String liqArticle;	
+		String cigEDArticle;
+		String liqEDArticle;
+		int MCcount=0;
+		
+		public EnhancedArticleLookUpTests1(){
+			super.log=log;
+		}
+			
+		/**
+		 * AL_1
+		 * Verifying Department Hierarchy and Paginations
+		 * @throws IOException 
+		 * @throws SQLException 
+		 * @throws ParseException 
+		 * */
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verfiy flag is enabled in POS details tab")
+		public void enhancedPOSdetails() throws SQLException, AWTException, ParseException, IOException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+24;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticle(status);
+			String articles_sql = data.getText("checkPD");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 1, 1, "Prohibit Discount", "positiveFlag",driver);
+			
+			articles_sql = data.getText("checkPPO");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 1, 2, "Prohibit Price Override", "positiveFlag",driver);
+			
+			articles_sql = data.getText("checkIQTY");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 2, 1, "Inhibit QTY Repeat", "positiveFlag",driver);
+			
+			articles_sql = data.getText("checknotIQTY");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 2, 1, "Don't Inhibit QTY Repeat", "negativeFlag",driver);
+			
+			articles_sql = data.getText("checknotQTY");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 2, 2, "Don't Force QTY", "negativeFlag",driver);
+			
+			articles_sql = data.getText("checkQTY");
+			results = sql.executeQuery(getContext(), articles_sql);
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 2, 2, "Force QTY", "positiveFlag",driver);
+			
+			articles_sql = data.getText("checknotPOA");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 4, 3, "Proof of Age Not Required", "negativeFlag",driver);
+			
+			articles_sql = data.getText("checkPOA");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 4, 3, "Proof of Age Required", "positiveFlag",driver);
+			
+			articles_sql = data.getText("checknotSSF");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 5, 1, "No Sales Set Flag", "negativeFlag",driver);
+			
+			articles_sql = data.getText("checkSSF");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 5, 1, "Sales Set Flag", "positiveFlag",driver);
+			
+			articles_sql = data.getText("checkST");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 5, 2, "Security Tag", "positiveFlag",driver);
+			
+			articles_sql = data.getText("checkDP");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 3, 2, "Default Price", "positiveFlag",driver);
+			
+			articles_sql = data.getText("checkMP");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 3, 1, "Manual Price", "positiveFlag",driver);
+			
+			articles_sql = data.getText("checkPW");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 4, 1, "POS Weighed", "positiveFlag",driver);
+			
+			articles_sql = data.getText("checkSP");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 4, 2, "Sale Prohibited", "positiveFlag",driver);
+			
+			articles_sql = data.getText("checkPTWgreater");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.PTWvalue(objEnhancedArticleLookup, results, "greater",1,driver);
+			
+			articles_sql = data.getText("checkPTWequal");
+			results = sql.executeQuery(getContext(), articles_sql);			
+			objEnhancedarticleLookUpPage.PTWvalue(objEnhancedArticleLookup, results, "lesser",2,driver);
+			
+			articles_sql = data.getText("checkPOS");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.POSflag(objEnhancedArticleLookup, results, 4, 2, "Sale Prohibited", "positiveFlag",driver);
+			waitFor(1);
+			articles_sql = data.getText("checkORDERqty");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.orderQty(objEnhancedArticleLookup, results, 1,driver,"ORDERqty");
+			
+			articles_sql = data.getText("checkGCdetails");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.orderQty(objEnhancedArticleLookup, results, 2,driver,"GCdetails");
+			
+			articles_sql = data.getText("checkGSvendor");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.orderQty(objEnhancedArticleLookup, results, 3,driver,"GSvendor");
+			
+			waitFor(1);
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+			}
+			status.assertAll();			
+		}
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Check cup price for NZ store")
+		public void enhancedCupPriceNZ() throws SQLException, IOException, AWTException, ParseException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+1;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticleNZ(status);
+			String article_sql = data.getText("getCUParticle"); // article query
+			results = sql.executeQueryStore(getContext(), article_sql, getContext().getStringProperty("NZstore"));
+			removeIndex(results, "1");
+			removeIndex(results, "1");
+			objEnhancedarticleLookUpPage.CUPPrice(objEnhancedArticleLookup, results,"",driver);
+			/*if(StoreNo.equals("9384")||(StoreNo.equals("9698")))
+			{			
+				
+			}*/
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+			}
+			status.assertAll();
+		}
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Check banner theme for bigW")
+		public void enhancedBannerbigW() throws SQLException, IOException, AWTException, ParseException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+2;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticleBWS(status);
+			htmlToExtent(cName,mName,extLogger,driver,"Navigated to store - "+StoreNo+";;;Info");
+			waitFor(1);
+			objEnhancedArticleLookup.home.click();
+			String colour = objEnhancedArticleLookup.Lookup.getCssValue("color");
+			//System.out.println(colour);
+			if(colour.equals("rgba(255, 255, 255, 1)"))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Banner theme is matched for bigW;;;Pass");
+				//Report_AddStep("testcase","Banner theme is matched for bigW" , "", "", "Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Banner theme is mismatched for bigW;;;Fail");
+				//Report_AddStep("testcase","Banner theme is mismatched for bigW" , "", "", "Fail");
+			}
+			String article_sql = data.getText("getCUParticle"); // article query
+			results = sql.executeQueryStore(getContext(), article_sql, getContext().getStringProperty("BWSSTORE"));
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			removeIndex(results, "1");
+			removeIndex(results, "1");
+			objEnhancedarticleLookUpPage.CUPPrice(objEnhancedArticleLookup, results,"",driver);
+			/*if(StoreNo.equals("0858")||StoreNo.equals("0871"))
+			{
+				
+			}*/
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+			}
+			status.assertAll();
+		}
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Check banner theme for BWS")
+		public void enhancedBannerBWS() throws SQLException, IOException, AWTException, ParseException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+1;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticleBWSstore(status);
+			htmlToExtent(cName,mName,extLogger,driver,"Navigated to store - "+StoreNo+";;;Info");
+
+			waitFor(1);
+			objEnhancedArticleLookup.home.click();
+			String colour = objEnhancedArticleLookup.Lookup.getCssValue("color");
+			//System.out.println(colour);
+			if(colour.equals("rgba(240, 127, 10, 1)"))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Banner theme is matched for BWS;;;Pass");
+				//Report_AddStep("testcase","Banner theme is matched for BWS" , "", "", "Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Banner theme is mismatched for BWS;;;Fail");
+				//Report_AddStep("testcase","Banner theme is mismatched for BWS" , "", "", "Fail");
+			}
+			String article_sql = data.getText("getCUParticlePBD"); // article query
+			results = sql.executeQueryStore(getContext(), article_sql, getContext().getStringProperty("BWSstore"));
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			removeIndex(results, "1");
+			removeIndex(results, "1");
+			objEnhancedarticleLookUpPage.CUPPrice(objEnhancedArticleLookup, results,"PBD",driver);
+			
+			article_sql = data.getText("getCUParticleCPBD"); // article query
+			results = sql.executeQueryStore(getContext(), article_sql, getContext().getStringProperty("BWSstore"));
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			objEnhancedarticleLookUpPage.CUPPrice(objEnhancedArticleLookup, results,"CPBD",driver);
+		
+			/*if(StoreNo.equals("5796")|| StoreNo.equals("4290"))
+			{}*/
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+			}
+			status.assertAll();
+		}
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Check promo price,Start and end date in detail header with One Card promo")
+		public void CheckPromopriceexcludingOneCardPromo() //throws SQLException, IOException, AWTException, ParseException
+		{
+			if(enhancedArtpreCount21==-1)
+			{
+				MCcount =MCcount+17;
+			}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticleNZ(status);	
+				String SalesOrg = getHiddenTextUsingJs(driver,objEnhancedArticleLookup.StoressalesOrg);
+				if (SalesOrg.equals("2010"))
+				{
+					String ranArticle="";			
+					String articles_sql = data.getText("SellandPromoprice");
+					results = sql.executeQueryStore(getContext(), articles_sql, getContext().getStringProperty("NZstore"));
+					articles_sql = data.getText("startdatePromoprice");
+					results1 = sql.executeQueryStore(getContext(), articles_sql, getContext().getStringProperty("NZstore"));
+					objEnhancedarticleLookUpPage.SellandPromoPricewithBestPrice(objEnhancedArticleLookup, results,results1,driver);
+
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"One Card promotion is not valid for Banners other than NZ;;;Info");
+					//Report_AddStep("testcase","No articles found in DB to check offer and promotions" , "", "", "Fail");
+				}
+				waitFor(1);
+				htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+			}
+			status.assertAll();
+		}
+		
+		
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Check Active promotions for PBD,CPBD articles in bigW")
+		public void enhancedActivePromoBWS() throws SQLException, IOException, AWTException, ParseException
+		{
+			if(enhancedArtpreCount21==-1){
+				MCcount =MCcount+6;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticleBWSstore(status);
+			String ranArticle;			
+
+
+			String articles_sql = data.getText("ActivePBDArt");
+			results = sql.executeQueryStore(getContext(), articles_sql,getContext().getStringProperty("BWSstore"));
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				//ranArticle="25207";
+				articles_sql = data.getText("ActiveDetails").replace("artno", ranArticle);
+				results = sql.executeQueryStore(getContext(), articles_sql,getContext().getStringProperty("BWSstore"));
+				removeLastZero(results, 5);
+				objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+				objEnhancedarticleLookUpPage.offersAndPromotion(objEnhancedArticleLookup, results, ranArticle,"Active","PBD",driver,"");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No PBD articles found in DB to check offer and promotions(Active);;;Fail");
+				//Report_AddStep("testcase","No articles found in DB to check offer and promotions" , "", "", "Fail");
+			}
+			
+			articles_sql = data.getText("ActivePBDgArt");
+			results = sql.executeQueryStore(getContext(), articles_sql,getContext().getStringProperty("BWSstore"));
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				//ranArticle="25207";
+				articles_sql = data.getText("ActivePBDDetails").replace("artno", ranArticle);
+				results = sql.executeQueryStore(getContext(), articles_sql,getContext().getStringProperty("BWSstore"));
+				removeLastZero(results, 5);
+				objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+				objEnhancedarticleLookUpPage.offersAndPromotion(objEnhancedArticleLookup, results, ranArticle,"Active","PBD",driver,"");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No PBD articles with multiple UOM found in DB to check offer and promotions(Active);;;Fail");
+				//Report_AddStep("testcase","No articles found in DB to check offer and promotions" , "", "", "Fail");
+			}
+			
+			articles_sql = data.getText("ActiveCPBDArt");
+			results = sql.executeQueryStore(getContext(), articles_sql,getContext().getStringProperty("BWSstore"));
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				ranArticle="1089";
+				articles_sql = data.getText("ActiveDetails").replace("artno", ranArticle);
+				results = sql.executeQueryStore(getContext(), articles_sql,getContext().getStringProperty("BWSstore"));
+				removeLastZero(results, 5);
+				objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+				objEnhancedarticleLookUpPage.offersAndPromotion(objEnhancedArticleLookup, results, ranArticle,"Active","CPBD",driver,"");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No CPBD articles found in DB to check offer and promotions(Active);;;Fail");
+				//Report_AddStep("testcase","No articles found in DB to check offer and promotions" , "", "", "Fail");
+			}
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+			}
+			status.assertAll();
+		}
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Check Gross Profit for cigaratte article")
+		public void enhancedCheckGrossProfit() throws SQLException, IOException, AWTException, ParseException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+5;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticle(status);
+			String ranArticle;					
+			String articles_sql = data.getText("getarticlecig");
+			results = sql.executeQuery(getContext(), articles_sql);		
+			if((StoreNo.equals("1108"))||(StoreNo.equals("0858"))||(StoreNo.equals("1338"))||(StoreNo.equals("0871"))|| StoreNo.equals("1786"))
+			{
+				objEnhancedarticleLookUpPage.grossprofit(results, objEnhancedArticleLookup,"Cigaratte",driver);
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Cigaratte type of article could not be checked in BWS store(5796);;;Pass");
+				//Report_AddStep("testcase","Cigaratte type of article could not be checked in BWS store(5796)" , "", "", "Pass");
+				waitFor(1);
+				//objEnhancedArticleLookup.backbutton.click();
+			}
+			
+			articles_sql = data.getText("getliq");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				objEnhancedarticleLookUpPage.enterArt(objEnhancedArticleLookup, ranArticle,driver);
+				htmlToExtent(cName,mName,extLogger,driver,"The below details is for liquor article: "+ranArticle+";;;Pass");
+				//Report_AddStep("testcase","The below details is for liquor article: "+ranArticle+" " , "", "", "");
+				String gp = objEnhancedArticleLookup.clickGP2.getAttribute("class");
+				if(gp.contains("hideBlock"))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"No Gross profit tab is available;;;Pass");
+					//Report_AddStep("testcase","No Gross profit tab is available" , "", "", "Pass");
+					objEnhancedArticleLookup.backbutton.click();
+				}	
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Gross profit tab is available;;;Fail");
+					//Report_AddStep("testcase","Gross profit tab is available" , "", "", "Fail");
+					objEnhancedArticleLookup.backbutton.click();
+				}
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No articles found in DB;;;Fail");
+				//Report_AddStep("testcase","No Articles found in DB" , "", "", "Pass");
+				//objEnhancedArticleLookup.backbutton.click();
+			}
+			
+			articles_sql = data.getText("getvendor");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.grossprofit(results, objEnhancedArticleLookup,"SOS - Vendor",driver);
+			
+			articles_sql = data.getText("getWH");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.grossprofit(results, objEnhancedArticleLookup,"SOS - Warehouse",driver);
+			
+			articles_sql = data.getText("getAll");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.grossprofit(results, objEnhancedArticleLookup,"SOS - All",driver);
+					
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+			}	
+			status.assertAll();		
+		}
+		
+		public Object mplsc(List<List<Object>> results1,String queryname,String artname,String storre) //throws IOException, SQLException
+		{
+			if(results1.size()!=0)
+			{
+				int num = common.RandomFromDB(results1);
+				String ranArticle = results1.get(num).get(0).toString();
+				htmlToExtent(cName,mName,extLogger,driver,"The below details is for "+artname+" article - "+ranArticle+";;;Pass");
+				//Report_AddStep("testcase","The below details is for "+artname+" article - "+ranArticle+" " , "", "", "Pass");
+				try {
+					objEnhancedarticleLookUpPage.enterArt(objEnhancedArticleLookup, ranArticle,driver);
+				if(objEnhancedArticleLookup.articleNtFound.isDisplayed())
+				{					
+					//Report_AddStep("testcase","Article not found", "", "", "Pass");
+					if(artname.equals("Not found")&&(getText(objEnhancedArticleLookup.artNtfoundNo).contains(ranArticle))&&(getText(objEnhancedArticleLookup.artNtFound).contains("Call Support if you need more information")))
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Details are available when article "+ranArticle+" is not found in application;;;Pass");
+						//Report_AddStep("testcase","Details are available when article "+ranArticle+" is not found in application" , "", "", "Pass");
+					}
+					else
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"Article "+ranArticle+" not found in Application;;;Fail");
+						//Report_AddStep("testcase","Details are not available when article "+ranArticle+" is not found in application" , "", "", "Pass");
+					}
+					objEnhancedArticleLookup.articleNtFoundclose.click();
+					return null;
+				}
+				else
+				{
+					//List DB = new ArrayList();
+					List<List<Object>> DBList = new ArrayList<List<Object>>();					
+					List<List<Object>> applList = new ArrayList<List<Object>>();
+					List<List<Object>> appList = objEnhancedarticleLookUpPage.checkMPLandSC(objEnhancedArticleLookup,ranArticle,artname,driver);
+					if(appList!=null)
+					{
+						String articlesliq_sql = data.getText(queryname).replace("artno", ranArticle);
+						if(storre.equals("nz")){
+							results1 = sql.executeQueryStore(getContext(), articlesliq_sql, getContext().getStringProperty("NZstore"));
+						}else
+						{
+						results1 = sql.executeQuery(getContext(), articlesliq_sql);}
+						for(int i=0;i<appList.size()*2;i++)
+						{
+							List DB=new ArrayList();							
+							DB.add(decimalFormat(results1.get(i+1).get(3).toString()));
+							DB.add(decimalFormat(results1.get(i).get(3).toString()));
+							DB.add(results1.get(i+1).get(4).toString());
+							DB.add(results1.get(i).get(4).toString());		
+							DBList.add(DB);							
+							i++;							
+						}
+						for(int j=0;j<appList.size();j++)
+						{
+							List app = new ArrayList();
+							app.add(appList.get(j).get(0).toString());
+							app.add(appList.get(j).get(1).toString());
+							app.add(appList.get(j).get(2).toString());
+							app.add(appList.get(j).get(3).toString());
+							applList.add(app);
+						}	
+						replacenullToZero(applList);
+						replacenullToZero(DBList);
+										
+						ElementContains1(cName, mName,extLogger,driver,  applList,DBList);
+						/*
+						if((results1.size()==2)&&(results1.size()!=0))
+						{
+							DB.add(results1.get(1).get(3).toString());
+							DB.add(results1.get(0).get(3).toString());
+							DB.add(results1.get(1).get(4).toString());
+							DB.add(results1.get(0).get(4).toString());
+							DBList.add(DB);
+							app.add(appList.get(0).get(0).toString());
+							app.add(appList.get(0).get(1).toString());
+							app.add(appList.get(0).get(2).toString());
+							app.add(appList.get(0).get(3).toString());
+							applList.add(app);
+							ElementContains1(applList,DBList);
+						}
+						else
+						{
+							Report_AddStep("testcase","No Details found in DB for updated MPL/SC values for article "+ranArticle+"" , "", "", "Fail");
+						}*/
+					}
+					click(objEnhancedArticleLookup.backbutton);		
+				}			
+				}catch(Exception e){
+					htmlToExtent(cName,mName,extLogger,driver,"Exception Occured: "+e.getClass().getSimpleName()+";;;Fail");
+					e.printStackTrace();
+					click(objEnhancedArticleLookup.backbutton);	
+				}
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No "+artname+" Articles found in DB to check MPL/SC;;;Fail");
+				//Report_AddStep("testcase","No Articles found in DB" , "", "", "Fail");
+			}
+			return artname;
+		}
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify MPL/SC for PBD articles in NZ stores")//check mt
+		public void enhancedCheckNZStore() throws SQLException, AWTException, ParseException, IOException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+3;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticleNZ(status);
+			String ranArticle;	
+			
+			String article_sql = data.getText("getarticlecig");
+			results = sql.executeQueryStore(getContext(), article_sql, getContext().getStringProperty("NZstore"));
+			mplsc(results, "verifyMPLSCcigval","PBD","nz");
+
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			List<List<Object>> applList =  new ArrayList<List<Object>>();
+			List<List<Object>> DBList =  new ArrayList<List<Object>>();
+			String art_sql = data.getText("getarticlecig"); // article query
+			results = sql.executeQueryStore(getContext(), article_sql, getContext().getStringProperty("NZstore"));
+			if(results.size()!=0)
+			{
+				List appl = new ArrayList();
+				List DB = new ArrayList();
+				int num = common.RandomFromDB(results);
+				String article = results.get(num).get(0).toString();
+				String POG_sql = data.getText("checkUI").replace("artno", article); // article query
+				results = sql.executeQueryStore(getContext(), POG_sql, getContext().getStringProperty("NZstore"));
+				DB.add(results.get(0).get(1).toString());
+				DB.add(results.get(0).get(2).toString());
+				DB.add(results.get(0).get(3).toString());
+				DBList.add(DB);
+				objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+				objEnhancedarticleLookUpPage.enterArt(objEnhancedArticleLookup, article,driver);
+				appl.add(getText(objEnhancedArticleLookup.unitInfo_brand));
+				appl.add(getText(objEnhancedArticleLookup.unitInfo_ean));
+				appl.add(getText(objEnhancedArticleLookup.unitInfo_uom));
+				applList.add(appl);
+				htmlToExtent(cName,mName,extLogger,driver,"Comparing UnitInfo details (brand,EAN,UOM) for article - "+article+" with backend;;;Pass");
+				//Report_AddStep("testcase","Comparing UnitInfo details (brand,EAN,UOM) for article - "+article+" with backend" , "", "", "");
+								ElementContains1(cName, mName,extLogger,driver, applList, DBList);	
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No 2 level PBD Articles found in DB to check UnitInfo details;;;Fail");
+				//Report_AddStep("testcase","No articles in backend to check UnitInfo details" , "", "", "Fail");
+			}
+			
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			String articlesliq_sql = data.getText("suppInfo");
+			results = sql.executeQueryStore(getContext(), articlesliq_sql, getContext().getStringProperty("NZstore"));		
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String art = results.get(num).get(0).toString();
+				String uom_db = results.get(num).get(1).toString();
+				objEnhancedarticleLookUpPage.enterArt(objEnhancedArticleLookup, art,driver);
+				String uom_app = objEnhancedArticleLookup.suppInfo_UOM.getText();
+				if(uom_db.equals(uom_app))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Supplier info matched with DB for article "+art+";"+uom_app+";"+uom_db+";Pass");
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Supplier info mismatched with DB for article "+art+";"+uom_app+";"+uom_db+";Fail");
+				}
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No 2 level PBD Articles found in DB to verify supplier info;;;Fail");
+				//Report_AddStep("testcase","No Articles found in DB" , "", "", "Fail");
+			}
+			
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			articlesliq_sql = data.getText("repliDetail");
+			results = sql.executeQueryStore(getContext(), articlesliq_sql, getContext().getStringProperty("NZstore"));			
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String art = results.get(num).get(0).toString();
+				objEnhancedarticleLookUpPage.enterArt(objEnhancedArticleLookup, art,driver);
+				List DB = new ArrayList();
+				DB.add(results.get(num).get(1).toString());
+				DB.add(results.get(num).get(2).toString());
+				DB.add(results.get(num).get(3).toString());
+				DBList.add(DB);
+				objEnhancedArticleLookup.clickPUdetails.click();
+				waitFor(1);
+				List<List<Object>> app = objEnhancedarticleLookUpPage.supinfo(objEnhancedArticleLookup,driver);
+				removeIndex(app, "3");
+				removeIndex(app, "0");
+				replacenullToZero(app);
+				htmlToExtent(cName,mName,extLogger,driver,"Comparing Description,Scan Description, sell price for article "+art+";;;Pass");
+				removeExtraSpaces(app,0);	removeExtraSpaces(app,1);	removeExtraSpaces(DBList,0); 	removeExtraSpaces(DBList,1);
+				changeAlphacase(app, 0);changeAlphacase(DBList, 0);
+				ElementContains1(cName, mName,extLogger,driver,  app, DBList);
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No 2 level PBD Articles found in DB to check price/unit info;;;Fail");
+				//Report_AddStep("testcase","No Articles found in DB" , "", "", "Fail");
+			}
+			
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+			}	
+			status.assertAll();		
+		}
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Check POS Price for liquor/cigaratte article")
+		public void enhancedCheckPOSPrice() throws SQLException, IOException, AWTException, ParseException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+4;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticle(status);
+			String ranArticle;		
+			
+			if((StoreNo.equals("1108"))||(StoreNo.equals("0858"))||(StoreNo.equals("1338"))||(StoreNo.equals("0871"))|| StoreNo.equals("1786"))
+			{
+			String articles_sql = data.getText("getarticlecig");
+			results = sql.executeQuery(getContext(), articles_sql);			
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				//ranArticle="22890";
+				objEnhancedarticleLookUpPage.enterArt(objEnhancedArticleLookup, ranArticle,driver);
+				htmlToExtent(cName,mName,extLogger,driver,"The below details is for cigaratte article: "+ranArticle+";;;Pass");
+				//Report_AddStep("testcase","The below details is for cigaratte article: "+ranArticle+" " , "", "", "");
+				if(objEnhancedArticleLookup.articleNtFound.isDisplayed())
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Article not found in application;;;Fail");
+					//Report_AddStep("testcase","Article not found" , "", "", "Fail");
+					objEnhancedArticleLookup.articleNtFoundclose.click();
+				}
+				else
+				{				
+				objEnhancedarticleLookUpPage.checkPOS(objEnhancedArticleLookup,ranArticle,driver);
+				click(objEnhancedArticleLookup.backbutton);	
+				}
+			}	
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No cigaratte articles found in DB to check POS price;;;Fail");
+				//Report_AddStep("testcase","No Articles found in DB for cigaratte articles" , "", "", "Pass");
+			}
+			}
+			if((StoreNo.equals("1108"))||(StoreNo.equals("0858"))||(StoreNo.equals("5796"))|| StoreNo.equals("4290")||(StoreNo.equals("1338"))||(StoreNo.equals("0871"))|| StoreNo.equals("1786"))
+			{
+			String articlesliq_sql = data.getText("getarticleliq");
+			results1 = sql.executeQuery(getContext(), articlesliq_sql);			
+			if(results1.size()!=0)
+			{
+				int num = common.RandomFromDB(results1);
+				ranArticle = results1.get(num).get(0).toString();
+				//ranArticle="107593";
+				objEnhancedarticleLookUpPage.enterArt(objEnhancedArticleLookup, ranArticle,driver);
+				htmlToExtent(cName,mName,extLogger,driver,"The below details is for liquor article: "+ranArticle+";;;Pass");
+				//Report_AddStep("testcase","The below details is for liquor article: "+ranArticle+" " , "", "", "");
+				if(objEnhancedArticleLookup.articleNtFound.isDisplayed())
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Article not found in application;;;Fail");
+					//Report_AddStep("testcase","Article not found" , "", "", "Fail");
+					objEnhancedArticleLookup.articleNtFoundclose.click();
+				}
+				else
+				{				
+				objEnhancedarticleLookUpPage.checkPOS(objEnhancedArticleLookup,ranArticle,driver);
+				click(objEnhancedArticleLookup.backbutton);	
+				}
+			}	
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No liquor articles found in DB to check POS price;;;Fail");
+				//Report_AddStep("testcase","No Articles found in DB for liquor articles" , "", "", "Pass");
+			}
+			}
+			if((StoreNo.equals("1108"))||(StoreNo.equals("0858"))||(StoreNo.equals("1338"))||(StoreNo.equals("0871"))|| StoreNo.equals("1786"))
+			{
+			String articles_sql = data.getText("getwghtarticle");
+			results = sql.executeQuery(getContext(), articles_sql);			
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				objEnhancedarticleLookUpPage.enterArt(objEnhancedArticleLookup, ranArticle,driver);
+				htmlToExtent(cName,mName,extLogger,driver,"The below details is for weighted article: "+ranArticle+";;;Pass");
+				//Report_AddStep("testcase","The below details is for weighted article: "+ranArticle+" " , "", "", "");
+				if(objEnhancedArticleLookup.articleNtFound.isDisplayed())
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Article not found in application;;;Fail");
+					//Report_AddStep("testcase","Article not found" , "", "", "Fail");
+					objEnhancedArticleLookup.articleNtFoundclose.click();
+				}
+				else
+				{				
+				objEnhancedarticleLookUpPage.checkPOS(objEnhancedArticleLookup,ranArticle,driver);
+				click(objEnhancedArticleLookup.backbutton);	
+				}
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No weighted  Articles found in DB to check POS price;;;Fail");
+				//Report_AddStep("testcase","No Articles found in DB for weighted articles" , "", "", "Pass");
+			}
+
+
+			String article_sql = data.getText("getCUParticlePBD"); // article query
+			results = sql.executeQuery(getContext(), article_sql);
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			removeIndex(results, "1");
+			removeIndex(results, "1");
+			objEnhancedarticleLookUpPage.CUPPrice(objEnhancedArticleLookup, results,"PBD",driver);
+			
+			article_sql = data.getText("getCUParticleCPBD"); // article query
+			results = sql.executeQuery(getContext(), article_sql);
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			objEnhancedarticleLookUpPage.CUPPrice(objEnhancedArticleLookup, results,"CPBD",driver); //verify asap
+			
+			}
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+			}
+			status.assertAll();
+		}
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify Facing values in BigW store")
+		public void enhancedFacingValue() throws SQLException, IOException, AWTException, ParseException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+11;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticleBWS(status);
+			String articles_sql = data.getText("getarticle");
+			results = sql.executeQueryStore(getContext(), articles_sql, getContext().getStringProperty("BWSSTORE"));	
+			List<List<Object>> applList = objEnhancedarticleLookUpPage.facing(objEnhancedArticleLookup, results,"Normal",driver);
+			if(applList.size()==0)
+			{}else{
+				int l=0;
+				int siz1 = applList.size();
+				int uomsize1 = applList.get(siz1-1).size();
+				List uom1 = applList.get(siz1-1);
+				String article1 = applList.get(0).get(0).toString();
+				applList.remove(siz1-1);
+			applList.remove(0);
+			for(int i =0 ;i<uomsize1;i++){
+				if(i==0){l=2;}
+				if(i==1){l=5;}
+				if(i==2){l=8;}
+				articles_sql = data.getText("artCheck").replace("artno", article1).replace("UOM", uom1.get(i).toString());
+				results = sql.executeQueryStore(getContext(), articles_sql, getContext().getStringProperty("BWSSTORE"));	
+				replacenullToZero(results);
+				removeLastZero(results, 0);
+				removeLastZero(results, 2);
+				removeLastZero(results, 3);
+				for(int j=0;j<results.size();j++){
+					if(results.get(j).get(1).toString().equals("FACE")){
+				if(applList.get(l).get(0).toString().equals(results.get(j).get(2).toString()))
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "Facing values in application and DB for "+uom1.get(i).toString()+";"+applList.get(l).get(0).toString()+";"+results.get(j).get(2).toString()+";Pass");
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "Facing values in application and DB for "+uom1.get(i).toString()+";"+applList.get(l).get(0).toString()+";"+results.get(j).get(2).toString()+";Fail");
+				}}}
+				removeIndex(results, "1");
+				removeIndex(results, "0");
+				htmlToExtent(cName,mName,extLogger,driver,"Comparing current,default values for MPL,SC,Facing with backend;;;Info");
+				//Report_AddStep("testcase", "Comparing current,default values for MPL,SC,Facing with backend", "", "", "");
+								ElementContains1(cName, mName,extLogger,driver,  results,applList);
+			}
+			}
+			
+			articles_sql = data.getText("getPBDarticle");
+			results = sql.executeQueryStore(getContext(), articles_sql, getContext().getStringProperty("BWSSTORE"));	
+			List<List<Object>> applList1 = objEnhancedarticleLookUpPage.facing(objEnhancedArticleLookup, results,"PBD",driver);
+			if(applList1.size()==0)
+			{}else{
+				int l=0;
+				int siz = applList1.size();
+				int uomsize = applList1.get(siz-1).size();
+				List uom = applList1.get(siz-1);
+				String article = applList1.get(0).get(0).toString();
+				applList1.remove(siz-1);
+			applList1.remove(0);
+			for(int i =0 ;i<uomsize;i++){
+				if(i==0){l=2;}
+				if(i==1){l=5;}
+				if(i==2){l=8;}
+				articles_sql = data.getText("artCheck").replace("artno", article).replace("UOM", uom.get(i).toString());
+				results = sql.executeQueryStore(getContext(), articles_sql, getContext().getStringProperty("BWSSTORE"));	
+				replacenullToZero(results);
+				removeLastZero(results, 0);	removeLastZero(results, 2);
+				removeLastZero(results, 3);
+				for(int j=0;j<results.size();j++){
+					if(results.get(j).get(1).toString().equals("FACE")){
+				if(applList1.get(l).get(0).toString().equals(results.get(j).get(2).toString()))
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "Facing values in application and DB for "+uom.get(i).toString()+";"+applList1.get(l).get(0).toString()+";"+results.get(j).get(2).toString()+";Pass");
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "Facing values in application and DB for "+uom.get(i).toString()+";"+applList1.get(l).get(0).toString()+";"+results.get(j).get(2).toString()+";Fail");
+				}}}
+				removeIndex(results, "1");
+				removeIndex(results, "0");
+				htmlToExtent(cName,mName,extLogger,driver,"Comparing current,default values for MPL,SC,Facing with backend;;;Info");
+				//Report_AddStep("testcase", "Comparing current,default values for MPL,SC,Facing with backend", "", "", "");
+								ElementContains1(cName, mName,extLogger,driver,  results,applList1);
+			}
+			}
+					
+			articles_sql = data.getText("getprepackart");
+			results = sql.executeQueryStore(getContext(), articles_sql, getContext().getStringProperty("BWSSTORE"));	
+			List<List<Object>> applList2 = objEnhancedarticleLookUpPage.facing(objEnhancedArticleLookup, results,"Prepack",driver);
+			if(applList2.size()==0)
+			{}else{
+				int l=0;
+				int siz1 = applList2.size();
+				int uomsize1 = applList2.get(siz1-1).size();
+				List uom1 = applList2.get(siz1-1);
+				String article1 = applList2.get(0).get(0).toString();
+				applList2.remove(siz1-1);
+			applList2.remove(0);
+			for(int i =0 ;i<uomsize1;i++){
+				if(i==0){l=2;}
+				if(i==1){l=5;}
+				if(i==2){l=8;}
+				articles_sql = data.getText("artCheck").replace("artno", article1).replace("UOM", uom1.get(i).toString());
+				results = sql.executeQueryStore(getContext(), articles_sql, getContext().getStringProperty("BWSSTORE"));	
+				replacenullToZero(results);
+				removeLastZero(results, 0);	removeLastZero(results, 2);
+				removeLastZero(results, 3);
+				for(int j=0;j<results.size();j++){
+					if(results.get(j).get(1).toString().equals("FACE")){
+				if(applList2.get(l).get(0).toString().equals(results.get(j).get(2).toString()))
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "Facing values in application and DB for "+uom1.get(i).toString()+";"+applList2.get(l).get(0).toString()+";"+results.get(j).get(2).toString()+";Pass");
+				}
+				else
+				{
+					htmlToExtent(cName,mName,extLogger,driver, "Facing values in application and DB for "+uom1.get(i).toString()+";"+applList2.get(l).get(0).toString()+";"+results.get(j).get(2).toString()+";Fail");
+				}}}
+				removeIndex(results, "1");
+				removeIndex(results, "0");
+				htmlToExtent(cName,mName,extLogger,driver,"Comparing current,default values for MPL,SC,Facing with backend;;;Info");
+				//Report_AddStep("testcase", "Comparing current,default values for MPL,SC,Facing with backend", "", "", "");
+								ElementContains1(cName, mName,extLogger,driver,  results,applList2);
+			}
+			}
+			
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+			}
+			status.assertAll();
+		}
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Check full history for MPL/SC in bigW")
+		public void enhancedFullHistorybigW() throws SQLException, IOException, AWTException, ParseException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+3;}
+			TestStatus status = getTestStatus();		
+			try{
+			navToEnhancedarticleBWS(status);
+			String ranArticle;	
+			
+			String articles_sql = data.getText("getPBDarticle"); // article query
+			results = sql.executeQueryStore(getContext(), articles_sql, getContext().getStringProperty("BWSSTORE"));	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				//ranArticle="695440";
+				objEnhancedarticleLookUpPage.enterArt(objEnhancedArticleLookup, ranArticle,driver);
+				String[] nart = splitString(objEnhancedArticleLookup.article.getText(), " - ");
+				String ntart = nart[0];
+				htmlToExtent(cName,mName,extLogger,driver,"The below details is for article: "+ranArticle+";;;Pass");
+				if(objEnhancedArticleLookup.articleNtFound.isDisplayed())
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Article not found in application;;;Fail");
+					objEnhancedArticleLookup.articleNtFoundclose.click();
+				}
+				else
+				{								
+					objEnhancedarticleLookUpPage.selectionOfArticles(objEnhancedArticleLookup,ranArticle,driver);	
+					click(objEnhancedArticleLookup.editbutton);
+					waitFor(1);
+					if(objEnhancedArticleLookup.mplandsctab.isDisplayed())
+					{
+						fullHist(ranArticle,"bigW",ntart,"PBD");
+					}
+					else
+					{
+						htmlToExtent(cName,mName,extLogger,driver,"The article - "+ranArticle+" has no option for MPL and SC;;;Fail");
+						click(objEnhancedArticleLookup.canceledate);
+						return;
+					}
+				click(objEnhancedArticleLookup.backbutton);		
+				}
+			}	
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No PBD Articles found in DB to check full history;;;Fail");
+			}
+			
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+			}
+			status.assertAll();
+		}
+		
+		public void fullHist(String ranArticle,String storee,String ntart,String art) //throws SQLException, IOException
+		{
+			try{
+			click(objEnhancedArticleLookup.mplandsctab);
+			int size = objEnhancedarticleLookUpPage.FHsize(objEnhancedArticleLookup, ntart,driver);
+			if(size>0){
+			for(int i=1;i<=size;i++)
+			{
+				if(art.equals("CPBD")){
+					htmlToExtent(cName,mName,extLogger,driver,"UOM - EA;;;Pass");
+				}else{
+				WebElement full = null;
+				full = objEnhancedarticleLookUpPage.fullHistry(objEnhancedArticleLookup, i,driver);
+				htmlToExtent(cName,mName,extLogger,driver,"UOM - "+full.getText()+";;;Pass");
+				full.click();}
+				waitFor(1);
+				if(i==1){objEnhancedArticleLookup.fullHistory.click();
+				objEnhancedarticleLookUpPage.waitFn(driver);}
+				if(art.equals("CPBD")){
+				objEnhancedArticleLookup.MPLRB1.click();}else{
+					objEnhancedArticleLookup.MPLRB.click();}
+				String history_sql = data.getText("verifyValues").replace("artno", ranArticle).replace("shelf", "PLNU"); // full history table query
+				switch (storee)
+				{
+				case "bigW":
+					results = sql.executeQueryStore(getContext(), history_sql, getContext().getStringProperty("BWSSTORE"));
+					break;
+				case "SMKT":
+					results = sql.executeQuery(getContext(), history_sql);
+					break;
+				}
+				objEnhancedarticleLookUpPage.fHistory(results, objEnhancedArticleLookup, ranArticle, "MPL",driver);
+				if(art.equals("CPBD")){
+					objEnhancedArticleLookup.SCRB1.click();}else{
+						objEnhancedArticleLookup.SCRB.click();}
+				waitFor(1);
+				history_sql = data.getText("verifyValues").replace("artno", ranArticle).replace("shelf", "CTMU"); // full history table query
+				switch (storee)
+				{
+				case "bigW":
+					results = sql.executeQueryStore(getContext(), history_sql, getContext().getStringProperty("BWSSTORE"));
+				break;
+				case "SMKT":
+					results = sql.executeQuery(getContext(), history_sql);
+					break;
+				}
+				objEnhancedarticleLookUpPage.fHistory(results, objEnhancedArticleLookup, ranArticle, "SC",driver);
+				switch (storee)
+				{
+				case "bigW":
+					objEnhancedArticleLookup.facingRB.click();
+					waitFor(1);
+					history_sql = data.getText("verifyValues").replace("artno", ranArticle).replace("shelf", "FACE"); // full history table query
+					results = sql.executeQueryStore(getContext(), history_sql, getContext().getStringProperty("BWSSTORE"));							
+					objEnhancedarticleLookUpPage.fHistory(results, objEnhancedArticleLookup, ranArticle, "Facing",driver);
+				break;
+				}
+			}
+			}else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Full history not available;;;Fail");
+			}
+			objEnhancedarticleLookUpPage.verticalinternalscroll(objEnhancedArticleLookup.cancelMPLSC,driver);
+			objEnhancedArticleLookup.cancelMPLSC.click();
+			waitFor(1);
+		}catch(Exception e){
+			htmlToExtent(cName,mName,extLogger,driver,"Exception Occured: "+e.getClass().getSimpleName()+";;;Fail");
+			e.printStackTrace();
+		}
+		}
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify values in replinshment tab for bigW store")
+		public void enhancedReplinshmentFunctionalityBWS() throws SQLException, AWTException, ParseException, IOException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+2;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticleBWS(status);
+			String articlesliq_sql = data.getText("getprepackart");
+			results1 = sql.executeQueryStore(getContext(), articlesliq_sql, getContext().getStringProperty("BWSSTORE"));
+			WebElement a = objEnhancedArticleLookup.Prepack;
+			objEnhancedarticleLookUpPage.indicatorReplinishment(results1,objEnhancedArticleLookup,"Prepack", a,driver);
+			
+			articlesliq_sql = data.getText("getprofitableart");
+			results1 = sql.executeQueryStore(getContext(), articlesliq_sql, getContext().getStringProperty("BWSSTORE"));
+			a = objEnhancedArticleLookup.Profitable;
+			objEnhancedarticleLookUpPage.indicatorReplinishment(results1,objEnhancedArticleLookup,"Profitable Line", a,driver);
+			
+			articlesliq_sql = data.getText("getimageLineart");
+			results1 = sql.executeQueryStore(getContext(), articlesliq_sql, getContext().getStringProperty("BWSSTORE"));
+			a = objEnhancedArticleLookup.imageLine;
+			objEnhancedarticleLookUpPage.indicatorReplinishment(results1,objEnhancedArticleLookup,"Iamage line", a,driver);
+			
+			articlesliq_sql = data.getText("getkeyItemart");
+			results1 = sql.executeQueryStore(getContext(), articlesliq_sql, getContext().getStringProperty("BWSSTORE"));
+			a = objEnhancedArticleLookup.KeyItem;
+			objEnhancedarticleLookUpPage.indicatorReplinishment(results1,objEnhancedArticleLookup,"Key Item", a,driver);
+			
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+			}
+			status.assertAll();
+		}
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify Advance search in BigW store")
+		public void enhancedbigWAdvanceSearch() throws SQLException, IOException, AWTException, ParseException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+3;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticleBWS(status);
+			
+			String articles_sql = data.getText("getStylearticle");
+			results = sql.executeQueryStore(getContext(), articles_sql, getContext().getStringProperty("BWSSTORE"));
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				String ranArticle = results.get(num).get(0).toString();
+				String style = results.get(num).get(1).toString();
+				String size = results.get(num).get(2).toString();
+				String colour = results.get(num).get(3).toString();
+				objEnhancedarticleLookUpPage.bigWadv(objEnhancedArticleLookup, style, size, colour, ranArticle, "Style", "",driver);
+								
+				objEnhancedarticleLookUpPage.bigWadv(objEnhancedArticleLookup, style, size, colour, ranArticle, "Style,size", "size",driver);
+
+				objEnhancedarticleLookUpPage.bigWadv(objEnhancedArticleLookup, style, size, colour, ranArticle, "Style,size,colour", "colour",driver);
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No Article found in DB to verify bigW advance serach;;;Fail");
+			}
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+			}
+			status.assertAll();
+		}
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "validating the request for PBD,CPBD,RW,weighted,litre and non PI articles")
+		public void enhancedUnknownItem() throws SQLException, AWTException, ParseException, IOException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+5;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticle(status);
+			String articles_sql = data.getText("RWALCstatus");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			String[] value = objEnhancedarticleLookUpPage.unknowItem(objEnhancedArticleLookup, results, "RandomWeighted","ALC status as 'ES'",driver);
+			if((value[1].equals(""))&&(value[2].equals("")))
+			{}else
+			{
+				unknownItem(value, "RandomWeighted");
+			}
+			
+			articles_sql = data.getText("PBDALCstatus");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			value = objEnhancedarticleLookUpPage.unknowItem(objEnhancedArticleLookup, results, "PBD","ALC status as 'ES'",driver);
+			if((value[1].equals(""))&&(value[2].equals("")))
+			{}else
+			{
+				unknownItem(value, "PBD");
+			}
+			
+			articles_sql = data.getText("WALCstatus");
+			results = sql.executeQuery(getContext(), articles_sql);
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			value = objEnhancedarticleLookUpPage.unknowItem(objEnhancedArticleLookup, results, "Weighted","ALC status as 'ES'",driver);
+			if((value[1].equals(""))&&(value[2].equals("")))
+			{}else
+			{
+				unknownItem(value, "Weighted");
+			}
+			
+			articles_sql = data.getText("LALCstatus");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			value = objEnhancedarticleLookUpPage.unknowItem(objEnhancedArticleLookup, results, "Litre","ALC status as 'ES'",driver);
+			if((value[1].equals(""))&&(value[2].equals("")))
+			{}else
+			{
+				unknownItem(value, "Litre");
+			}
+			
+			articles_sql = data.getText("nonPIsalesstatus");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			value = objEnhancedarticleLookUpPage.unknowItem(objEnhancedArticleLookup, results, "NonPI","with in sales Org",driver);
+			if((value[1].equals(""))&&(value[2].equals("")))
+			{}else
+			{
+				unknownItem(value, "NonPI");
+			}
+			
+			articles_sql = data.getText("PBDsalesstatus");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			value = objEnhancedarticleLookUpPage.unknowItem(objEnhancedArticleLookup, results, "PBD","with in sales Org",driver);
+			if((value[1].equals(""))&&(value[2].equals("")))
+			{}else
+			{
+				unknownItem(value, "PBD");
+			}
+			
+			articles_sql = data.getText("Wsalestatus");
+			results = sql.executeQuery(getContext(), articles_sql);
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			value = objEnhancedarticleLookUpPage.unknowItem(objEnhancedArticleLookup, results, "Weighted","with in sales Org",driver);
+			if((value[1].equals(""))&&(value[2].equals("")))
+			{}else
+			{
+				unknownItem(value, "Weighted");
+			}
+			
+			articles_sql = data.getText("Lsalesstatus");
+			results = sql.executeQuery(getContext(), articles_sql);	
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			value = objEnhancedarticleLookUpPage.unknowItem(objEnhancedArticleLookup, results, "Litre","with in sales Org",driver);
+			if((value[1].equals(""))&&(value[2].equals("")))
+			{}else
+			{
+				unknownItem(value, "Litre");
+			}
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");
+			}/*	
+			}catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver,"Exception Occured: "+e.getClass().getSimpleName()+";;;Fail");
+				e.printStackTrace();
+			}*/
+			status.assertAll();
+		}
+		
+		public void unknownItem(String[] value,String arttype) //throws SQLException, IOException
+		{
+			String articles_sql = data.getText("verifyStatus").replace("artno", value[0]);			
+			try {
+				results = sql.executeQuery(getContext(), articles_sql);
+			if((arttype.equals("PBD")||(arttype.equals("NonPI"))))
+			{
+				removeLastZero(results, 3);
+				removeLastZero(results, 7);
+			}
+			if((value[1].equals(results.get(0).get(3).toString()))&&(value[2].equals(results.get(0).get(7).toString()))&&(value[3].equals(results.get(0).get(4).toString())))
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Adjusted SOH,endSOH,endSOH UOM matched in backend;;;Pass");
+				//Report_AddStep("testcase","Adjusted SOH,endSOH,endSOH UOM matched in backend" , "", "", "Pass");
+			}
+			else if(arttype.equals("NonPI"))
+			{
+				if((value[1].equals(results.get(0).get(3).toString())))
+				{
+					htmlToExtent(cName,mName,extLogger,driver,"Adjusted SOHmatched in backend for non PI;;;Pass");
+				}
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Adjusted SOH,endSOH,endSOH UOM mismatched in backend;;;Fail");
+				//Report_AddStep("testcase","Adjusted SOH,endSOH,endSOH UOM mismatched in backend" , "", "", "Fail");
+			}
+			articles_sql = data.getText("getRangingRost").replace("artno", value[0]);			
+			results = sql.executeQuery(getContext(), articles_sql);	
+			if(results.size()==1)
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Requested for ranging updated in backend;;;Pass");
+				//Report_AddStep("testcase","Requested for ranging updated in backend" , "", "", "Pass");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"Requested for ranging not updated in backend;;;Fail");
+				//Report_AddStep("testcase","Requested for ranging not updated in backend" , "", "", "Fail");
+			}
+			}catch(Exception e){
+				htmlToExtent(cName,mName,extLogger,driver,"Exception Occured: "+e.getClass().getSimpleName()+";;;Info");
+				e.printStackTrace();
+			}
+		}
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Verify values in replinshment tab")
+		public void enhancedReplinshmentFunctionality() throws SQLException, AWTException, ParseException, IOException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+8;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticle(status);
+			String ranArticle="";	
+			
+			String articlesliq_sql = data.getText("getASart");
+			results1 = sql.executeQuery(getContext(), articlesliq_sql);	
+			WebElement a = objEnhancedArticleLookup.ASrepl;
+			objEnhancedarticleLookUpPage.indicatorReplinishment(results1,objEnhancedArticleLookup,"Automatic Store Replenishment", a,driver);
+
+			articlesliq_sql = data.getText("getSRart");
+			results1 = sql.executeQuery(getContext(), articlesliq_sql);	
+			a = objEnhancedArticleLookup.SRrepl;
+			objEnhancedarticleLookUpPage.indicatorReplinishment(results1,objEnhancedArticleLookup,"Shelf Ready Replenishment", a,driver);
+
+			articlesliq_sql = data.getText("getdisp");
+			results1 = sql.executeQuery(getContext(), articlesliq_sql);	
+			a = objEnhancedArticleLookup.disprepl;
+			objEnhancedarticleLookUpPage.indicatorReplinishment(results1,objEnhancedArticleLookup,"Display Replenishment", a,driver);
+
+			articlesliq_sql = data.getText("getart");
+			results = sql.executeQuery(getContext(), articlesliq_sql);				
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				//ranArticle="160138";
+				List DB = new ArrayList();
+				List<List<Object>> DBList = new ArrayList<List<Object>>();				
+				DB.add(results.get(num).get(1).toString());
+				//DB.add(results.get(num).get(2).toString());
+				DB.add(results.get(num).get(3).toString());
+				DBList.add(DB);
+				List<List<Object>> applList = objEnhancedarticleLookUpPage.replinshmentDetail("first",objEnhancedArticleLookup, ranArticle,driver);
+				if(applList.isEmpty()){}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Comparing Delivery roaster,following delivery;;;Pass");
+					//Report_AddStep("testcase","Comparing Delivery roaster,Next Delivery,following delivery" , "", "", "");
+									ElementContains1(cName, mName,extLogger,driver,  applList, DBList);}
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No Articles found in DB to check for replinishement functionality(Delivery roaster,Next Delivery,following delivery);;;Fail");
+				//Report_AddStep("testcase","No Articles found in DB to check for replinishement functionality" , "", "", "Fail");
+			}
+
+
+			articlesliq_sql = data.getText("getart1");
+			results = sql.executeQuery(getContext(), articlesliq_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString(); //"160138";
+				List DB = new ArrayList();
+				List<List<Object>> DBList = new ArrayList<List<Object>>();	
+				DB.add(results.get(num).get(2).toString());
+				String[] ordQty = splitString(results.get(num).get(1).toString(), " ");
+				String[] rcvdQty = splitString(results.get(num).get(3).toString(), " ");
+				try{DB.add(decimalFormat(ordQty[0]) +" "+ordQty[1]);}catch(Exception e){DB.add(decimalFormat(ordQty[0]));}		
+				try{DB.add(decimalFormat(rcvdQty[0]) +" "+rcvdQty[1]);}catch(Exception e){DB.add(decimalFormat(rcvdQty[0]));}
+				DBList.add(DB);
+				List<List<Object>> applList = objEnhancedarticleLookUpPage.replinshmentDetail("second",objEnhancedArticleLookup, ranArticle,driver);
+				if(applList.isEmpty()){}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Comparing Last received,Last ordered qty,Last received qty;;;Pass");
+					//Report_AddStep("testcase","Comparing Last received,Last ordered qty,Last received qty" , "", "", "");
+									ElementContains1(cName, mName,extLogger,driver,  applList, DBList);}
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No Articles found in DB to check for replinishement functionality(Last received,Last ordered qty,Last received qty);;;Fail");
+				//Report_AddStep("testcase","No Articles found in DB to check for replinishement functionality" , "", "", "Fail");
+			}
+			
+			articlesliq_sql = data.getText("getperpetualart");
+			results = sql.executeQuery(getContext(), articlesliq_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString(); //"160138";
+				List DB = new ArrayList();
+				List<List<Object>> DBList = new ArrayList<List<Object>>();	
+				DB.add(results.get(num).get(1).toString());
+				DB.add(results.get(num).get(2).toString());
+				DBList.add(DB);								
+				List<List<Object>> applList = objEnhancedarticleLookUpPage.replinshmentDetail("third",objEnhancedArticleLookup, ranArticle,driver);
+				if(applList.isEmpty()){}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Comparing perpetual UOM/OM;;;Pass");
+					//Report_AddStep("testcase","Comparing perpetual UOM/OM" , "", "", "");
+									ElementContains1(cName, mName,extLogger,driver,  applList, DBList);}
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No Articles found in DB to check for replinishement functionality(perpetual);;;Fail");
+				//Report_AddStep("testcase","No Articles found in DB to check for replinishement functionality(perpetual)" , "", "", "Fail");
+			}
+			
+			articlesliq_sql = data.getText("weekDay");
+			results = sql.executeQuery(getContext(), articlesliq_sql);
+			String day = results.get(0).get(0).toString();
+			articlesliq_sql = data.getText("getDOHart").replace("wday", day);
+			results = sql.executeQuery(getContext(), articlesliq_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString(); //"160138";
+				List DB = new ArrayList();
+				List<List<Object>> DBList = new ArrayList<List<Object>>();
+				removeLastZero(results, 1);
+				DB.add(results.get(num).get(1).toString());
+				DBList.add(DB);								
+				List<List<Object>> applList = objEnhancedarticleLookUpPage.replinshmentDetail("fourth",objEnhancedArticleLookup, ranArticle,driver);
+				if(applList.isEmpty()){}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Comparing DOH (store_soh>1) with backend;;;Pass");
+					//Report_AddStep("testcase","Comparing perpetual UOM/OM" , "", "", "");
+					removeLastZero(applList, 0);
+									ElementContains1(cName, mName,extLogger,driver,  applList, DBList);}
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No Articles found in DB to check DOH;;;Fail");
+				//Report_AddStep("testcase","No Articles found in DB to check for replinishement functionality(perpetual)" , "", "", "Fail");
+			}
+			
+			articlesliq_sql = data.getText("getDOHart1").replace("wday", day);
+			results = sql.executeQuery(getContext(), articlesliq_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString(); //"160138";
+				List DB = new ArrayList();
+				List<List<Object>> DBList = new ArrayList<List<Object>>();
+				removeLastZero(results, 1);
+				DB.add(results.get(num).get(1).toString());
+				DBList.add(DB);								
+				List<List<Object>> applList = objEnhancedarticleLookUpPage.replinshmentDetail("fourth",objEnhancedArticleLookup, ranArticle,driver);
+				if(applList.isEmpty()){}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Comparing DOH (store_soh<1) with backend;;;Pass");
+					//Report_AddStep("testcase","Comparing perpetual UOM/OM" , "", "", "");
+					removeLastZero(applList, 0);
+									ElementContains1(cName, mName,extLogger,driver,  applList, DBList);}
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No Articles found in DB to check DOH;;;Fail");
+				//Report_AddStep("testcase","No Articles found in DB to check for replinishement functionality(perpetual)" , "", "", "Fail");
+			}
+			
+			articlesliq_sql = data.getText("getDOHart2").replace("wday", day);
+			results = sql.executeQuery(getContext(), articlesliq_sql);	
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString(); //"160138";
+				List DB = new ArrayList();
+				List<List<Object>> DBList = new ArrayList<List<Object>>();
+				removeLastZero(results, 1);
+				DB.add(results.get(num).get(1).toString());
+				DBList.add(DB);								
+				List<List<Object>> applList = objEnhancedarticleLookUpPage.replinshmentDetail("fourth",objEnhancedArticleLookup, ranArticle,driver);
+				if(applList.isEmpty()){}else{
+					htmlToExtent(cName,mName,extLogger,driver,"Comparing DOH (store_soh=1) with backend;;;Pass");
+					//Report_AddStep("testcase","Comparing perpetual UOM/OM" , "", "", "");
+					removeLastZero(applList, 0);
+									ElementContains1(cName, mName,extLogger,driver,  applList, DBList);}
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No Articles found in DB to check DOH;;;Fail");
+				//Report_AddStep("testcase","No Articles found in DB to check for replinishement functionality(perpetual)" , "", "", "Fail");
+			}
+
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+				 
+			}
+			status.assertAll();
+		}
+		
+		@Test(dependsOnMethods={"au.wow.ngbomain.tests.Sampletest.check"},description = "Check sell price,promo price,Start and end date in detail header")
+		public void enhancedSellandPromoPrice() throws SQLException, IOException, AWTException, ParseException
+		{
+			if(enhancedArtpreCount21==-1){
+			MCcount =MCcount+17;}
+			TestStatus status = getTestStatus();
+			try{
+			navToEnhancedarticle(status);	
+			String ranArticle;			
+			String articles_sql = data.getText("SellandPromoprice");
+			results = sql.executeQuery(getContext(), articles_sql);
+			articles_sql = data.getText("startdatePromoprice");
+			results1 = sql.executeQuery(getContext(), articles_sql);
+			objEnhancedarticleLookUpPage.SellandPromoPrice(objEnhancedArticleLookup, results,results1,driver);
+			
+			articles_sql = data.getText("ActiveArt");
+			results = sql.executeQuery(getContext(), articles_sql);
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				//ranArticle="25207";
+				articles_sql = data.getText("ActiveDetails").replace("artno", ranArticle);
+				results = sql.executeQuery(getContext(), articles_sql);
+				removeLastZero(results, 5);
+				objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+				objEnhancedarticleLookUpPage.offersAndPromotion(objEnhancedArticleLookup, results, ranArticle,"Active","normal",driver,"");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No normal articles found in DB to check offer and promotions(Active);;;Fail");
+				//Report_AddStep("testcase","No articles found in DB to check offer and promotions" , "", "", "Fail");
+			}
+			
+			
+			articles_sql = data.getText("ActivePBDArt");
+			results = sql.executeQuery(getContext(), articles_sql);
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				//ranArticle="25207";
+				articles_sql = data.getText("ActiveDetails").replace("artno", ranArticle);
+				results = sql.executeQuery(getContext(), articles_sql);
+				removeLastZero(results, 5);
+				objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+				objEnhancedarticleLookUpPage.offersAndPromotion(objEnhancedArticleLookup, results, ranArticle,"Active","PBD",driver,"");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No PBD articles found in DB to check offer and promotions(Active);;;Fail");
+				//Report_AddStep("testcase","No articles found in DB to check offer and promotions" , "", "", "Fail");
+			}
+			
+			articles_sql = data.getText("ActiveCPBDArt");
+			results = sql.executeQuery(getContext(), articles_sql);
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				//ranArticle="25207";
+				articles_sql = data.getText("ActiveDetails").replace("artno", ranArticle);
+				results = sql.executeQuery(getContext(), articles_sql);
+				removeLastZero(results, 5);
+				objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+				objEnhancedarticleLookUpPage.offersAndPromotion(objEnhancedArticleLookup, results, ranArticle,"Active","CPBD",driver,"");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No CPBD articles found in DB to check offer and promotions(Active);;;Fail");
+				//Report_AddStep("testcase","No articles found in DB to check offer and promotions" , "", "", "Fail");
+			}
+						
+			articles_sql = data.getText("futureArt");
+			results = sql.executeQuery(getContext(), articles_sql);			
+			if(results.size()!=0)
+			{				
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				String update = results.get(num).get(2).toString();
+				num = common.RandomFromDB(results);
+				String ranArticle1 = results.get(num).get(0).toString();
+				String update1 = results.get(num).get(2).toString();
+				String strt = common.ConvertdateFormat(1);
+				String end =  common.ConvertdateFormat(10);
+				String updatelockstatus_sql = data.getText("updfutureArt").replace("strt", strt).replace("end", end).replace("artno", update);
+				sql.executeQuery_CUD(getContext(), updatelockstatus_sql);
+				articles_sql = data.getText("futureDetails").replace("artno", ranArticle);
+				results = sql.executeQuery(getContext(), articles_sql);
+				objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+				objEnhancedarticleLookUpPage.offersAndPromotion(objEnhancedArticleLookup, results,ranArticle,"Future","normal",driver,"avail");
+				
+				strt = common.ConvertdateFormat(9);
+				end =  common.ConvertdateFormat(18);
+				updatelockstatus_sql = data.getText("updfutureArt").replace("strt", strt).replace("end", end).replace("artno", update1);
+				sql.executeQuery_CUD(getContext(), updatelockstatus_sql);
+				articles_sql = data.getText("futureDetails").replace("artno", ranArticle1);
+				results = sql.executeQuery(getContext(), articles_sql);
+				htmlToExtent(cName,mName,extLogger,driver,"Updated article - "+ranArticle1+" start date ("+strt+") to check;;;Pass");
+				objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+				objEnhancedarticleLookUpPage.offersAndPromotion(objEnhancedArticleLookup, results,ranArticle1,"Future","normal",driver,"notavail");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No normal articles found in DB to check offer and promotions(Future);;;Fail");
+				//Report_AddStep("testcase","No articles found in DB to check offer and promotions" , "", "", "Fail");
+			}
+			
+			articles_sql = data.getText("pastArt");
+			results = sql.executeQuery(getContext(), articles_sql);
+			if(results.size()!=0)
+			{
+				int num = common.RandomFromDB(results);
+				ranArticle = results.get(num).get(0).toString();
+				//ranArticle="25207";
+				articles_sql = data.getText("pastDetails").replace("artno", ranArticle);
+				results = sql.executeQuery(getContext(), articles_sql);
+				removeLastZero(results, 5);
+				objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+				objEnhancedarticleLookUpPage.offersAndPromotion(objEnhancedArticleLookup, results,ranArticle,"Past","normal",driver,"");
+			}
+			else
+			{
+				htmlToExtent(cName,mName,extLogger,driver,"No normal articles found in DB to check offer and promotions(Past);;;Fail");
+				//Report_AddStep("testcase","No articles found in DB to check offer and promotions" , "", "", "Fail");
+			}
+			
+			waitFor(1);
+			htmlToExtent(cName,mName,extLogger,driver,loginPage.logoutFromAppl(enhancedArtScenarios1, enhancedArttestname1,driver));
+			}catch(Exception e)
+			{
+				 isExceptionCaptured=writeException(cName,mName,extLogger,driver,e);;  htmlToExtent(cName,mName,extLogger,driver,"Logout from application;;;Pass");;
+			}	
+			status.assertAll();		
+		}
+				
+		public void navToEnhancedarticle(TestStatus status) throws AWTException  
+		{
+			log.info("---------------Login into Application--------------------");
+			htmlToExtent(cName,mName,extLogger,driver,"---------------Login into Application--------------------;;;Pass");
+			//Report_AddStep("testcase", "---------------Login into Application--------------------","","", "Pass");
+			loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+			if(System.getProperty("store")==null){
+				StoreNo = getContext().getStringProperty("store");
+				htmlToExtent(cName,mName,extLogger,driver,"Login with the Store : " + getContext().getStringProperty("store")+";;;Pass");
+				objEnhancedarticleLookUpPage = loginPage.navToEnhancedarticle2(getContext().getStringProperty("store"),driver);
+			}else{
+				storeprop.getStoreDetails(System.getProperty("store"));
+				//System.out.println(store);
+				StoreNo = store;
+				objEnhancedarticleLookUpPage = loginPage.navToEnhancedarticle2(store,driver);
+			}
+				
+			log.info("-------------Navigate to Article Look Up Page------------");
+			htmlToExtent(cName,mName,extLogger,driver,"----------------Navigate to Article Look Up Page--------------------;;;Pass");
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+			waitFor(1);			
+		}
+
+		public void navToEnhancedarticleBWS(TestStatus status) throws IOException, AWTException 
+		{ //0858
+			log.info("---------------Login into Application--------------------");
+			htmlToExtent(cName,mName,extLogger,driver,"---------------Login into Application--------------------;;;Pass");
+			loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+			storeprop.getStoreDetails(getContext().getStringProperty("BWSSTORE"));
+			//System.out.println("Eclipse:"+ store);
+			StoreNo = getContext().getStringProperty("BWSSTORE");
+			htmlToExtent(cName,mName,extLogger,driver,"Login with the Store : " + getContext().getStringProperty("BWSSTORE")+";;;Pass");
+			objEnhancedarticleLookUpPage = loginPage.navToEnhancedarticle2(getContext().getStringProperty("BWSSTORE"),driver);
+			log.info("-------------Navigate to Article Look Up Page------------");
+			htmlToExtent(cName,mName,extLogger,driver,"----------------Navigate to Article Look Up Page--------------------;;;Pass");	
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+		}
+		
+		public void navToEnhancedarticleNZ(TestStatus status) throws IOException, AWTException
+		{ //9786
+			log.info("---------------Login into Application--------------------");
+			htmlToExtent(cName,mName,extLogger,driver,"---------------Login into Application--------------------;;;Pass");
+			loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+			storeprop.getStoreDetails(getContext().getStringProperty("NZstore"));
+			//System.out.println("Eclipse:"+ store);
+			StoreNo = getContext().getStringProperty("NZstore");
+			htmlToExtent(cName,mName,extLogger,driver,"Login with the Store : " + getContext().getStringProperty("NZstore")+";;;Pass");
+			objEnhancedarticleLookUpPage = loginPage.navToEnhancedarticle2(getContext().getStringProperty("NZstore"),driver);
+			log.info("-------------Navigate to Article Look Up Page------------");
+			htmlToExtent(cName,mName,extLogger,driver,"----------------Navigate to Article Look Up Page--------------------;;;Pass");
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+		}
+
+		public void navToEnhancedarticleBWSstore(TestStatus status) throws IOException, AWTException 
+		{ //5796
+			log.info("---------------Login into Application--------------------");
+			htmlToExtent(cName,mName,extLogger,driver,"---------------Login into Application--------------------;;;Pass");
+			loginPage = new WoWLoginPage().createPage(driver, getContext(), log, status, data, WoWLoginPage.class);
+			storeprop.getStoreDetails(getContext().getStringProperty("BWSstore"));
+			//System.out.println("Eclipse:"+ store);
+			StoreNo = getContext().getStringProperty("BWSstore");
+			htmlToExtent(cName,mName,extLogger,driver,"Login with the Store : " + getContext().getStringProperty("BWSstore")+";;;Pass");
+			objEnhancedarticleLookUpPage = loginPage.navToEnhancedarticle2(getContext().getStringProperty("BWSstore"),driver);
+			log.info("-------------Navigate to Article Look Up Page------------");
+			htmlToExtent(cName,mName,extLogger,driver,"----------------Navigate to Article Look Up Page--------------------;;;Pass");
+			objEnhancedarticleLookUpPage.clickOnArticleReportReport(objEnhancedArticleLookup,driver);
+		}
+		
+		
+		
+		@BeforeMethod(alwaysRun=true)
+		public void setUp(Method m9,ITestContext testcontext) throws IOException, InterruptedException
+		{
+			waitFor(2);
+            mName=m9.getName().toString().trim();			
+			if(!methodList.contains(m9.getName().toString().trim())){
+			methodList.add(m9.getName().toString().trim());
+			extLogger = extReport.startTest(m9.getName().toString().trim());
+			}
+			initializeTestcontext();
+			System.out.println("test1 - beforemethod");
+			log.info("Loading Testdata for the test case: " + m9.getName().toString());
+			data.getTCNameFromChildren(m9.getName().toString().trim());
+			if(isFirstTest){
+				driver=createDriver(TestContext.getStringProperty("baseURL"), TestContext.getStringProperty("browser"), cName, mName, extLogger,driver);
+			}else{
+				String title = driver.getCurrentUrl();
+				if(title.contains("logginOut"))
+				{
+					driver.navigate().refresh();
+					TimeUnit.SECONDS.sleep(5);
+				}else{
+					driver.navigate().refresh();
+					TimeUnit.SECONDS.sleep(5);
+					if(driver.findElements(By.xpath("//*[@class='homeLink']")).size()>0)
+					{
+						try{
+						if(driver.findElement(By.xpath("//*[@class='homeLink']")).isDisplayed()){
+							WebElement  home = driver.findElement(By.xpath("//*[@class='homeLink']"));
+							scrolltoElement(home,driver);
+							home.click();
+							TimeUnit.SECONDS.sleep(5);
+							loginPage.Logout(RoutinesArtScenarios, RoutinesArttestname, driver);
+							driver.navigate().refresh();
+							TimeUnit.SECONDS.sleep(5);}
+						}catch(Exception e){
+							driver.navigate().to(TestContext.getStringProperty("baseURL"));
+						}
+					}else{
+						driver.navigate().to(TestContext.getStringProperty("baseURL"));
+					}
+				}
+			}
+				isFirstTest=false;
+			
+			//driver=createDriver(getContext().getStringProperty("baseURL"), getContext().getStringProperty("browser"));
+			setDriver(driver);
+			testcontext.setAttribute("WebDriver", driver);
+			testcontext.setAttribute("Customreports", this.customreport);
+			customreport.startTest(m9.getName().toString());
+			initializeTestStatus();
+			reportPath = new File(getContext().getStringProperty("reportPath"));
+			enhancedArttestname1 = m9.getName().toString().trim();
+			enhancedArttestdesc1 = m9.getAnnotation(Test.class).description();
+			htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Docker run - "+getContext().getStringProperty("isDocketRun")+"</h4></i></b>;;;Info");
+			objEnhancedArticleLookup = PageFactory.initElements(driver, EnhancedArticleLookUpObjects.class);
+			objEnhancedarticleLookUpPage = PageFactory.initElements(driver, EnhancedArticleLookUpPage1.class);
+			//objInStoreDisplayPromotionsObjects = PageFactory.initElements(driver, InStoreDisplayPromotionsObjects.class);
+			BaseObj = PageFactory.initElements(driver, BasePage.class);
+			common = PageFactory.initElements(driver, CommonFunctions.class);
+			storeprop = PageFactory.initElements(driver, StoreProperties.class);
+		}
+		
+		@BeforeClass
+		public void loadXMLFile(){	
+			//initializeTestcontext();
+			System.out.println("test1 - Beforeclass");
+			data = new XMLDataReader(log);
+			customreport=new CustomExtentReports();
+			log.info("Loading data for the class: " );
+			data.loadTestDataXML(System.getProperty("user.dir") + "\\TestData\\NGBO\\enhancedarticlelookup.xml");
+			customreport.createExtentReport();
+			cName=this.getClass().getSimpleName();
+			reportPath = new File(TestContext.getStringProperty("reportPath"));			
+			extReport = new ExtentReports(TestContext.getStringProperty("reportPath") +"\\"+this.getClass().getSimpleName()+".html");
+			classList.add(this.getClass().getSimpleName());
+		}
+		
+		
+		
+		@AfterClass(alwaysRun=true)
+		public void tearDown() throws IOException, ParseException{
+			waitFor(1);
+			System.out.println("afterclass");
+			sceCtMap.put(cName+"_totalCt", methodList.size());
+			sceCtMap.put(cName+"_passCt", methodList.size() - extentList.get(cName).size());
+			sceCtMap.put(cName+"_failCt", extentList.get(cName).size());
+			tcCt.put(this.getClass().getSimpleName().toString(),MCcount);
+			//System.out.println(extentList);
+			//System.out.println(methodList);
+            extReport.endTest(extLogger);
+			extReport.flush();
+			removeDriver();
+			closeDriver(driver);
+			waitFor(1);
+			moduleName.put("Modules", enhancedArtModules1);
+			waitFor(1);
+			int enhancedArtM=MCcount;
+			enhancedArtMC1=""+enhancedArtM;
+		}
+
+
+		@AfterMethod(alwaysRun=true)
+		protected void flushReports(ITestResult result9,Method m9) throws IOException, ParseException {
+			System.out.println("AffterMethod");
+			extReport.endTest(extLogger);
+			extReport.flush();
+			try{
+				if(result9.getAttribute("isFail").equals("true")&& !isExceptionCaptured){
+					htmlToExtent(cName,mName,extLogger,driver,"Iteration terminated due to error;;;INFO");	
+					result9.removeAttribute("isFail");
+				}}catch(Exception e ){
+					//System.out.println();
+				
+				}
+/*
+			waitFor(1);
+			Date ppMEndDate1 = new Date();
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			enhancedArtMEndDate1 = dateFormat.format(ppMEndDate1);
+			//System.out.println(enhancedArtMEndDate1); // 12/01/2011 4:48:16 PM
+			String enhancedArtTime1 = enhancedArttestdesc1 +";"+ enhancedArtStartdat1 +";" + enhancedArtMEndDate1;
+
+			enhancedArtTime1.put(enhancedArttestname1, enhancedArtTime1);
+			//Report_AddStep("testcase", "Running Completed Status","","", getResultStatusName(result.getStatus()));
+			waitFor(4);*/
+			//closeDriver(driver);
+			/*if(recount!=3 && recount!=0){	
+				result9.setStatus(ITestResult.FAILURE);
+			}*/
+			if(getResultStatusName(result9.getStatus()).equalsIgnoreCase("Fail")|| getResultStatusName(result9.getStatus()).equalsIgnoreCase("Info")){
+				int cnt = enhancedArtpreCount21+1;
+				htmlToExtent(cName,mName,extLogger,driver,"<b><i><h4>Completed Status : Iteration - "+ cnt +"</h4></i></b>;;;Warning");
+				enhancedArtpreCount21++;
+			}
+		//	closeDriver(driver);
+			customreport.getExtentReport().endTest(customreport.getExtentTest());
+			customreport.getExtentReport().flush();
+			waitFor(1);
+			if(enhancedArtpreCount21==reCount || getResultStatusName(result9.getStatus()).equalsIgnoreCase("Pass")){
+				enhancedArtpreCount21=-1;
+			}
+			waitFor(1);
+			
+		}
+
+
+
+}

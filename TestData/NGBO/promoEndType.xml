@@ -1,0 +1,718 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<TCName name = "rcandScreenCheck">
+<promoOfferNo>
+<![CDATA[SELECT distinct(prom_offer_no) 
+FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN where site = 'store_no' and disp_type = 'disptype' and disp_no ='dispno'
+ and end_type = 'endtype']]>
+</promoOfferNo>
+<sourceTable>
+ <![CDATA[select distinct (a.article),b.build_qty,b.disp_qty,b.prom_price,b.std_price,b.disc_prct
+ from Prom_site_article_detail a,PROM_ABLD_BLD_QTY_EXPAN b
+ where a.prom_offer_no = 'promo_no'
+ and a.site = 'store_no'
+ and b.disp_type = 'disptype'
+ and b.disp_no = 'dispno'
+ and a.disp_start_date = b.disp_start_date
+ and a.disp_end_date = b.disp_end_date
+ and b.build_qty = a.advert_order_qty
+ order by b.build_qty desc]]>
+</sourceTable>
+<disptype>
+<![CDATA[SELECT DISTINCT expan.disp_type, NVL(disp_type.dply_type_desc,expan.disp_type) description, prio.display_type_val,expan.disp_no
+FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN expan, RC_OPERATIONAL.display_type_prio prio , RC_MASTER.display_type disp_type
+WHERE expan.site          = 'store_no'
+AND expan.department      = 'dept_no'
+AND expan.week_start_date = TO_DATE('startingWeek','DD/MM/YYYY')
+AND expan.disp_type=prio.display_type_ind
+AND prio.active_flag='Y' 
+AND expan.disp_type=disp_type.dply_type_ind
+AND expan.disp_no=disp_type.dply_no
+AND expan.disp_alpha=disp_type.dply_alpha_ind
+order by prio.display_type_val nulls last]]>
+</disptype>
+<weeks>
+<![CDATA[select NEXT_DAY(sysdate-7,calendar_start_day) "week_1" ,
+NEXT_DAY(sysdate,calendar_start_day) "week_2" ,
+NEXT_DAY(sysdate+7,calendar_start_day) "week_3" ,
+NEXT_DAY(sysdate+14,calendar_start_day) "week_4",
+NEXT_DAY(sysdate+21,calendar_start_day) "week_5",
+NEXT_DAY(sysdate+28,calendar_start_day) "week_6",
+NEXT_DAY(sysdate+35,calendar_start_day) "week_7",
+NEXT_DAY(sysdate+42,calendar_start_day) "week_8",
+NEXT_DAY(sysdate+49,calendar_start_day) "week_9"
+from sales_org_calendar where sales_org='salesorg']]>
+</weeks>
+<artDetails>
+<![CDATA[SELECT psa.*,
+psd.display_qty AS original_disp_qty
+FROM
+(SELECT distinct expan.prom_offer_no,
+expan.article,
+expan.article_uom,
+am.article_desc,
+expan.disp_type,
+expan.disp_no,
+expan.disp_alpha,
+expan.site,
+expan.sales_org,
+expan.end_type,
+expan.disp_start_date,
+expan.disp_end_date,
+expan.build_qty as new_build_qty,
+expan.disp_qty as new_disp_qty,
+expan.week_start_date AS week_start_date,
+expan.lock_flg,
+to_number( NVL(expan.prom_price,NVL(expan.std_price,0))) AS promo_price,
+to_number( NVL(expan.std_price,0) ) - to_number( NVL(expan.prom_price,NVL(expan.std_price,0))) AS SAVINGS,
+expan.dflt_flag,
+psad.advert_order_qty AS original_build_qty,
+expan.prom_start_date,
+expan.prom_end_date,
+expan.promo_type
+FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN expan,
+RC_MASTER.Article_master am,
+RC_OPERATIONAL.prom_site_article_detail psad
+WHERE expan.site ='store_no'
+AND expan.disp_type ='displaytype'
+AND expan.department ='department_no'
+AND expan.week_start_date=TO_DATE('startingWeek','DD/MM/YYYY')
+AND EXPAN.disp_no ='displayNo'
+--AND expan.dflt_flag='1'
+AND expan.article =am.article
+AND expan.prom_offer_no =psad.prom_offer_no
+AND expan.SITE =psad.SITE
+AND expan.ARTICLE =psad.ARTICLE
+AND expan.ARTICLE_UOM =psad.ARTICLE_UOM
+AND expan.disp_type =psad.disp_type
+AND expan.disp_no =psad.disp_no
+AND expan.disp_alpha =psad.disp_alpha
+AND expan.disp_start_date=psad.disp_start_date
+AND expan.disp_end_date =psad.disp_end_date
+AND expan.SALES_ORG =psad.SALES_ORG
+AND EXPAN.DELETED_DTETM is null
+)psa
+LEFT OUTER JOIN PROM_SITE_DISPLAY_DETAIL psd
+ON ( psa.PROM_OFFER_NO = psd.PROM_OFFER_NO
+AND psa.SALES_ORG = psd.SALES_ORG
+AND psa.SITE = psd.SITE
+AND psa.ARTICLE = psd.ARTICLE
+AND psa.ARTICLE_UOM = psd.ARTICLE_UOM
+AND psa.disp_type = psd.display_type
+AND psa.disp_no = psd.display_no
+AND psa.disp_alpha = psd.display_alpha
+AND psd.END_DATE >= psa.week_start_date
+AND psd.start_date <= psa.week_start_date+7 )
+ORDER BY psa.disp_type,
+psa.disp_no,
+psa.new_build_qty desc ]]>
+</artDetails>
+</TCName>
+
+
+<TCName name = "promoEndTypeScreen">
+<artDetails>
+<![CDATA[SELECT psa.*,
+psd.display_qty AS original_disp_qty
+FROM
+(SELECT distinct expan.prom_offer_no,
+expan.article,
+expan.article_uom,
+am.article_desc,
+expan.disp_type,
+expan.disp_no,
+expan.disp_alpha,
+expan.site,
+expan.sales_org,
+expan.end_type,
+expan.disp_start_date,
+expan.disp_end_date,
+expan.build_qty as new_build_qty,
+expan.disp_qty as new_disp_qty,
+expan.week_start_date AS week_start_date,
+expan.lock_flg,
+to_number( NVL(expan.prom_price,NVL(expan.std_price,0))) AS promo_price,
+to_number( NVL(expan.std_price,0) ) - to_number( NVL(expan.prom_price,NVL(expan.std_price,0))) AS SAVINGS,
+expan.dflt_flag,
+psad.advert_order_qty AS original_build_qty,
+expan.prom_start_date,
+expan.prom_end_date,
+expan.promo_type
+FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN expan,
+RC_MASTER.Article_master am,
+RC_OPERATIONAL.prom_site_article_detail psad
+WHERE expan.site ='store_no'
+AND expan.disp_type ='displaytype'
+AND expan.department ='department_no'
+AND EXPAN.ARTICLE = 'art_no'
+AND expan.week_start_date=TO_DATE('startingWeek','DD/MM/YYYY')
+AND expan.article =am.article
+AND expan.prom_offer_no =psad.prom_offer_no
+AND expan.SITE =psad.SITE
+AND expan.ARTICLE =psad.ARTICLE
+AND expan.ARTICLE_UOM =psad.ARTICLE_UOM
+AND expan.disp_type =psad.disp_type
+AND expan.disp_no =psad.disp_no
+AND expan.disp_alpha =psad.disp_alpha
+AND expan.disp_start_date=psad.disp_start_date
+AND expan.disp_end_date =psad.disp_end_date
+AND expan.SALES_ORG =psad.SALES_ORG
+AND EXPAN.DELETED_DTETM is null
+)psa
+LEFT OUTER JOIN PROM_SITE_DISPLAY_DETAIL psd
+ON ( psa.PROM_OFFER_NO = psd.PROM_OFFER_NO
+AND psa.SALES_ORG = psd.SALES_ORG
+AND psa.SITE = psd.SITE
+AND psa.ARTICLE = psd.ARTICLE
+AND psa.ARTICLE_UOM = psd.ARTICLE_UOM
+AND psa.disp_type = psd.display_type
+AND psa.disp_no = psd.display_no
+AND psa.disp_alpha = psd.display_alpha
+AND psd.END_DATE >= psa.week_start_date
+AND psd.start_date <= psa.week_start_date+7 )
+ORDER BY psa.disp_type,
+psa.disp_no,
+psa.new_build_qty desc ]]>
+</artDetails>
+</TCName>
+
+<TCName name = "validationRCDataScreen">
+<promoOfferNo>
+<![CDATA[SELECT distinct(prom_offer_no) 
+FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN where site = 'store_no' and disp_type = 'disptype' and disp_no ='dispno'
+ and end_type = 'endtype']]>
+</promoOfferNo>
+<sourceTable>
+ <![CDATA[select distinct (a.article),b.build_qty,b.disp_qty,b.prom_price,b.std_price,b.disc_prct
+ from Prom_site_article_detail a,PROM_ABLD_BLD_QTY_EXPAN b
+ where a.prom_offer_no = 'promo_no'
+ and a.site = 'store_no'
+ and b.disp_type = 'disptype'
+ and b.disp_no = 'dispno'
+ and a.disp_start_date = b.disp_start_date
+ and a.disp_end_date = b.disp_end_date
+ and b.build_qty = a.advert_order_qty
+ order by b.build_qty desc]]>
+</sourceTable>
+<disptype>
+<![CDATA[SELECT DISTINCT expan.disp_type, NVL(disp_type.dply_type_desc,expan.disp_type) description, prio.display_type_val,expan.disp_no
+FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN expan, RC_OPERATIONAL.display_type_prio prio , RC_MASTER.display_type disp_type
+WHERE expan.site          = 'store_no'
+AND expan.department      = 'dept_no'
+AND expan.week_start_date = TO_DATE('startingWeek','DD/MM/YYYY')
+AND expan.disp_type=prio.display_type_ind
+AND prio.active_flag='Y' 
+AND expan.disp_type=disp_type.dply_type_ind
+AND expan.disp_no=disp_type.dply_no
+AND expan.disp_alpha=disp_type.dply_alpha_ind
+order by prio.display_type_val nulls last]]>
+</disptype>
+<disptype1>
+<![CDATA[select ADVERT_ORDER_QTY from RC_operational.prom_site_article_detail where site='store_no' and disp_type='dispType' and disp_no='dispNo' and article='articleNum']]>
+</disptype1>
+<weeks>
+<![CDATA[select NEXT_DAY(sysdate-7,calendar_start_day) "week_1" ,
+NEXT_DAY(sysdate,calendar_start_day) "week_2" ,
+NEXT_DAY(sysdate+7,calendar_start_day) "week_3" ,
+NEXT_DAY(sysdate+14,calendar_start_day) "week_4",
+NEXT_DAY(sysdate+21,calendar_start_day) "week_5",
+NEXT_DAY(sysdate+28,calendar_start_day) "week_6",
+NEXT_DAY(sysdate+35,calendar_start_day) "week_7",
+NEXT_DAY(sysdate+42,calendar_start_day) "week_8",
+NEXT_DAY(sysdate+49,calendar_start_day) "week_9"
+from sales_org_calendar where sales_org='salesorg']]>
+</weeks>
+<artDetails>
+<![CDATA[SELECT psa.*,
+psd.display_qty AS original_disp_qty
+FROM
+(SELECT distinct expan.prom_offer_no,
+expan.article,
+expan.article_uom,
+am.article_desc,
+expan.disp_type,
+expan.disp_no,
+expan.disp_alpha,
+expan.site,
+expan.sales_org,
+expan.end_type,
+expan.disp_start_date,
+expan.disp_end_date,
+expan.build_qty as new_build_qty,
+expan.disp_qty as new_disp_qty,
+expan.week_start_date AS week_start_date,
+expan.lock_flg,
+to_number( NVL(expan.prom_price,NVL(expan.std_price,0))) AS promo_price,
+to_number( NVL(expan.std_price,0) ) - to_number( NVL(expan.prom_price,NVL(expan.std_price,0))) AS SAVINGS,
+expan.dflt_flag,
+psad.advert_order_qty AS original_build_qty,
+expan.prom_start_date,
+expan.prom_end_date,
+expan.promo_type
+FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN expan,
+RC_MASTER.Article_master am,
+RC_OPERATIONAL.prom_site_article_detail psad
+WHERE expan.site ='store_no'
+AND expan.disp_type ='displaytype'
+AND expan.department ='department_no'
+AND expan.week_start_date=TO_DATE('startingWeek','DD/MM/YYYY')
+AND expan.article =am.article
+AND expan.prom_offer_no =psad.prom_offer_no
+AND expan.SITE =psad.SITE
+AND expan.ARTICLE =psad.ARTICLE
+AND expan.ARTICLE_UOM =psad.ARTICLE_UOM
+AND expan.disp_type =psad.disp_type
+AND expan.disp_no =psad.disp_no
+AND expan.disp_alpha =psad.disp_alpha
+AND expan.disp_start_date=psad.disp_start_date
+AND expan.disp_end_date =psad.disp_end_date
+AND expan.SALES_ORG =psad.SALES_ORG
+AND EXPAN.DELETED_DTETM is null
+)psa
+LEFT OUTER JOIN PROM_SITE_DISPLAY_DETAIL psd
+ON ( psa.PROM_OFFER_NO = psd.PROM_OFFER_NO
+AND psa.SALES_ORG = psd.SALES_ORG
+AND psa.SITE = psd.SITE
+AND psa.ARTICLE = psd.ARTICLE
+AND psa.ARTICLE_UOM = psd.ARTICLE_UOM
+AND psa.disp_type = psd.display_type
+AND psa.disp_no = psd.display_no
+AND psa.disp_alpha = psd.display_alpha
+AND psd.END_DATE >= psa.week_start_date
+AND psd.start_date <= psa.week_start_date+7 )
+ORDER BY psa.disp_type,
+psa.disp_no,
+psa.new_build_qty desc ]]>
+</artDetails>
+<buildQty>
+<![CDATA[
+SELECT psa.*,psd.display_qty AS original_disp_qty FROM 
+(SELECT distinct expan.prom_offer_no,    
+expan.article,  
+expan.article_uom,   
+am.article_desc, 
+expan.department,
+psad.advert_order_date,
+expan.disp_type,  
+expan.disp_no,  
+expan.disp_alpha,  
+expan.site,   
+expan.sales_org,  
+expan.end_type, 
+expan.disp_start_date,
+expan.disp_end_date, 
+expan.build_qty as new_build_qty,  
+expan.disp_qty as new_disp_qty,
+expan.week_start_date AS week_start_date,  
+expan.lock_flg,
+to_number( NVL(psad.PROMO_PRICE,NVL(psad.std_price,0))) AS promo_price, 
+to_number( NVL(psad.std_price,0) ) - to_number( NVL(psad.PROMO_PRICE,NVL(psad.std_price,0))) AS SAVINGS,   
+expan.dflt_flag,
+psad.advert_order_qty AS original_build_qty,  
+expan.prom_start_date,   
+expan.prom_end_date, 
+expan.promo_type, 
+au.uom_conv_fact, 
+au.uom_conv_type, 
+au.base_uom_flag, 
+al.source_of_supply_ind,
+al.orderable_uom, 
+al.distribution_uom, 
+al.pi_om_val, 
+am.ARTICLE_UOM art_mas_uom , 
+am.pi_uom  FROM
+RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN expan, 
+RC_MASTER.ARTICLE_MASTER am,
+RC_MASTER.ARTICLE_UOM au,
+RC_MASTER.ARTICLE_LISTING al,  
+RC_OPERATIONAL.PROM_SITE_ARTICLE_DETAIL psad  WHERE  expan.site ='storeNo'
+AND expan.disp_type ='displayNo' 
+AND expan.department  ='deptNo'
+AND expan.disp_no='dispNo' 
+and expan.article='artNo'
+--AND expan.dflt_flag='1'
+AND  expan.DISP_START_DATE <= TO_DATE('dispStartingDate','DD/MM/YYYY')+6 
+AND expan.DISP_END_DATE >= TO_DATE('dispEndingDate','DD/MM/YYYY') AND expan.article =am.article 
+AND expan.ARTICLE = au.ARTICLE  
+and expan.ARTICLE_UOM = au.ARTICLE_UOM  
+and expan.ARTICLE =al.ARTICLE 
+and expan.ARTICLE_UOM = al.ARTICLE_UOM 
+and expan.SITE=al.site 
+and expan.SALES_ORG=al.SALES_ORG 
+AND expan.prom_offer_no  =psad.prom_offer_no
+AND expan.SITE =psad.SITE 
+AND expan.ARTICLE =psad.ARTICLE
+AND expan.ARTICLE_UOM =psad.ARTICLE_UOM
+AND expan.disp_type =psad.disp_type 
+AND expan.disp_no =psad.disp_no )psa
+LEFT OUTER JOIN PROM_SITE_DISPLAY_DETAIL psd
+ON ( psa.PROM_OFFER_NO = psd.PROM_OFFER_NO
+AND psa.SALES_ORG = psd.SALES_ORG
+AND psa.SITE = psd.SITE
+AND psa.ARTICLE = psd.ARTICLE
+AND psa.ARTICLE_UOM = psd.ARTICLE_UOM
+AND psa.disp_type = psd.display_type
+AND psa.disp_no = psd.display_no
+AND psa.disp_alpha = psd.display_alpha
+AND psd.END_DATE >= psa.week_start_date
+AND psd.start_date <= psa.week_start_date+7 )
+ORDER BY psa.disp_type,
+psa.disp_no,
+psa.new_build_qty desc ]]>
+</buildQty>
+</TCName>
+
+<TCName name="endTypeAndBuildQtyRelation">
+<artDetails>
+<![CDATA[SELECT psa.*,
+psd.display_qty AS original_disp_qty
+FROM
+(SELECT distinct expan.prom_offer_no,
+expan.article,
+expan.article_uom,
+am.article_desc,
+expan.disp_type,
+expan.disp_no,
+expan.disp_alpha,
+expan.site,
+expan.sales_org,
+expan.end_type,
+expan.disp_start_date,
+expan.disp_end_date,
+expan.build_qty as new_build_qty,
+expan.disp_qty as new_disp_qty,
+expan.week_start_date AS week_start_date,
+expan.lock_flg,
+to_number( NVL(expan.prom_price,NVL(expan.std_price,0))) AS promo_price,
+to_number( NVL(expan.std_price,0) ) - to_number( NVL(expan.prom_price,NVL(expan.std_price,0))) AS SAVINGS,
+expan.dflt_flag,
+psad.advert_order_qty AS original_build_qty,
+expan.prom_start_date,
+expan.prom_end_date,
+expan.promo_type
+FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN expan,
+RC_MASTER.Article_master am,
+RC_OPERATIONAL.prom_site_article_detail psad
+WHERE expan.site ='store_no'
+AND expan.disp_type ='displaytype'
+AND expan.department ='department_no'
+--AND expan.dflt_flag='1'
+and expan.disp_no = 'displaynumber'
+AND expan.week_start_date=TO_DATE('startingWeek','DD/MM/YYYY')
+AND expan.article =am.article
+AND expan.prom_offer_no =psad.prom_offer_no
+AND expan.SITE =psad.SITE
+AND expan.ARTICLE =psad.ARTICLE
+AND expan.ARTICLE_UOM =psad.ARTICLE_UOM
+AND expan.disp_type =psad.disp_type
+AND expan.disp_no =psad.disp_no
+AND expan.disp_alpha =psad.disp_alpha
+AND expan.disp_start_date=psad.disp_start_date
+AND expan.disp_end_date =psad.disp_end_date
+AND expan.SALES_ORG =psad.SALES_ORG
+AND EXPAN.DELETED_DTETM is null
+)psa
+LEFT OUTER JOIN PROM_SITE_DISPLAY_DETAIL psd
+ON ( psa.PROM_OFFER_NO = psd.PROM_OFFER_NO
+AND psa.SALES_ORG = psd.SALES_ORG
+AND psa.SITE = psd.SITE
+AND psa.ARTICLE = psd.ARTICLE
+AND psa.ARTICLE_UOM = psd.ARTICLE_UOM
+AND psa.disp_type = psd.display_type
+AND psa.disp_no = psd.display_no
+AND psa.disp_alpha = psd.display_alpha
+AND psd.END_DATE >= psa.week_start_date
+AND psd.start_date <= psa.week_start_date+7 )
+ORDER BY psa.disp_type,
+psa.disp_no,
+psa.new_build_qty desc ]]>
+</artDetails>
+<oldendtype>
+<![CDATA[select * from RC_OPERATIONAL.PROM_SITE_END_TYPE_ADT_LOG where article = 'article_no' and site = 'store_no' and prog_source_id !='RC' and created_user='username']]>
+</oldendtype>
+</TCName>
+
+
+<TCName name="pbdAndCpbdArticleTypes">
+<artDetails>
+<![CDATA[SELECT psa.*,
+psd.display_qty AS original_disp_qty
+FROM
+(SELECT distinct expan.prom_offer_no,
+expan.article,
+expan.article_uom,
+am.article_desc,
+expan.disp_type,
+expan.disp_no,
+expan.disp_alpha,
+expan.site,
+expan.sales_org,
+expan.end_type,
+expan.disp_start_date,
+expan.disp_end_date,
+expan.build_qty as new_build_qty,
+expan.disp_qty as new_disp_qty,
+expan.week_start_date AS week_start_date,
+expan.lock_flg,
+to_number( NVL(expan.prom_price,NVL(expan.std_price,0))) AS promo_price,
+to_number( NVL(expan.std_price,0) ) - to_number( NVL(expan.prom_price,NVL(expan.std_price,0))) AS SAVINGS,
+expan.dflt_flag,
+psad.advert_order_qty AS original_build_qty,
+expan.prom_start_date,
+expan.prom_end_date,
+expan.promo_type
+FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN expan,
+RC_MASTER.Article_master am,
+RC_OPERATIONAL.prom_site_article_detail psad
+WHERE expan.site ='store_no'
+AND expan.disp_type ='displaytype'
+AND EXPAN.DISP_NO = 'displayNo'
+AND expan.department ='department_no'
+--AND expan.dflt_flag='1'
+--AND expan.week_start_date=TO_DATE('startingWeek','DD/MM/YYYY')
+AND expan.article =am.article
+AND expan.prom_offer_no =psad.prom_offer_no
+AND expan.SITE =psad.SITE
+AND expan.ARTICLE =psad.ARTICLE
+AND expan.ARTICLE_UOM =psad.ARTICLE_UOM
+AND expan.disp_type =psad.disp_type
+AND expan.disp_no =psad.disp_no
+AND expan.disp_alpha =psad.disp_alpha
+AND expan.disp_start_date=psad.disp_start_date
+AND expan.disp_end_date =psad.disp_end_date
+AND expan.SALES_ORG =psad.SALES_ORG
+AND EXPAN.DELETED_DTETM is null
+)psa
+LEFT OUTER JOIN PROM_SITE_DISPLAY_DETAIL psd
+ON ( psa.PROM_OFFER_NO = psd.PROM_OFFER_NO
+AND psa.SALES_ORG = psd.SALES_ORG
+AND psa.SITE = psd.SITE
+AND psa.ARTICLE = psd.ARTICLE
+AND psa.ARTICLE_UOM = psd.ARTICLE_UOM
+AND psa.disp_type = psd.display_type
+AND psa.disp_no = psd.display_no
+AND psa.disp_alpha = psd.display_alpha
+AND psd.END_DATE >= psa.week_start_date
+AND psd.start_date <= psa.week_start_date+7 )
+ORDER BY psa.disp_type,
+psa.disp_no,
+psa.new_build_qty desc ]]>
+</artDetails>
+</TCName>
+
+<TCName name = "seperationAndDollorSign" >
+<artDetails>
+<![CDATA[SELECT psa.*,psd.display_qty AS original_disp_qty FROM 
+(SELECT distinct expan.prom_offer_no,    
+expan.article,  
+expan.article_uom,   
+am.article_desc, 
+expan.department,
+psad.advert_order_date,
+expan.disp_type,  
+expan.disp_no,  
+expan.disp_alpha,  
+expan.site,   
+expan.sales_org,  
+expan.end_type, 
+expan.disp_start_date,
+expan.disp_end_date, 
+expan.build_qty as new_build_qty,  
+expan.disp_qty as new_disp_qty,
+expan.week_start_date AS week_start_date,  
+expan.lock_flg,
+to_number( NVL(psad.PROMO_PRICE,NVL(psad.std_price,0))) AS promo_price, 
+to_number( NVL(psad.std_price,0) ) - to_number( NVL(psad.PROMO_PRICE,NVL(psad.std_price,0))) AS SAVINGS,   
+expan.dflt_flag,
+psad.advert_order_qty AS original_build_qty,  
+expan.prom_start_date,   
+expan.prom_end_date, 
+expan.promo_type, 
+au.uom_conv_fact, 
+au.uom_conv_type, 
+au.base_uom_flag, 
+al.source_of_supply_ind,
+al.orderable_uom, 
+al.distribution_uom, 
+al.pi_om_val, 
+am.ARTICLE_UOM art_mas_uom , 
+am.pi_uom  FROM
+RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN expan, 
+RC_MASTER.ARTICLE_MASTER am,
+RC_MASTER.ARTICLE_UOM au,
+RC_MASTER.ARTICLE_LISTING al,  
+RC_OPERATIONAL.PROM_SITE_ARTICLE_DETAIL psad  WHERE  expan.site ='store_no'
+AND expan.disp_type ='displaytype' 
+AND expan.department  ='department_no'
+AND expan.disp_no='displayNumber' 
+and expan.article='art_no'
+--AND expan.dflt_flag='1'
+AND  expan.DISP_START_DATE <= TO_DATE('dispStartDate','DD/MM/YYYY')+6 
+AND expan.DISP_END_DATE >= TO_DATE('dispEndDate','DD/MM/YYYY') AND expan.article =am.article 
+AND expan.ARTICLE = au.ARTICLE  
+and expan.ARTICLE_UOM = au.ARTICLE_UOM  
+and expan.ARTICLE =al.ARTICLE 
+and expan.ARTICLE_UOM = al.ARTICLE_UOM 
+and expan.SITE=al.site 
+and expan.SALES_ORG=al.SALES_ORG 
+AND expan.prom_offer_no  =psad.prom_offer_no
+AND expan.SITE =psad.SITE 
+AND expan.ARTICLE =psad.ARTICLE
+AND expan.ARTICLE_UOM =psad.ARTICLE_UOM
+AND expan.disp_type =psad.disp_type 
+AND expan.disp_no =psad.disp_no )psa
+LEFT OUTER JOIN PROM_SITE_DISPLAY_DETAIL psd
+ON ( psa.PROM_OFFER_NO = psd.PROM_OFFER_NO
+AND psa.SALES_ORG = psd.SALES_ORG
+AND psa.SITE = psd.SITE
+AND psa.ARTICLE = psd.ARTICLE
+AND psa.ARTICLE_UOM = psd.ARTICLE_UOM
+AND psa.disp_type = psd.display_type
+AND psa.disp_no = psd.display_no
+AND psa.disp_alpha = psd.display_alpha
+AND psd.END_DATE >= psa.week_start_date
+AND psd.start_date <= psa.week_start_date+7 )
+ORDER BY psa.disp_type,
+psa.disp_no,
+psa.new_build_qty desc ]]>
+</artDetails>
+<expanTable>
+<![CDATA[SELECT  distinct disp_start_date,disp_end_date FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN WHERE SITE = 'store_no' AND ARTICLE = 'art_no']]>
+</expanTable>
+</TCName>
+
+<TCName name = "lockInEndType">
+<availableCheck>
+<![CDATA[SELECT * FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN WHERE ARTICLE = 'art_no' AND SITE = 'store_no' -- AND DFLT_FLAG = '1']]>
+</availableCheck>
+<updatinglock>
+<![CDATA[UPDATE RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN SET LOCK_FLG = 'lock_value'  WHERE ARTICLE = 'art_no' AND SITE = 'store_no' --AND DFLT_FLAG = '1']]>
+</updatinglock>
+<revertinglockFlag>
+<![CDATA[UPDATE RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN SET LOCK_FLG = null  WHERE ARTICLE = 'art_no' AND SITE = 'store_no' --AND DFLT_FLAG = '1']]>
+</revertinglockFlag>
+<commit>
+<![CDATA[commit]]>
+</commit>
+</TCName>
+
+<TCName name = "lockInBuildQuantity">
+<availableCheckEXPAN>
+<![CDATA[SELECT * FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN WHERE ARTICLE = 'art_no' AND SITE = 'store_no' --AND DFLT_FLAG = '1']]>
+</availableCheckEXPAN>
+<availableCheckSITEDETAIL>
+<![CDATA[SELECT * FROM RC_OPERATIONAL.PROM_SITE_ARTICLE_DETAIL WHERE ARTICLE ='art_no' AND SITE = 'store_no' AND PROM_OFFER_NO = 'promotionID']]>
+</availableCheckSITEDETAIL>
+<buildLockFlag>
+<![CDATA[UPDATE RC_OPERATIONAL.PROM_SITE_ARTICLE_DETAIL SET BUILD_LOCK_FLAG = 'lock_value' WHERE ARTICLE ='art_no' AND SITE = 'store_no' AND PROM_OFFER_NO = 'promotionID']]>
+</buildLockFlag>
+<revertingLockFlag>
+<![CDATA[UPDATE RC_OPERATIONAL.PROM_SITE_ARTICLE_DETAIL SET BUILD_LOCK_FLAG = null WHERE ARTICLE ='art_no' AND SITE = 'store_no' AND PROM_OFFER_NO = 'promotionID']]>
+</revertingLockFlag>
+</TCName>
+
+<TCName name = "lockInStoreDemand">
+<week>
+<![CDATA[select NEXT_DAY(sysdate-7,calendar_start_day) "week_1" ,
+NEXT_DAY(sysdate,calendar_start_day) "week_2" ,
+NEXT_DAY(sysdate+7,calendar_start_day) "week_3" ,
+NEXT_DAY(sysdate+14,calendar_start_day) "week_4",
+NEXT_DAY(sysdate+21,calendar_start_day) "week_5",
+NEXT_DAY(sysdate+28,calendar_start_day) "week_6",
+NEXT_DAY(sysdate+35,calendar_start_day) "week_7",
+NEXT_DAY(sysdate+42,calendar_start_day) "week_8",
+NEXT_DAY(sysdate+49,calendar_start_day) "week_9"
+from sales_org_calendar where sales_org='salesorg']]>
+</week>
+<availableCheckEXPAN>
+<![CDATA[SELECT * FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN WHERE ARTICLE = 'art_no' AND SITE = 'store_no'-- AND DFLT_FLAG = '1']]>
+</availableCheckEXPAN>
+<availableCheckSITEDETAIL>
+<![CDATA[SELECT * FROM RC_OPERATIONAL.PROM_SITE_ARTICLE_DETAIL WHERE ARTICLE ='art_no' AND SITE = 'store_no' AND PROM_OFFER_NO = 'promotionID']]>
+</availableCheckSITEDETAIL>
+<availableCheckFCST>
+<![CDATA[SELECT * FROM RC_OPERATIONAL.PROM_SITE_ARTICLE_FCST_DETAIL WHERE SITE = 'store_no' AND ARTICLE = 'art_no' AND WEEK_START_DATE = 'weekStartDate' ]]>
+</availableCheckFCST>
+<defDemandValue>
+<![CDATA[SELECT STORE_DMND_QTY_ORIG FROM RC_OPERATIONAL.PROM_SITE_ARTICLE_FCST_DETAIL WHERE SITE = 'store_no' AND ARTICLE = 'art_no' AND WEEK_START_DATE = 'weekStartDate']]>
+</defDemandValue>
+<demandLockFlag>
+<![CDATA[UPDATE RC_OPERATIONAL.PROM_SITE_ARTICLE_FCST_DETAIL SET STORE_DMND_LOCK_FLAG = 'lock_value'  WHERE SITE = 'store_no' AND ARTICLE = 'art_no' AND WEEK_START_DATE = 'weekStartDate' ]]>
+</demandLockFlag>
+<revertingLockFlag>
+<![CDATA[UPDATE RC_OPERATIONAL.PROM_SITE_ARTICLE_FCST_DETAIL SET STORE_DMND_LOCK_FLAG = null  WHERE SITE = 'store_no' AND ARTICLE = 'art_no' AND WEEK_START_DATE = 'weekStartDate' ]]>
+</revertingLockFlag>
+</TCName>
+
+
+<TCName name = "lockInDisplayQty">
+<week>
+<![CDATA[select NEXT_DAY(sysdate-7,calendar_start_day) "week_1" ,
+NEXT_DAY(sysdate,calendar_start_day) "week_2" ,
+NEXT_DAY(sysdate+7,calendar_start_day) "week_3" ,
+NEXT_DAY(sysdate+14,calendar_start_day) "week_4",
+NEXT_DAY(sysdate+21,calendar_start_day) "week_5",
+NEXT_DAY(sysdate+28,calendar_start_day) "week_6",
+NEXT_DAY(sysdate+35,calendar_start_day) "week_7",
+NEXT_DAY(sysdate+42,calendar_start_day) "week_8",
+NEXT_DAY(sysdate+49,calendar_start_day) "week_9"
+from sales_org_calendar where sales_org='salesorg']]>
+</week>
+<availableCheckEXPAN>
+<![CDATA[SELECT * FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN WHERE ARTICLE = 'art_no' AND SITE = 'store_no' --AND DFLT_FLAG = '1']]>
+</availableCheckEXPAN>
+<availableCheckSITEDETAIL>
+<![CDATA[SELECT * FROM RC_OPERATIONAL.PROM_SITE_ARTICLE_DETAIL WHERE ARTICLE ='art_no' AND SITE = 'store_no' AND PROM_OFFER_NO = 'promotionID']]>
+</availableCheckSITEDETAIL>
+<availableCheckFCST>
+<![CDATA[SELECT * FROM RC_OPERATIONAL.PROM_SITE_ARTICLE_FCST_DETAIL WHERE SITE = 'store_no' AND ARTICLE = 'art_no' AND WEEK_START_DATE = 'weekStartDate' ]]>
+</availableCheckFCST>
+<defDisplayValue>
+<![CDATA[SELECT display_qty_orig FROM RC_OPERATIONAL.PROM_SITE_DISPLAY_DETAIL WHERE ARTICLE ='art_no' AND SITE = 'store_no' AND PROM_OFFER_NO = 'promotionID' ORDER BY updte_dtetm DESC]]>
+</defDisplayValue>
+<displayLockFlag>
+<![CDATA[UPDATE RC_OPERATIONAL.PROM_SITE_ARTICLE_FCST_DETAIL SET DISPLAY_QTY_LOCK_FLAG = 'lock_value'  WHERE SITE = 'store_no' AND ARTICLE = 'art_no' AND WEEK_START_DATE = 'weekStartDate' ]]>
+</displayLockFlag>
+<revertingLockFlag>
+<![CDATA[UPDATE RC_OPERATIONAL.PROM_SITE_ARTICLE_FCST_DETAIL SET DISPLAY_QTY_LOCK_FLAG = null  WHERE SITE = 'store_no' AND ARTICLE = 'art_no' AND WEEK_START_DATE = 'weekStartDate' ]]>
+</revertingLockFlag>
+</TCName>
+
+
+
+<TCName name = "deliveryDateAdvertDateRelation">
+<availableCheckEXPAN>
+<![CDATA[SELECT distinct prom_offer_no FROM RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN WHERE SITE = 'store_no'  and ARTICLE ='art_no' ]]>
+</availableCheckEXPAN>
+<availableCheckDETAIL>
+<![CDATA[SELECT * FROM RC_OPERATIONAL.PROM_SITE_ARTICLE_DETAIL WHERE  SITE = 'store_no' and prom_offer_no = 'promo_id' and ARTICLE ='art_no' ]]>
+</availableCheckDETAIL>
+<date>
+<![CDATA[select next_day(sysdate-7,calendar_start_day) "week_1" from sales_org_calendar where sales_org='1005']]>
+</date>
+<dateUpdate>
+<![CDATA[UPDATE RC_OPERATIONAL.PROM_SITE_ARTICLE_DETAIL SET START_DATE = 'startDate' , ADVERT_ORDER_DATE = 'advertDate' , delivery_date = 'delDate' WHERE  SITE = 'store_no'  and ARTICLE ='art_no' and prom_offer_no = 'promoID']]>
+</dateUpdate>
+<expanDateUpdate>
+<![CDATA[update RC_OPERATIONAL.PROM_ABLD_BLD_QTY_EXPAN  set week_start_date = 'weekStartDate' , prom_start_date = 'promoStartDate'  WHERE  SITE = 'store_no'  and ARTICLE ='art_no' and prom_offer_no = 'promoID' ]]>
+</expanDateUpdate>
+<revertingDate>
+<![CDATA[UPDATE RC_OPERATIONAL.PROM_SITE_ARTICLE_DETAIL SET START_DATE = 'startDate' , ADVERT_ORDER_DATE = null , delivery_date = null WHERE  SITE = 'store_no'  and ARTICLE ='art_no' and prom_offer_no = 'promoID']]>
+</revertingDate>
+</TCName>
+
+
+<TCName name = "pilotURLTesting">
+<pilotstore>
+<![CDATA[select * from STORE_USER_INFO.ngbo_pilot_stores order by werks  desc]]>
+</pilotstore>
+</TCName>
+
+
+<TCName name = "pilotURLTesting_AdjLog">
+<pilotstore>
+<![CDATA[select * from STORE_USER_INFO.ngbo_pilot_stores order by werks  desc]]>
+</pilotstore>
+</TCName>
+
+</configuration>

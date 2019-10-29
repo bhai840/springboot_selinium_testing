@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite configfailurepolicy="continue" name="Failed suite [StoresCentral_TestSuite]">
+  <test name="POC_tests(failed)" parallel="classes">
+    <classes>
+      <class name="au.wow.ngbomain.tests.ReceiveOrderTest">
+        <methods>
+          <include name="setUp"/>
+          <include name="tearDown"/>
+          <include name="flushReports"/>
+          <include name="loadXMLFile"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.ReceiveOrderTest -->
+      <class name="au.wow.ngbomain.tests.InventoryReportTests">
+        <methods>
+          <include name="verifyInventoryReportAdditonalCriteriaSOH"/>
+          <include name="loadXMLFile"/>
+          <include name="verifyInventoryReportSOH_MPL_PartialDepartment"/>
+          <include name="verifyLastSoldDate"/>
+          <include name="setUp"/>
+          <include name="verifySohValue"/>
+          <include name="verifyInventoryReportSOH_MPL_AllDepartment"/>
+          <include name="verifySITSOO"/>
+          <include name="verifyPrintReportwithSeasonalActivity"/>
+          <include name="tearDown"/>
+          <include name="verifyInventoryReportMPL"/>
+          <include name="verifyDeletedcheckbox"/>
+          <include name="verifyInventoryReportSOH"/>
+          <include name="verifyDifferentSOSSOH_MPLReport"/>
+          <include name="verifyDifferentSOSMPLReport"/>
+          <include name="verifyInventoryReportMultiDepartment"/>
+          <include name="verifyPBDUOM"/>
+          <include name="verifyPrintReportwithoutSeasonalActivity"/>
+          <include name="flushReports"/>
+          <include name="verifySohDays"/>
+          <include name="verifyDifferentSOSSOHReport"/>
+          <include name="verifyInventoryReportSOHandMPL"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.InventoryReportTests -->
+      <class name="au.wow.ngbomain.tests.ReceivingSegmentsTest">
+        <methods>
+          <include name="ReceivingWarehouseMultipleSegmentOrderWithCancel"/>
+          <include name="ReceivingWarehouseMultipleSegmentOrdeFullHigh"/>
+          <include name="tearDown"/>
+          <include name="ReceivingWarehouseMultipleSegmentOrderException"/>
+          <include name="ReceivingWarehouseSingleSegmentFullWithHighTemperature"/>
+          <include name="ReceivingWarehouseMultipleSegmentOrderWithCancelInException"/>
+          <include name="ReceivingWarehouseMultipleSegmentOrderFull"/>
+          <include name="ReceivingWarehouseSingleSegmentFullUsingPostLater"/>
+          <include name="loadXMLFile"/>
+          <include name="ReceivingWarehouseSingleSegmentException"/>
+          <include name="setUp"/>
+          <include name="flushReports"/>
+          <include name="ReceivingWarehouseMultipleSegmentOrderFullWithPostLater"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.ReceivingSegmentsTest -->
+      <class name="au.wow.ngbomain.tests.StockTransferTests">
+        <methods>
+          <include name="tearDown"/>
+          <include name="setUp"/>
+          <include name="flushReports"/>
+          <include name="loadXMLFile"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.StockTransferTests -->
+      <class name="au.wow.ngbomain.tests.GoodsMovementTests">
+        <methods>
+          <include name="VerifyGoodsSales"/>
+          <include name="VerifyGoodsDisplayExceptionAdjustment"/>
+          <include name="VerifyGoodsRTVLitreArticlesForOrderableUOM"/>
+          <include name="VerifyGoodsRTVPBD"/>
+          <include name="VerifyGoodsDisplay"/>
+          <include name="VerifyGoodsRTVLitreArticles"/>
+          <include name="VerifyGoodsRWT"/>
+          <include name="VerifyGoodsSalesSetAdjustmentforKG"/>
+          <include name="VerifyGoodsIBTDisplayException"/>
+          <include name="VerifyGoodsRTVPBDHigherUOM"/>
+          <include name="VerifyGoodsIBTWeighted"/>
+          <include name="VerifyGoodsIBTRandomWeighted"/>
+          <include name="VerifyGoodsRTVHAWA"/>
+          <include name="VerifyGoodsIBTCPBD"/>
+          <include name="flushReports"/>
+          <include name="setUp"/>
+          <include name="VerifyGoodsHAWAAdjustment"/>
+          <include name="VerifyGoodsPBD"/>
+          <include name="tearDown"/>
+          <include name="VerifyGoodsDisplaySetAdjustment"/>
+          <include name="VerifyGoodsIBTHAWA"/>
+          <include name="VerifyGoodsIBTPBD"/>
+          <include name="VerifyGoodsSalesWeighted"/>
+          <include name="VerifyGoodsRWTAdjustment"/>
+          <include name="VerifyGoodsSalesHAWA"/>
+          <include name="loadXMLFile"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.GoodsMovementTests -->
+      <class name="au.wow.ngbomain.tests.LTOAddOrEditTest">
+        <methods>
+          <include name="flushReports"/>
+          <include name="LTOAddOrEditSM"/>
+          <include name="setUp"/>
+          <include name="tearDown"/>
+          <include name="loadXMLFile"/>
+          <include name="LTOAddOrEditBWS"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.LTOAddOrEditTest -->
+      <class name="au.wow.ngbomain.tests.EnhancedArticleLookUpTests1">
+        <methods>
+          <include name="setUp"/>
+          <include name="tearDown"/>
+          <include name="flushReports"/>
+          <include name="loadXMLFile"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.EnhancedArticleLookUpTests1 -->
+      <class name="au.wow.ngbomain.tests.OverstockReportsTest">
+        <methods>
+          <include name="tearDown"/>
+          <include name="flushReports"/>
+          <include name="setUp"/>
+          <include name="loadXMLFile"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.OverstockReportsTest -->
+      <class name="au.wow.ngbomain.tests.AdjustmentLogReportTests">
+        <methods>
+          <include name="flushReports"/>
+          <include name="setUp"/>
+          <include name="tearDown"/>
+          <include name="loadXMLFile"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.AdjustmentLogReportTests -->
+      <class name="au.wow.ngbomain.tests.oocreporttest">
+        <methods>
+          <include name="nodepartmentselect"/>
+          <include name="datediscrepancy"/>
+          <include name="dateselectiondiscrepancy"/>
+          <include name="verifyprintreport"/>
+          <include name="tearDown"/>
+          <include name="multdept"/>
+          <include name="loadXMLFile"/>
+          <include name="flushReports"/>
+          <include name="verifypagination"/>
+          <include name="setUp"/>
+          <include name="nodepartment"/>
+          <include name="category"/>
+          <include name="subcategory"/>
+          <include name="verifyactiontodaycount"/>
+          <include name="primarydepartment1"/>
+          <include name="verifyreportpartial"/>
+          <include name="segment"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.oocreporttest -->
+      <class name="au.wow.ngbomain.tests.StockAdjustmentTests">
+        <methods>
+          <include name="checkIDTandRIDT_weighted"/>
+          <include name="checkWHDelWeiRandomWeiArt"/>
+          <include name="verifyStockAdjLinkedArticles"/>
+          <include name="checkNoNodeIDforIDTandRIDT"/>
+          <include name="checkBWSarticle"/>
+          <include name="flushReports"/>
+          <include name="setUp"/>
+          <include name="verifyStockAdjLinkedArticlesPLU"/>
+          <include name="verifyStockAdjEAN"/>
+          <include name="verifyStockAdjRandomWeighedArticles"/>
+          <include name="verifyStockAdjDesc"/>
+          <include name="verifyStockAdjDisplayArticles"/>
+          <include name="mpkAndCARArticles"/>
+          <include name="wareHouseemptyORDERlist"/>
+          <include name="checkIDTandRIDT_randomweighted"/>
+          <include name="verifyStockAdjArt"/>
+          <include name="cpbpArticles"/>
+          <include name="checkWHDeliveryCPBD"/>
+          <include name="verifylookupLinkedArticles"/>
+          <include name="checkWHdelivery"/>
+          <include name="cpbdArticleUnreceivedOrders"/>
+          <include name="verifyStockAdjLinkedArticlesEAN"/>
+          <include name="verifyStockAdjPLU"/>
+          <include name="verifyStockAdjDisplayArticlesEAN"/>
+          <include name="verifyStockAdjLinkedArticlesDescription"/>
+          <include name="loadXMLFile"/>
+          <include name="verifyStockAdjDisplayArticlesDescription"/>
+          <include name="verifylookupDisplayArticles"/>
+          <include name="verifylookupRandomWeightArticles"/>
+          <include name="checkIDTandRIDT"/>
+          <include name="verifylookupWeightArticles"/>
+          <include name="verifyStockAdjWeighedArticles"/>
+          <include name="tearDown"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.StockAdjustmentTests -->
+      <class name="au.wow.ngbomain.tests.DSCandPLUReportTests">
+        <methods>
+          <include name="verifyDSCReportLitreArticle"/>
+          <include name="verifyPLUReportForArticleNumber"/>
+          <include name="verifyPLUReportDeletedPLU"/>
+          <include name="tearDown"/>
+          <include name="verifyDSCReportMultipleReasonCode"/>
+          <include name="verifyPLUReportPrimaryDepartment"/>
+          <include name="verifyDSCReportAllDepartments"/>
+          <include name="verifyDSCReportMeatDepartment"/>
+          <include name="flushReports"/>
+          <include name="verifyPLUReportMultiDepartment"/>
+          <include name="verifyPLUReportAllDepartment"/>
+          <include name="loadXMLFile"/>
+          <include name="verifyPLUReportForArticlePLU"/>
+          <include name="verifyDSCReportPartialDepartment"/>
+          <include name="verifyDSCReportPDBArticle"/>
+          <include name="setUp"/>
+          <include name="verifyPLUReportPartialDepartment"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.DSCandPLUReportTests -->
+      <class name="au.wow.ngbomain.tests.ReceivingOrderTests">
+        <methods>
+          <include name="ReceivingVendorASNinFullMulPOtoSingleASNOption"/>
+          <include name="ReceivingVirtualDCOrderByException"/>
+          <include name="ReceiveLineByExceptionIBTTempCheck"/>
+          <include name="ReceiveVendorinExceptionByNewArt"/>
+          <include name="ReceivingVendorASNinExceptionMulPOtoSingleASN"/>
+          <include name="ReceiveLineByLines"/>
+          <include name="ReceiveLineByLineNewOM"/>
+          <include name="ReceiveIBTByExceptionAcceptNR"/>
+          <include name="setUp"/>
+          <include name="ReceivingVendorASNinFullMulPOtoSingleASNhavingDL"/>
+          <include name="loadXMLFile"/>
+          <include name="ReceivingVendorinFullByPostLater"/>
+          <include name="ReceivingWHSellableinException"/>
+          <include name="flushReports"/>
+          <include name="ReceiveLineByExceptionIBT"/>
+          <include name="ReceiveLineByExceptions"/>
+          <include name="ReceivingVendorASNinFullSinglePOhavingDL"/>
+          <include name="ReceiveIBTByExceptionRejectNR"/>
+          <include name="ReceivingVendorASNinFullByPostLater"/>
+          <include name="ReceiveVendorinLineByNewEAN"/>
+          <include name="ReceivingWareHouseinFullByPostLater"/>
+          <include name="ReceiveLineByLineTempCheck"/>
+          <include name="ReceivingVendorASNinExceptionSinglePOhavingDL"/>
+          <include name="tearDown"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.ReceivingOrderTests -->
+      <class name="au.wow.ngbomain.tests.ORTests">
+        <methods>
+          <include name="loadXMLFile"/>
+          <include name="flushReports"/>
+          <include name="setUp"/>
+          <include name="tearDown"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.ORTests -->
+      <class name="au.wow.ngbomain.tests.ltoreporttest">
+        <methods>
+          <include name="setUp"/>
+          <include name="flushReports"/>
+          <include name="tearDown"/>
+          <include name="loadXMLFile"/>
+          <include name="ltologsmatnr"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.ltoreporttest -->
+      <class name="au.wow.ngbomain.tests.EnhancedArticleLookUpTests">
+        <methods>
+          <include name="loadXMLFile"/>
+          <include name="setUp"/>
+          <include name="flushReports"/>
+          <include name="tearDown"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.EnhancedArticleLookUpTests -->
+      <class name="au.wow.ngbomain.tests.Sampletest">
+        <methods>
+          <include name="onStart"/>
+          <include name="check"/>
+          <include name="setUp"/>
+          <include name="tearDown"/>
+          <include name="flushReports"/>
+          <include name="flushReports1"/>
+          <include name="loadXMLFile"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.Sampletest -->
+      <class name="au.wow.ngbomain.tests.GapscanReportTests">
+        <methods>
+          <include name="tearDown"/>
+          <include name="primarydepartment"/>
+          <include name="reviewonlypartialdepartment"/>
+          <include name="actionrequiredpartialdepartment"/>
+          <include name="bothalldepartment"/>
+          <include name="partialdepartmentreviewonly"/>
+          <include name="partialdepartmentonly"/>
+          <include name="flushReports"/>
+          <include name="bothprimarydepartment"/>
+          <include name="setUp"/>
+          <include name="bothpartialdepartment"/>
+          <include name="loadXMLFile"/>
+          <include name="ActionrequiredAlldepartment"/>
+          <include name="alldepartment"/>
+          <include name="reviewonlyalldepartment"/>
+          <include name="printreport"/>
+        </methods>
+      </class> <!-- au.wow.ngbomain.tests.GapscanReportTests -->
+    </classes>
+  </test> <!-- POC_tests(failed) -->
+</suite> <!-- Failed suite [StoresCentral_TestSuite] -->
